@@ -1,4 +1,4 @@
-// Supabase JavaScript interop for Budgetr
+// Supabase JavaScript interop for Kairos
 window.supabaseInterop = {
     // Internal state
     _client: null,

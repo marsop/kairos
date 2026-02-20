@@ -1,4 +1,4 @@
-// Timeular device JavaScript interop for Budgetr
+// Timeular device JavaScript interop for Kairos
 window.timeularInterop = {
     ORIENTATION_SERVICE_UUID: "c7e70010-c847-11e6-8175-8c89a55d403c",
     ORIENTATION_CHARACTERISTIC_UUID: "c7e70012-c847-11e6-8175-8c89a55d403c",
@@ -8,7 +8,7 @@ window.timeularInterop = {
     _orientationCharacteristic: null,
     _orientationHandler: null,
     _dotNetRef: null,
-    STORAGE_KEY: "budgetr_timeular_state",
+    STORAGE_KEY: "Kairos_timeular_state",
 
     registerListener: function (dotNetRef) {
         this._dotNetRef = dotNetRef;

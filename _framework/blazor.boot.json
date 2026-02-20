@@ -1,7 +1,7 @@
 {
-  "mainAssemblyName": "Budgetr.Web",
+  "mainAssemblyName": "Kairos.Web",
   "resources": {
-    "hash": "sha256-DrAHJjZWLdqwtLk3DTzSDpW+hwyi0LhikGeHtU0RL3k=",
+    "hash": "sha256-AB92wQSnqmGLfnhgfzWcdk0i7N4zarpbBqcaBnoQqHI=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.c12s8ld35l.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.iepurjfayl.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -47,12 +47,12 @@
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "System.Text.RegularExpressions.wasm",
       "System.Threading.n5ppejuuhz.wasm": "System.Threading.wasm",
       "System.Private.CoreLib.crovhb4ber.wasm": "System.Private.CoreLib.wasm",
-      "Budgetr.Shared.pmr0jt0xsi.wasm": "Budgetr.Shared.wasm",
-      "Budgetr.Web.7892hm4rti.wasm": "Budgetr.Web.wasm",
-      "Budgetr.Shared.resources.zpp6rrzlh3.wasm": "Budgetr.Shared.resources.wasm",
-      "Budgetr.Shared.resources.d7wsiheu17.wasm": "Budgetr.Shared.resources.wasm",
-      "Budgetr.Shared.resources.pbck7pq1ex.wasm": "Budgetr.Shared.resources.wasm",
-      "Budgetr.Shared.resources.j1wydzvvu0.wasm": "Budgetr.Shared.resources.wasm",
+      "Kairos.Shared.ctrnses7fg.wasm": "Kairos.Shared.wasm",
+      "Kairos.Web.8wy3v1c9si.wasm": "Kairos.Web.wasm",
+      "Kairos.Shared.resources.sqv1kknjfi.wasm": "Kairos.Shared.resources.wasm",
+      "Kairos.Shared.resources.t8nduw096e.wasm": "Kairos.Shared.resources.wasm",
+      "Kairos.Shared.resources.p7pwrhsyco.wasm": "Kairos.Shared.resources.wasm",
+      "Kairos.Shared.resources.r2mag40rre.wasm": "Kairos.Shared.resources.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.xidrk0eo52.js": "dotnet.native.js",
       "dotnet.native.y68cfu4kuf.wasm": "dotnet.native.wasm",
@@ -118,21 +118,21 @@
       "System.Text.Json.l6ijlcrrmp.wasm": "sha256-M8imoBF0BGyd0yvZoocrWf4iWPknZn/ZnStL2BofX1s=",
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "sha256-ZQejR0x7+S2JJA2Z1IkLWqWXukLRjL/c/zguib2fpHo=",
       "System.Threading.n5ppejuuhz.wasm": "sha256-ZVqAdmVQkqedPOVid8yORJq6/P4I+NlvR19QR4PIQfY=",
-      "Budgetr.Shared.pmr0jt0xsi.wasm": "sha256-4VLmRON5BeEM9X+lnF2Apkk7w9dN4mLFu7uMZu3MaB4=",
-      "Budgetr.Web.7892hm4rti.wasm": "sha256-N2RxTrJ0QONCQYKPTTUax11vDD4695ZjJD9LkmmCXS8="
+      "Kairos.Shared.ctrnses7fg.wasm": "sha256-cP8zVnV8N36zE6pukLg/bAQGGl7CxOFtq+gzeeoZPU4=",
+      "Kairos.Web.8wy3v1c9si.wasm": "sha256-mAmPpHm3uPX65lFiERvE9jfvmovcN6AcZQkefKAxFEA="
     },
     "satelliteResources": {
       "gl": {
-        "Budgetr.Shared.resources.zpp6rrzlh3.wasm": "sha256-t35vvqTW8VFsTwAfhsX6yRaJ0rikoDg+GPZ6FUOD1kU="
+        "Kairos.Shared.resources.sqv1kknjfi.wasm": "sha256-9OrGc4UwOuxzfFj5zXzlWAav7xCKUqi/g16Fag0kwGc="
       },
       "gsw": {
-        "Budgetr.Shared.resources.d7wsiheu17.wasm": "sha256-CSiCBH4yYQMoDAj3VIrvN0QH8lRsPT7RR5cnUsXCL24="
+        "Kairos.Shared.resources.t8nduw096e.wasm": "sha256-E6tSBLwuu0CHDz7zSpcOEDw9Q76qIGM6gNUxspAOK9Q="
       },
       "es": {
-        "Budgetr.Shared.resources.pbck7pq1ex.wasm": "sha256-mzlcI0vhXhymgUvWdlYUt2pdZudtpriIJDDjGT9UcpA="
+        "Kairos.Shared.resources.p7pwrhsyco.wasm": "sha256-pWYmGyBPx1FAJMHU+dXy8NTMych+ygxr8muZK5MzAMw="
       },
       "de": {
-        "Budgetr.Shared.resources.j1wydzvvu0.wasm": "sha256-tx9lFDqUrR4TUwqJQy7rCr9L+p1luDYUs4IUGwLnrCc="
+        "Kairos.Shared.resources.r2mag40rre.wasm": "sha256-Q+5f/L4kFM9iQddRbhBdL/9Pt2zNaxJta6AIub3BvKk="
       }
     }
   },
