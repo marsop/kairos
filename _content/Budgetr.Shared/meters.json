@@ -1,0 +1,6 @@
+{
+  "meters": [
+    { "name": "+1x", "factor": 1.0 },
+    { "name": "-1x", "factor": -1.0 }
+  ]
+}
