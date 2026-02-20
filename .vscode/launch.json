@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Budgetr Web",
+            "name": "Kairos Web",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:5110",
-            "webRoot": "${workspaceFolder}/src/Budgetr.Web/wwwroot",
+            "url": "http://localhost:5111",
+            "webRoot": "${workspaceFolder}/src/Kairos.Web/wwwroot",
             "preLaunchTask": "watch"
         }
     ]

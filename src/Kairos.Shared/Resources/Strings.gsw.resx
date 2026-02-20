@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" msdata:Ordinal="5" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Kairos</value>
+  </data>
+  <data name="NavOverview" xml:space="preserve">
+    <value>Überblick</value>
+  </data>
+  <data name="NavMeters" xml:space="preserve">
+    <value>Zähler</value>
+  </data>
+  <data name="NavTimeline" xml:space="preserve">
+    <value>Zitachse</value>
+  </data>
+  <data name="NavHistory" xml:space="preserve">
+    <value>Verloff</value>
+  </data>
+  <data name="NavSync" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>Istellunga</value>
+  </data>
+  <data name="OfflineBanner" xml:space="preserve">
+    <value>Du schaffsch grad offline</value>
+  </data>
+  <data name="InstallKairos" xml:space="preserve">
+    <value>Kairos installiera</value>
+  </data>
+  <data name="InstallDesc" xml:space="preserve">
+    <value>Uf da Startbildschirm tua für schnella Zuagriff</value>
+  </data>
+  <data name="Install" xml:space="preserve">
+    <value>Installiera</value>
+  </data>
+  <data name="CurrentBalance" xml:space="preserve">
+    <value>Aktueller Kontostand</value>
+  </data>
+  <data name="HoursUnit" xml:space="preserve">
+    <value>Stunda</value>
+  </data>
+  <data name="MeterActive" xml:space="preserve">
+    <value>{0} isch aktiv</value>
+  </data>
+  <data name="NoEvents" xml:space="preserve">
+    <value>No koane Ereignis ufgschrieba</value>
+  </data>
+  <data name="StartMeterHint" xml:space="preserve">
+    <value>Fang an Zähler a zum d'Zit ufschrieba</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löscha</value>
+  </data>
+  <data name="Started" xml:space="preserve">
+    <value>Agfanga</value>
+  </data>
+  <data name="Ended" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duur</value>
+  </data>
+  <data name="Contribution" xml:space="preserve">
+    <value>Bitrag</value>
+  </data>
+  <data name="DeleteEntryTitle" xml:space="preserve">
+    <value>Itrag löscha?</value>
+  </data>
+  <data name="DeleteEntryConfirm" xml:space="preserve">
+    <value>Bisch sicher, dass dean {0}-Itrag löscha witt?</value>
+  </data>
+  <data name="DeleteEntryWarning" xml:space="preserve">
+    <value>Des nummt {0} vo dinam Kontostand weg.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrecha</value>
+  </data>
+  <data name="TodayAt" xml:space="preserve">
+    <value>Hüt um {0}</value>
+  </data>
+  <data name="YesterdayAt" xml:space="preserve">
+    <value>Gester um {0}</value>
+  </data>
+  <data name="DateTimeAt" xml:space="preserve">
+    <value>{0} um {1}</value>
+  </data>
+  <data name="DurationLong" xml:space="preserve">
+    <value>{0}h {1}m</value>
+  </data>
+  <data name="DurationShort" xml:space="preserve">
+    <value>{0}m {1}s</value>
+  </data>
+  <data name="DurationSeconds" xml:space="preserve">
+    <value>{0}s</value>
+  </data>
+  <data name="MeterFactor" xml:space="preserve">
+    <value>Faktor: {0}</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Lofft</value>
+  </data>
+  <data name="TapToStart" xml:space="preserve">
+    <value>Uf d'Backe drucka</value>
+  </data>
+  <data name="RenameMeter" xml:space="preserve">
+    <value>Zähler umbenenna</value>
+  </data>
+  <data name="DeleteMeter" xml:space="preserve">
+    <value>Zähler löscha</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichara</value>
+  </data>
+  <data name="AddMeter" xml:space="preserve">
+    <value>Zähler dazuatua</value>
+  </data>
+  <data name="RunningFor" xml:space="preserve">
+    <value>Lofft sit:</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>An Nama bruuchts</value>
+  </data>
+  <data name="NameLengthError" xml:space="preserve">
+    <value>Nama muass zwischa 1 und 40 Zeicha si</value>
+  </data>
+  <data name="NoDataPeriod" xml:space="preserve">
+    <value>Koane Data für dean Zitraum</value>
+  </data>
+  <data name="TabLocal" xml:space="preserve">
+    <value>Lokal</value>
+  </data>
+  <data name="TabGDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="ExportData" xml:space="preserve">
+    <value>Data exportiera</value>
+  </data>
+  <data name="ExportDesc" xml:space="preserve">
+    <value>Lad alle dine Data (Zähler und Ereignis) als JSON-Datei aba.</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exportiert...</value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>Data importiera</value>
+  </data>
+  <data name="ImportDesc" xml:space="preserve">
+    <value>Tusch dine Data gega a JSON-Datei us.</value>
+  </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Datei ussuacha</value>
+  </data>
+  <data name="SelectedFile" xml:space="preserve">
+    <value>Ussuacht: {0}</value>
+  </data>
+  <data name="Importing" xml:space="preserve">
+    <value>Importiert...</value>
+  </data>
+  <data name="GDriveSync" xml:space="preserve">
+    <value>Google Drive Sync</value>
+  </data>
+  <data name="GDriveDesc" xml:space="preserve">
+    <value>Data sichara und wiederhola mit Google Drive.</value>
+  </data>
+  <data name="GDriveConfigNote" xml:space="preserve">
+    <value>Für da Google Drive Sync bruuchst a OAuth Client ID vo dr Google Cloud Console.</value>
+  </data>
+  <data name="OAuthClientId" xml:space="preserve">
+    <value>OAuth Client ID:</value>
+  </data>
+  <data name="EnterClientId" xml:space="preserve">
+    <value>Schrieb dine Client ID ana</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Konfiguriera</value>
+  </data>
+  <data name="SigningIn" xml:space="preserve">
+    <value>Meldt a...</value>
+  </data>
+  <data name="SignInWithGoogle" xml:space="preserve">
+    <value>Mid Google amelda</value>
+  </data>
+  <data name="ReconfigureClientId" xml:space="preserve">
+    <value>Client ID neu iistella</value>
+  </data>
+  <data name="SignedInAs" xml:space="preserve">
+    <value>Agmeldet als {0}</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Letze Sicherung: {0}</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Sichert grad...</value>
+  </data>
+  <data name="BackupToDrive" xml:space="preserve">
+    <value>Uf Drive sichara</value>
+  </data>
+  <data name="Restoring" xml:space="preserve">
+    <value>Holt Data wieder...</value>
+  </data>
+  <data name="RestoreFromDrive" xml:space="preserve">
+    <value>Vo Drive kloo</value>
+  </data>
+  <data name="AutoSync" xml:space="preserve">
+    <value>Auto-Sync bi Änderungen</value>
+  </data>
+  <data name="Syncing" xml:space="preserve">
+    <value>Synchronisiert...</value>
+  </data>
+  <data name="LastAutoSync" xml:space="preserve">
+    <value>Letzter Auto-Sync: {0}</value>
+  </data>
+  <data name="SyncFailedRetry" xml:space="preserve">
+    <value>Sync in d'Hosa ganga - wird nomal probiert</value>
+  </data>
+  <data name="WatchingChanges" xml:space="preserve">
+    <value>Wartet uf Änderungen...</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Abmelda</value>
+  </data>
+  <data name="FactoryReset" xml:space="preserve">
+    <value>Werkstelliga</value>
+  </data>
+  <data name="FactoryResetDesc" xml:space="preserve">
+    <value>Anwendung uf Anfang zurücksetza. Löscht alle Data.</value>
+  </data>
+  <data name="ResetApp" xml:space="preserve">
+    <value>App zurücksetza</value>
+  </data>
+  <data name="PromptReset" xml:space="preserve">
+    <value>Bisch sicher, dass d'App zurücksetza witt? Des löscht ALLE dine Data und des kasch nimmer rückgängig macha.</value>
+  </data>
+  <data name="FinalWarning" xml:space="preserve">
+    <value>LETZTE WARNUNG</value>
+  </data>
+  <data name="FinalWarningMsg" xml:space="preserve">
+    <value>I moans ernscht. Des putzt alle Zähler, da Verloff und d'Istellunga weg. Bisch ganz sicher?</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bestätiga</value>
+  </data>
+  <data name="SuccessGDriveConfig" xml:space="preserve">
+    <value>Google Drive isch iigstellt!</value>
+  </data>
+  <data name="ErrorConfigFailed" xml:space="preserve">
+    <value>Istellung in d'Hosa ganga: {0}</value>
+  </data>
+  <data name="SuccessSignIn" xml:space="preserve">
+    <value>Agmeldet!</value>
+  </data>
+  <data name="ErrorSignInCancelled" xml:space="preserve">
+    <value>Abmelda abbrocha.</value>
+  </data>
+  <data name="ErrorSignInFailed" xml:space="preserve">
+    <value>Amelda fehlgschlaga: {0}</value>
+  </data>
+  <data name="SuccessSignOut" xml:space="preserve">
+    <value>Abmeldet.</value>
+  </data>
+  <data name="ErrorSignOutFailed" xml:space="preserve">
+    <value>Abmelda in d'Hosa ganga: {0}</value>
+  </data>
+  <data name="SuccessBackup" xml:space="preserve">
+    <value>Sicherung fertig!</value>
+  </data>
+  <data name="ErrorBackupFailed" xml:space="preserve">
+    <value>Sicherung fehlgschlaga: {0}</value>
+  </data>
+  <data name="ErrorNoBackup" xml:space="preserve">
+    <value>Koane Sicherung uf Google Drive gfunda.</value>
+  </data>
+  <data name="SuccessRestore" xml:space="preserve">
+    <value>Data vo Google Drive kloo!</value>
+  </data>
+  <data name="ErrorRestoreFailed" xml:space="preserve">
+    <value>Data holla fehlgschlaga: {0}</value>
+  </data>
+  <data name="SuccessExport" xml:space="preserve">
+    <value>Data exportiert!</value>
+  </data>
+  <data name="ErrorExportFailed" xml:space="preserve">
+    <value>Export in d'Hosa ganga: {0}</value>
+  </data>
+  <data name="SuccessImport" xml:space="preserve">
+    <value>Data importiert! Zähler und Ereignis sind neu.</value>
+  </data>
+  <data name="ErrorImportFailed" xml:space="preserve">
+    <value>Import in d'Hosa ganga: {0}</value>
+  </data>
+  <data name="SuccessAutoSyncEnabled" xml:space="preserve">
+    <value>Auto-Sync agschalta. Data werda automatisch gspeicharat.</value>
+  </data>
+  <data name="SuccessAutoSyncDisabled" xml:space="preserve">
+    <value>Auto-Sync usgschalta.</value>
+  </data>
+  <data name="ErrorToggleAutoSync" xml:space="preserve">
+    <value>Auto-Sync umschalta fehlgschlaga: {0}</value>
+  </data>
+  <data name="ErrorResetFailed" xml:space="preserve">
+    <value>Zurücksetza fehlgschlaga: {0}</value>
+  </data>
+  <data name="DisplayLanguage" xml:space="preserve">
+    <value>Sprooch</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Über Kairos</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="TutorialIntro" xml:space="preserve">
+    <value>Servus! Willkomma bi 'Kairos'! I bin din persönlicher Guide fürs Zitbudget. I hilf dr dabei, dini Zit gschit zum iiteila!</value>
+  </data>
+  <data name="TutorialOverview" xml:space="preserve">
+    <value>Des isch din 'Überblick'. Do siehsch uf oan Blick, wie's um din Zitbudget stoht. Di gsamt Guthaben und d'aktiva Zähler uf oam Fleck.</value>
+  </data>
+  <data name="TutorialMeters" xml:space="preserve">
+    <value>Do bi da 'Zähler' seisch, was du machsch! Du kasch Zähler für Arbet, Beruaf oder Freizit macha. Des isch da Puls vo dinam Tag.</value>
+  </data>
+  <data name="TutorialTimeline" xml:space="preserve">
+    <value>D'Zitachse' isch dini Hufe! 🔮 Do siehsch, wie des mit dinam Zitbudget in dr Vergangenheit war. Gut zum luaga, wie's usschaut und zum plana.</value>
+  </data>
+  <data name="TutorialHistory" xml:space="preserve">
+    <value>Witt wissa, was gester war? Da 'Verloff' hät alle dine Iträg und Änderungen. Super zum luaga, was ma so den ganza Tag triebt.</value>
+  </data>
+  <data name="TutorialSync" xml:space="preserve">
+    <value>Und dazua hebt 'Sync' dine Data uff! Du kasch dine Data uf Google Drive sichara oder lokal exportiera. So goht nix verlora!</value>
+  </data>
+  <data name="TutorialCompletion" xml:space="preserve">
+    <value>Des wär's fürs Erschte! Jetz kasch d'Zügel sälber in d'Hand nehma. Wenn mi wieder bruuchst, druck uf des Hilfe-Symbol. Viel Spaß beim Tracka! ✨</value>
+  </data>
+  <data name="TutorialGuideName" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="NextStep" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="ConfirmationDefaultTitle" xml:space="preserve">
+    <value>Aktion bestätiga</value>
+  </data>
+  <data name="ConfirmationDefaultMessage" xml:space="preserve">
+    <value>Bisch sicher, dass des macha witt?</value>
+  </data>
+  <data name="TutorialAvatar" xml:space="preserve">
+    <value>Tutorial Avatar</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Unterstützung</value>
+  </data>
+  <data name="SupportDesc" xml:space="preserve">
+    <value>Wenn da Kairos guat finnsch, kannsch d'Entwicklung unterstütza und mir an Kafi spendiera! ☕</value>
+  </data>
+  <data name="BuyMeACoffee" xml:space="preserve">
+    <value>Spendier mr an Kafi</value>
+  </data>
+  <data name="EditTimes" xml:space="preserve">
+    <value>Zita bearbeita</value>
+  </data>
+  <data name="EditTimesTitle" xml:space="preserve">
+    <value>Ereigniszita bearbeita</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Startzit</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>Endzit</value>
+  </data>
+  <data name="EndBeforeStart" xml:space="preserve">
+    <value>D'Endzit muass noch dr Startzit si.</value>
+  </data>
+  <data name="FutureEndTime" xml:space="preserve">
+    <value>D'Endzit derf nöd in dr Zuakunft si.</value>
+  </data>
+  <data name="TabSupabase" xml:space="preserve">
+    <value>Supabase</value>
+  </data>
+  <data name="SupabaseSync" xml:space="preserve">
+    <value>Supabase Sync</value>
+  </data>
+  <data name="SupabaseDesc" xml:space="preserve">
+    <value>Data sichara und wiederhola mit dr Supabase Cloud-Datebank.</value>
+  </data>
+  <data name="SupabaseConfigNote" xml:space="preserve">
+    <value>Für da Supabase Sync bruuchst d'Projekt-URL und da Anon-Key vom Supabase Dashboard.</value>
+  </data>
+  <data name="SupabaseUrl" xml:space="preserve">
+    <value>Projekt-URL:</value>
+  </data>
+  <data name="SupabaseAnonKey" xml:space="preserve">
+    <value>Anon-Key:</value>
+  </data>
+  <data name="EnterSupabaseUrl" xml:space="preserve">
+    <value>https://dis-projekt.supabase.co</value>
+  </data>
+  <data name="EnterAnonKey" xml:space="preserve">
+    <value>Schrieb din Anon-Key ana</value>
+  </data>
+  <data name="SupabaseConfiguredViaFile" xml:space="preserve">
+    <value>Supabase isch über d'Istellungsdatei konfiguriert.</value>
+  </data>
+  <data name="SuccessSupabaseConfig" xml:space="preserve">
+    <value>Supabase isch iigstellt!</value>
+  </data>
+  <data name="SignInEmail" xml:space="preserve">
+    <value>E-Mail:</value>
+  </data>
+  <data name="SignInPassword" xml:space="preserve">
+    <value>Passwort:</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Amelda</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Registriera</value>
+  </data>
+  <data name="SigningUp" xml:space="preserve">
+    <value>Registriert...</value>
+  </data>
+  <data name="SuccessSignUp" xml:space="preserve">
+    <value>Konto erstellt und agmeldet!</value>
+  </data>
+  <data name="SuccessSignUpConfirm" xml:space="preserve">
+    <value>Konto erstellt! Luag in dina E-Mail noo und meld di dann a.</value>
+  </data>
+  <data name="ErrorSignUpFailed" xml:space="preserve">
+    <value>Registrierig fehlgschlaga: {0}</value>
+  </data>
+  <data name="ReconfigureSupabase" xml:space="preserve">
+    <value>Supabase neu iistella</value>
+  </data>
+  <data name="BackupToSupabase" xml:space="preserve">
+    <value>Uf Supabase sichara</value>
+  </data>
+  <data name="RestoreFromSupabase" xml:space="preserve">
+    <value>Vo Supabase kloo</value>
+  </data>
+  <data name="ErrorNoSupabaseBackup" xml:space="preserve">
+    <value>Koane Sicherung uf Supabase gfunda.</value>
+  </data>
+  <data name="SuccessSupabaseRestore" xml:space="preserve">
+    <value>Data vo Supabase kloo!</value>
+  </data>
+  <data name="BrowserNotifications" xml:space="preserve">
+    <value>Browser-Benochrichtigonga</value>
+  </data>
+  <data name="BrowserNotificationsDesc" xml:space="preserve">
+    <value>Systemmeldonga azoiga, wenn a Meter aktiviert oder deaktiviert wird</value>
+  </data>
+  <data name="BrowserNotificationsDenied" xml:space="preserve">
+    <value>Benochrichtigonga vom Browser blockiert. Bitte in da Browseriistellonga erlauba.</value>
+  </data>
+  <data name="NotificationMeterStartedTitle" xml:space="preserve">
+    <value>⏱️ Zähler Gstartet</value>
+  </data>
+  <data name="NotificationMeterStartedBody" xml:space="preserve">
+    <value>Du erfassisch jetzt '{0}'.</value>
+  </data>
+  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
+    <value>⏹️ Zähler Gstoppt</value>
+  </data>
+  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+    <value>Du hesch d'Erfassig vo '{0}' beändet.</value>
+  </data>
+  <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
+    <value>✅ Aagmulde</value>
+  </data>
+  <data name="NotificationSupabaseSignedInBody" xml:space="preserve">
+    <value>Erfolgriich bi Supabase aagmulde.</value>
+  </data>
+  <data name="NotificationSupabaseSignedOutTitle" xml:space="preserve">
+    <value>👋 Abgmulde</value>
+  </data>
+  <data name="NotificationSupabaseSignedOutBody" xml:space="preserve">
+    <value>Erfolgriich vo Supabase abgmulde.</value>
+  </data>
+  <data name="NotificationTimeularConnectedTitle" xml:space="preserve">
+    <value>🧊 Timeular verbunda</value>
+  </data>
+  <data name="NotificationTimeularConnectedBody" xml:space="preserve">
+    <value>Erfolgriich mit dim Timeular-Tracker verbunda.</value>
+  </data>
+  <data name="NotificationTimeularDisconnectedTitle" xml:space="preserve">
+    <value>🔌 Timeular trennt</value>
+  </data>
+  <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
+    <value>Din Timeular-Tracker isch trennt worra.</value>
+  </data>
+</root>

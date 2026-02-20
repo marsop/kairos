@@ -1,0 +1,15 @@
+{
+  "name": "Kairos",
+  "short_name": "Kairos",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#512BD4",
+  "icons": [
+    {
+      "src": "appicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ]
+}

@@ -1,14 +1,14 @@
-# Budgetr
+# Kairos
 
 Personal Time Budgeting and Accounting
 
 ## Live Version
 
-Available at https://albertogregorio.com/budgetr/
+Available at https://albertogregorio.com/Kairos/
 
 ## Overview
 
-Budgetr is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable "meters" with different factors, giving you a balance sheet of your time budget.
+Kairos is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable "meters" with different factors, giving you a balance sheet of your time budget.
 
 ## Features
 
@@ -53,20 +53,20 @@ Budgetr is a time-tracking application built with Blazor WebAssembly. It helps y
 ## Project Structure
 
 ```
-budgetr/
+Kairos/
 ├── src/
-│   ├── Budgetr.Shared/       # Shared components, services, models
+│   ├── Kairos.Shared/       # Shared components, services, models
 │   │   ├── Components/       # Reusable UI components
 │   │   ├── Layout/           # Application layout
 │   │   ├── Models/           # Data models (Meter, MeterEvent, TimeAccount)
 │   │   ├── Pages/            # Application pages (Overview, Meters, Timeline, etc.)
 │   │   ├── Resources/        # Localization files
 │   │   └── Services/         # Core business logic services
-│   └── Budgetr.Web/          # Blazor WebAssembly project
+│   └── Kairos.Web/          # Blazor WebAssembly project
 │       ├── Services/         # Web-specific service implementations
 │       └── wwwroot/          # Static assets, CSS, JS
 ├── tests/                    # Test projects
-└── Budgetr.sln               # Solution file
+└── Kairos.sln               # Solution file
 ```
 
 ## Getting Started
@@ -79,7 +79,7 @@ budgetr/
 
 ```bash
 # Navigate to the web project
-cd src/Budgetr.Web
+cd src/Kairos.Web
 
 # Run the application
 dotnet run
@@ -91,7 +91,7 @@ The application will be available at `https://localhost:5001` or `http://localho
 
 ```bash
 # Build the Web application
-cd src/Budgetr.Web
+cd src/Kairos.Web
 dotnet publish -c Release
 ```
 

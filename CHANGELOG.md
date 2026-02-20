@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Language Persistence**: Implemented saving selected language to local storage and export/import functionality.
 - **Language Icons**: Added flags/icons to language selection options.
-- **Website Logo**: Added the Budgetr logo to the application.
+- **Website Logo**: Added the Kairos logo to the application.
 - **README**: Created a comprehensive README.md.
 - **Project Structure**: Initial setup of the Blazor + MAUI Hybrid application.
 - **Pages**: Added Overview, Meters, and Timeline pages with core functionality.

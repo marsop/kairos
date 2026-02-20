@@ -23,13 +23,13 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      # Changes the base-tag in index.html from '/' to 'Budgetr' to match GitHub Pages repository subdirectory
+      # Changes the base-tag in index.html from '/' to 'Kairos' to match GitHub Pages repository subdirectory
       - name: Change base-tag in index.html from / to /${{ github.event.repository.name }}/
-        run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' src/Budgetr.Web/wwwroot/index.html
+        run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' src/Kairos.Web/wwwroot/index.html
 
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Core Project
-        run: dotnet publish src/Budgetr.Web/Budgetr.Web.csproj -c Release -o release
+        run: dotnet publish src/Kairos.Web/Kairos.Web.csproj -c Release -o release
 
       # Copy index.html to 404.html to serve the same file when a file is not found
       - name: copy index.html to 404.html
