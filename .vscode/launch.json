@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Budgetr Web",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:5110",
+            "webRoot": "${workspaceFolder}/src/Budgetr.Web/wwwroot",
+            "preLaunchTask": "watch"
+        }
+    ]
+}

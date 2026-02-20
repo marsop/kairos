@@ -1,0 +1,88 @@
+@using Budgetr.Shared.Services
+@inject INotificationService NotificationService
+@implements IDisposable
+
+@if (_toasts.Count > 0)
+{
+    <div class="toast-container">
+        @foreach (var toast in _toasts)
+        {
+            <div class="toast @(toast.Dismissing ? "toast-exit" : "toast-enter")">
+                <div class="toast-content">
+                    <span class="toast-title">@toast.Message.Title</span>
+                    <span class="toast-body">@toast.Message.Body</span>
+                </div>
+                <button class="toast-close" @onclick="() => DismissToast(toast)">✕</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private readonly List<ToastEntry> _toasts = new();
+    private const int MaxToasts = 3;
+    private const int AutoDismissMs = 3000;
+
+    protected override void OnInitialized()
+    {
+        NotificationService.OnToastReceived += OnToastReceived;
+    }
+
+    private void OnToastReceived(ToastMessage message)
+    {
+        InvokeAsync(() =>
+        {
+            var entry = new ToastEntry(message);
+            _toasts.Insert(0, entry);
+
+            // Cap visible toasts
+            while (_toasts.Count > MaxToasts)
+            {
+                _toasts.RemoveAt(_toasts.Count - 1);
+            }
+
+            StateHasChanged();
+
+            // Auto-dismiss after delay
+            _ = AutoDismissAsync(entry);
+        });
+    }
+
+    private async Task AutoDismissAsync(ToastEntry entry)
+    {
+        await Task.Delay(AutoDismissMs);
+
+        if (_toasts.Contains(entry))
+        {
+            entry.Dismissing = true;
+            StateHasChanged();
+
+            // Wait for exit animation
+            await Task.Delay(300);
+            _toasts.Remove(entry);
+            StateHasChanged();
+        }
+    }
+
+    private async Task DismissToast(ToastEntry entry)
+    {
+        entry.Dismissing = true;
+        StateHasChanged();
+
+        await Task.Delay(300);
+        _toasts.Remove(entry);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnToastReceived -= OnToastReceived;
+    }
+
+    private class ToastEntry
+    {
+        public ToastMessage Message { get; }
+        public bool Dismissing { get; set; }
+        public ToastEntry(ToastMessage message) => Message = message;
+    }
+}

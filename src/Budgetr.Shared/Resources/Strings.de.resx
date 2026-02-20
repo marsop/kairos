@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" msdata:Ordinal="5" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Budgetr</value>
+  </data>
+  <data name="NavOverview" xml:space="preserve">
+    <value>Übersicht</value>
+  </data>
+  <data name="NavMeters" xml:space="preserve">
+    <value>Zähler</value>
+  </data>
+  <data name="NavTimeline" xml:space="preserve">
+    <value>Zeitachse</value>
+  </data>
+  <data name="NavHistory" xml:space="preserve">
+    <value>Verlauf</value>
+  </data>
+  <data name="NavSync" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="OfflineBanner" xml:space="preserve">
+    <value>Sie arbeiten offline</value>
+  </data>
+  <data name="InstallBudgetr" xml:space="preserve">
+    <value>Budgetr installieren</value>
+  </data>
+  <data name="InstallDesc" xml:space="preserve">
+    <value>Für schnellen Zugriff zum Startbildschirm hinzufügen</value>
+  </data>
+  <data name="Install" xml:space="preserve">
+    <value>Installieren</value>
+  </data>
+  <data name="CurrentBalance" xml:space="preserve">
+    <value>Aktueller Kontostand</value>
+  </data>
+  <data name="HoursUnit" xml:space="preserve">
+    <value>Stunden</value>
+  </data>
+  <data name="MeterActive" xml:space="preserve">
+    <value>{0} aktiv</value>
+  </data>
+  <data name="NoEvents" xml:space="preserve">
+    <value>Noch keine Ereignisse aufgezeichnet</value>
+  </data>
+  <data name="StartMeterHint" xml:space="preserve">
+    <value>Starten Sie einen Zähler, um die Zeitmessung zu beginnen</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="Started" xml:space="preserve">
+    <value>Gestartet</value>
+  </data>
+  <data name="Ended" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Dauer</value>
+  </data>
+  <data name="Contribution" xml:space="preserve">
+    <value>Beitrag</value>
+  </data>
+  <data name="DeleteEntryTitle" xml:space="preserve">
+    <value>Eintrag löschen?</value>
+  </data>
+  <data name="DeleteEntryConfirm" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie diesen {0}-Eintrag löschen möchten?</value>
+  </data>
+  <data name="DeleteEntryWarning" xml:space="preserve">
+    <value>Dadurch werden {0} von Ihrem Guthaben abgezogen.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="TodayAt" xml:space="preserve">
+    <value>Heute um {0}</value>
+  </data>
+  <data name="YesterdayAt" xml:space="preserve">
+    <value>Gestern um {0}</value>
+  </data>
+  <data name="DateTimeAt" xml:space="preserve">
+    <value>{0} um {1}</value>
+  </data>
+  <data name="DurationLong" xml:space="preserve">
+    <value>{0}h {1}m</value>
+  </data>
+  <data name="DurationShort" xml:space="preserve">
+    <value>{0}m {1}s</value>
+  </data>
+  <data name="DurationSeconds" xml:space="preserve">
+    <value>{0}s</value>
+  </data>
+  <data name="MeterFactor" xml:space="preserve">
+    <value>Faktor: {0}</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Läuft</value>
+  </data>
+  <data name="TapToStart" xml:space="preserve">
+    <value>Tippen zum Starten</value>
+  </data>
+  <data name="RenameMeter" xml:space="preserve">
+    <value>Zähler umbenennen</value>
+  </data>
+  <data name="DeleteMeter" xml:space="preserve">
+    <value>Zähler löschen</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="AddMeter" xml:space="preserve">
+    <value>Zähler hinzufügen</value>
+  </data>
+  <data name="RunningFor" xml:space="preserve">
+    <value>Läuft seit:</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>Name ist erforderlich</value>
+  </data>
+  <data name="NameLengthError" xml:space="preserve">
+    <value>Der Name muss 1-40 Zeichen lang sein</value>
+  </data>
+  <data name="NoDataPeriod" xml:space="preserve">
+    <value>Keine Daten für den gewählten Zeitraum</value>
+  </data>
+  <data name="TabLocal" xml:space="preserve">
+    <value>Lokal</value>
+  </data>
+  <data name="TabGDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="ExportData" xml:space="preserve">
+    <value>Daten exportieren</value>
+  </data>
+  <data name="ExportDesc" xml:space="preserve">
+    <value>Laden Sie alle Ihre Daten (Zähler und Ereignisse) als JSON-Datei herunter.</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exportieren...</value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>Daten importieren</value>
+  </data>
+  <data name="ImportDesc" xml:space="preserve">
+    <value>Ersetzen Sie Ihre aktuellen Daten durch Importieren einer JSON-Datei.</value>
+  </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Datei auswählen</value>
+  </data>
+  <data name="SelectedFile" xml:space="preserve">
+    <value>Ausgewählt: {0}</value>
+  </data>
+  <data name="Importing" xml:space="preserve">
+    <value>Importieren...</value>
+  </data>
+  <data name="GDriveSync" xml:space="preserve">
+    <value>Google Drive Sync</value>
+  </data>
+  <data name="GDriveDesc" xml:space="preserve">
+    <value>Sichern und Wiederherstellen Ihrer Daten über Google Drive.</value>
+  </data>
+  <data name="GDriveConfigNote" xml:space="preserve">
+    <value>Um die Google Drive-Synchronisierung zu nutzen, müssen Sie eine OAuth-Client-ID in der Google Cloud Console konfigurieren.</value>
+  </data>
+  <data name="OAuthClientId" xml:space="preserve">
+    <value>OAuth-Client-ID:</value>
+  </data>
+  <data name="EnterClientId" xml:space="preserve">
+    <value>Geben Sie Ihre Client-ID ein</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Konfigurieren</value>
+  </data>
+  <data name="SigningIn" xml:space="preserve">
+    <value>Anmeldung...</value>
+  </data>
+  <data name="SignInWithGoogle" xml:space="preserve">
+    <value>Mit Google anmelden</value>
+  </data>
+  <data name="ReconfigureClientId" xml:space="preserve">
+    <value>Client-ID neu konfigurieren</value>
+  </data>
+  <data name="SignedInAs" xml:space="preserve">
+    <value>Angemeldet als {0}</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Letztes Backup: {0}</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Datensicherung läuft...</value>
+  </data>
+  <data name="BackupToDrive" xml:space="preserve">
+    <value>In Drive sichern</value>
+  </data>
+  <data name="Restoring" xml:space="preserve">
+    <value>Wiederherstellung läuft...</value>
+  </data>
+  <data name="RestoreFromDrive" xml:space="preserve">
+    <value>Von Drive wiederherstellen</value>
+  </data>
+  <data name="AutoSync" xml:space="preserve">
+    <value>Auto-Sync bei Änderungen</value>
+  </data>
+  <data name="Syncing" xml:space="preserve">
+    <value>Synchronisierung...</value>
+  </data>
+  <data name="LastAutoSync" xml:space="preserve">
+    <value>Letzter Auto-Sync: {0}</value>
+  </data>
+  <data name="SyncFailedRetry" xml:space="preserve">
+    <value>Sync fehlgeschlagen - erneuter Versuch bei nächster Änderung</value>
+  </data>
+  <data name="WatchingChanges" xml:space="preserve">
+    <value>Warten auf Änderungen...</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="FactoryReset" xml:space="preserve">
+    <value>Werkseinstellungen</value>
+  </data>
+  <data name="FactoryResetDesc" xml:space="preserve">
+    <value>Setzen Sie die Anwendung auf ihren ursprünglichen Zustand zurück. Löscht alle Daten.</value>
+  </data>
+  <data name="ResetApp" xml:space="preserve">
+    <value>Anwendung zurücksetzen</value>
+  </data>
+  <data name="PromptReset" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie die Anwendung zurücksetzen möchten? Dadurch werden ALLE Ihre Daten endgültig gelöscht und dies kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="FinalWarning" xml:space="preserve">
+    <value>LETZTE WARNUNG</value>
+  </data>
+  <data name="FinalWarningMsg" xml:space="preserve">
+    <value>Das ist mein Ernst. Dadurch werden alle Zähler, der Verlauf und die Einstellungen gelöscht. Sind Sie absolut sicher?</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bestätigen</value>
+  </data>
+  <data name="SuccessGDriveConfig" xml:space="preserve">
+    <value>Google Drive erfolgreich konfiguriert!</value>
+  </data>
+  <data name="ErrorConfigFailed" xml:space="preserve">
+    <value>Konfiguration fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessSignIn" xml:space="preserve">
+    <value>Erfolgreich angemeldet!</value>
+  </data>
+  <data name="ErrorSignInCancelled" xml:space="preserve">
+    <value>Anmeldung wurde abgebrochen.</value>
+  </data>
+  <data name="ErrorSignInFailed" xml:space="preserve">
+    <value>Anmeldung fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessSignOut" xml:space="preserve">
+    <value>Erfolgreich abgemeldet.</value>
+  </data>
+  <data name="ErrorSignOutFailed" xml:space="preserve">
+    <value>Abmeldung fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessBackup" xml:space="preserve">
+    <value>Backup erfolgreich abgeschlossen!</value>
+  </data>
+  <data name="ErrorBackupFailed" xml:space="preserve">
+    <value>Backup fehlgeschlagen: {0}</value>
+  </data>
+  <data name="ErrorNoBackup" xml:space="preserve">
+    <value>Kein Backup in Google Drive gefunden.</value>
+  </data>
+  <data name="SuccessRestore" xml:space="preserve">
+    <value>Daten erfolgreich von Google Drive wiederhergestellt!</value>
+  </data>
+  <data name="ErrorRestoreFailed" xml:space="preserve">
+    <value>Wiederherstellung fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessExport" xml:space="preserve">
+    <value>Daten erfolgreich exportiert!</value>
+  </data>
+  <data name="ErrorExportFailed" xml:space="preserve">
+    <value>Export fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessImport" xml:space="preserve">
+    <value>Daten erfolgreich importiert! Zähler und Ereignisse wurden aktualisiert.</value>
+  </data>
+  <data name="ErrorImportFailed" xml:space="preserve">
+    <value>Import fehlgeschlagen: {0}</value>
+  </data>
+  <data name="SuccessAutoSyncEnabled" xml:space="preserve">
+    <value>Auto-Sync aktiviert. Änderungen werden automatisch gesichert.</value>
+  </data>
+  <data name="SuccessAutoSyncDisabled" xml:space="preserve">
+    <value>Auto-Sync deaktiviert.</value>
+  </data>
+  <data name="ErrorToggleAutoSync" xml:space="preserve">
+    <value>Auto-Sync konnte nicht umgeschaltet werden: {0}</value>
+  </data>
+  <data name="ErrorResetFailed" xml:space="preserve">
+    <value>Zurücksetzen fehlgeschlagen: {0}</value>
+  </data>
+  <data name="DisplayLanguage" xml:space="preserve">
+    <value>Anzeigesprache</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Über</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="TutorialIntro" xml:space="preserve">
+    <value>Hallo! Willkommen bei 'Budgetr'! Ich bin dein persönlicher Zeitbudget-Guide. Ich bin hier, um dir den Einstieg in ein effektives Zeitmanagement zu erleichtern!</value>
+  </data>
+  <data name="TutorialOverview" xml:space="preserve">
+    <value>Dies ist deine 'Übersicht'. Sie gibt dir einen schnellen Überblick über deinen aktuellen Zeitbudget-Status. Du siehst dein gesamtes Zeitguthaben und die aktiven Zähler auf einen Blick.</value>
+  </data>
+  <data name="TutorialMeters" xml:space="preserve">
+    <value>Hier unter 'Zähler' definierst du deine Aktivitäten! Du kannst Zähler für Dinge wie Arbeit, Studium oder Freizeit einrichten. Betrachte sie als den Puls deines Tages.</value>
+  </data>
+  <data name="TutorialTimeline" xml:space="preserve">
+    <value>Die 'Zeitachse' ist deine visuelle Hilfe! 🔮 Sie stellt dein vergangenes Zeitbudget basierend auf deinen aufgezeichneten Aktivitäten dar. Nutze sie, um Trends zu erkennen und vorauszuplanen.</value>
+  </data>
+  <data name="TutorialHistory" xml:space="preserve">
+    <value>Möchtest du sehen, was in der Vergangenheit passiert ist? Die 'Verlauf'-Seite führt ein Protokoll aller deiner Einträge und Änderungen. Sie ist ideal, um deine Aktivitätsgewohnheiten zu verfolgen.</value>
+  </data>
+  <data name="TutorialSync" xml:space="preserve">
+    <value>Schließlich hält 'Sync' deine Daten sicher! Du kannst deine Zeittracking-Daten in Google Drive sichern oder lokal exportieren. Verliere nie deinen Fortschritt!</value>
+  </data>
+  <data name="TutorialCompletion" xml:space="preserve">
+    <value>Das sind die Grundlagen! Du bist bereit, die Kontrolle über deine Zeit zu übernehmen. Wenn du mich wieder brauchst, schau einfach nach dem Hilfe-Symbol. Viel Spaß beim Tracken! ✨</value>
+  </data>
+  <data name="TutorialGuideName" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="NextStep" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="ConfirmationDefaultTitle" xml:space="preserve">
+    <value>Aktion bestätigen</value>
+  </data>
+  <data name="ConfirmationDefaultMessage" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie fortfahren möchten?</value>
+  </data>
+  <data name="TutorialAvatar" xml:space="preserve">
+    <value>Tutorial Avatar</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Unterstützung</value>
+  </data>
+  <data name="SupportDesc" xml:space="preserve">
+    <value>Wenn Sie Budgetr nützlich finden, können Sie die Entwicklung unterstützen, indem Sie mir einen Kaffee spendieren! ☕</value>
+  </data>
+  <data name="BuyMeACoffee" xml:space="preserve">
+    <value>Spendier mir einen Kaffee</value>
+  </data>
+  <data name="EditTimes" xml:space="preserve">
+    <value>Zeiten bearbeiten</value>
+  </data>
+  <data name="EditTimesTitle" xml:space="preserve">
+    <value>Ereigniszeiten bearbeiten</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Startzeit</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>Endzeit</value>
+  </data>
+  <data name="EndBeforeStart" xml:space="preserve">
+    <value>Die Endzeit muss nach der Startzeit liegen.</value>
+  </data>
+  <data name="FutureEndTime" xml:space="preserve">
+    <value>Die Endzeit darf nicht in der Zukunft liegen.</value>
+  </data>
+  <data name="TabSupabase" xml:space="preserve">
+    <value>Supabase</value>
+  </data>
+  <data name="SupabaseSync" xml:space="preserve">
+    <value>Supabase-Synchronisierung</value>
+  </data>
+  <data name="SupabaseDesc" xml:space="preserve">
+    <value>Sichern und Wiederherstellen Ihrer Daten über die Supabase-Cloud-Datenbank.</value>
+  </data>
+  <data name="SupabaseConfigNote" xml:space="preserve">
+    <value>Geben Sie zur Nutzung der Supabase-Synchronisierung Ihre Projekt-URL und den Anon-Key aus dem Supabase-Dashboard ein.</value>
+  </data>
+  <data name="SupabaseUrl" xml:space="preserve">
+    <value>Projekt-URL:</value>
+  </data>
+  <data name="SupabaseAnonKey" xml:space="preserve">
+    <value>Anon-Key:</value>
+  </data>
+  <data name="EnterSupabaseUrl" xml:space="preserve">
+    <value>https://ihr-projekt.supabase.co</value>
+  </data>
+  <data name="EnterAnonKey" xml:space="preserve">
+    <value>Geben Sie Ihren Anon-Key ein</value>
+  </data>
+  <data name="SupabaseConfiguredViaFile" xml:space="preserve">
+    <value>Supabase ist über die Einstellungsdatei konfiguriert.</value>
+  </data>
+  <data name="SuccessSupabaseConfig" xml:space="preserve">
+    <value>Supabase erfolgreich konfiguriert!</value>
+  </data>
+  <data name="SignInEmail" xml:space="preserve">
+    <value>E-Mail:</value>
+  </data>
+  <data name="SignInPassword" xml:space="preserve">
+    <value>Passwort:</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Registrieren</value>
+  </data>
+  <data name="SigningUp" xml:space="preserve">
+    <value>Registrierung...</value>
+  </data>
+  <data name="SuccessSignUp" xml:space="preserve">
+    <value>Konto erstellt und erfolgreich angemeldet!</value>
+  </data>
+  <data name="SuccessSignUpConfirm" xml:space="preserve">
+    <value>Konto erstellt! Bitte bestätigen Sie Ihre E-Mail und melden Sie sich dann an.</value>
+  </data>
+  <data name="ErrorSignUpFailed" xml:space="preserve">
+    <value>Registrierung fehlgeschlagen: {0}</value>
+  </data>
+  <data name="ReconfigureSupabase" xml:space="preserve">
+    <value>Supabase neu konfigurieren</value>
+  </data>
+  <data name="BackupToSupabase" xml:space="preserve">
+    <value>In Supabase sichern</value>
+  </data>
+  <data name="RestoreFromSupabase" xml:space="preserve">
+    <value>Von Supabase wiederherstellen</value>
+  </data>
+  <data name="ErrorNoSupabaseBackup" xml:space="preserve">
+    <value>Kein Backup in Supabase gefunden.</value>
+  </data>
+  <data name="SuccessSupabaseRestore" xml:space="preserve">
+    <value>Daten erfolgreich von Supabase wiederhergestellt!</value>
+  </data>
+  <data name="BrowserNotifications" xml:space="preserve">
+    <value>Browser-Benachrichtigungen</value>
+  </data>
+  <data name="BrowserNotificationsDesc" xml:space="preserve">
+    <value>Systembenachrichtigungen anzeigen, wenn ein Meter aktiviert oder deaktiviert wird</value>
+  </data>
+  <data name="BrowserNotificationsDenied" xml:space="preserve">
+    <value>Benachrichtigungen vom Browser blockiert. Bitte in den Browsereinstellungen erlauben.</value>
+  </data>
+  <data name="NotificationMeterStartedTitle" xml:space="preserve">
+    <value>⏱️ Zähler Gestartet</value>
+  </data>
+  <data name="NotificationMeterStartedBody" xml:space="preserve">
+    <value>Du erfasst jetzt '{0}'.</value>
+  </data>
+  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
+    <value>⏹️ Zähler Gestoppt</value>
+  </data>
+  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+    <value>Du hast die Erfassung von '{0}' beendet.</value>
+  </data>
+  <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
+    <value>✅ Angemeldet</value>
+  </data>
+  <data name="NotificationSupabaseSignedInBody" xml:space="preserve">
+    <value>Erfolgreich bei Supabase angemeldet.</value>
+  </data>
+  <data name="NotificationSupabaseSignedOutTitle" xml:space="preserve">
+    <value>👋 Abgemeldet</value>
+  </data>
+  <data name="NotificationSupabaseSignedOutBody" xml:space="preserve">
+    <value>Erfolgreich von Supabase abgemeldet.</value>
+  </data>
+  <data name="NotificationTimeularConnectedTitle" xml:space="preserve">
+    <value>🧊 Timeular verbunden</value>
+  </data>
+  <data name="NotificationTimeularConnectedBody" xml:space="preserve">
+    <value>Erfolgreich mit deinem Timeular-Tracker verbunden.</value>
+  </data>
+  <data name="NotificationTimeularDisconnectedTitle" xml:space="preserve">
+    <value>🔌 Timeular getrennt</value>
+  </data>
+  <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
+    <value>Dein Timeular-Tracker wurde getrennt.</value>
+  </data>
+</root>

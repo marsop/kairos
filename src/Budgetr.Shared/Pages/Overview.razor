@@ -1,0 +1,59 @@
+@page "/"
+@using Budgetr.Shared.Services
+@inject ITimeTrackingService TimeService
+@inject IStringLocalizer<Strings> Localizer
+@implements IDisposable
+
+<div class="overview-page">
+    <div class="balance-container">
+        <div class="balance-label">@Localizer["CurrentBalance"]</div>
+        <div class="balance-value @BalanceClass">
+            @FormatBalance(CurrentBalance)
+        </div>
+        <div class="balance-unit">@Localizer["HoursUnit"]</div>
+        
+        @if (ActiveMeterName != null)
+        {
+            <div class="active-meter-indicator">
+                <span class="pulse"></span>
+                <span>@Localizer["MeterActive", ActiveMeterName]</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private TimeSpan CurrentBalance => TimeService.GetCurrentBalance();
+    private string? ActiveMeterName => TimeService.GetActiveEvent()?.MeterName;
+    
+    private string BalanceClass => CurrentBalance.TotalHours >= 0 ? "positive" : "negative";
+    
+    private System.Threading.Timer? _timer;
+
+    protected override void OnInitialized()
+    {
+        TimeService.OnStateChanged += StateHasChanged;
+        
+        // Update every second when a meter is active
+        _timer = new System.Threading.Timer(_ =>
+        {
+            if (TimeService.GetActiveEvent() != null)
+            {
+                InvokeAsync(StateHasChanged);
+            }
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private string FormatBalance(TimeSpan balance)
+    {
+        var sign = balance.TotalHours >= 0 ? "+" : "";
+        var hours = Math.Abs(balance.TotalHours);
+        return $"{sign}{hours:F2}";
+    }
+
+    public void Dispose()
+    {
+        TimeService.OnStateChanged -= StateHasChanged;
+        _timer?.Dispose();
+    }
+}
