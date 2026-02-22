@@ -18,3 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Factory Reset**: Moved the factory reset functionality from the Sync page to the Settings page.
 - **Localization**: Fixed "Vorarlbergerish" language shortname issue.
+- **Platform Upgrade**: Migrated projects, CI workflow, and docs from .NET 9 to .NET 10.
