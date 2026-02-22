@@ -32,7 +32,6 @@ public class MeterConfigurationService : IMeterConfigurationService
             meters.Add(new Meter
             {
                 Name = meterConfig.Name,
-                Factor = meterConfig.Factor,
                 DisplayOrder = i
             });
         }
@@ -55,5 +54,4 @@ internal class MeterConfiguration
 internal class MeterConfigItem
 {
     public string Name { get; set; } = string.Empty;
-    public double Factor { get; set; }
 }

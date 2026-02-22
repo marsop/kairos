@@ -247,8 +247,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         }
 
         var isTargetAlreadyActive = activeEvent is not null
-            && activeEvent.MeterName == targetMeter.Name
-            && Math.Abs(activeEvent.Factor - targetMeter.Factor) < 0.0001;
+            && activeEvent.MeterName == targetMeter.Name;
 
         if (isTargetAlreadyActive)
         {

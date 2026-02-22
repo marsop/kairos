@@ -8,30 +8,22 @@ public class Meter
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
-    /// Display name for the meter (e.g., "+1x", "-1x", "+1.5x").
+    /// Display name for the meter.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// The multiplier for this meter. Positive values add time, negative subtract.
+    /// Meter factor is fixed at 1.0.
     /// </summary>
-    private double _factor;
+    private double _factor = 1.0;
 
     /// <summary>
-    /// The multiplier for this meter. Positive values add time, negative subtract.
-    /// Must be between -10 and 10.
+    /// Meter factor is fixed at 1.0.
     /// </summary>
     public double Factor
     {
         get => _factor;
-        set
-        {
-            if (value < -10 || value > 10)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), "Factor must be between -10 and 10.");
-            }
-            _factor = value;
-        }
+        set => _factor = 1.0;
     }
 
     /// <summary>

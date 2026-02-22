@@ -25,6 +25,7 @@ public class TimeTrackingServiceTests
         Assert.Equal(2, sut.Account.Meters.Count);
         Assert.Equal(1, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(24), sut.TimelinePeriod);
+        Assert.All(sut.Account.Meters, meter => Assert.Equal(1.0, meter.Factor));
     }
 
     [Fact]
@@ -52,6 +53,7 @@ public class TimeTrackingServiceTests
 
         Assert.Single(sut.Account.Meters);
         Assert.Equal("Stored", sut.Account.Meters[0].Name);
+        Assert.Equal(1.0, sut.Account.Meters[0].Factor);
         Assert.Equal(0, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(12), sut.TimelinePeriod);
     }
@@ -63,11 +65,11 @@ public class TimeTrackingServiceTests
         var beforeCount = sut.Account.Meters.Count;
         var maxOrder = sut.Account.Meters.Max(m => m.DisplayOrder);
 
-        sut.AddMeter("New Meter", 2.5);
+        sut.AddMeter("New Meter");
 
         Assert.Equal(beforeCount + 1, sut.Account.Meters.Count);
         var meter = sut.Account.Meters.Single(m => m.Name == "New Meter");
-        Assert.Equal(2.5, meter.Factor);
+        Assert.Equal(1.0, meter.Factor);
         Assert.Equal(maxOrder + 1, meter.DisplayOrder);
     }
 
@@ -75,14 +77,15 @@ public class TimeTrackingServiceTests
     public async Task AddMeter_EmptyName_Throws()
     {
         var sut = await CreateLoadedServiceAsync();
-        Assert.Throws<ArgumentException>(() => sut.AddMeter("", 1));
+        Assert.Throws<ArgumentException>(() => sut.AddMeter(""));
     }
 
     [Fact]
-    public async Task AddMeter_FactorOutsideRange_Throws()
+    public async Task AddMeter_AlwaysUsesFactorOne()
     {
         var sut = await CreateLoadedServiceAsync();
-        Assert.Throws<ArgumentOutOfRangeException>(() => sut.AddMeter("Invalid", 100));
+        sut.AddMeter("Invalid");
+        Assert.Equal(1.0, sut.Account.Meters.Single(m => m.Name == "Invalid").Factor);
     }
 
     [Fact]
@@ -91,10 +94,10 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         while (sut.Account.Meters.Count < TimeTrackingService.MaxMeters)
         {
-            sut.AddMeter($"Meter {sut.Account.Meters.Count}", 1);
+            sut.AddMeter($"Meter {sut.Account.Meters.Count}");
         }
 
-        Assert.Throws<InvalidOperationException>(() => sut.AddMeter("Overflow", 1));
+        Assert.Throws<InvalidOperationException>(() => sut.AddMeter("Overflow"));
     }
 
     [Fact]
@@ -209,7 +212,7 @@ public class TimeTrackingServiceTests
     public async Task ReorderMeters_ValidInput_ReordersAndRewritesDisplayOrder()
     {
         var sut = await CreateLoadedServiceAsync();
-        sut.AddMeter("Third", 2);
+        sut.AddMeter("Third");
         var orderedByCurrent = sut.Account.Meters.OrderBy(m => m.DisplayOrder).ToList();
         var reversedIds = orderedByCurrent.Select(m => m.Id).Reverse().ToList();
 

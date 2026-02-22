@@ -8,13 +8,12 @@ Available at https://albertogregorio.com/Kairos/
 
 ## Overview
 
-Kairos is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable "meters" with different factors, giving you a balance sheet of your time budget.
+Kairos is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable meters, giving you a balance sheet of your time budget.
 
 ## Features
 
 ### Time Tracking with Meters
-- **Customizable Meters**: Create multiple time trackers with custom names and factors (positive or negative)
-- **Factor System**: Assign different weights to activities (e.g., +1.0 for earning time, -0.5 for spending time)
+- **Customizable Meters**: Create multiple time trackers with custom names
 - **One-Touch Activation**: Tap a meter to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
 

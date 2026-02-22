@@ -56,11 +56,10 @@
                 }
                 else
                 {
-                    <button class="meter-button @(isActive ? "active" : "") @(meter.Factor >= 0 ? "positive" : "negative")"
+                    <button class="meter-button @(isActive ? "active" : "") positive"
                             @onclick="() => ToggleMeter(meter.Id)">
                         <div class="meter-index">#@(index + 1)</div>
                         <div class="meter-name">@meter.Name</div>
-                        <div class="meter-factor">@Localizer["MeterFactor", meter.Factor.ToString("0.##")]</div>
                         <div class="meter-status">
                             @if (isActive)
                             {
@@ -100,14 +99,6 @@
                            @bind="_newMeterName"
                            maxlength="40"
                            autofocus />
-                           
-                    <input type="number" 
-                           class="meter-factor-input"
-                           placeholder="@Localizer["Factor"]"
-                           step="0.1"
-                           min="-10"
-                           max="10"
-                           @bind="_newMeterFactor" />
                            
                     <div class="edit-actions">
                         <button class="edit-action-btn save" @onclick="SaveNewMeter" title="@Localizer["Add"]">✓</button>
@@ -153,7 +144,6 @@
     // Add Meter State
     private bool _isAddingMeter;
     private string _newMeterName = string.Empty;
-    private double _newMeterFactor = 1.0;
     private string? _addValidationError;
 
     // Drag and Drop State
@@ -273,7 +263,6 @@
     {
         _isAddingMeter = true;
         _newMeterName = string.Empty;
-        _newMeterFactor = 1.0;
         _addValidationError = null;
         CancelEdit();
     }
@@ -295,7 +284,7 @@
         
         try
         {
-            TimeService.AddMeter(_newMeterName, _newMeterFactor);
+            TimeService.AddMeter(_newMeterName);
             CancelAdd();
         }
         catch (Exception ex)

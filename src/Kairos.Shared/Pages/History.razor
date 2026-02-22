@@ -22,7 +22,7 @@
         <div class="events-list">
             @foreach (var evt in Events)
             {
-                <div class="event-card @(evt.Factor >= 0 ? "positive" : "negative") @(evt.IsActive ? "active" : "")">
+                <div class="event-card @(evt.IsActive ? "active" : "")">
                     <div class="event-header">
                         <span class="event-meter-name">@evt.MeterName</span>
                         <div class="event-header-actions">

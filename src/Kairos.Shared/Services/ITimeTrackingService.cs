@@ -80,7 +80,6 @@ public interface ITimeTrackingService
     /// <summary>
     /// Imports data from a JSON string, replacing current meters and events.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when import data has duplicate meter factors.</exception>
     Task ImportDataAsync(string json);
     
     /// <summary>
@@ -99,12 +98,11 @@ public interface ITimeTrackingService
     void DeleteMeter(Guid meterId);
 
     /// <summary>
-    /// Adds a new meter with the specified name and factor.
+    /// Adds a new meter with the specified name.
     /// </summary>
     /// <param name="name">Name of the meter.</param>
-    /// <param name="factor">Factor for the meter.</param>
-    /// <exception cref="ArgumentException">Thrown when name is invalid or factor is duplicate/invalid.</exception>
-    void AddMeter(string name, double factor);
+    /// <exception cref="ArgumentException">Thrown when name is invalid.</exception>
+    void AddMeter(string name);
     /// <summary>
     /// Resets all data to initial state (default meters, no history).
     /// </summary>

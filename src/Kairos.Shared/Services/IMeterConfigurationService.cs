@@ -10,6 +10,5 @@ public interface IMeterConfigurationService
     /// <summary>
     /// Loads meters from configuration.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when duplicate meter factors are detected.</exception>
     Task<List<Meter>> LoadMetersAsync();
 }

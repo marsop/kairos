@@ -2,8 +2,8 @@ namespace Kairos.Shared.Models;
 
 /// <summary>
 /// Represents a single meter activation event.
-/// When a meter is active, time is added or subtracted from the account
-/// based on the Factor multiplier.
+/// When a meter is active, time is added to the account
+/// based on a fixed 1.0 factor.
 /// </summary>
 public class MeterEvent
 {
@@ -20,13 +20,21 @@ public class MeterEvent
     public DateTimeOffset? EndTime { get; set; }
     
     /// <summary>
-    /// The multiplier for this meter (e.g., 1.0, -1.0, 1.5, -2.0).
-    /// Positive values add time, negative values subtract.
+    /// Meter factor is fixed at 1.0.
     /// </summary>
-    public double Factor { get; set; }
+    private double _factor = 1.0;
+
+    /// <summary>
+    /// Meter factor is fixed at 1.0.
+    /// </summary>
+    public double Factor
+    {
+        get => _factor;
+        set => _factor = 1.0;
+    }
     
     /// <summary>
-    /// Display name for the meter (e.g., "+1x", "-1x", "+1.5x").
+    /// Display name for the meter.
     /// </summary>
     public string MeterName { get; set; } = string.Empty;
     
@@ -43,7 +51,7 @@ public class MeterEvent
         : (EndTime!.Value - StartTime);
     
     /// <summary>
-    /// Calculates the time contribution of this event (duration * factor).
+    /// Calculates the time contribution of this event (duration * 1.0).
     /// </summary>
     public TimeSpan TimeContribution => TimeSpan.FromTicks((long)(Duration.Ticks * Factor));
 }

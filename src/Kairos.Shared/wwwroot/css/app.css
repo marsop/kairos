@@ -380,23 +380,6 @@ body {
     color: var(--color-negative);
 }
 
-.meter-factor {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    opacity: 0.8;
-}
-
-.meter-button.positive .meter-factor {
-    color: var(--color-positive);
-    opacity: 0.7;
-}
-
-.meter-button.negative .meter-factor {
-    color: var(--color-negative);
-    opacity: 0.7;
-}
-
 .meter-status {
     display: flex;
     align-items: center;
@@ -1698,26 +1681,6 @@ body {
 .add-text {
     font-size: var(--font-size-md);
     font-weight: 500;
-}
-
-.meter-factor-input {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--color-bg-tertiary);
-    border-radius: var(--radius-md);
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-    font-family: inherit;
-    font-size: var(--font-size-md);
-    font-weight: 500;
-    text-align: center;
-    transition: all var(--transition-fast);
-}
-
-.meter-factor-input:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
 /* ===== PWA UI ===== */

@@ -66,7 +66,7 @@ public class TimeTrackingService : ITimeTrackingService
         var newEvent = new MeterEvent
         {
             StartTime = DateTimeOffset.UtcNow,
-            Factor = meter.Factor,
+            Factor = 1.0,
             MeterName = meter.Name
         };
         
@@ -222,8 +222,19 @@ public class TimeTrackingService : ITimeTrackingService
             var loaded = JsonSerializer.Deserialize<TimeAccount>(json);
             if (loaded != null)
             {
-                _account.Events = loaded.Events;
-                _account.Meters = loaded.Meters;
+                _account.Events = loaded.Events ?? new List<MeterEvent>();
+                _account.Meters = loaded.Meters ?? new List<Meter>();
+
+                // Factor is fixed at 1.0; normalize persisted legacy data.
+                foreach (var meter in _account.Meters)
+                {
+                    meter.Factor = 1.0;
+                }
+
+                foreach (var meterEvent in _account.Events)
+                {
+                    meterEvent.Factor = 1.0;
+                }
 
                 // Enforce maximum meter limit
                 if (_account.Meters.Count > MaxMeters)
@@ -252,11 +263,11 @@ public class TimeTrackingService : ITimeTrackingService
             _account.Meters = await _meterConfig.LoadMetersAsync();
         }
         
-        // Auto-stop any active events whose meter factor no longer exists
-        var availableFactors = _account.Meters.Select(m => m.Factor).ToHashSet();
+        // Auto-stop any active events whose meter no longer exists.
+        var availableMeterNames = _account.Meters.Select(m => m.Name).ToHashSet();
         foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
         {
-            if (!availableFactors.Contains(activeEvent.Factor))
+            if (!availableMeterNames.Contains(activeEvent.MeterName))
             {
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
             }
@@ -276,11 +287,12 @@ public class TimeTrackingService : ITimeTrackingService
         var meter = _account.Meters.FirstOrDefault(m => m.Id == meterId);
         if (meter == null) return;
 
+        var oldName = meter.Name;
         meter.Name = newName.Trim();
         
         // Update active event if this meter is currently running
         var activeEvent = GetActiveEvent();
-        if (activeEvent != null && activeEvent.Factor == meter.Factor)
+        if (activeEvent != null && activeEvent.MeterName == oldName)
         {
             activeEvent.MeterName = meter.Name;
         }
@@ -342,11 +354,22 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Meters = importData.Meters;
         _account.Events = importData.Events ?? new List<MeterEvent>();
 
-        // Auto-stop any active events whose meter factor no longer exists
-        var availableFactors = _account.Meters.Select(m => m.Factor).ToHashSet();
+        // Factor is fixed at 1.0; normalize imported legacy data.
+        foreach (var meter in _account.Meters)
+        {
+            meter.Factor = 1.0;
+        }
+
+        foreach (var meterEvent in _account.Events)
+        {
+            meterEvent.Factor = 1.0;
+        }
+
+        // Auto-stop any active events whose meter no longer exists.
+        var availableMeterNames = _account.Meters.Select(m => m.Name).ToHashSet();
         foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
         {
-            if (!availableFactors.Contains(activeEvent.Factor))
+            if (!availableMeterNames.Contains(activeEvent.MeterName))
             {
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
             }
@@ -362,20 +385,9 @@ public class TimeTrackingService : ITimeTrackingService
         if (meter == null) return;
 
         var activeEvent = GetActiveEvent();
-        if (activeEvent != null && activeEvent.MeterName == meter.Name) // Matching by name as names are unique per definition (though factor is the strict key, UI uses name) - actually `ActivateMeter` stores name. Let's check logic.
+        if (activeEvent != null && activeEvent.MeterName == meter.Name)
         {
-             // Checking by ID in account meters is safer if we had ID in event, but event stores name/factor.
-             // Let's rely on the meter we just found. 
-             // IF the currently active event corresponds to this meter.
-             // GetActiveEvent returns an event. Event has MeterName and Factor.
-             // Meter has Name and Factor.
-             // The most reliable check for "Is Active" as used in Meters.razor is:
-             // activeEvent.MeterName == meter.Name
-             
-             if (activeEvent.MeterName == meter.Name)
-             {
-                 throw new InvalidOperationException("Cannot delete the currently active meter.");
-             }
+            throw new InvalidOperationException("Cannot delete the currently active meter.");
         }
         
         _account.Meters.Remove(meter);
@@ -383,7 +395,7 @@ public class TimeTrackingService : ITimeTrackingService
         _ = SaveAsync();
     }
 
-    public void AddMeter(string name, double factor)
+    public void AddMeter(string name)
     {
         if (_account.Meters.Count >= MaxMeters)
         {
@@ -395,16 +407,10 @@ public class TimeTrackingService : ITimeTrackingService
             throw new ArgumentException("Meter name must be between 1 and 40 characters.");
         }
 
-        // Check for duplicate factor - REMOVED per user request
-        // if (_account.Meters.Any(m => Math.Abs(m.Factor - factor) < 0.001))
-        // {
-        //     throw new ArgumentException($"A meter with factor {factor} already exists.");
-        // }
-
         var newMeter = new Meter
         {
             Name = name.Trim(),
-            Factor = factor,
+            Factor = 1.0,
             DisplayOrder = _account.Meters.Count > 0 ? _account.Meters.Max(m => m.DisplayOrder) + 1 : 0
         };
 
