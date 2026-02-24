@@ -37,6 +37,11 @@ public class MeterEvent
     /// Display name for the meter.
     /// </summary>
     public string MeterName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// User comment captured when this meter event started.
+    /// </summary>
+    public string Comment { get; set; } = string.Empty;
     
     /// <summary>
     /// Whether this event is currently active (meter still running).

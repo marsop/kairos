@@ -184,6 +184,21 @@
   <data name="NameLengthError" xml:space="preserve">
     <value>Name must be 1-40 characters</value>
   </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartMeterCommentTitle" xml:space="preserve">
+    <value>Add a Comment</value>
+  </data>
+  <data name="StartMeterCommentPrompt" xml:space="preserve">
+    <value>What comment should be attached to this entry?</value>
+  </data>
+  <data name="CommentLengthError" xml:space="preserve">
+    <value>Comment must be 1-250 characters</value>
+  </data>
   <data name="NoDataPeriod" xml:space="preserve">
     <value>No data for selected period</value>
   </data>

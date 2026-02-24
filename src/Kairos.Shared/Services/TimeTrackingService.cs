@@ -17,6 +17,8 @@ public class TimeTrackingService : ITimeTrackingService
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
     public const int MaxMeters = 8;
+    public const int MinCommentLength = 1;
+    public const int MaxCommentLength = 250;
     
     public TimeAccount Account => _account;
 
@@ -55,19 +57,21 @@ public class TimeTrackingService : ITimeTrackingService
         return _account.Events.FirstOrDefault(e => e.IsActive);
     }
 
-    public void ActivateMeter(Guid meterId)
+    public void ActivateMeter(Guid meterId, string comment)
     {
         // Deactivate any active meter silently (no notification since we're switching)
         DeactivateInternal();
         
         var meter = _account.Meters.FirstOrDefault(m => m.Id == meterId);
         if (meter == null) return;
+        var normalizedComment = NormalizeComment(comment);
         
         var newEvent = new MeterEvent
         {
             StartTime = DateTimeOffset.UtcNow,
             Factor = 1.0,
-            MeterName = meter.Name
+            MeterName = meter.Name,
+            Comment = normalizedComment
         };
         
         _account.Events.Add(newEvent);
@@ -77,6 +81,17 @@ public class TimeTrackingService : ITimeTrackingService
             _localizer["NotificationMeterStartedTitle"],
             string.Format(_localizer["NotificationMeterStartedBody"], meter.Name)
         );
+    }
+
+    private static string NormalizeComment(string comment)
+    {
+        var trimmed = comment?.Trim() ?? string.Empty;
+        if (trimmed.Length < MinCommentLength || trimmed.Length > MaxCommentLength)
+        {
+            throw new ArgumentException($"Comment must be between {MinCommentLength} and {MaxCommentLength} characters.");
+        }
+
+        return trimmed;
     }
 
     public void DeactivateMeter()

@@ -30,7 +30,9 @@ public interface ITimeTrackingService
     /// <summary>
     /// Activates a meter by its ID. Deactivates any currently active meter first.
     /// </summary>
-    void ActivateMeter(Guid meterId);
+    /// <param name="meterId">The ID of the meter to activate.</param>
+    /// <param name="comment">A required comment between 1 and 250 characters.</param>
+    void ActivateMeter(Guid meterId, string comment);
     
     /// <summary>
     /// Deactivates the currently active meter.

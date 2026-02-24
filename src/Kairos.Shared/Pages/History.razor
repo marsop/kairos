@@ -66,6 +66,14 @@
                             </div>
                         }
                     </div>
+
+                    @if (!string.IsNullOrWhiteSpace(evt.Comment))
+                    {
+                        <div class="event-comment">
+                            <span class="comment-label">@Localizer["Comment"]</span>
+                            <p class="comment-value">@evt.Comment</p>
+                        </div>
+                    }
                     
                     <div class="event-stats">
                         <div class="event-stat">

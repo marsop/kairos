@@ -254,8 +254,8 @@ public sealed class TimeularService : ITimeularService, IDisposable
             return " -> already active";
         }
 
-        _timeService.ActivateMeter(targetMeter.Id);
         var mappedIndex = orderedMeters.FindIndex(m => m.Id == targetMeter.Id) + 1;
+        _timeService.ActivateMeter(targetMeter.Id, $"Timeular face {mappedIndex}");
         return $" -> activated #{mappedIndex}";
     }
 

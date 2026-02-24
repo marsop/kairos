@@ -133,6 +133,39 @@
     }
 </div>
 
+@if (_startCommentMeterId.HasValue)
+{
+    <div class="modal-overlay" @onclick="CancelStartComment">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["StartMeterCommentTitle"]</h3>
+            <p>@Localizer["StartMeterCommentPrompt"]</p>
+            <div class="edit-form">
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["Comment"]</label>
+                    <input type="text"
+                           class="edit-input @(_startCommentError != null ? "invalid" : "")"
+                           @bind="_startComment"
+                           @bind:event="oninput"
+                           maxlength="250"
+                           @onkeydown="HandleStartCommentKeyDown"
+                           autofocus />
+                </div>
+                @if (!string.IsNullOrWhiteSpace(_startCommentError))
+                {
+                    <p class="edit-error">@_startCommentError</p>
+                }
+                <div class="char-count @(_startComment.Length > 250 ? "over-limit" : "")">
+                    @_startComment.Length/250
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelStartComment">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="ConfirmStartComment">@Localizer["Start"]</button>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private MeterEvent? ActiveEvent => TimeService.GetActiveEvent();
     
@@ -145,6 +178,9 @@
     private bool _isAddingMeter;
     private string _newMeterName = string.Empty;
     private string? _addValidationError;
+    private Guid? _startCommentMeterId;
+    private string _startComment = string.Empty;
+    private string? _startCommentError;
 
     // Drag and Drop State
     private Meter? _draggedMeter;
@@ -178,7 +214,60 @@
         }
         else
         {
-            TimeService.ActivateMeter(meterId);
+            StartMeterWithComment(meterId);
+        }
+    }
+
+    private void StartMeterWithComment(Guid meterId)
+    {
+        _startCommentMeterId = meterId;
+        _startComment = string.Empty;
+        _startCommentError = null;
+        CancelEdit();
+        CancelAdd();
+    }
+
+    private void CancelStartComment()
+    {
+        _startCommentMeterId = null;
+        _startComment = string.Empty;
+        _startCommentError = null;
+    }
+
+    private void ConfirmStartComment()
+    {
+        if (!_startCommentMeterId.HasValue)
+        {
+            return;
+        }
+
+        var comment = _startComment.Trim();
+        if (comment.Length < TimeTrackingService.MinCommentLength || comment.Length > TimeTrackingService.MaxCommentLength)
+        {
+            _startCommentError = Localizer["CommentLengthError"];
+            return;
+        }
+
+        try
+        {
+            TimeService.ActivateMeter(_startCommentMeterId.Value, comment);
+            CancelStartComment();
+        }
+        catch (ArgumentException ex)
+        {
+            _startCommentError = ex.Message;
+        }
+    }
+
+    private void HandleStartCommentKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            ConfirmStartComment();
+        }
+        else if (e.Key == "Escape")
+        {
+            CancelStartComment();
         }
     }
 

@@ -592,6 +592,27 @@ body {
     color: var(--color-text-secondary);
 }
 
+.event-comment {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-tertiary);
+}
+
+.comment-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.comment-value {
+    color: var(--color-text-secondary);
+    word-break: break-word;
+}
+
 .event-stats {
     display: flex;
     gap: var(--spacing-xl);
@@ -864,6 +885,10 @@ body {
 .edit-input:focus {
     outline: none;
     border-color: var(--color-accent);
+}
+
+.edit-input.invalid {
+    border-color: var(--color-negative);
 }
 
 .edit-error {

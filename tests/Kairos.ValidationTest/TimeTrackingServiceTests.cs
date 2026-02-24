@@ -106,12 +106,13 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         var meter = sut.Account.Meters.First();
 
-        sut.ActivateMeter(meter.Id);
+        sut.ActivateMeter(meter.Id, "Deep work");
 
         var active = sut.GetActiveEvent();
         Assert.NotNull(active);
         Assert.Equal(meter.Name, active!.MeterName);
         Assert.Equal(meter.Factor, active.Factor);
+        Assert.Equal("Deep work", active.Comment);
     }
 
     [Fact]
@@ -121,11 +122,11 @@ public class TimeTrackingServiceTests
         var first = sut.Account.Meters[0];
         var second = sut.Account.Meters[1];
 
-        sut.ActivateMeter(first.Id);
+        sut.ActivateMeter(first.Id, "First");
         var previous = sut.GetActiveEvent();
         Assert.NotNull(previous);
 
-        sut.ActivateMeter(second.Id);
+        sut.ActivateMeter(second.Id, "Second");
 
         Assert.NotNull(previous!.EndTime);
         var current = sut.GetActiveEvent();
@@ -138,7 +139,7 @@ public class TimeTrackingServiceTests
     {
         var sut = await CreateLoadedServiceAsync();
         var meter = sut.Account.Meters.First();
-        sut.ActivateMeter(meter.Id);
+        sut.ActivateMeter(meter.Id, "Active meter");
 
         Assert.Throws<InvalidOperationException>(() => sut.DeleteMeter(meter.Id));
     }
@@ -148,7 +149,7 @@ public class TimeTrackingServiceTests
     {
         var sut = await CreateLoadedServiceAsync();
         var meter = sut.Account.Meters.First();
-        sut.ActivateMeter(meter.Id);
+        sut.ActivateMeter(meter.Id, "Active meter");
         var active = sut.GetActiveEvent();
         Assert.NotNull(active);
 
@@ -161,7 +162,7 @@ public class TimeTrackingServiceTests
     {
         var sut = await CreateLoadedServiceAsync();
         var meter = sut.Account.Meters.First();
-        sut.ActivateMeter(meter.Id);
+        sut.ActivateMeter(meter.Id, "Active meter");
         sut.DeactivateMeter();
         var evt = sut.Account.Events.Single();
 
@@ -221,6 +222,25 @@ public class TimeTrackingServiceTests
         var reordered = sut.Account.Meters;
         Assert.Equal(reversedIds, reordered.Select(m => m.Id).ToList());
         Assert.Equal(new[] { 0, 1, 2 }, reordered.Select(m => m.DisplayOrder).ToArray());
+    }
+
+    [Fact]
+    public async Task ActivateMeter_EmptyComment_Throws()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        var meter = sut.Account.Meters.First();
+
+        Assert.Throws<ArgumentException>(() => sut.ActivateMeter(meter.Id, ""));
+    }
+
+    [Fact]
+    public async Task ActivateMeter_CommentOver250Chars_Throws()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        var meter = sut.Account.Meters.First();
+        var comment = new string('a', 251);
+
+        Assert.Throws<ArgumentException>(() => sut.ActivateMeter(meter.Id, comment));
     }
 
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
