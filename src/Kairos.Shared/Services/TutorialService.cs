@@ -69,7 +69,7 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialHistory"], "history", $"{basePath}/tutorial-avatar.png"),
             
             // 6. Sync
-            new TutorialStep(_localizer["TutorialSync"], "sync", $"{basePath}/tutorial-avatar-2.png"),
+            new TutorialStep(_localizer["TutorialSync"], "settings", $"{basePath}/tutorial-avatar-2.png"),
             
             // 7. Completion
             new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-3.png")

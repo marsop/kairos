@@ -1,24 +1,19 @@
 @page "/settings"
-@page "/sync"
 @using Kairos.Shared.Services
 @using Microsoft.JSInterop
-@using Microsoft.Extensions.Configuration
 @inject ISettingsService SettingsService
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<Strings> Localizer
 @inject ITimeTrackingService TimeService
 @inject ITutorialService TutorialService
 @inject IJSRuntime JSRuntime
-@inject IConfiguration Configuration
-@inject IAutoSyncService AutoSyncService
 @inject ITimeularService TimeularService
 @inject INotificationService NotificationService
 @implements IDisposable
 
 <div class="settings-page">
     <h1 class="page-title">@Localizer["NavSettings"]</h1>
-    
-    <!-- General Settings Section -->
+
     <div class="settings-section">
         <h2 class="section-title">⚙️ @Localizer["NavSettings"]</h2>
         <div class="setting-item">
@@ -31,8 +26,8 @@
                 <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
                     @foreach (var lang in Languages)
                     {
-                        <div class="dropdown-item @(SelectedLanguage == lang.Code ? "selected" : "")" 
-                             @onclick="() => SelectLanguage(lang.Code)" 
+                        <div class="dropdown-item @(SelectedLanguage == lang.Code ? "selected" : "")"
+                             @onclick="() => SelectLanguage(lang.Code)"
                              @onclick:stopPropagation="true">
                             <span class="flag-icon">@lang.Flag</span>
                             <span>@lang.Name</span>
@@ -51,8 +46,8 @@
                 <div class="dropdown-menu @(isAvatarDropdownOpen ? "show" : "")">
                     @foreach (var avatar in TutorialService.AvailableAvatars)
                     {
-                        <div class="dropdown-item @(TutorialService.CurrentAvatar.Id == avatar.Id ? "selected" : "")" 
-                             @onclick="() => SelectAvatar(avatar.Id)" 
+                        <div class="dropdown-item @(TutorialService.CurrentAvatar.Id == avatar.Id ? "selected" : "")"
+                             @onclick="() => SelectAvatar(avatar.Id)"
                              @onclick:stopPropagation="true">
                             <span>@avatar.Name</span>
                         </div>
@@ -80,7 +75,6 @@
         }
     </div>
 
-    <!-- Timeular Section -->
     <div class="settings-section">
         <h2 class="section-title">🧊 Timeular</h2>
         <p class="setting-description">Connect your Timeular device. Face index maps to meter index (for example, Face 3 activates meter #3).</p>
@@ -150,219 +144,6 @@
         }
     </div>
 
-    <!-- Data Management Section -->
-    <div class="settings-section">
-        <h2 class="section-title">📦 Data Management</h2>
-        
-        <!-- Tab buttons for Local vs Google Drive -->
-        <div class="sync-tabs">
-            <button class="tab-button @(activeTab == "supabase" ? "active" : "")" @onclick="@(() => SwitchToSupabase())">
-                <span class="tab-icon">🗄️</span>
-                <span>@Localizer["TabSupabase"]</span>
-            </button>
-            <button class="tab-button @(activeTab == "local" ? "active" : "")" @onclick="@(() => activeTab = "local")">
-                <span class="tab-icon">📁</span>
-                <span>@Localizer["TabLocal"]</span>
-            </button>
-        </div>
-        
-        @if (activeTab == "local")
-        {
-            <div class="sync-section">
-                <h3>@Localizer["ExportData"]</h3>
-                <p class="section-description">@Localizer["ExportDesc"]</p>
-                <button class="sync-button export-btn" @onclick="ExportData" disabled="@isExporting">
-                    <span class="btn-icon">📥</span>
-                    <span>@(isExporting ? Localizer["Exporting"] : Localizer["ExportData"])</span>
-                </button>
-            </div>
-            
-            <div class="sync-section">
-                <h3>@Localizer["ImportData"]</h3>
-                <p class="section-description">@Localizer["ImportDesc"]</p>
-                
-                <div class="file-input-container">
-                    <input type="file" 
-                           id="importFileInput" 
-                           accept=".json" 
-                           @ref="fileInput" 
-                           @onchange="OnFileSelected"
-                           class="file-input" />
-                    <label for="importFileInput" class="file-label">
-                        <span class="btn-icon">📁</span>
-                        <span>@Localizer["ChooseFile"]</span>
-                    </label>
-                </div>
-                
-                @if (!string.IsNullOrEmpty(selectedFileName))
-                {
-                    <div class="selected-file">
-                        <span>@Localizer["SelectedFile", selectedFileName]</span>
-                    </div>
-                    <button class="sync-button import-btn" @onclick="ImportData" disabled="@isImporting">
-                        <span class="btn-icon">📤</span>
-                        <span>@(isImporting ? Localizer["Importing"] : Localizer["ImportData"])</span>
-                    </button>
-                }
-            </div>
-        }
-
-        else if (activeTab == "supabase")
-        {
-            <div class="sync-section">
-                <h3>🗄️ @Localizer["SupabaseSync"]</h3>
-                <p class="section-description">@Localizer["SupabaseDesc"]</p>
-                
-                @if (!isSupabaseConfigured)
-                {
-                    <div class="config-section">
-                        @if (IsSupabaseConfiguredViaFile)
-                        {
-                            <div class="config-message success">
-                                <span class="icon">🔒</span>
-                                <span>@Localizer["SupabaseConfiguredViaFile"]</span>
-                            </div>
-                        }
-                        else
-                        {
-                            <p class="config-note">
-                                @Localizer["SupabaseConfigNote"]
-                            </p>
-                            <div class="config-input-group">
-                                <label for="supabaseUrlInput">@Localizer["SupabaseUrl"]</label>
-                                <input type="text" 
-                                       id="supabaseUrlInput" 
-                                       @bind="supabaseUrlInput" 
-                                       placeholder="@Localizer["EnterSupabaseUrl"]"
-                                       class="config-input" />
-                            </div>
-                            <div class="config-input-group">
-                                <label for="supabaseAnonKeyInput">@Localizer["SupabaseAnonKey"]</label>
-                                <input type="text" 
-                                       id="supabaseAnonKeyInput" 
-                                       @bind="supabaseAnonKeyInput" 
-                                       placeholder="@Localizer["EnterAnonKey"]"
-                                       class="config-input" />
-                            </div>
-                        }
-                        <button class="sync-button config-btn" @onclick="ConfigureSupabase" disabled="@(!IsSupabaseConfiguredViaFile && (string.IsNullOrWhiteSpace(supabaseUrlInput) || string.IsNullOrWhiteSpace(supabaseAnonKeyInput)))">
-                            <span class="btn-icon">⚙️</span>
-                            <span>@Localizer["Configure"]</span>
-                        </button>
-                    </div>
-                }
-                else if (!isSupabaseSignedIn)
-                {
-                    <div class="config-section">
-                        <div class="config-input-group">
-                            <label for="supabaseEmailInput">@Localizer["SignInEmail"]</label>
-                            <input type="email" 
-                                   id="supabaseEmailInput" 
-                                   @bind="supabaseEmailInput" 
-                                   placeholder="email@example.com"
-                                   class="config-input" />
-                        </div>
-                        <div class="config-input-group">
-                            <label for="supabasePasswordInput">@Localizer["SignInPassword"]</label>
-                            <input type="password" 
-                                   id="supabasePasswordInput" 
-                                   @bind="supabasePasswordInput" 
-                                   placeholder="••••••••"
-                                   class="config-input" />
-                        </div>
-                        <div class="gdrive-actions">
-                            <button class="sync-button google-btn" @onclick="SignInWithSupabase" disabled="@(isSupabaseSigningIn || string.IsNullOrWhiteSpace(supabaseEmailInput) || string.IsNullOrWhiteSpace(supabasePasswordInput))">
-                                <span class="btn-icon">🔑</span>
-                                <span>@(isSupabaseSigningIn ? Localizer["SigningIn"] : Localizer["SignIn"])</span>
-                            </button>
-                            <button class="sync-button export-btn" @onclick="SignUpWithSupabase" disabled="@(isSupabaseSigningUp || string.IsNullOrWhiteSpace(supabaseEmailInput) || string.IsNullOrWhiteSpace(supabasePasswordInput))">
-                                <span class="btn-icon">📝</span>
-                                <span>@(isSupabaseSigningUp ? Localizer["SigningUp"] : Localizer["SignUp"])</span>
-                            </button>
-                        </div>
-                        
-                        <div class="reconfigure-section">
-                            <button class="link-button" @onclick="ShowSupabaseReconfigure">@Localizer["ReconfigureSupabase"]</button>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="signed-in-info">
-                        <span class="check-icon">✅</span>
-                        <span>@Localizer["SignedInAs", supabaseUserEmail ?? ""]</span>
-                    </div>
-                    
-                    @if (supabaseLastBackupTime.HasValue)
-                    {
-                        <div class="backup-info">
-                            <span class="info-icon">ℹ️</span>
-                            <span>@Localizer["LastBackup", supabaseLastBackupTime.Value.ToLocalTime().ToString("g")]</span>
-                        </div>
-                    }
-                    
-                    <div class="gdrive-actions">
-                        <button class="sync-button backup-btn" @onclick="BackupToSupabase" disabled="@isSupabaseBackingUp">
-                            <span class="btn-icon">⬆️</span>
-                            <span>@(isSupabaseBackingUp ? Localizer["BackingUp"] : Localizer["BackupToSupabase"])</span>
-                        </button>
-                        
-                        <button class="sync-button restore-btn" @onclick="RestoreFromSupabase" disabled="@isSupabaseRestoring">
-                            <span class="btn-icon">⬇️</span>
-                            <span>@(isSupabaseRestoring ? Localizer["Restoring"] : Localizer["RestoreFromSupabase"])</span>
-                        </button>
-                    </div>
-                    
-                    <div class="auto-sync-section">
-                        <div class="auto-sync-header">
-                            <span class="auto-sync-label">🔄 @Localizer["AutoSync"]</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked="@isSupabaseAutoSyncEnabled" @onchange="OnSupabaseAutoSyncToggled" disabled="@isTogglingAutoSync" />
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        @if (isSupabaseAutoSyncEnabled)
-                        {
-                            <div class="auto-sync-status @GetAutoSyncStatusClass()">
-                                @switch (autoSyncStatus)
-                                {
-                                    case AutoSyncStatus.Syncing:
-                                        <span class="status-icon spinning">🔄</span>
-                                        <span>@Localizer["Syncing"]</span>
-                                        break;
-                                    case AutoSyncStatus.Success:
-                                        <span class="status-icon">✅</span>
-                                        <span>@Localizer["LastAutoSync", lastAutoSyncTime?.ToLocalTime().ToString("g") ?? "Never"]</span>
-                                        break;
-                                    case AutoSyncStatus.Failed:
-                                        <span class="status-icon">❌</span>
-                                        <span>@Localizer["SyncFailedRetry"]</span>
-                                        break;
-                                    default:
-                                        <span class="status-icon">⏳</span>
-                                        <span>@Localizer["WatchingChanges"]</span>
-                                        break;
-                                }
-                            </div>
-                        }
-                    </div>
-                    
-                    <div class="signout-section">
-                        <button class="link-button signout" @onclick="SignOutFromSupabase">@Localizer["SignOut"]</button>
-                    </div>
-                }
-            </div>
-        }
-        
-        @if (!string.IsNullOrEmpty(statusMessage))
-        {
-            <div class="status-message @statusClass">
-                @statusMessage
-            </div>
-        }
-    </div>
-
-    <!-- About Section -->
     <div class="settings-section">
         <h2 class="section-title">@Localizer["About"]</h2>
         <div class="setting-item">
@@ -371,7 +152,6 @@
         </div>
     </div>
 
-    <!-- Support Section -->
     <div class="settings-section">
         <h2 class="section-title">@Localizer["Support"]</h2>
         <p class="setting-description">@Localizer["SupportDesc"]</p>
@@ -381,20 +161,18 @@
         </button>
     </div>
 
-    <!-- Confirmation Dialogs -->
-    <Kairos.Shared.Components.ConfirmationDialog 
-        IsVisible="@showConfirmation1" 
-        Title="@Localizer["FactoryReset"]" 
-        Message="@Localizer["PromptReset"]" 
+    <Kairos.Shared.Components.ConfirmationDialog
+        IsVisible="@showConfirmation1"
+        Title="@Localizer["FactoryReset"]"
+        Message="@Localizer["PromptReset"]"
         OnClose="OnConfirm1" />
-        
-    <Kairos.Shared.Components.ConfirmationDialog 
-        IsVisible="@showConfirmation2" 
-        Title="@Localizer["FinalWarning"]" 
-        Message="@Localizer["FinalWarningMsg"]" 
+
+    <Kairos.Shared.Components.ConfirmationDialog
+        IsVisible="@showConfirmation2"
+        Title="@Localizer["FinalWarning"]"
+        Message="@Localizer["FinalWarningMsg"]"
         OnClose="OnConfirm2" />
 
-    <!-- Danger Zone Section -->
     <div class="settings-section danger-zone">
         <h2 class="section-title">@Localizer["FactoryReset"]</h2>
         <p class="setting-description">@Localizer["FactoryResetDesc"]</p>
@@ -406,54 +184,12 @@
 </div>
 
 @code {
-    // ===== Settings (Language/Avatar) State =====
-    private bool isDropdownOpen = false;
-    private bool isAvatarDropdownOpen = false;
-
-    // ===== Sync (Import/Export) State =====
-    private ElementReference fileInput;
-    private string? selectedFileName;
-    private bool isExporting;
-    private bool isImporting;
-    private string? statusMessage;
-    private string statusClass = "";
-    
-    // Tab state
-    // Tab state
-    private string activeTab = "supabase";
-    
-    // Auto-sync state
-    // private bool isAutoSyncEnabled; // Removed
-    private bool isSupabaseAutoSyncEnabled;
-    private bool isTogglingAutoSync;
-    private AutoSyncStatus autoSyncStatus = AutoSyncStatus.Idle;
-    private DateTimeOffset? lastAutoSyncTime;
-
-    // Supabase state
-    private bool isSupabaseConfigured;
-    private bool isSupabaseSignedIn;
-    private string? supabaseUserEmail;
-    private string? supabaseUrlInput;
-    private string? supabaseAnonKeyInput;
-    private string? supabaseEmailInput;
-    private string? supabasePasswordInput;
-    private bool isSupabaseSigningIn;
-    private bool isSupabaseSigningUp;
-    private bool isSupabaseBackingUp;
-    private bool isSupabaseRestoring;
-    private DateTimeOffset? supabaseLastBackupTime;
-
-    private bool IsSupabaseConfiguredViaFile => !string.IsNullOrEmpty(Configuration["Supabase:Url"]) && Configuration["Supabase:Url"] != "YOUR_SUPABASE_URL" &&
-        !string.IsNullOrEmpty(Configuration["Supabase:AnonKey"]) && Configuration["Supabase:AnonKey"] != "YOUR_ANON_KEY";
-
-    // ===== Reset State =====
+    private bool isDropdownOpen;
+    private bool isAvatarDropdownOpen;
     private bool showConfirmation1;
     private bool showConfirmation2;
-
-    // ===== Notification State =====
     private bool browserNotificationsDenied;
 
-    // ===== Language Configuration =====
     private string SelectedLanguage => SettingsService.Language;
 
     private record LanguageOption(string Name, string Code, RenderFragment Flag);
@@ -476,7 +212,6 @@
     private string GetLanguageName(string code) => Languages.FirstOrDefault(l => l.Code == code)?.Name ?? "English";
     private RenderFragment GetFlag(string code) => Languages.FirstOrDefault(l => l.Code == code)?.Flag ?? FlagEn;
 
-    // ===== Lifecycle Methods =====
     protected override void OnInitialized()
     {
         SettingsService.OnSettingsChanged += StateHasChanged;
@@ -488,10 +223,7 @@
     {
         if (firstRender)
         {
-            // Subscribe to auto-sync status changes
-            AutoSyncService.OnStatusChanged += OnAutoSyncStatusChanged;
             await TimeularService.InitializeAsync();
-            await TryInitializeSupabase();
         }
     }
 
@@ -500,18 +232,13 @@
         SettingsService.OnSettingsChanged -= StateHasChanged;
         TutorialService.OnChange -= StateHasChanged;
         TimeularService.OnStateChanged -= OnTimeularStateChanged;
-        AutoSyncService.OnStatusChanged -= OnAutoSyncStatusChanged;
     }
 
-    // ===== Settings Methods =====
-    private void ToggleDropdown()
-    {
-        isDropdownOpen = !isDropdownOpen;
-    }
+    private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
 
     private async Task SelectLanguage(string code)
     {
-        if (SelectedLanguage == code) 
+        if (SelectedLanguage == code)
         {
             isDropdownOpen = false;
             return;
@@ -519,8 +246,6 @@
 
         await SettingsService.SetLanguageAsync(code);
         isDropdownOpen = false;
-        
-        // Force reload to apply language changes
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
@@ -533,17 +258,11 @@
         isAvatarDropdownOpen = false;
     }
 
-    // ===== Timeular Methods =====
     private async Task ConnectTimeularDevice() => await TimeularService.ConnectAsync();
-
     private async Task DisconnectTimeularDevice() => await TimeularService.DisconnectAsync();
 
-    private void OnTimeularStateChanged()
-    {
-        _ = InvokeAsync(StateHasChanged);
-    }
+    private void OnTimeularStateChanged() => _ = InvokeAsync(StateHasChanged);
 
-    // ===== Browser Notification Methods =====
     private async Task OnBrowserNotificationsToggled(ChangeEventArgs e)
     {
         var enabled = (bool)(e.Value ?? false);
@@ -571,430 +290,11 @@
         StateHasChanged();
     }
 
-    // ===== Data Management - Local Methods =====
-    private async Task ExportData()
-    {
-        isExporting = true;
-        statusMessage = null;
-        StateHasChanged();
-
-        try
-        {
-            var json = TimeService.ExportData();
-            var filename = $"Kairos-export-{DateTime.Now:yyyy-MM-dd-HHmmss}.json";
-            
-            await JSRuntime.InvokeVoidAsync("syncInterop.downloadFile", filename, json);
-            
-            statusMessage = Localizer["SuccessExport"];
-            statusClass = "success";
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorExportFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isExporting = false;
-            StateHasChanged();
-        }
-    }
-
-    private void OnFileSelected(ChangeEventArgs e)
-    {
-        selectedFileName = e.Value?.ToString();
-        statusMessage = null;
-        StateHasChanged();
-    }
-
-    private async Task ImportData()
-    {
-        isImporting = true;
-        statusMessage = null;
-        StateHasChanged();
-
-        try
-        {
-            var content = await JSRuntime.InvokeAsync<string>("syncInterop.readFileContent", fileInput);
-            await TimeService.ImportDataAsync(content);
-            
-            statusMessage = Localizer["SuccessImport"];
-            statusClass = "success";
-            selectedFileName = null;
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorImportFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isImporting = false;
-            StateHasChanged();
-        }
-    }
-
-
-
-
-
-
-
-    private async Task OnSupabaseAutoSyncToggled(ChangeEventArgs e)
-    {
-        await ToggleAutoSync((bool)(e.Value ?? false), "Supabase");
-    }
-
-    private async Task ToggleAutoSync(bool newValue, string providerName)
-    {
-        isTogglingAutoSync = true;
-        StateHasChanged();
-        
-        try
-        {
-            if (newValue)
-            {
-                await AutoSyncService.EnableAsync(providerName);
-                statusMessage = Localizer["SuccessAutoSyncEnabled"];
-                statusClass = "success";
-            }
-            else
-            {
-                await AutoSyncService.DisableAsync();
-                statusMessage = Localizer["SuccessAutoSyncDisabled"];
-                statusClass = "success";
-            }
-            RefreshAutoSyncState();
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorToggleAutoSync", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isTogglingAutoSync = false;
-            StateHasChanged();
-        }
-    }
-
-    private void OnAutoSyncStatusChanged(AutoSyncStatus status)
-    {
-        autoSyncStatus = status;
-        lastAutoSyncTime = AutoSyncService.LastSyncTime;
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void RefreshAutoSyncState()
-    {
-        var activeProvider = AutoSyncService.ActiveProviderName;
-        // isAutoSyncEnabled = AutoSyncService.IsEnabled && activeProvider == "Google Drive"; // REMOVED
-        isSupabaseAutoSyncEnabled = AutoSyncService.IsEnabled && activeProvider == "Supabase";
-        autoSyncStatus = AutoSyncService.Status;
-        lastAutoSyncTime = AutoSyncService.LastSyncTime;
-    }
-
-    private string GetAutoSyncStatusClass()
-    {
-        return autoSyncStatus switch
-        {
-            AutoSyncStatus.Syncing => "syncing",
-            AutoSyncStatus.Success => "success",
-            AutoSyncStatus.Failed => "error",
-            _ => "idle"
-        };
-    }
-
-    // ===== Data Management - Supabase Methods =====
-    private async Task TryInitializeSupabase()
-    {
-        try
-        {
-            if (IsSupabaseConfiguredViaFile)
-            {
-                supabaseUrlInput = Configuration["Supabase:Url"];
-                supabaseAnonKeyInput = Configuration["Supabase:AnonKey"];
-                await JSRuntime.InvokeVoidAsync("supabaseInterop.initialize", supabaseUrlInput, supabaseAnonKeyInput);
-                isSupabaseConfigured = true;
-            }
-            else
-            {
-                var savedUrl = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "Kairos_supabase_url");
-                var savedKey = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "Kairos_supabase_anonkey");
-                if (!string.IsNullOrEmpty(savedUrl) && !string.IsNullOrEmpty(savedKey))
-                {
-                    await JSRuntime.InvokeVoidAsync("supabaseInterop.initialize", savedUrl, savedKey);
-                    isSupabaseConfigured = true;
-                }
-            }
-
-            if (isSupabaseConfigured)
-            {
-                isSupabaseSignedIn = await JSRuntime.InvokeAsync<bool>("supabaseInterop.isSignedIn");
-                
-                if (isSupabaseSignedIn)
-                {
-                    supabaseUserEmail = await JSRuntime.InvokeAsync<string?>("supabaseInterop.getUserEmail");
-                    await RefreshSupabaseBackupInfo();
-                    RefreshAutoSyncState();
-                }
-                
-                StateHasChanged();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to auto-initialize Supabase: {ex.Message}");
-        }
-    }
-
-    private async Task SwitchToSupabase()
-    {
-        activeTab = "supabase";
-        statusMessage = null;
-        
-        if (isSupabaseConfigured && isSupabaseSignedIn)
-        {
-            await RefreshSupabaseBackupInfo();
-        }
-    }
-
-    private async Task ConfigureSupabase()
-    {
-        if (!IsSupabaseConfiguredViaFile && (string.IsNullOrWhiteSpace(supabaseUrlInput) || string.IsNullOrWhiteSpace(supabaseAnonKeyInput)))
-            return;
-            
-        statusMessage = null;
-        
-        try
-        {
-            var url = IsSupabaseConfiguredViaFile ? Configuration["Supabase:Url"]! : supabaseUrlInput!;
-            var key = IsSupabaseConfiguredViaFile ? Configuration["Supabase:AnonKey"]! : supabaseAnonKeyInput!;
-            
-            if (!IsSupabaseConfiguredViaFile)
-            {
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "Kairos_supabase_url", url);
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "Kairos_supabase_anonkey", key);
-            }
-            
-            await JSRuntime.InvokeVoidAsync("supabaseInterop.initialize", url, key);
-            isSupabaseConfigured = true;
-            statusMessage = Localizer["SuccessSupabaseConfig"];
-            statusClass = "success";
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorConfigFailed", ex.Message];
-            statusClass = "error";
-        }
-    }
-
-    private void ShowSupabaseReconfigure()
-    {
-        isSupabaseConfigured = false;
-        supabaseUrlInput = null;
-        supabaseAnonKeyInput = null;
-        statusMessage = null;
-    }
-
-    private async Task SignInWithSupabase()
-    {
-        if (string.IsNullOrWhiteSpace(supabaseEmailInput) || string.IsNullOrWhiteSpace(supabasePasswordInput))
-            return;
-            
-        isSupabaseSigningIn = true;
-        statusMessage = null;
-        StateHasChanged();
-        
-        try
-        {
-            await JSRuntime.InvokeAsync<bool>("supabaseInterop.signIn", supabaseEmailInput, supabasePasswordInput);
-            isSupabaseSignedIn = true;
-            supabaseUserEmail = await JSRuntime.InvokeAsync<string?>("supabaseInterop.getUserEmail");
-            await RefreshSupabaseBackupInfo();
-            statusMessage = Localizer["SuccessSignIn"];
-            statusClass = "success";
-            // Clear password field
-            supabasePasswordInput = null;
-
-            await NotificationService.NotifyAsync(
-                Localizer["NotificationSupabaseSignedInTitle"],
-                Localizer["NotificationSupabaseSignedInBody"]);
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorSignInFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isSupabaseSigningIn = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task SignUpWithSupabase()
-    {
-        if (string.IsNullOrWhiteSpace(supabaseEmailInput) || string.IsNullOrWhiteSpace(supabasePasswordInput))
-            return;
-            
-        isSupabaseSigningUp = true;
-        statusMessage = null;
-        StateHasChanged();
-        
-        try
-        {
-            await JSRuntime.InvokeAsync<bool>("supabaseInterop.signUp", supabaseEmailInput, supabasePasswordInput);
-            // After sign-up, try to sign in automatically
-            await JSRuntime.InvokeAsync<bool>("supabaseInterop.signIn", supabaseEmailInput, supabasePasswordInput);
-            isSupabaseSignedIn = await JSRuntime.InvokeAsync<bool>("supabaseInterop.isSignedIn");
-            
-            if (isSupabaseSignedIn)
-            {
-                supabaseUserEmail = await JSRuntime.InvokeAsync<string?>("supabaseInterop.getUserEmail");
-                statusMessage = Localizer["SuccessSignUp"];
-                statusClass = "success";
-                supabasePasswordInput = null;
-
-                await NotificationService.NotifyAsync(
-                    Localizer["NotificationSupabaseSignedInTitle"],
-                    Localizer["NotificationSupabaseSignedInBody"]);
-            }
-            else
-            {
-                statusMessage = Localizer["SuccessSignUpConfirm"];
-                statusClass = "success";
-            }
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorSignUpFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isSupabaseSigningUp = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task SignOutFromSupabase()
-    {
-        try
-        {
-            // Disable auto-sync if it was active on Supabase
-            if (isSupabaseAutoSyncEnabled)
-            {
-                await AutoSyncService.DisableAsync();
-                RefreshAutoSyncState();
-            }
-            
-            await JSRuntime.InvokeVoidAsync("supabaseInterop.signOut");
-            isSupabaseSignedIn = false;
-            supabaseUserEmail = null;
-            supabaseLastBackupTime = null;
-            statusMessage = Localizer["SuccessSignOut"];
-            statusClass = "success";
-
-            await NotificationService.NotifyAsync(
-                Localizer["NotificationSupabaseSignedOutTitle"],
-                Localizer["NotificationSupabaseSignedOutBody"]);
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorSignOutFailed", ex.Message];
-            statusClass = "error";
-        }
-        StateHasChanged();
-    }
-
-    private async Task RefreshSupabaseBackupInfo()
-    {
-        try
-        {
-            var lastModified = await JSRuntime.InvokeAsync<string?>("supabaseInterop.getLastBackupTime");
-            if (!string.IsNullOrEmpty(lastModified) && DateTimeOffset.TryParse(lastModified, out var parsed))
-            {
-                supabaseLastBackupTime = parsed;
-            }
-            else
-            {
-                supabaseLastBackupTime = null;
-            }
-        }
-        catch
-        {
-            supabaseLastBackupTime = null;
-        }
-    }
-
-    private async Task BackupToSupabase()
-    {
-        isSupabaseBackingUp = true;
-        statusMessage = null;
-        StateHasChanged();
-        
-        try
-        {
-            var json = TimeService.ExportData();
-            await JSRuntime.InvokeAsync<string?>("supabaseInterop.uploadData", json);
-            await RefreshSupabaseBackupInfo();
-            statusMessage = Localizer["SuccessBackup"];
-            statusClass = "success";
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorBackupFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isSupabaseBackingUp = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task RestoreFromSupabase()
-    {
-        isSupabaseRestoring = true;
-        statusMessage = null;
-        StateHasChanged();
-        
-        try
-        {
-            var content = await JSRuntime.InvokeAsync<string?>("supabaseInterop.downloadData");
-            
-            if (string.IsNullOrEmpty(content))
-            {
-                statusMessage = Localizer["ErrorNoSupabaseBackup"];
-                statusClass = "error";
-            }
-            else
-            {
-                await TimeService.ImportDataAsync(content);
-                statusMessage = Localizer["SuccessSupabaseRestore"];
-                statusClass = "success";
-            }
-        }
-        catch (Exception ex)
-        {
-            statusMessage = Localizer["ErrorRestoreFailed", ex.Message];
-            statusClass = "error";
-        }
-        finally
-        {
-            isSupabaseRestoring = false;
-            StateHasChanged();
-        }
-    }
-
-    // ===== Support Methods =====
     private async Task OpenBuyMeACoffee()
     {
         await JSRuntime.InvokeVoidAsync("open", "https://www.buymeacoffee.com/albertogregorio", "_blank");
     }
 
-    // ===== Reset Methods =====
     private void RequestReset()
     {
         showConfirmation1 = true;
@@ -1008,6 +308,7 @@
         {
             showConfirmation2 = true;
         }
+
         StateHasChanged();
     }
 
@@ -1018,26 +319,21 @@
         {
             await PerformReset();
         }
+
         StateHasChanged();
     }
 
     private async Task PerformReset()
     {
-        try 
+        try
         {
-            // 1. Reset Time/Meter Data
             await TimeService.ResetDataAsync();
-            
-            // 2. Reset Tutorial
             await TutorialService.ResetTutorialAsync();
-            
-            // 3. Navigate to Home to start fresh (and trigger tutorial)
             NavigationManager.NavigateTo("", forceLoad: true);
         }
         catch (Exception)
         {
-            // Error handling can be added here if needed
+            // Intentionally ignore to preserve existing UX behavior.
         }
     }
-
 }
