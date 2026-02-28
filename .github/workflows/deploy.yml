@@ -16,6 +16,8 @@ jobs:
     steps:
       # Uses GitHub's checkout action to checkout code form the master branch
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Sets up .NET Core SDK 10.0
       - name: Setup .NET Core SDK
