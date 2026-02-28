@@ -23,7 +23,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(15, 31, 30, 0.24);
+        backdrop-filter: blur(2px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -31,19 +32,19 @@
     }
 
     .modal-content {
-        background: var(--bg-card, #1e1e1e);
+        background: var(--color-bg-secondary, #ffffff);
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 12px;
         width: 90%;
         max-width: 400px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        border: 1px solid var(--border-color, #333);
-        color: var(--text-primary, #fff);
+        box-shadow: 0 16px 36px rgba(15, 31, 30, 0.14);
+        border: 1px solid var(--color-bg-tertiary, #e6ebe8);
+        color: var(--color-text-primary, #0f1f1e);
     }
 
     .modal-title {
         margin-top: 0;
-        color: var(--danger-color, #ff4d4d);
+        color: var(--color-negative, #bb3e3e);
     }
 
     .modal-message {
@@ -66,12 +67,12 @@
     }
 
     .btn-secondary {
-        background: #444;
-        color: white;
+        background: var(--color-bg-tertiary, #e6ebe8);
+        color: var(--color-text-primary, #0f1f1e);
     }
 
     .btn-danger {
-        background: #dc3545;
+        background: var(--color-negative, #bb3e3e);
         color: white;
     }
 </style>

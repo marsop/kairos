@@ -64,17 +64,17 @@
     .avatar-image {
         height: 350px; /* Adjust based on image quality */
         width: auto;
-        filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        filter: drop-shadow(0 8px 18px rgba(15, 31, 30, 0.28));
     }
 
     .dialogue-box {
         flex-grow: 1;
-        background: rgba(0, 0, 0, 0.85);
-        border: 2px solid #fff;
+        background: var(--color-bg-secondary, #ffffff);
+        border: 1px solid var(--color-bg-tertiary, #e6ebe8);
         border-radius: 10px;
         padding: 20px;
-        color: white;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        color: var(--color-text-primary, #0f1f1e);
+        box-shadow: 0 12px 30px rgba(15, 31, 30, 0.14);
         margin-bottom: 20px;
         animation: fadeIn 0.5s ease-out;
         position: relative;
@@ -85,8 +85,8 @@
 
     .character-name {
         margin: 0 0 10px 0;
-        color: #4edcd8; /* Kairos brand color or similar */
-        font-family: sans-serif;
+        color: var(--color-accent, #0f766e);
+        font-family: var(--font-family, 'Manrope', sans-serif);
         text-transform: uppercase;
         font-size: 1.1rem;
         letter-spacing: 1px;
@@ -106,8 +106,8 @@
 
     .btn-next {
         background: transparent;
-        border: 1px solid #4edcd8;
-        color: #4edcd8;
+        border: 1px solid var(--color-accent, #0f766e);
+        color: var(--color-accent, #0f766e);
         padding: 5px 15px;
         border-radius: 5px;
         cursor: pointer;
@@ -116,8 +116,8 @@
     }
 
     .btn-next:hover {
-        background: #4edcd8;
-        color: #000;
+        background: var(--color-accent, #0f766e);
+        color: #ffffff;
     }
 
     @@keyframes slideInLeft {

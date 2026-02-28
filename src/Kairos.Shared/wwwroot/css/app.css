@@ -2,20 +2,21 @@
 
 :root {
     /* Colors */
-    --color-bg-primary: #0f0f0f;
-    --color-bg-secondary: #1a1a1a;
-    --color-bg-tertiary: #262626;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #a3a3a3;
-    --color-text-muted: #737373;
+    --color-bg-primary: #f5f6f3;
+    --color-bg-secondary: #ffffff;
+    --color-bg-tertiary: #e6ebe8;
+    --color-text-primary: #0f1f1e;
+    --color-text-secondary: #405754;
+    --color-text-muted: #6c7f7b;
 
-    --color-positive: #10b981;
-    --color-positive-glow: rgba(16, 185, 129, 0.3);
-    --color-negative: #ef4444;
-    --color-negative-glow: rgba(239, 68, 68, 0.3);
+    --color-positive: #1f8a5b;
+    --color-positive-glow: rgba(31, 138, 91, 0.18);
+    --color-negative: #bb3e3e;
+    --color-negative-glow: rgba(187, 62, 62, 0.16);
 
-    --color-accent: #6366f1;
-    --color-accent-glow: rgba(99, 102, 241, 0.3);
+    --color-accent: #0f766e;
+    --color-accent-hover: #0d665f;
+    --color-accent-glow: rgba(15, 118, 110, 0.14);
 
     /* Spacing */
     --spacing-xs: 0.25rem;
@@ -26,7 +27,7 @@
     --spacing-2xl: 3rem;
 
     /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-md: 1rem;
@@ -44,8 +45,8 @@
     --radius-full: 9999px;
 
     /* Shadows */
-    --shadow-glow-positive: 0 0 30px var(--color-positive-glow);
-    --shadow-glow-negative: 0 0 30px var(--color-negative-glow);
+    --shadow-glow-positive: 0 8px 20px var(--color-positive-glow);
+    --shadow-glow-negative: 0 8px 20px var(--color-negative-glow);
 
     /* Transitions */
     --transition-fast: 150ms ease;
@@ -67,7 +68,10 @@ html,
 body {
     height: 100%;
     font-family: var(--font-family);
-    background: var(--color-bg-primary);
+    background:
+        radial-gradient(circle at 8% 10%, rgba(15, 118, 110, 0.08), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(31, 138, 91, 0.06), transparent 30%),
+        var(--color-bg-primary);
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -2114,4 +2118,64 @@ body {
 .toast-close:hover {
     background: var(--color-bg-tertiary);
     color: var(--color-text-primary);
+}
+
+/* ===== Visual Refresh (Reduced Neon) ===== */
+
+.balance-value.positive,
+.balance-value.negative {
+    text-shadow: none;
+}
+
+.nav-item.active {
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
+}
+
+.event-card.active {
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
+}
+
+.edit-btn:hover {
+    background: rgba(15, 118, 110, 0.12);
+}
+
+.btn-save:hover,
+.backup-btn:hover:not(:disabled),
+.install-btn:hover {
+    background: var(--color-accent-hover);
+    box-shadow: 0 10px 20px rgba(15, 118, 110, 0.16);
+}
+
+.tab-button.active {
+    box-shadow: 0 8px 16px rgba(15, 118, 110, 0.14);
+}
+
+.google-btn:hover:not(:disabled) {
+    box-shadow: 0 10px 24px rgba(51, 103, 214, 0.2);
+}
+
+.timeular-connect-btn {
+    background: var(--color-accent);
+}
+
+.timeular-connect-btn:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.2);
+}
+
+.activity-name-input:focus {
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.activity-name-input.invalid {
+    box-shadow: 0 0 0 3px rgba(187, 62, 62, 0.16);
+}
+
+.activity-container.drag-over .activity-button {
+    box-shadow: 0 10px 22px rgba(15, 118, 110, 0.14), inset 0 0 0 1px rgba(15, 118, 110, 0.1);
+    background: rgba(15, 118, 110, 0.06);
+}
+
+.toast {
+    box-shadow: 0 10px 30px rgba(15, 31, 30, 0.14);
 }
