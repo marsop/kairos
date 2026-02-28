@@ -2,20 +2,21 @@
 
 :root {
     /* Colors */
-    --color-bg-primary: #0f0f0f;
-    --color-bg-secondary: #1a1a1a;
-    --color-bg-tertiary: #262626;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #a3a3a3;
-    --color-text-muted: #737373;
+    --color-bg-primary: #f5f6f3;
+    --color-bg-secondary: #ffffff;
+    --color-bg-tertiary: #e6ebe8;
+    --color-text-primary: #0f1f1e;
+    --color-text-secondary: #405754;
+    --color-text-muted: #6c7f7b;
 
-    --color-positive: #10b981;
-    --color-positive-glow: rgba(16, 185, 129, 0.3);
-    --color-negative: #ef4444;
-    --color-negative-glow: rgba(239, 68, 68, 0.3);
+    --color-positive: #1f8a5b;
+    --color-positive-glow: rgba(31, 138, 91, 0.18);
+    --color-negative: #bb3e3e;
+    --color-negative-glow: rgba(187, 62, 62, 0.16);
 
-    --color-accent: #6366f1;
-    --color-accent-glow: rgba(99, 102, 241, 0.3);
+    --color-accent: #0f766e;
+    --color-accent-hover: #0d665f;
+    --color-accent-glow: rgba(15, 118, 110, 0.14);
 
     /* Spacing */
     --spacing-xs: 0.25rem;
@@ -26,7 +27,7 @@
     --spacing-2xl: 3rem;
 
     /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-md: 1rem;
@@ -44,8 +45,8 @@
     --radius-full: 9999px;
 
     /* Shadows */
-    --shadow-glow-positive: 0 0 30px var(--color-positive-glow);
-    --shadow-glow-negative: 0 0 30px var(--color-negative-glow);
+    --shadow-glow-positive: 0 8px 20px var(--color-positive-glow);
+    --shadow-glow-negative: 0 8px 20px var(--color-negative-glow);
 
     /* Transitions */
     --transition-fast: 150ms ease;
@@ -67,7 +68,10 @@ html,
 body {
     height: 100%;
     font-family: var(--font-family);
-    background: var(--color-bg-primary);
+    background:
+        radial-gradient(circle at 8% 10%, rgba(15, 118, 110, 0.08), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(31, 138, 91, 0.06), transparent 30%),
+        var(--color-bg-primary);
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -248,7 +252,7 @@ body {
     margin-top: var(--spacing-xs);
 }
 
-.active-meter-indicator {
+.active-activity-indicator {
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -285,9 +289,9 @@ body {
     }
 }
 
-/* ===== Meters Page ===== */
+/* ===== Activities Page ===== */
 
-.meters-page {
+.activities-page {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
@@ -299,13 +303,13 @@ body {
     color: var(--color-text-primary);
 }
 
-.meters-grid {
+.activities-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
 }
 
-.meter-button {
+.activity-button {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -320,36 +324,36 @@ body {
     font-family: inherit;
 }
 
-.meter-button:hover {
+.activity-button:hover {
     border-color: var(--color-text-muted);
     transform: translateY(-2px);
 }
 
-.meter-button.positive {
+.activity-button.positive {
     border-color: rgba(16, 185, 129, 0.3);
 }
 
-.meter-button.positive:hover,
-.meter-button.positive.active {
+.activity-button.positive:hover,
+.activity-button.positive.active {
     border-color: var(--color-positive);
     box-shadow: var(--shadow-glow-positive);
 }
 
-.meter-button.negative {
+.activity-button.negative {
     border-color: rgba(239, 68, 68, 0.3);
 }
 
-.meter-button.negative:hover,
-.meter-button.negative.active {
+.activity-button.negative:hover,
+.activity-button.negative.active {
     border-color: var(--color-negative);
     box-shadow: var(--shadow-glow-negative);
 }
 
-.meter-button.active {
+.activity-button.active {
     transform: scale(1.02);
 }
 
-.meter-name {
+.activity-name {
     font-size: var(--font-size-lg);
     font-weight: 700;
     color: var(--color-text-primary);
@@ -362,7 +366,7 @@ body {
     overflow: hidden;
 }
 
-.meter-index {
+.activity-index {
     font-size: var(--font-size-xs);
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -372,32 +376,15 @@ body {
     background: var(--color-bg-tertiary);
 }
 
-.meter-button.positive .meter-name {
+.activity-button.positive .activity-name {
     color: var(--color-positive);
 }
 
-.meter-button.negative .meter-name {
+.activity-button.negative .activity-name {
     color: var(--color-negative);
 }
 
-.meter-factor {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    opacity: 0.8;
-}
-
-.meter-button.positive .meter-factor {
-    color: var(--color-positive);
-    opacity: 0.7;
-}
-
-.meter-button.negative .meter-factor {
-    color: var(--color-negative);
-    opacity: 0.7;
-}
-
-.meter-status {
+.activity-status {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -553,17 +540,17 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
-.event-meter-name {
+.event-activity-name {
     font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--color-text-primary);
 }
 
-.event-card.positive .event-meter-name {
+.event-card.positive .event-activity-name {
     color: var(--color-positive);
 }
 
-.event-card.negative .event-meter-name {
+.event-card.negative .event-activity-name {
     color: var(--color-negative);
 }
 
@@ -609,6 +596,27 @@ body {
     color: var(--color-text-secondary);
 }
 
+.event-comment {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-tertiary);
+}
+
+.comment-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.comment-value {
+    color: var(--color-text-secondary);
+    word-break: break-word;
+}
+
 .event-stats {
     display: flex;
     gap: var(--spacing-xl);
@@ -647,11 +655,11 @@ body {
 /* ===== Responsive ===== */
 
 @media (min-width: 480px) {
-    .meter-button {
+    .activity-button {
         padding: var(--spacing-xl);
     }
 
-    .meter-name {
+    .activity-name {
         font-size: var(--font-size-2xl);
     }
 }
@@ -881,6 +889,10 @@ body {
 .edit-input:focus {
     outline: none;
     border-color: var(--color-accent);
+}
+
+.edit-input.invalid {
+    border-color: var(--color-negative);
 }
 
 .edit-error {
@@ -1532,17 +1544,17 @@ body {
     word-break: break-word;
 }
 
-/* ===== Meter Edit/Rename ===== */
+/* ===== Activity Edit/Rename ===== */
 
-.meter-container {
+.activity-container {
     position: relative;
 }
 
-.meter-container .meter-button {
+.activity-container .activity-button {
     width: 100%;
 }
 
-.meter-actions {
+.activity-actions {
     position: absolute;
     top: var(--spacing-sm);
     right: var(--spacing-sm);
@@ -1553,11 +1565,11 @@ body {
     transition: opacity var(--transition-fast);
 }
 
-.meter-container:hover .meter-actions {
+.activity-container:hover .activity-actions {
     opacity: 1;
 }
 
-.meter-action-btn {
+.activity-action-btn {
     width: 32px;
     height: 32px;
     display: flex;
@@ -1572,18 +1584,18 @@ body {
     transition: all var(--transition-fast);
 }
 
-.meter-action-btn:hover {
+.activity-action-btn:hover {
     background: var(--color-bg-primary);
     color: var(--color-text-primary);
     transform: scale(1.1);
 }
 
-.meter-action-btn.delete:hover {
+.activity-action-btn.delete:hover {
     background: rgba(239, 68, 68, 0.2);
     color: var(--color-negative);
 }
 
-.meter-edit-form {
+.activity-edit-form {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -1594,7 +1606,7 @@ body {
     min-height: 120px;
 }
 
-.meter-name-input {
+.activity-name-input {
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--color-bg-tertiary);
@@ -1608,13 +1620,13 @@ body {
     transition: all var(--transition-fast);
 }
 
-.meter-name-input:focus {
+.activity-name-input:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
-.meter-name-input.invalid {
+.activity-name-input.invalid {
     border-color: var(--color-negative);
     box-shadow: 0 0 0 3px var(--color-negative-glow);
 }
@@ -1675,15 +1687,15 @@ body {
     color: var(--color-negative);
 }
 
-/* ===== Add Meter ===== */
+/* ===== Add Activity ===== */
 
-.meter-button.add-meter-btn {
+.activity-button.add-activity-btn {
     border-style: dashed;
     background: transparent;
     opacity: 0.7;
 }
 
-.meter-button.add-meter-btn:hover {
+.activity-button.add-activity-btn:hover {
     opacity: 1;
     border-color: var(--color-accent);
     color: var(--color-accent);
@@ -1698,26 +1710,6 @@ body {
 .add-text {
     font-size: var(--font-size-md);
     font-weight: 500;
-}
-
-.meter-factor-input {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--color-bg-tertiary);
-    border-radius: var(--radius-md);
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-    font-family: inherit;
-    font-size: var(--font-size-md);
-    font-weight: 500;
-    text-align: center;
-    transition: all var(--transition-fast);
-}
-
-.meter-factor-input:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
 /* ===== PWA UI ===== */
@@ -2001,23 +1993,23 @@ body {
 
 /* ===== Drag and Drop ===== */
 
-.meter-container.dragging {
+.activity-container.dragging {
     opacity: 0.35;
     transform: scale(0.95);
     transition: all var(--transition-fast);
 }
 
-.meter-container.dragging .meter-button {
+.activity-container.dragging .activity-button {
     border-style: dashed;
     border-color: var(--color-accent);
 }
 
-.meter-container.drag-over {
+.activity-container.drag-over {
     transform: scale(1.03);
     transition: all var(--transition-fast);
 }
 
-.meter-container.drag-over .meter-button {
+.activity-container.drag-over .activity-button {
     border-color: var(--color-accent);
     box-shadow: 0 0 20px var(--color-accent-glow), inset 0 0 15px rgba(99, 102, 241, 0.08);
     background: rgba(99, 102, 241, 0.06);
@@ -2126,4 +2118,64 @@ body {
 .toast-close:hover {
     background: var(--color-bg-tertiary);
     color: var(--color-text-primary);
+}
+
+/* ===== Visual Refresh (Reduced Neon) ===== */
+
+.balance-value.positive,
+.balance-value.negative {
+    text-shadow: none;
+}
+
+.nav-item.active {
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
+}
+
+.event-card.active {
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
+}
+
+.edit-btn:hover {
+    background: rgba(15, 118, 110, 0.12);
+}
+
+.btn-save:hover,
+.backup-btn:hover:not(:disabled),
+.install-btn:hover {
+    background: var(--color-accent-hover);
+    box-shadow: 0 10px 20px rgba(15, 118, 110, 0.16);
+}
+
+.tab-button.active {
+    box-shadow: 0 8px 16px rgba(15, 118, 110, 0.14);
+}
+
+.google-btn:hover:not(:disabled) {
+    box-shadow: 0 10px 24px rgba(51, 103, 214, 0.2);
+}
+
+.timeular-connect-btn {
+    background: var(--color-accent);
+}
+
+.timeular-connect-btn:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.2);
+}
+
+.activity-name-input:focus {
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.activity-name-input.invalid {
+    box-shadow: 0 0 0 3px rgba(187, 62, 62, 0.16);
+}
+
+.activity-container.drag-over .activity-button {
+    box-shadow: 0 10px 22px rgba(15, 118, 110, 0.14), inset 0 0 0 1px rgba(15, 118, 110, 0.1);
+    background: rgba(15, 118, 110, 0.06);
+}
+
+.toast {
+    box-shadow: 0 10px 30px rgba(15, 31, 30, 0.14);
 }

@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Kairos - Time Tracker</title>
-    <meta name="description" content="Track your time with real-time meters. Bank hours or spend them with the tap of a button." />
+    <meta name="description" content="Track your time with real-time activities. Bank hours or spend them with the tap of a button." />
     <base href="/kairos/" />
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
     <link rel="stylesheet" href="_content/Kairos.Shared/css/app.css" />
@@ -22,7 +22,7 @@
 
 <body>
     <div id="app">
-        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #0f0f0f; color: #666;">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f5f6f3; color: #6c7f7b;">
             <div style="text-align: center;">
                 <div style="font-size: 2rem; margin-bottom: 1rem;">⏱️</div>
                 <div>Loading Kairos...</div>
@@ -30,15 +30,13 @@
         </div>
     </div>
 
-    <div id="blazor-error-ui" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem; background: #ef4444; color: white; text-align: center;">
+    <div id="blazor-error-ui" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem; background: #b42318; color: white; text-align: center;">
         An unhandled error has occurred.
         <a href="." class="reload" style="color: white; margin-left: 1rem;">Reload</a>
         <span class="dismiss" style="cursor: pointer; margin-left: 1rem;">🗙</span>
     </div>
 
-    <script src="_content/Kairos.Shared/syncInterop.js"></script>
     <script src="_content/Kairos.Shared/timeularInterop.js"></script>
-    <script src="_content/Kairos.Shared/supabaseInterop.js"></script>
     <script src="js/notificationInterop.js"></script>
     <script src="js/pwaInterop.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>

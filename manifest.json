@@ -3,8 +3,8 @@
   "short_name": "Kairos",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#512BD4",
+  "background_color": "#f5f6f3",
+  "theme_color": "#0f766e",
   "icons": [
     {
       "src": "appicon.svg",
