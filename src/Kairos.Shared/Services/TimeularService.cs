@@ -224,22 +224,22 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
     private string ApplyTimeularFaceMapping(int? face)
     {
-        var orderedMeters = _timeService.Account.Meters
+        var orderedActivities = _timeService.Account.Activities
             .OrderBy(m => m.DisplayOrder)
             .ToList();
 
-        Meter? targetMeter = null;
+        Activity? targetActivity = null;
         if (face.HasValue && face.Value > 0)
         {
-            targetMeter = orderedMeters.ElementAtOrDefault(face.Value - 1);
+            targetActivity = orderedActivities.ElementAtOrDefault(face.Value - 1);
         }
 
         var activeEvent = _timeService.GetActiveEvent();
-        if (targetMeter is null)
+        if (targetActivity is null)
         {
             if (activeEvent is not null)
             {
-                _timeService.DeactivateMeter();
+                _timeService.DeactivateActivity();
                 return " -> deactivated";
             }
 
@@ -247,15 +247,15 @@ public sealed class TimeularService : ITimeularService, IDisposable
         }
 
         var isTargetAlreadyActive = activeEvent is not null
-            && activeEvent.MeterName == targetMeter.Name;
+            && activeEvent.ActivityName == targetActivity.Name;
 
         if (isTargetAlreadyActive)
         {
             return " -> already active";
         }
 
-        var mappedIndex = orderedMeters.FindIndex(m => m.Id == targetMeter.Id) + 1;
-        _timeService.ActivateMeter(targetMeter.Id, $"Timeular face {mappedIndex}");
+        var mappedIndex = orderedActivities.FindIndex(m => m.Id == targetActivity.Id) + 1;
+        _timeService.ActivateActivity(targetActivity.Id, $"Timeular face {mappedIndex}");
         return $" -> activated #{mappedIndex}";
     }
 

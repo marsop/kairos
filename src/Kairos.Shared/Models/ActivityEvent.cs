@@ -1,31 +1,31 @@
 namespace Kairos.Shared.Models;
 
 /// <summary>
-/// Represents a single meter activation event.
-/// When a meter is active, time is added to the account
+/// Represents a single activity activation event.
+/// When a activity is active, time is added to the account
 /// based on a fixed 1.0 factor.
 /// </summary>
-public class MeterEvent
+public class ActivityEvent
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
-    /// When the meter was activated.
+    /// When the activity was activated.
     /// </summary>
     public DateTimeOffset StartTime { get; set; }
     
     /// <summary>
-    /// When the meter was deactivated. Null if still active.
+    /// When the activity was deactivated. Null if still active.
     /// </summary>
     public DateTimeOffset? EndTime { get; set; }
     
     /// <summary>
-    /// Meter factor is fixed at 1.0.
+    /// Activity factor is fixed at 1.0.
     /// </summary>
     private double _factor = 1.0;
 
     /// <summary>
-    /// Meter factor is fixed at 1.0.
+    /// Activity factor is fixed at 1.0.
     /// </summary>
     public double Factor
     {
@@ -34,22 +34,22 @@ public class MeterEvent
     }
     
     /// <summary>
-    /// Display name for the meter.
+    /// Display name for the activity.
     /// </summary>
-    public string MeterName { get; set; } = string.Empty;
+    public string ActivityName { get; set; } = string.Empty;
 
     /// <summary>
-    /// User comment captured when this meter event started.
+    /// User comment captured when this activity event started.
     /// </summary>
     public string Comment { get; set; } = string.Empty;
     
     /// <summary>
-    /// Whether this event is currently active (meter still running).
+    /// Whether this event is currently active (activity still running).
     /// </summary>
     public bool IsActive => EndTime == null;
     
     /// <summary>
-    /// Calculates the duration this meter has been/was active.
+    /// Calculates the duration this activity has been/was active.
     /// </summary>
     public TimeSpan Duration => IsActive 
         ? DateTimeOffset.UtcNow - StartTime 

@@ -10,13 +10,13 @@ namespace Kairos.Shared.Services;
 public class TimeTrackingService : ITimeTrackingService
 {
     private readonly IStorageService _storage;
-    private readonly IMeterConfigurationService _meterConfig;
+    private readonly IActivityConfigurationService _activityConfig;
     private readonly ISettingsService _settingsService;
     private readonly INotificationService _notificationService;
     private readonly IStringLocalizer<Kairos.Shared.Resources.Strings> _localizer;
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
-    public const int MaxMeters = 8;
+    public const int MaxActivities = 8;
     public const int MinCommentLength = 1;
     public const int MaxCommentLength = 250;
     
@@ -38,10 +38,10 @@ public class TimeTrackingService : ITimeTrackingService
     
     public event Action? OnStateChanged;
 
-    public TimeTrackingService(IStorageService storage, IMeterConfigurationService meterConfig, ISettingsService settingsService, INotificationService notificationService, IStringLocalizer<Kairos.Shared.Resources.Strings> localizer)
+    public TimeTrackingService(IStorageService storage, IActivityConfigurationService activityConfig, ISettingsService settingsService, INotificationService notificationService, IStringLocalizer<Kairos.Shared.Resources.Strings> localizer)
     {
         _storage = storage;
-        _meterConfig = meterConfig;
+        _activityConfig = activityConfig;
         _settingsService = settingsService;
         _notificationService = notificationService;
         _localizer = localizer;
@@ -52,25 +52,25 @@ public class TimeTrackingService : ITimeTrackingService
         return TimeSpan.FromTicks(_account.Events.Sum(e => e.TimeContribution.Ticks));
     }
 
-    public MeterEvent? GetActiveEvent()
+    public ActivityEvent? GetActiveEvent()
     {
         return _account.Events.FirstOrDefault(e => e.IsActive);
     }
 
-    public void ActivateMeter(Guid meterId, string comment)
+    public void ActivateActivity(Guid activityId, string comment)
     {
-        // Deactivate any active meter silently (no notification since we're switching)
+        // Deactivate any active activity silently (no notification since we're switching)
         DeactivateInternal();
         
-        var meter = _account.Meters.FirstOrDefault(m => m.Id == meterId);
-        if (meter == null) return;
+        var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
+        if (activity == null) return;
         var normalizedComment = NormalizeComment(comment);
         
-        var newEvent = new MeterEvent
+        var newEvent = new ActivityEvent
         {
             StartTime = DateTimeOffset.UtcNow,
             Factor = 1.0,
-            MeterName = meter.Name,
+            ActivityName = activity.Name,
             Comment = normalizedComment
         };
         
@@ -78,8 +78,8 @@ public class TimeTrackingService : ITimeTrackingService
         OnStateChanged?.Invoke();
         _ = SaveAsync();
         _ = _notificationService.NotifyAsync(
-            _localizer["NotificationMeterStartedTitle"],
-            string.Format(_localizer["NotificationMeterStartedBody"], meter.Name)
+            _localizer["NotificationActivityStartedTitle"],
+            string.Format(_localizer["NotificationActivityStartedBody"], activity.Name)
         );
     }
 
@@ -94,16 +94,16 @@ public class TimeTrackingService : ITimeTrackingService
         return trimmed;
     }
 
-    public void DeactivateMeter()
+    public void DeactivateActivity()
     {
         var activeEvent = GetActiveEvent();
         if (activeEvent != null)
         {
-            var meterName = activeEvent.MeterName;
+            var activityName = activeEvent.ActivityName;
             DeactivateInternal();
             _ = _notificationService.NotifyAsync(
-                _localizer["NotificationMeterStoppedTitle"],
-                string.Format(_localizer["NotificationMeterStoppedBody"], meterName)
+                _localizer["NotificationActivityStoppedTitle"],
+                string.Format(_localizer["NotificationActivityStoppedBody"], activityName)
             );
         }
     }
@@ -132,10 +132,10 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void UpdateEventTimes(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime)
     {
-        var meterEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
-        if (meterEvent == null) return;
+        var activityEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
+        if (activityEvent == null) return;
 
-        if (meterEvent.IsActive)
+        if (activityEvent.IsActive)
         {
             throw new InvalidOperationException("Cannot edit times of an active event.");
         }
@@ -150,8 +150,8 @@ public class TimeTrackingService : ITimeTrackingService
             throw new ArgumentException("End time cannot be in the future.");
         }
 
-        meterEvent.StartTime = newStartTime;
-        meterEvent.EndTime = newEndTime;
+        activityEvent.StartTime = newStartTime;
+        activityEvent.EndTime = newEndTime;
         OnStateChanged?.Invoke();
         _ = SaveAsync();
     }
@@ -237,26 +237,26 @@ public class TimeTrackingService : ITimeTrackingService
             var loaded = JsonSerializer.Deserialize<TimeAccount>(json);
             if (loaded != null)
             {
-                _account.Events = loaded.Events ?? new List<MeterEvent>();
-                _account.Meters = loaded.Meters ?? new List<Meter>();
+                _account.Events = loaded.Events ?? new List<ActivityEvent>();
+                _account.Activities = loaded.Activities ?? new List<Activity>();
 
                 // Factor is fixed at 1.0; normalize persisted legacy data.
-                foreach (var meter in _account.Meters)
+                foreach (var activity in _account.Activities)
                 {
-                    meter.Factor = 1.0;
+                    activity.Factor = 1.0;
                 }
 
-                foreach (var meterEvent in _account.Events)
+                foreach (var activityEvent in _account.Events)
                 {
-                    meterEvent.Factor = 1.0;
+                    activityEvent.Factor = 1.0;
                 }
 
-                // Enforce maximum meter limit
-                if (_account.Meters.Count > MaxMeters)
+                // Enforce maximum activity limit
+                if (_account.Activities.Count > MaxActivities)
                 {
-                    _account.Meters = _account.Meters
+                    _account.Activities = _account.Activities
                         .OrderBy(m => m.DisplayOrder)
-                        .Take(MaxMeters)
+                        .Take(MaxActivities)
                         .ToList();
                 }
                 
@@ -272,17 +272,17 @@ public class TimeTrackingService : ITimeTrackingService
             }
         }
 
-        // Only load default meters if none were loaded from storage
-        if (_account.Meters == null || _account.Meters.Count == 0)
+        // Only load default activities if none were loaded from storage
+        if (_account.Activities == null || _account.Activities.Count == 0)
         {
-            _account.Meters = await _meterConfig.LoadMetersAsync();
+            _account.Activities = await _activityConfig.LoadActivitiesAsync();
         }
         
-        // Auto-stop any active events whose meter no longer exists.
-        var availableMeterNames = _account.Meters.Select(m => m.Name).ToHashSet();
+        // Auto-stop any active events whose activity no longer exists.
+        var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
         foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
         {
-            if (!availableMeterNames.Contains(activeEvent.MeterName))
+            if (!availableActivityNames.Contains(activeEvent.ActivityName))
             {
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
             }
@@ -292,24 +292,24 @@ public class TimeTrackingService : ITimeTrackingService
         await SaveAsync();
     }
 
-    public void RenameMeter(Guid meterId, string newName)
+    public void RenameActivity(Guid activityId, string newName)
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
-            throw new ArgumentException("Meter name must be between 1 and 40 characters.");
+            throw new ArgumentException("Activity name must be between 1 and 40 characters.");
         }
 
-        var meter = _account.Meters.FirstOrDefault(m => m.Id == meterId);
-        if (meter == null) return;
+        var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
+        if (activity == null) return;
 
-        var oldName = meter.Name;
-        meter.Name = newName.Trim();
+        var oldName = activity.Name;
+        activity.Name = newName.Trim();
         
-        // Update active event if this meter is currently running
+        // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();
-        if (activeEvent != null && activeEvent.MeterName == oldName)
+        if (activeEvent != null && activeEvent.ActivityName == oldName)
         {
-            activeEvent.MeterName = meter.Name;
+            activeEvent.ActivityName = activity.Name;
         }
         
         OnStateChanged?.Invoke();
@@ -323,7 +323,7 @@ public class TimeTrackingService : ITimeTrackingService
             ExportedAt = DateTimeOffset.UtcNow,
             Language = _settingsService.Language,
             TutorialCompleted = _settingsService.TutorialCompleted,
-            Meters = _account.Meters,
+            Activities = _account.Activities,
             Events = _account.Events
         };
         
@@ -342,9 +342,9 @@ public class TimeTrackingService : ITimeTrackingService
             throw new InvalidOperationException("Invalid import data format.");
         }
 
-        if (importData.Meters == null || importData.Meters.Count == 0)
+        if (importData.Activities == null || importData.Activities.Count == 0)
         {
-            throw new InvalidOperationException("Import data must contain at least one meter.");
+            throw new InvalidOperationException("Import data must contain at least one activity.");
         }
 
         // Apply language setting (defaults to "en" if not present in import data)
@@ -354,37 +354,37 @@ public class TimeTrackingService : ITimeTrackingService
         _settingsService.TutorialCompleted = importData.TutorialCompleted;
 
         // Assign display order based on definition order
-        for (int i = 0; i < importData.Meters.Count; i++)
+        for (int i = 0; i < importData.Activities.Count; i++)
         {
-            importData.Meters[i].DisplayOrder = i;
+            importData.Activities[i].DisplayOrder = i;
         }
 
-        // Enforce maximum meter limit
-        if (importData.Meters.Count > MaxMeters)
+        // Enforce maximum activity limit
+        if (importData.Activities.Count > MaxActivities)
         {
-            importData.Meters = importData.Meters.Take(MaxMeters).ToList();
+            importData.Activities = importData.Activities.Take(MaxActivities).ToList();
         }
 
         // Replace current data
-        _account.Meters = importData.Meters;
-        _account.Events = importData.Events ?? new List<MeterEvent>();
+        _account.Activities = importData.Activities;
+        _account.Events = importData.Events ?? new List<ActivityEvent>();
 
         // Factor is fixed at 1.0; normalize imported legacy data.
-        foreach (var meter in _account.Meters)
+        foreach (var activity in _account.Activities)
         {
-            meter.Factor = 1.0;
+            activity.Factor = 1.0;
         }
 
-        foreach (var meterEvent in _account.Events)
+        foreach (var activityEvent in _account.Events)
         {
-            meterEvent.Factor = 1.0;
+            activityEvent.Factor = 1.0;
         }
 
-        // Auto-stop any active events whose meter no longer exists.
-        var availableMeterNames = _account.Meters.Select(m => m.Name).ToHashSet();
+        // Auto-stop any active events whose activity no longer exists.
+        var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
         foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
         {
-            if (!availableMeterNames.Contains(activeEvent.MeterName))
+            if (!availableActivityNames.Contains(activeEvent.ActivityName))
             {
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
             }
@@ -394,49 +394,49 @@ public class TimeTrackingService : ITimeTrackingService
         await SaveAsync();
     }
 
-    public void DeleteMeter(Guid meterId)
+    public void DeleteActivity(Guid activityId)
     {
-        var meter = _account.Meters.FirstOrDefault(m => m.Id == meterId);
-        if (meter == null) return;
+        var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
+        if (activity == null) return;
 
         var activeEvent = GetActiveEvent();
-        if (activeEvent != null && activeEvent.MeterName == meter.Name)
+        if (activeEvent != null && activeEvent.ActivityName == activity.Name)
         {
-            throw new InvalidOperationException("Cannot delete the currently active meter.");
+            throw new InvalidOperationException("Cannot delete the currently active activity.");
         }
         
-        _account.Meters.Remove(meter);
+        _account.Activities.Remove(activity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
     }
 
-    public void AddMeter(string name)
+    public void AddActivity(string name)
     {
-        if (_account.Meters.Count >= MaxMeters)
+        if (_account.Activities.Count >= MaxActivities)
         {
-            throw new InvalidOperationException($"Cannot add more than {MaxMeters} meters.");
+            throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
         }
 
         if (string.IsNullOrWhiteSpace(name) || name.Length < 1 || name.Length > 40)
         {
-            throw new ArgumentException("Meter name must be between 1 and 40 characters.");
+            throw new ArgumentException("Activity name must be between 1 and 40 characters.");
         }
 
-        var newMeter = new Meter
+        var newActivity = new Activity
         {
             Name = name.Trim(),
             Factor = 1.0,
-            DisplayOrder = _account.Meters.Count > 0 ? _account.Meters.Max(m => m.DisplayOrder) + 1 : 0
+            DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0
         };
 
-        _account.Meters.Add(newMeter);
+        _account.Activities.Add(newActivity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
     }
     public async Task ResetDataAsync()
     {
         _account.Events.Clear();
-        _account.Meters = await _meterConfig.LoadMetersAsync();
+        _account.Activities = await _activityConfig.LoadActivitiesAsync();
         
         // Reset timeline period to default
         _account.TimelinePeriod = TimeSpan.FromHours(24);
@@ -445,30 +445,30 @@ public class TimeTrackingService : ITimeTrackingService
         await SaveAsync();
     }
 
-    public void ReorderMeters(List<Guid> orderedMeterIds)
+    public void ReorderActivities(List<Guid> orderedActivityIds)
     {
-        if (orderedMeterIds == null || orderedMeterIds.Count != _account.Meters.Count)
+        if (orderedActivityIds == null || orderedActivityIds.Count != _account.Activities.Count)
         {
             return;
         }
 
-        var newMetersList = new List<Meter>();
+        var newActivitiesList = new List<Activity>();
         int order = 0;
 
-        foreach (var id in orderedMeterIds)
+        foreach (var id in orderedActivityIds)
         {
-            var meter = _account.Meters.FirstOrDefault(m => m.Id == id);
-            if (meter != null)
+            var activity = _account.Activities.FirstOrDefault(m => m.Id == id);
+            if (activity != null)
             {
-                meter.DisplayOrder = order++;
-                newMetersList.Add(meter);
+                activity.DisplayOrder = order++;
+                newActivitiesList.Add(activity);
             }
         }
 
-        // Only apply if we found all meters (integrity check)
-        if (newMetersList.Count == _account.Meters.Count)
+        // Only apply if we found all activities (integrity check)
+        if (newActivitiesList.Count == _account.Activities.Count)
         {
-            _account.Meters = newMetersList;
+            _account.Activities = newActivitiesList;
             OnStateChanged?.Invoke();
             _ = SaveAsync();
         }
@@ -483,6 +483,6 @@ public class KairosExportData
     public DateTimeOffset ExportedAt { get; set; }
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
-    public List<Meter> Meters { get; set; } = new();
-    public List<MeterEvent> Events { get; set; } = new();
+    public List<Activity> Activities { get; set; } = new();
+    public List<ActivityEvent> Events { get; set; } = new();
 }

@@ -64,7 +64,7 @@
   <data name="NavOverview" xml:space="preserve">
     <value>Übersicht</value>
   </data>
-  <data name="NavMeters" xml:space="preserve">
+  <data name="NavActivities" xml:space="preserve">
     <value>Zähler</value>
   </data>
   <data name="NavTimeline" xml:space="preserve">
@@ -97,13 +97,13 @@
   <data name="HoursUnit" xml:space="preserve">
     <value>Stunden</value>
   </data>
-  <data name="MeterActive" xml:space="preserve">
+  <data name="ActivityActive" xml:space="preserve">
     <value>{0} aktiv</value>
   </data>
   <data name="NoEvents" xml:space="preserve">
     <value>Noch keine Ereignisse aufgezeichnet</value>
   </data>
-  <data name="StartMeterHint" xml:space="preserve">
+  <data name="StartActivityHint" xml:space="preserve">
     <value>Starten Sie einen Zähler, um die Zeitmessung zu beginnen</value>
   </data>
   <data name="Active" xml:space="preserve">
@@ -154,7 +154,7 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="MeterFactor" xml:space="preserve">
+  <data name="ActivityFactor" xml:space="preserve">
     <value>Faktor: {0}</value>
   </data>
   <data name="Running" xml:space="preserve">
@@ -163,16 +163,16 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Tippen zum Starten</value>
   </data>
-  <data name="RenameMeter" xml:space="preserve">
+  <data name="RenameActivity" xml:space="preserve">
     <value>Zähler umbenennen</value>
   </data>
-  <data name="DeleteMeter" xml:space="preserve">
+  <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löschen</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Speichern</value>
   </data>
-  <data name="AddMeter" xml:space="preserve">
+  <data name="AddActivity" xml:space="preserve">
     <value>Zähler hinzufügen</value>
   </data>
   <data name="RunningFor" xml:space="preserve">
@@ -376,7 +376,7 @@
   <data name="TutorialOverview" xml:space="preserve">
     <value>Dies ist deine 'Übersicht'. Sie gibt dir einen schnellen Überblick über deinen aktuellen Zeitbudget-Status. Du siehst dein gesamtes Zeitguthaben und die aktiven Zähler auf einen Blick.</value>
   </data>
-  <data name="TutorialMeters" xml:space="preserve">
+  <data name="TutorialActivities" xml:space="preserve">
     <value>Hier unter 'Zähler' definierst du deine Aktivitäten! Du kannst Zähler für Dinge wie Arbeit, Studium oder Freizeit einrichten. Betrachte sie als den Puls deines Tages.</value>
   </data>
   <data name="TutorialTimeline" xml:space="preserve">
@@ -506,21 +506,21 @@
     <value>Browser-Benachrichtigungen</value>
   </data>
   <data name="BrowserNotificationsDesc" xml:space="preserve">
-    <value>Systembenachrichtigungen anzeigen, wenn ein Meter aktiviert oder deaktiviert wird</value>
+    <value>Systembenachrichtigungen anzeigen, wenn ein Activity aktiviert oder deaktiviert wird</value>
   </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Benachrichtigungen vom Browser blockiert. Bitte in den Browsereinstellungen erlauben.</value>
   </data>
-  <data name="NotificationMeterStartedTitle" xml:space="preserve">
+  <data name="NotificationActivityStartedTitle" xml:space="preserve">
     <value>⏱️ Zähler Gestartet</value>
   </data>
-  <data name="NotificationMeterStartedBody" xml:space="preserve">
+  <data name="NotificationActivityStartedBody" xml:space="preserve">
     <value>Du erfasst jetzt '{0}'.</value>
   </data>
-  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
+  <data name="NotificationActivityStoppedTitle" xml:space="preserve">
     <value>⏹️ Zähler Gestoppt</value>
   </data>
-  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+  <data name="NotificationActivityStoppedBody" xml:space="preserve">
     <value>Du hast die Erfassung von '{0}' beendet.</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">

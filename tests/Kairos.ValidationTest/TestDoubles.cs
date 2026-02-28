@@ -27,31 +27,31 @@ internal sealed class InMemoryStorageService : IStorageService
     }
 }
 
-internal sealed class StubMeterConfigurationService : IMeterConfigurationService
+internal sealed class StubActivityConfigurationService : IActivityConfigurationService
 {
-    private readonly List<Meter> _meters;
+    private readonly List<Activity> _activities;
 
     public int LoadCalls { get; private set; }
 
-    public StubMeterConfigurationService(IEnumerable<Meter> meters)
+    public StubActivityConfigurationService(IEnumerable<Activity> activities)
     {
-        _meters = meters.ToList();
+        _activities = activities.ToList();
     }
 
-    public Task<List<Meter>> LoadMetersAsync()
+    public Task<List<Activity>> LoadActivitiesAsync()
     {
         LoadCalls++;
-        return Task.FromResult(_meters.Select(CloneMeter).ToList());
+        return Task.FromResult(_activities.Select(CloneActivity).ToList());
     }
 
-    private static Meter CloneMeter(Meter meter)
+    private static Activity CloneActivity(Activity activity)
     {
-        return new Meter
+        return new Activity
         {
-            Id = meter.Id,
-            Name = meter.Name,
-            Factor = meter.Factor,
-            DisplayOrder = meter.DisplayOrder
+            Id = activity.Id,
+            Name = activity.Name,
+            Factor = activity.Factor,
+            DisplayOrder = activity.DisplayOrder
         };
     }
 }

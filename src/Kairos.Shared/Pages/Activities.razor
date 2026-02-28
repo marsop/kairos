@@ -1,4 +1,4 @@
-@page "/meters"
+@page "/activities"
 @using Kairos.Shared.Models
 @using Kairos.Shared.Services
 @using Kairos.Shared.Resources
@@ -6,36 +6,36 @@
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
-<div class="meters-page">
-    <h2 class="page-title">@Localizer["NavMeters"]</h2>
+<div class="activities-page">
+    <h2 class="page-title">@Localizer["NavActivities"]</h2>
     
-    <div class="meters-grid">
+    <div class="activities-grid">
         @{
-            var orderedMeters = TimeService.Account.Meters.OrderBy(m => m.DisplayOrder).ToList();
+            var orderedActivities = TimeService.Account.Activities.OrderBy(m => m.DisplayOrder).ToList();
         }
-        @for (var index = 0; index < orderedMeters.Count; index++)
+        @for (var index = 0; index < orderedActivities.Count; index++)
         {
-            var meter = orderedMeters[index];
-            var isActive = IsActiveMeter(meter.Id);
-            var isEditing = _editingMeterId == meter.Id;
-            var isDragging = _draggedMeter?.Id == meter.Id;
-            var isDragOver = _dragTargetMeterId.HasValue && _dragTargetMeterId.Value == meter.Id && _draggedMeter?.Id != meter.Id;
+            var activity = orderedActivities[index];
+            var isActive = IsActiveActivity(activity.Id);
+            var isEditing = _editingActivityId == activity.Id;
+            var isDragging = _draggedActivity?.Id == activity.Id;
+            var isDragOver = _dragTargetActivityId.HasValue && _dragTargetActivityId.Value == activity.Id && _draggedActivity?.Id != activity.Id;
 
             <div draggable="@(isEditing ? "false" : "true")"
-                 class="meter-container @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
-                 @ondragstart="() => HandleDragStart(meter)"
-                 @ondragenter="() => HandleDragEnter(meter)"
+                 class="activity-container @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
+                 @ondragstart="() => HandleDragStart(activity)"
+                 @ondragenter="() => HandleDragEnter(activity)"
                  @ondragover="HandleDragOver"
                  @ondragover:preventDefault
-                 @ondrop="() => HandleDrop(meter)"
+                 @ondrop="() => HandleDrop(activity)"
                  @ondragend="HandleDragEnd"
                  @ondragleave="HandleDragLeave">
                 @if (isEditing)
                 {
-                    <div class="meter-edit-form">
+                    <div class="activity-edit-form">
                         <input type="text" 
-                               class="meter-name-input @(_validationError != null ? "invalid" : "")"
-                               @bind="_editingMeterName"
+                               class="activity-name-input @(_validationError != null ? "invalid" : "")"
+                               @bind="_editingActivityName"
                                @bind:event="oninput"
                                @onkeydown="HandleEditKeyDown"
                                @onblur="SaveEdit"
@@ -49,18 +49,18 @@
                         {
                             <div class="validation-error">@_validationError</div>
                         }
-                        <div class="char-count @(_editingMeterName?.Length > 40 ? "over-limit" : "")">
-                            @(_editingMeterName?.Length ?? 0)/40
+                        <div class="char-count @(_editingActivityName?.Length > 40 ? "over-limit" : "")">
+                            @(_editingActivityName?.Length ?? 0)/40
                         </div>
                     </div>
                 }
                 else
                 {
-                    <button class="meter-button @(isActive ? "active" : "") positive"
-                            @onclick="() => ToggleMeter(meter.Id)">
-                        <div class="meter-index">#@(index + 1)</div>
-                        <div class="meter-name">@meter.Name</div>
-                        <div class="meter-status">
+                    <button class="activity-button @(isActive ? "active" : "") positive"
+                            @onclick="() => ToggleActivity(activity.Id)">
+                        <div class="activity-index">#@(index + 1)</div>
+                        <div class="activity-name">@activity.Name</div>
+                        <div class="activity-status">
                             @if (isActive)
                             {
                                 <span class="pulse"></span>
@@ -72,13 +72,13 @@
                             }
                         </div>
                     </button>
-                    <div class="meter-actions">
-                        <button class="meter-action-btn" @onclick="() => StartEditing(meter)" @onclick:stopPropagation="true" title="@Localizer["RenameMeter"]">
+                    <div class="activity-actions">
+                        <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
                             ✏️
                         </button>
                         @if (!isActive)
                         {
-                            <button class="meter-action-btn delete" @onclick="() => DeleteMeter(meter)" @onclick:stopPropagation="true" title="@Localizer["DeleteMeter"]">
+                            <button class="activity-action-btn delete" @onclick="() => DeleteActivity(activity)" @onclick:stopPropagation="true" title="@Localizer["DeleteActivity"]">
                                 🗑️
                             </button>
                         }
@@ -87,21 +87,21 @@
             </div>
         }
         
-        @if (TimeService.Account.Meters.Count < Kairos.Shared.Services.TimeTrackingService.MaxMeters)
+        @if (TimeService.Account.Activities.Count < Kairos.Shared.Services.TimeTrackingService.MaxActivities)
         {
-        <div class="meter-container add-meter">
-            @if (_isAddingMeter)
+        <div class="activity-container add-activity">
+            @if (_isAddingActivity)
             {
-                <div class="meter-edit-form">
+                <div class="activity-edit-form">
                     <input type="text" 
-                           class="meter-name-input"
+                           class="activity-name-input"
                            placeholder="@Localizer["Name"]"
-                           @bind="_newMeterName"
+                           @bind="_newActivityName"
                            maxlength="40"
                            autofocus />
                            
                     <div class="edit-actions">
-                        <button class="edit-action-btn save" @onclick="SaveNewMeter" title="@Localizer["Add"]">✓</button>
+                        <button class="edit-action-btn save" @onclick="SaveNewActivity" title="@Localizer["Add"]">✓</button>
                         <button class="edit-action-btn cancel" @onclick="CancelAdd" title="@Localizer["Cancel"]">✕</button>
                     </div>
                     
@@ -113,9 +113,9 @@
             }
             else
             {
-                <button class="meter-button add-meter-btn" @onclick="StartAdding">
+                <button class="activity-button add-activity-btn" @onclick="StartAdding">
                     <div class="add-icon">+</div>
-                    <div class="add-text">@Localizer["AddMeter"]</div>
+                    <div class="add-text">@Localizer["AddActivity"]</div>
                 </button>
             }
         </div>
@@ -133,12 +133,12 @@
     }
 </div>
 
-@if (_startCommentMeterId.HasValue)
+@if (_startCommentActivityId.HasValue)
 {
     <div class="modal-overlay" @onclick="CancelStartComment">
         <div class="modal-dialog" @onclick:stopPropagation="true">
-            <h3>@Localizer["StartMeterCommentTitle"]</h3>
-            <p>@Localizer["StartMeterCommentPrompt"]</p>
+            <h3>@Localizer["StartActivityCommentTitle"]</h3>
+            <p>@Localizer["StartActivityCommentPrompt"]</p>
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
@@ -167,24 +167,24 @@
 }
 
 @code {
-    private MeterEvent? ActiveEvent => TimeService.GetActiveEvent();
+    private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
     
     private System.Threading.Timer? _timer;
-    private Guid? _editingMeterId;
-    private string? _editingMeterName;
+    private Guid? _editingActivityId;
+    private string? _editingActivityName;
     private string? _validationError;
 
-    // Add Meter State
-    private bool _isAddingMeter;
-    private string _newMeterName = string.Empty;
+    // Add Activity State
+    private bool _isAddingActivity;
+    private string _newActivityName = string.Empty;
     private string? _addValidationError;
-    private Guid? _startCommentMeterId;
+    private Guid? _startCommentActivityId;
     private string _startComment = string.Empty;
     private string? _startCommentError;
 
     // Drag and Drop State
-    private Meter? _draggedMeter;
-    private Guid? _dragTargetMeterId;
+    private Activity? _draggedActivity;
+    private Guid? _dragTargetActivityId;
 
     protected override void OnInitialized()
     {
@@ -197,30 +197,30 @@
         }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
-    private bool IsActiveMeter(Guid meterId)
+    private bool IsActiveActivity(Guid activityId)
     {
         var activeEvent = ActiveEvent;
         if (activeEvent == null) return false;
         
-        var meter = TimeService.Account.Meters.FirstOrDefault(m => m.Id == meterId);
-        return meter != null && activeEvent.MeterName == meter.Name;
+        var activity = TimeService.Account.Activities.FirstOrDefault(m => m.Id == activityId);
+        return activity != null && activeEvent.ActivityName == activity.Name;
     }
 
-    private void ToggleMeter(Guid meterId)
+    private void ToggleActivity(Guid activityId)
     {
-        if (IsActiveMeter(meterId))
+        if (IsActiveActivity(activityId))
         {
-            TimeService.DeactivateMeter();
+            TimeService.DeactivateActivity();
         }
         else
         {
-            StartMeterWithComment(meterId);
+            StartActivityWithComment(activityId);
         }
     }
 
-    private void StartMeterWithComment(Guid meterId)
+    private void StartActivityWithComment(Guid activityId)
     {
-        _startCommentMeterId = meterId;
+        _startCommentActivityId = activityId;
         _startComment = string.Empty;
         _startCommentError = null;
         CancelEdit();
@@ -229,14 +229,14 @@
 
     private void CancelStartComment()
     {
-        _startCommentMeterId = null;
+        _startCommentActivityId = null;
         _startComment = string.Empty;
         _startCommentError = null;
     }
 
     private void ConfirmStartComment()
     {
-        if (!_startCommentMeterId.HasValue)
+        if (!_startCommentActivityId.HasValue)
         {
             return;
         }
@@ -250,7 +250,7 @@
 
         try
         {
-            TimeService.ActivateMeter(_startCommentMeterId.Value, comment);
+            TimeService.ActivateActivity(_startCommentActivityId.Value, comment);
             CancelStartComment();
         }
         catch (ArgumentException ex)
@@ -271,23 +271,23 @@
         }
     }
 
-    private void StartEditing(Meter meter)
+    private void StartEditing(Activity activity)
     {
-        _editingMeterId = meter.Id;
-        _editingMeterName = meter.Name;
+        _editingActivityId = activity.Id;
+        _editingActivityName = activity.Name;
         _validationError = null;
         CancelAdd();
     }
 
     private void SaveEdit()
     {
-        if (_editingMeterId == null || _editingMeterName == null)
+        if (_editingActivityId == null || _editingActivityName == null)
         {
             CancelEdit();
             return;
         }
 
-        var trimmedName = _editingMeterName.Trim();
+        var trimmedName = _editingActivityName.Trim();
         
         if (trimmedName.Length < 1 || trimmedName.Length > 40)
         {
@@ -297,7 +297,7 @@
 
         try
         {
-            TimeService.RenameMeter(_editingMeterId.Value, trimmedName);
+            TimeService.RenameActivity(_editingActivityId.Value, trimmedName);
             CancelEdit();
         }
         catch (ArgumentException ex)
@@ -308,8 +308,8 @@
 
     private void CancelEdit()
     {
-        _editingMeterId = null;
-        _editingMeterName = null;
+        _editingActivityId = null;
+        _editingActivityName = null;
         _validationError = null;
     }
 
@@ -341,31 +341,31 @@
         }
     }
 
-    private void DeleteMeter(Meter meter)
+    private void DeleteActivity(Activity activity)
     {
-        if (IsActiveMeter(meter.Id)) return;
-        TimeService.DeleteMeter(meter.Id);
+        if (IsActiveActivity(activity.Id)) return;
+        TimeService.DeleteActivity(activity.Id);
     }
     
-    // Add Meter Logic
+    // Add Activity Logic
     private void StartAdding()
     {
-        _isAddingMeter = true;
-        _newMeterName = string.Empty;
+        _isAddingActivity = true;
+        _newActivityName = string.Empty;
         _addValidationError = null;
         CancelEdit();
     }
 
     private void CancelAdd()
     {
-        _isAddingMeter = false;
-        _newMeterName = string.Empty;
+        _isAddingActivity = false;
+        _newActivityName = string.Empty;
         _addValidationError = null;
     }
 
-    private void SaveNewMeter()
+    private void SaveNewActivity()
     {
-        if (string.IsNullOrWhiteSpace(_newMeterName))
+        if (string.IsNullOrWhiteSpace(_newActivityName))
         {
             _addValidationError = Localizer["NameRequired"];
             return;
@@ -373,7 +373,7 @@
         
         try
         {
-            TimeService.AddMeter(_newMeterName);
+            TimeService.AddActivity(_newActivityName);
             CancelAdd();
         }
         catch (Exception ex)
@@ -384,16 +384,16 @@
 
     // Drag and Drop Handlers
 
-    private void HandleDragStart(Meter meter)
+    private void HandleDragStart(Activity activity)
     {
-        _draggedMeter = meter;
-        _dragTargetMeterId = null;
+        _draggedActivity = activity;
+        _dragTargetActivityId = null;
     }
 
-    private void HandleDragEnter(Meter meter)
+    private void HandleDragEnter(Activity activity)
     {
-        if (_draggedMeter == null || _draggedMeter.Id == meter.Id) return;
-        _dragTargetMeterId = meter.Id;
+        if (_draggedActivity == null || _draggedActivity.Id == activity.Id) return;
+        _dragTargetActivityId = activity.Id;
     }
 
     private void HandleDragLeave()
@@ -408,34 +408,34 @@
 
     private void HandleDragEnd()
     {
-        _draggedMeter = null;
-        _dragTargetMeterId = null;
+        _draggedActivity = null;
+        _dragTargetActivityId = null;
     }
 
-    private void HandleDrop(Meter targetMeter)
+    private void HandleDrop(Activity targetActivity)
     {
-        if (_draggedMeter == null || _draggedMeter.Id == targetMeter.Id)
+        if (_draggedActivity == null || _draggedActivity.Id == targetActivity.Id)
         {
-            _draggedMeter = null;
-            _dragTargetMeterId = null;
+            _draggedActivity = null;
+            _dragTargetActivityId = null;
             return;
         }
 
         // Compute the reorder: remove dragged from original position, insert at target position
-        var meters = TimeService.Account.Meters.OrderBy(m => m.DisplayOrder).ToList();
-        var draggedIndex = meters.FindIndex(m => m.Id == _draggedMeter.Id);
-        var targetIndex = meters.FindIndex(m => m.Id == targetMeter.Id);
+        var activities = TimeService.Account.Activities.OrderBy(m => m.DisplayOrder).ToList();
+        var draggedIndex = activities.FindIndex(m => m.Id == _draggedActivity.Id);
+        var targetIndex = activities.FindIndex(m => m.Id == targetActivity.Id);
 
         if (draggedIndex != -1 && targetIndex != -1)
         {
-            var dragged = meters[draggedIndex];
-            meters.RemoveAt(draggedIndex);
-            meters.Insert(targetIndex, dragged);
-            TimeService.ReorderMeters(meters.Select(m => m.Id).ToList());
+            var dragged = activities[draggedIndex];
+            activities.RemoveAt(draggedIndex);
+            activities.Insert(targetIndex, dragged);
+            TimeService.ReorderActivities(activities.Select(m => m.Id).ToList());
         }
 
-        _draggedMeter = null;
-        _dragTargetMeterId = null;
+        _draggedActivity = null;
+        _dragTargetActivityId = null;
     }
 
     public void Dispose()

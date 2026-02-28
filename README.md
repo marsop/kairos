@@ -8,18 +8,18 @@ Available at https://albertogregorio.com/Kairos/
 
 ## Overview
 
-Kairos is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable meters, giving you a balance sheet of your time budget.
+Kairos is a time-tracking application built with Blazor WebAssembly. It helps you track how you spend your time using customizable activities, giving you a balance sheet of your time budget.
 
 ## Features
 
-### Time Tracking with Meters
-- **Customizable Meters**: Create multiple time trackers with custom names
-- **One-Touch Activation**: Tap a meter to start/stop tracking time
+### Time Tracking with Activities
+- **Customizable Activities**: Create multiple time trackers with custom names
+- **One-Touch Activation**: Tap a activity to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
 
 ### Overview Dashboard
 - **Current Balance**: At-a-glance view of your total time balance in hours
-- **Active Indicator**: Shows which meter is currently running
+- **Active Indicator**: Shows which activity is currently running
 
 ### Timeline View
 - **Event History**: View all recorded time events chronologically
@@ -27,7 +27,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 
 ### History
 - **Complete Log**: Access your full time-tracking history
-- **Detailed Events**: View start times, durations, and associated meters
+- **Detailed Events**: View start times, durations, and associated activities
 
 ### Sync & Backup
 - **Local Export/Import**: Download your data as JSON files
@@ -57,8 +57,8 @@ Kairos/
 │   ├── Kairos.Shared/       # Shared components, services, models
 │   │   ├── Components/       # Reusable UI components
 │   │   ├── Layout/           # Application layout
-│   │   ├── Models/           # Data models (Meter, MeterEvent, TimeAccount)
-│   │   ├── Pages/            # Application pages (Overview, Meters, Timeline, etc.)
+│   │   ├── Models/           # Data models (Activity, ActivityEvent, TimeAccount)
+│   │   ├── Pages/            # Application pages (Overview, Activities, Timeline, etc.)
 │   │   ├── Resources/        # Localization files
 │   │   └── Services/         # Core business logic services
 │   └── Kairos.Web/          # Blazor WebAssembly project

@@ -6,14 +6,14 @@ namespace Kairos.Shared.Models;
 public class TimeAccount
 {
     /// <summary>
-    /// All meter events (historical and current).
+    /// All activity events (historical and current).
     /// </summary>
-    public List<MeterEvent> Events { get; set; } = new();
+    public List<ActivityEvent> Events { get; set; } = new();
 
     /// <summary>
-    /// Configured meters available to the user.
+    /// Configured activities available to the user.
     /// </summary>
-    public List<Meter> Meters { get; set; } = new();
+    public List<Activity> Activities { get; set; } = new();
 
     /// <summary>
     /// The selected timeline period for the chart.

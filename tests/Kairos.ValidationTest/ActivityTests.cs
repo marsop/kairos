@@ -2,7 +2,7 @@ using Kairos.Shared.Models;
 
 namespace Kairos.ValidationTest;
 
-public class MeterTests
+public class ActivityTests
 {
     [Theory]
     [InlineData(-10)]
@@ -12,12 +12,12 @@ public class MeterTests
     [InlineData(1.5)]
     public void Factor_IsAlwaysNormalizedToOne(double factor)
     {
-        var meter = new Meter
+        var activity = new Activity
         {
             Name = "Test",
             Factor = factor
         };
 
-        Assert.Equal(1.0, meter.Factor);
+        Assert.Equal(1.0, activity.Factor);
     }
 }

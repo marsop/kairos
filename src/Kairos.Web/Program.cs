@@ -15,7 +15,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 // Register services
 builder.Services.AddScoped<IStorageService, BrowserStorageService>();
-builder.Services.AddScoped<IMeterConfigurationService, MeterConfigurationService>();
+builder.Services.AddScoped<IActivityConfigurationService, ActivityConfigurationService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<ITimeTrackingService, TimeTrackingService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();

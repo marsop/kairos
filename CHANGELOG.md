@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website Logo**: Added the Kairos logo to the application.
 - **README**: Created a comprehensive README.md.
 - **Project Structure**: Initial setup of the Blazor + MAUI Hybrid application.
-- **Pages**: Added Overview, Meters, and Timeline pages with core functionality.
+- **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
 - **Factory Reset**: Moved the factory reset functionality from the Sync page to the Settings page.

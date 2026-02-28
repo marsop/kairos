@@ -64,7 +64,7 @@
   <data name="NavOverview" xml:space="preserve">
     <value>Visión xeral</value>
   </data>
-  <data name="NavMeters" xml:space="preserve">
+  <data name="NavActivities" xml:space="preserve">
     <value>Contadores</value>
   </data>
   <data name="NavTimeline" xml:space="preserve">
@@ -97,13 +97,13 @@
   <data name="HoursUnit" xml:space="preserve">
     <value>horas</value>
   </data>
-  <data name="MeterActive" xml:space="preserve">
+  <data name="ActivityActive" xml:space="preserve">
     <value>{0} activo</value>
   </data>
   <data name="NoEvents" xml:space="preserve">
     <value>Aínda non hai eventos rexistrados</value>
   </data>
-  <data name="StartMeterHint" xml:space="preserve">
+  <data name="StartActivityHint" xml:space="preserve">
     <value>Inicia un contador para comezar a rexistrar o tempo</value>
   </data>
   <data name="Active" xml:space="preserve">
@@ -154,7 +154,7 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="MeterFactor" xml:space="preserve">
+  <data name="ActivityFactor" xml:space="preserve">
     <value>Factor: {0}</value>
   </data>
   <data name="Running" xml:space="preserve">
@@ -163,16 +163,16 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Preme para iniciar</value>
   </data>
-  <data name="RenameMeter" xml:space="preserve">
+  <data name="RenameActivity" xml:space="preserve">
     <value>Renomear contador</value>
   </data>
-  <data name="DeleteMeter" xml:space="preserve">
+  <data name="DeleteActivity" xml:space="preserve">
     <value>Borrar contador</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Gardar</value>
   </data>
-  <data name="AddMeter" xml:space="preserve">
+  <data name="AddActivity" xml:space="preserve">
     <value>Engadir contador</value>
   </data>
   <data name="RunningFor" xml:space="preserve">
@@ -376,7 +376,7 @@
   <data name="TutorialOverview" xml:space="preserve">
     <value>Esta é a túa 'Visión xeral'. Ofrece unha imaxe rápida da saúde do teu orzamento temporal actual. Podes ver o teu saldo total de tempo e os contadores activos dunha ollada.</value>
   </data>
-  <data name="TutorialMeters" xml:space="preserve">
+  <data name="TutorialActivities" xml:space="preserve">
     <value>Aquí en 'Contadores' defines as túas actividades! Podes configurar contadores para cousas como Traballo, Estudo ou Lecer. Pensa neles como o pulso do teu día.</value>
   </data>
   <data name="TutorialTimeline" xml:space="preserve">
@@ -511,16 +511,16 @@
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Notificacións bloqueadas polo navegador. Permiteas na configuración do navegador.</value>
   </data>
-  <data name="NotificationMeterStartedTitle" xml:space="preserve">
+  <data name="NotificationActivityStartedTitle" xml:space="preserve">
     <value>⏱️ Contador Iniciado</value>
   </data>
-  <data name="NotificationMeterStartedBody" xml:space="preserve">
+  <data name="NotificationActivityStartedBody" xml:space="preserve">
     <value>Agora estás rexistrando '{0}'.</value>
   </data>
-  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
+  <data name="NotificationActivityStoppedTitle" xml:space="preserve">
     <value>⏹️ Contador Detido</value>
   </data>
-  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+  <data name="NotificationActivityStoppedBody" xml:space="preserve">
     <value>Deixaches de rexistrar '{0}'.</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">

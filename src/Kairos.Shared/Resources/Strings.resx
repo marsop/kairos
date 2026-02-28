@@ -64,8 +64,8 @@
   <data name="NavOverview" xml:space="preserve">
     <value>Overview</value>
   </data>
-  <data name="NavMeters" xml:space="preserve">
-    <value>Meters</value>
+  <data name="NavActivities" xml:space="preserve">
+    <value>Activities</value>
   </data>
   <data name="NavTimeline" xml:space="preserve">
     <value>Timeline</value>
@@ -97,14 +97,14 @@
   <data name="HoursUnit" xml:space="preserve">
     <value>hours</value>
   </data>
-  <data name="MeterActive" xml:space="preserve">
+  <data name="ActivityActive" xml:space="preserve">
     <value>{0} active</value>
   </data>
   <data name="NoEvents" xml:space="preserve">
     <value>No events recorded yet</value>
   </data>
-  <data name="StartMeterHint" xml:space="preserve">
-    <value>Start a meter to begin tracking time</value>
+  <data name="StartActivityHint" xml:space="preserve">
+    <value>Start a activity to begin tracking time</value>
   </data>
   <data name="Active" xml:space="preserve">
     <value>Active</value>
@@ -154,7 +154,7 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="MeterFactor" xml:space="preserve">
+  <data name="ActivityFactor" xml:space="preserve">
     <value>Factor: {0}</value>
   </data>
   <data name="Running" xml:space="preserve">
@@ -163,17 +163,17 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Tap to start</value>
   </data>
-  <data name="RenameMeter" xml:space="preserve">
-    <value>Rename meter</value>
+  <data name="RenameActivity" xml:space="preserve">
+    <value>Rename activity</value>
   </data>
-  <data name="DeleteMeter" xml:space="preserve">
-    <value>Delete meter</value>
+  <data name="DeleteActivity" xml:space="preserve">
+    <value>Delete activity</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="AddMeter" xml:space="preserve">
-    <value>Add Meter</value>
+  <data name="AddActivity" xml:space="preserve">
+    <value>Add Activity</value>
   </data>
   <data name="RunningFor" xml:space="preserve">
     <value>Running for:</value>
@@ -190,10 +190,10 @@
   <data name="Start" xml:space="preserve">
     <value>Start</value>
   </data>
-  <data name="StartMeterCommentTitle" xml:space="preserve">
+  <data name="StartActivityCommentTitle" xml:space="preserve">
     <value>Add a Comment</value>
   </data>
-  <data name="StartMeterCommentPrompt" xml:space="preserve">
+  <data name="StartActivityCommentPrompt" xml:space="preserve">
     <value>What comment should be attached to this entry?</value>
   </data>
   <data name="CommentLengthError" xml:space="preserve">
@@ -212,7 +212,7 @@
     <value>Export Data</value>
   </data>
   <data name="ExportDesc" xml:space="preserve">
-    <value>Download all your data (meters and events) as a JSON file.</value>
+    <value>Download all your data (activities and events) as a JSON file.</value>
   </data>
   <data name="Exporting" xml:space="preserve">
     <value>Exporting...</value>
@@ -311,7 +311,7 @@
     <value>FINAL WARNING</value>
   </data>
   <data name="FinalWarningMsg" xml:space="preserve">
-    <value>I am serious. This will wipe all meters, history, and settings. Are you absolutely sure?</value>
+    <value>I am serious. This will wipe all activities, history, and settings. Are you absolutely sure?</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
@@ -359,7 +359,7 @@
     <value>Export failed: {0}</value>
   </data>
   <data name="SuccessImport" xml:space="preserve">
-    <value>Data imported successfully! Meters and events have been updated.</value>
+    <value>Data imported successfully! Activities and events have been updated.</value>
   </data>
   <data name="ErrorImportFailed" xml:space="preserve">
     <value>Import failed: {0}</value>
@@ -389,10 +389,10 @@
     <value>Hi there! Welcome to 'Kairos'! I'm your personal time budget guide. I'm here to help you get started with managing your time effectively!</value>
   </data>
   <data name="TutorialOverview" xml:space="preserve">
-    <value>This is your 'Overview'. It gives you a quick snapshot of your current temporal budget health. You can see your total time balance and active meters at a glance.</value>
+    <value>This is your 'Overview'. It gives you a quick snapshot of your current temporal budget health. You can see your total time balance and active activities at a glance.</value>
   </data>
-  <data name="TutorialMeters" xml:space="preserve">
-    <value>Here in 'Meters', you define your activities! You can set up 'Meters' for things like Work, Study, or Leisure. Think of them as the pulse of your day.</value>
+  <data name="TutorialActivities" xml:space="preserve">
+    <value>Here in 'Activities', you define your activities! You can set up 'Activities' for things like Work, Study, or Leisure. Think of them as the pulse of your day.</value>
   </data>
   <data name="TutorialTimeline" xml:space="preserve">
     <value>The 'Timeline' is your visual aid! 🔮 It projects your past time budget based on your recorded activities. Use it to see trends and plan ahead.</value>
@@ -524,21 +524,21 @@
     <value>Browser Notifications</value>
   </data>
   <data name="BrowserNotificationsDesc" xml:space="preserve">
-    <value>Show system notifications when a meter is activated or deactivated</value>
+    <value>Show system notifications when a activity is activated or deactivated</value>
   </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Notifications blocked by browser. Please allow them in your browser settings.</value>
   </data>
-  <data name="NotificationMeterStartedTitle" xml:space="preserve">
-    <value>⏱️ Meter Started</value>
+  <data name="NotificationActivityStartedTitle" xml:space="preserve">
+    <value>⏱️ Activity Started</value>
   </data>
-  <data name="NotificationMeterStartedBody" xml:space="preserve">
+  <data name="NotificationActivityStartedBody" xml:space="preserve">
     <value>You are now tracking '{0}'.</value>
   </data>
-  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
-    <value>⏹️ Meter Stopped</value>
+  <data name="NotificationActivityStoppedTitle" xml:space="preserve">
+    <value>⏹️ Activity Stopped</value>
   </data>
-  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+  <data name="NotificationActivityStoppedBody" xml:space="preserve">
     <value>You have stopped tracking '{0}'.</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">

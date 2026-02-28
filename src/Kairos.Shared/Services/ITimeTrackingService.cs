@@ -23,21 +23,21 @@ public interface ITimeTrackingService
     TimeSpan GetCurrentBalance();
     
     /// <summary>
-    /// Gets the currently active meter event, if any.
+    /// Gets the currently active activity event, if any.
     /// </summary>
-    MeterEvent? GetActiveEvent();
+    ActivityEvent? GetActiveEvent();
     
     /// <summary>
-    /// Activates a meter by its ID. Deactivates any currently active meter first.
+    /// Activates a activity by its ID. Deactivates any currently active activity first.
     /// </summary>
-    /// <param name="meterId">The ID of the meter to activate.</param>
+    /// <param name="activityId">The ID of the activity to activate.</param>
     /// <param name="comment">A required comment between 1 and 250 characters.</param>
-    void ActivateMeter(Guid meterId, string comment);
+    void ActivateActivity(Guid activityId, string comment);
     
     /// <summary>
-    /// Deactivates the currently active meter.
+    /// Deactivates the currently active activity.
     /// </summary>
-    void DeactivateMeter();
+    void DeactivateActivity();
     
     /// <summary>
     /// Gets timeline data points for the specified period.
@@ -75,46 +75,46 @@ public interface ITimeTrackingService
     event Action? OnStateChanged;
     
     /// <summary>
-    /// Exports all data (meters and events) as a JSON string.
+    /// Exports all data (activities and events) as a JSON string.
     /// </summary>
     string ExportData();
     
     /// <summary>
-    /// Imports data from a JSON string, replacing current meters and events.
+    /// Imports data from a JSON string, replacing current activities and events.
     /// </summary>
     Task ImportDataAsync(string json);
     
     /// <summary>
-    /// Renames a meter. Only affects future events; existing events keep the old name.
+    /// Renames a activity. Only affects future events; existing events keep the old name.
     /// </summary>
-    /// <param name="meterId">The ID of the meter to rename.</param>
+    /// <param name="activityId">The ID of the activity to rename.</param>
     /// <param name="newName">The new name (1-40 characters).</param>
     /// <exception cref="ArgumentException">Thrown when the name is invalid.</exception>
-    void RenameMeter(Guid meterId, string newName);
+    void RenameActivity(Guid activityId, string newName);
 
     /// <summary>
-    /// Deletes a meter by its ID.
+    /// Deletes a activity by its ID.
     /// </summary>
-    /// <param name="meterId">The ID of the meter to delete.</param>
-    /// <exception cref="InvalidOperationException">Thrown when trying to delete an active meter.</exception>
-    void DeleteMeter(Guid meterId);
+    /// <param name="activityId">The ID of the activity to delete.</param>
+    /// <exception cref="InvalidOperationException">Thrown when trying to delete an active activity.</exception>
+    void DeleteActivity(Guid activityId);
 
     /// <summary>
-    /// Adds a new meter with the specified name.
+    /// Adds a new activity with the specified name.
     /// </summary>
-    /// <param name="name">Name of the meter.</param>
+    /// <param name="name">Name of the activity.</param>
     /// <exception cref="ArgumentException">Thrown when name is invalid.</exception>
-    void AddMeter(string name);
+    void AddActivity(string name);
     /// <summary>
-    /// Resets all data to initial state (default meters, no history).
+    /// Resets all data to initial state (default activities, no history).
     /// </summary>
     Task ResetDataAsync();
 
     /// <summary>
-    /// Reorders the meters based on the provided list of meter IDs.
+    /// Reorders the activities based on the provided list of activity IDs.
     /// </summary>
-    /// <param name="orderedMeterIds">The list of meter IDs in the desired order.</param>
-    void ReorderMeters(List<Guid> orderedMeterIds);
+    /// <param name="orderedActivityIds">The list of activity IDs in the desired order.</param>
+    void ReorderActivities(List<Guid> orderedActivityIds);
 }
 
 /// <summary>

@@ -59,8 +59,8 @@ public class TutorialService : ITutorialService
             // 2. Overview
             new TutorialStep(_localizer["TutorialOverview"], "", $"{basePath}/tutorial-avatar-2.png"),
             
-            // 3. Meters
-            new TutorialStep(_localizer["TutorialMeters"], "meters", $"{basePath}/tutorial-avatar-3.png"),
+            // 3. Activities
+            new TutorialStep(_localizer["TutorialActivities"], "activities", $"{basePath}/tutorial-avatar-3.png"),
             
             // 4. Timeline
             new TutorialStep(_localizer["TutorialTimeline"], "timeline", $"{basePath}/tutorial-avatar-4.png"),

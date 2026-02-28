@@ -248,7 +248,7 @@ body {
     margin-top: var(--spacing-xs);
 }
 
-.active-meter-indicator {
+.active-activity-indicator {
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -285,9 +285,9 @@ body {
     }
 }
 
-/* ===== Meters Page ===== */
+/* ===== Activities Page ===== */
 
-.meters-page {
+.activities-page {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
@@ -299,13 +299,13 @@ body {
     color: var(--color-text-primary);
 }
 
-.meters-grid {
+.activities-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
 }
 
-.meter-button {
+.activity-button {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -320,36 +320,36 @@ body {
     font-family: inherit;
 }
 
-.meter-button:hover {
+.activity-button:hover {
     border-color: var(--color-text-muted);
     transform: translateY(-2px);
 }
 
-.meter-button.positive {
+.activity-button.positive {
     border-color: rgba(16, 185, 129, 0.3);
 }
 
-.meter-button.positive:hover,
-.meter-button.positive.active {
+.activity-button.positive:hover,
+.activity-button.positive.active {
     border-color: var(--color-positive);
     box-shadow: var(--shadow-glow-positive);
 }
 
-.meter-button.negative {
+.activity-button.negative {
     border-color: rgba(239, 68, 68, 0.3);
 }
 
-.meter-button.negative:hover,
-.meter-button.negative.active {
+.activity-button.negative:hover,
+.activity-button.negative.active {
     border-color: var(--color-negative);
     box-shadow: var(--shadow-glow-negative);
 }
 
-.meter-button.active {
+.activity-button.active {
     transform: scale(1.02);
 }
 
-.meter-name {
+.activity-name {
     font-size: var(--font-size-lg);
     font-weight: 700;
     color: var(--color-text-primary);
@@ -362,7 +362,7 @@ body {
     overflow: hidden;
 }
 
-.meter-index {
+.activity-index {
     font-size: var(--font-size-xs);
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -372,15 +372,15 @@ body {
     background: var(--color-bg-tertiary);
 }
 
-.meter-button.positive .meter-name {
+.activity-button.positive .activity-name {
     color: var(--color-positive);
 }
 
-.meter-button.negative .meter-name {
+.activity-button.negative .activity-name {
     color: var(--color-negative);
 }
 
-.meter-status {
+.activity-status {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -536,17 +536,17 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
-.event-meter-name {
+.event-activity-name {
     font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--color-text-primary);
 }
 
-.event-card.positive .event-meter-name {
+.event-card.positive .event-activity-name {
     color: var(--color-positive);
 }
 
-.event-card.negative .event-meter-name {
+.event-card.negative .event-activity-name {
     color: var(--color-negative);
 }
 
@@ -651,11 +651,11 @@ body {
 /* ===== Responsive ===== */
 
 @media (min-width: 480px) {
-    .meter-button {
+    .activity-button {
         padding: var(--spacing-xl);
     }
 
-    .meter-name {
+    .activity-name {
         font-size: var(--font-size-2xl);
     }
 }
@@ -1540,17 +1540,17 @@ body {
     word-break: break-word;
 }
 
-/* ===== Meter Edit/Rename ===== */
+/* ===== Activity Edit/Rename ===== */
 
-.meter-container {
+.activity-container {
     position: relative;
 }
 
-.meter-container .meter-button {
+.activity-container .activity-button {
     width: 100%;
 }
 
-.meter-actions {
+.activity-actions {
     position: absolute;
     top: var(--spacing-sm);
     right: var(--spacing-sm);
@@ -1561,11 +1561,11 @@ body {
     transition: opacity var(--transition-fast);
 }
 
-.meter-container:hover .meter-actions {
+.activity-container:hover .activity-actions {
     opacity: 1;
 }
 
-.meter-action-btn {
+.activity-action-btn {
     width: 32px;
     height: 32px;
     display: flex;
@@ -1580,18 +1580,18 @@ body {
     transition: all var(--transition-fast);
 }
 
-.meter-action-btn:hover {
+.activity-action-btn:hover {
     background: var(--color-bg-primary);
     color: var(--color-text-primary);
     transform: scale(1.1);
 }
 
-.meter-action-btn.delete:hover {
+.activity-action-btn.delete:hover {
     background: rgba(239, 68, 68, 0.2);
     color: var(--color-negative);
 }
 
-.meter-edit-form {
+.activity-edit-form {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -1602,7 +1602,7 @@ body {
     min-height: 120px;
 }
 
-.meter-name-input {
+.activity-name-input {
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--color-bg-tertiary);
@@ -1616,13 +1616,13 @@ body {
     transition: all var(--transition-fast);
 }
 
-.meter-name-input:focus {
+.activity-name-input:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
-.meter-name-input.invalid {
+.activity-name-input.invalid {
     border-color: var(--color-negative);
     box-shadow: 0 0 0 3px var(--color-negative-glow);
 }
@@ -1683,15 +1683,15 @@ body {
     color: var(--color-negative);
 }
 
-/* ===== Add Meter ===== */
+/* ===== Add Activity ===== */
 
-.meter-button.add-meter-btn {
+.activity-button.add-activity-btn {
     border-style: dashed;
     background: transparent;
     opacity: 0.7;
 }
 
-.meter-button.add-meter-btn:hover {
+.activity-button.add-activity-btn:hover {
     opacity: 1;
     border-color: var(--color-accent);
     color: var(--color-accent);
@@ -1989,23 +1989,23 @@ body {
 
 /* ===== Drag and Drop ===== */
 
-.meter-container.dragging {
+.activity-container.dragging {
     opacity: 0.35;
     transform: scale(0.95);
     transition: all var(--transition-fast);
 }
 
-.meter-container.dragging .meter-button {
+.activity-container.dragging .activity-button {
     border-style: dashed;
     border-color: var(--color-accent);
 }
 
-.meter-container.drag-over {
+.activity-container.drag-over {
     transform: scale(1.03);
     transition: all var(--transition-fast);
 }
 
-.meter-container.drag-over .meter-button {
+.activity-container.drag-over .activity-button {
     border-color: var(--color-accent);
     box-shadow: 0 0 20px var(--color-accent-glow), inset 0 0 15px rgba(99, 102, 241, 0.08);
     background: rgba(99, 102, 241, 0.06);

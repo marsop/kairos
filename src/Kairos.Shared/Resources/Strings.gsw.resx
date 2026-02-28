@@ -64,7 +64,7 @@
   <data name="NavOverview" xml:space="preserve">
     <value>Überblick</value>
   </data>
-  <data name="NavMeters" xml:space="preserve">
+  <data name="NavActivities" xml:space="preserve">
     <value>Zähler</value>
   </data>
   <data name="NavTimeline" xml:space="preserve">
@@ -97,13 +97,13 @@
   <data name="HoursUnit" xml:space="preserve">
     <value>Stunda</value>
   </data>
-  <data name="MeterActive" xml:space="preserve">
+  <data name="ActivityActive" xml:space="preserve">
     <value>{0} isch aktiv</value>
   </data>
   <data name="NoEvents" xml:space="preserve">
     <value>No koane Ereignis ufgschrieba</value>
   </data>
-  <data name="StartMeterHint" xml:space="preserve">
+  <data name="StartActivityHint" xml:space="preserve">
     <value>Fang an Zähler a zum d'Zit ufschrieba</value>
   </data>
   <data name="Active" xml:space="preserve">
@@ -154,7 +154,7 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="MeterFactor" xml:space="preserve">
+  <data name="ActivityFactor" xml:space="preserve">
     <value>Faktor: {0}</value>
   </data>
   <data name="Running" xml:space="preserve">
@@ -163,16 +163,16 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Uf d'Backe drucka</value>
   </data>
-  <data name="RenameMeter" xml:space="preserve">
+  <data name="RenameActivity" xml:space="preserve">
     <value>Zähler umbenenna</value>
   </data>
-  <data name="DeleteMeter" xml:space="preserve">
+  <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löscha</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Speichara</value>
   </data>
-  <data name="AddMeter" xml:space="preserve">
+  <data name="AddActivity" xml:space="preserve">
     <value>Zähler dazuatua</value>
   </data>
   <data name="RunningFor" xml:space="preserve">
@@ -376,7 +376,7 @@
   <data name="TutorialOverview" xml:space="preserve">
     <value>Des isch din 'Überblick'. Do siehsch uf oan Blick, wie's um din Zitbudget stoht. Di gsamt Guthaben und d'aktiva Zähler uf oam Fleck.</value>
   </data>
-  <data name="TutorialMeters" xml:space="preserve">
+  <data name="TutorialActivities" xml:space="preserve">
     <value>Do bi da 'Zähler' seisch, was du machsch! Du kasch Zähler für Arbet, Beruaf oder Freizit macha. Des isch da Puls vo dinam Tag.</value>
   </data>
   <data name="TutorialTimeline" xml:space="preserve">
@@ -506,21 +506,21 @@
     <value>Browser-Benochrichtigonga</value>
   </data>
   <data name="BrowserNotificationsDesc" xml:space="preserve">
-    <value>Systemmeldonga azoiga, wenn a Meter aktiviert oder deaktiviert wird</value>
+    <value>Systemmeldonga azoiga, wenn a Activity aktiviert oder deaktiviert wird</value>
   </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Benochrichtigonga vom Browser blockiert. Bitte in da Browseriistellonga erlauba.</value>
   </data>
-  <data name="NotificationMeterStartedTitle" xml:space="preserve">
+  <data name="NotificationActivityStartedTitle" xml:space="preserve">
     <value>⏱️ Zähler Gstartet</value>
   </data>
-  <data name="NotificationMeterStartedBody" xml:space="preserve">
+  <data name="NotificationActivityStartedBody" xml:space="preserve">
     <value>Du erfassisch jetzt '{0}'.</value>
   </data>
-  <data name="NotificationMeterStoppedTitle" xml:space="preserve">
+  <data name="NotificationActivityStoppedTitle" xml:space="preserve">
     <value>⏹️ Zähler Gstoppt</value>
   </data>
-  <data name="NotificationMeterStoppedBody" xml:space="preserve">
+  <data name="NotificationActivityStoppedBody" xml:space="preserve">
     <value>Du hesch d'Erfassig vo '{0}' beändet.</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
