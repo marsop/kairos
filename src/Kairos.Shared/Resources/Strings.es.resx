@@ -571,4 +571,106 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Tu rastreador Timeular se ha desconectado.</value>
   </data>
+  <data name="TimeularSettingsDesc" xml:space="preserve">
+    <value>Conecte su dispositivo Timeular. El índice de la cara se asigna al índice de actividad (por ejemplo, la Cara 3 activa la actividad #3).</value>
+  </data>
+  <data name="TimeularSelectedDevice" xml:space="preserve">
+    <value>Dispositivo seleccionado: {0}</value>
+  </data>
+  <data name="TimeularTrackerStatus" xml:space="preserve">
+    <value>Estado del rastreador:</value>
+  </data>
+  <data name="TimeularConnecting" xml:space="preserve">
+    <value>Conectando...</value>
+  </data>
+  <data name="TimeularConnected" xml:space="preserve">
+    <value>Conectado</value>
+  </data>
+  <data name="TimeularDisconnected" xml:space="preserve">
+    <value>Desconectado</value>
+  </data>
+  <data name="TimeularReconnect" xml:space="preserve">
+    <value>Reconectar Timeular</value>
+  </data>
+  <data name="TimeularConnect" xml:space="preserve">
+    <value>Conectar Timeular</value>
+  </data>
+  <data name="TimeularDisconnect" xml:space="preserve">
+    <value>Desconectar</value>
+  </data>
+  <data name="TimeularRecentChanges" xml:space="preserve">
+    <value>Cambios recientes de dispositivo</value>
+  </data>
+  <data name="SupabaseSettingsTitle" xml:space="preserve">
+    <value>Supabase</value>
+  </data>
+  <data name="SupabaseSignedInAs" xml:space="preserve">
+    <value>Identificado como {0}</value>
+  </data>
+  <data name="TimeularKnownDevice" xml:space="preserve">
+    <value>Dispositivo conocido: {0}</value>
+  </data>
+  <data name="TimeularEventReceived" xml:space="preserve">
+    <value>Se recibió un evento de dispositivo</value>
+  </data>
+  <data name="TimeularFaceMappingDeactivated" xml:space="preserve">
+    <value> -&gt; desactivado</value>
+  </data>
+  <data name="TimeularFaceMappingAlreadyActive" xml:space="preserve">
+    <value> -&gt; ya activo</value>
+  </data>
+  <data name="TimeularFaceMappingActivated" xml:space="preserve">
+    <value> -&gt; actividad #{0} activada</value>
+  </data>
+  <data name="TimeularConnectedTo" xml:space="preserve">
+    <value>Conectado a {0}.</value>
+  </data>
+  <data name="TimeularStatusConnectedTo" xml:space="preserve">
+    <value>Conectado a {0}</value>
+  </data>
+  <data name="TimeularConnectionError" xml:space="preserve">
+    <value>No se pudo conectar al dispositivo Timeular.</value>
+  </data>
+  <data name="TimeularConnectionException" xml:space="preserve">
+    <value>No se pudo conectar a Timeular: {0}</value>
+  </data>
+  <data name="TimeularStatusDisconnected" xml:space="preserve">
+    <value>Timeular desconectado.</value>
+  </data>
+  <data name="TimeularActionDisconnected" xml:space="preserve">
+    <value>Desconectado de Timeular</value>
+  </data>
+  <data name="TimeularDisconnectException" xml:space="preserve">
+    <value>No se pudo desconectar de Timeular: {0}</value>
+  </data>
+  <data name="TimeularDeviceDisconnected" xml:space="preserve">
+    <value>Dispositivo desconectado</value>
+  </data>
+  <data name="TimeularFace" xml:space="preserve">
+    <value>Cara {0}</value>
+  </data>
+  <data name="TimeularFaceUnknown" xml:space="preserve">
+    <value>Cara ?</value>
+  </data>
+  <data name="TimeularReconnectedTo" xml:space="preserve">
+    <value>Reconectado a {0}.</value>
+  </data>
+  <data name="TimeularReconnectedAction" xml:space="preserve">
+    <value>Reconectado a {0}</value>
+  </data>
+  <data name="TimeularAutoReconnectSuccess" xml:space="preserve">
+    <value>Autorreconexión exitosa: {0} está conectado.</value>
+  </data>
+  <data name="TimeularNoDetails" xml:space="preserve">
+    <value>No se proporcionaron detalles.</value>
+  </data>
+  <data name="TimeularAutoReconnectFailed" xml:space="preserve">
+    <value>Autorreconexión fallida: {0}</value>
+  </data>
+  <data name="TimeularAutoReconnectSkipped" xml:space="preserve">
+    <value>Autorreconexión omitida: {0}</value>
+  </data>
+  <data name="TimeularUnexpectedError" xml:space="preserve">
+    <value>Autorreconexión fallida por un error de inicio inesperado.</value>
+  </data>
 </root>

@@ -97,13 +97,13 @@
 
     <div class="settings-section">
         <h2 class="section-title">🧊 Timeular</h2>
-        <p class="setting-description">Connect your Timeular device. Face index maps to activity index (for example, Face 3 activates activity #3).</p>
+        <p class="setting-description">@Localizer["TimeularSettingsDesc"]</p>
 
         @if (!string.IsNullOrWhiteSpace(TimeularService.DeviceName))
         {
             <div class="timeular-device-info">
                 <span class="info-icon">📶</span>
-                <span>Selected device: @TimeularService.DeviceName</span>
+                <span>@Localizer["TimeularSelectedDevice", TimeularService.DeviceName]</span>
             </div>
         }
 
@@ -112,8 +112,8 @@
             <div class="timeular-connection-indicator">
                 <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
                 <span>
-                    Tracker status:
-                    @(TimeularService.IsConnecting ? "Connecting..." : (TimeularService.IsConnected ? "Connected" : "Disconnected"))
+                    @Localizer["TimeularTrackerStatus"]
+                    @(TimeularService.IsConnecting ? Localizer["TimeularConnecting"] : (TimeularService.IsConnected ? Localizer["TimeularConnected"] : Localizer["TimeularDisconnected"]))
                 </span>
             </div>
         }
@@ -128,14 +128,14 @@
         <div class="timeular-actions">
             <button class="sync-button timeular-connect-btn" @onclick="ConnectTimeularDevice" disabled="@TimeularService.IsConnecting">
                 <span class="btn-icon">🔗</span>
-                <span>@(TimeularService.IsConnecting ? "Connecting..." : (TimeularService.IsConnected ? "Reconnect Timeular" : "Connect Timeular"))</span>
+                <span>@(TimeularService.IsConnecting ? Localizer["TimeularConnecting"] : (TimeularService.IsConnected ? Localizer["TimeularReconnect"] : Localizer["TimeularConnect"]))</span>
             </button>
 
             @if (TimeularService.IsConnected)
             {
                 <button class="sync-button timeular-disconnect-btn" @onclick="DisconnectTimeularDevice">
                     <span class="btn-icon">🔌</span>
-                    <span>Disconnect</span>
+                    <span>@Localizer["TimeularDisconnect"]</span>
                 </button>
             }
         </div>
@@ -150,7 +150,7 @@
         @if (TimeularService.ChangeLog.Count > 0)
         {
             <div class="timeular-log">
-                <div class="timeular-log-title">Recent device changes</div>
+                <div class="timeular-log-title">@Localizer["TimeularRecentChanges"]</div>
                 <ul class="timeular-log-list">
                     @foreach (var entry in TimeularService.ChangeLog)
                     {
@@ -165,11 +165,11 @@
     </div>
 
     <div class="settings-section">
-        <h2 class="section-title">Supabase</h2>
+        <h2 class="section-title">@Localizer["SupabaseSettingsTitle"]</h2>
         @if (AuthService.IsAuthenticated)
         {
             <div class="setting-item">
-                <span class="setting-label">Signed in as @AuthService.CurrentUserEmail</span>
+                <span class="setting-label">@Localizer["SupabaseSignedInAs", AuthService.CurrentUserEmail ?? ""]</span>
             </div>
             <button class="sync-button signout-btn" @onclick="SignOutAsync">
                 <span class="btn-icon">↩️</span>

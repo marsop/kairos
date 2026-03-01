@@ -23,7 +23,7 @@ public class TimeularServiceTests
         Assert.NotNull(active);
         Assert.Equal(timeTracking.Account.Activities.OrderBy(m => m.DisplayOrder).First().Name, active!.ActivityName);
         Assert.NotEmpty(sut.ChangeLog);
-        Assert.Contains("activated #1", sut.ChangeLog[0].Message);
+        Assert.Contains("TimeularFaceMappingActivated", sut.ChangeLog[0].Message);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class TimeularServiceTests
         });
 
         Assert.Null(timeTracking.GetActiveEvent());
-        Assert.Contains("deactivated", sut.ChangeLog[0].Message);
+        Assert.Contains("TimeularFaceMappingDeactivated", sut.ChangeLog[0].Message);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class TimeularServiceTests
 
         Assert.False(sut.IsConnected);
         Assert.Equal("error", sut.StatusClass);
-        Assert.Equal("Timeular disconnected.", sut.StatusMessage);
+        Assert.Equal("TimeularStatusDisconnected", sut.StatusMessage);
         Assert.Contains(notifications.SentNotifications, n => n.Title == "NotificationTimeularDisconnectedTitle");
     }
 

@@ -601,4 +601,106 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Your Timeular tracker has been disconnected.</value>
   </data>
+  <data name="TimeularSettingsDesc" xml:space="preserve">
+    <value>Connect your Timeular device. Face index maps to activity index (for example, Face 3 activates activity #3).</value>
+  </data>
+  <data name="TimeularSelectedDevice" xml:space="preserve">
+    <value>Selected device: {0}</value>
+  </data>
+  <data name="TimeularTrackerStatus" xml:space="preserve">
+    <value>Tracker status:</value>
+  </data>
+  <data name="TimeularConnecting" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="TimeularConnected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="TimeularDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="TimeularReconnect" xml:space="preserve">
+    <value>Reconnect Timeular</value>
+  </data>
+  <data name="TimeularConnect" xml:space="preserve">
+    <value>Connect Timeular</value>
+  </data>
+  <data name="TimeularDisconnect" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="TimeularRecentChanges" xml:space="preserve">
+    <value>Recent device changes</value>
+  </data>
+  <data name="SupabaseSettingsTitle" xml:space="preserve">
+    <value>Supabase</value>
+  </data>
+  <data name="SupabaseSignedInAs" xml:space="preserve">
+    <value>Signed in as {0}</value>
+  </data>
+  <data name="TimeularKnownDevice" xml:space="preserve">
+    <value>Known device: {0}</value>
+  </data>
+  <data name="TimeularEventReceived" xml:space="preserve">
+    <value>Received a device event</value>
+  </data>
+  <data name="TimeularFaceMappingDeactivated" xml:space="preserve">
+    <value> -&gt; deactivated</value>
+  </data>
+  <data name="TimeularFaceMappingAlreadyActive" xml:space="preserve">
+    <value> -&gt; already active</value>
+  </data>
+  <data name="TimeularFaceMappingActivated" xml:space="preserve">
+    <value> -&gt; activated #{0}</value>
+  </data>
+  <data name="TimeularConnectedTo" xml:space="preserve">
+    <value>Connected to {0}.</value>
+  </data>
+  <data name="TimeularStatusConnectedTo" xml:space="preserve">
+    <value>Connected to {0}</value>
+  </data>
+  <data name="TimeularConnectionError" xml:space="preserve">
+    <value>Could not connect to the Timeular device.</value>
+  </data>
+  <data name="TimeularConnectionException" xml:space="preserve">
+    <value>Could not connect to Timeular: {0}</value>
+  </data>
+  <data name="TimeularStatusDisconnected" xml:space="preserve">
+    <value>Timeular disconnected.</value>
+  </data>
+  <data name="TimeularActionDisconnected" xml:space="preserve">
+    <value>Disconnected from Timeular</value>
+  </data>
+  <data name="TimeularDisconnectException" xml:space="preserve">
+    <value>Could not disconnect from Timeular: {0}</value>
+  </data>
+  <data name="TimeularDeviceDisconnected" xml:space="preserve">
+    <value>Device disconnected</value>
+  </data>
+  <data name="TimeularFace" xml:space="preserve">
+    <value>Face {0}</value>
+  </data>
+  <data name="TimeularFaceUnknown" xml:space="preserve">
+    <value>Face ?</value>
+  </data>
+  <data name="TimeularReconnectedTo" xml:space="preserve">
+    <value>Reconnected to {0}.</value>
+  </data>
+  <data name="TimeularReconnectedAction" xml:space="preserve">
+    <value>Reconnected to {0}</value>
+  </data>
+  <data name="TimeularAutoReconnectSuccess" xml:space="preserve">
+    <value>Auto-reconnect succeeded: {0} is connected.</value>
+  </data>
+  <data name="TimeularNoDetails" xml:space="preserve">
+    <value>No details were provided.</value>
+  </data>
+  <data name="TimeularAutoReconnectFailed" xml:space="preserve">
+    <value>Auto-reconnect failed: {0}</value>
+  </data>
+  <data name="TimeularAutoReconnectSkipped" xml:space="preserve">
+    <value>Auto-reconnect skipped: {0}</value>
+  </data>
+  <data name="TimeularUnexpectedError" xml:space="preserve">
+    <value>Auto-reconnect failed due to an unexpected startup error.</value>
+  </data>
 </root>

@@ -69,9 +69,9 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 IsConnected = true;
                 HasConnectedBefore = true;
                 DeviceName = result.DeviceName;
-                StatusMessage = $"Connected to {result.DeviceName}.";
+                StatusMessage = _localizer["TimeularConnectedTo", result.DeviceName ?? "Timeular"];
                 StatusClass = "success";
-                AddTimeularChange($"Connected to {result.DeviceName ?? "Timeular"}");
+                AddTimeularChange(_localizer["TimeularStatusConnectedTo", result.DeviceName ?? "Timeular"]);
 
                 _ = _notificationService.NotifyAsync(
                     _localizer["NotificationTimeularConnectedTitle"],
@@ -80,7 +80,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
             else
             {
                 IsConnected = false;
-                StatusMessage = result.Message ?? "Could not connect to the Timeular device.";
+                StatusMessage = result.Message ?? _localizer["TimeularConnectionError"].Value;
                 StatusClass = "error";
                 AddTimeularChange(StatusMessage);
             }
@@ -88,7 +88,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         catch (Exception ex)
         {
             IsConnected = false;
-            StatusMessage = $"Could not connect to Timeular: {ex.Message}";
+            StatusMessage = _localizer["TimeularConnectionException", ex.Message];
             StatusClass = "error";
             AddTimeularChange(StatusMessage);
         }
@@ -107,9 +107,9 @@ public sealed class TimeularService : ITimeularService, IDisposable
         {
             await _jsRuntime.InvokeVoidAsync("timeularInterop.disconnect");
             IsConnected = false;
-            StatusMessage = "Timeular disconnected.";
+            StatusMessage = _localizer["TimeularStatusDisconnected"];
             StatusClass = "success";
-            AddTimeularChange("Disconnected from Timeular");
+            AddTimeularChange(_localizer["TimeularActionDisconnected"]);
 
             _ = _notificationService.NotifyAsync(
                 _localizer["NotificationTimeularDisconnectedTitle"],
@@ -117,7 +117,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Could not disconnect from Timeular: {ex.Message}";
+            StatusMessage = _localizer["TimeularDisconnectException", ex.Message];
             StatusClass = "error";
             AddTimeularChange(StatusMessage);
         }
@@ -131,9 +131,9 @@ public sealed class TimeularService : ITimeularService, IDisposable
         if (change.EventType == "disconnected")
         {
             IsConnected = false;
-            StatusMessage = "Timeular disconnected.";
+            StatusMessage = _localizer["TimeularStatusDisconnected"];
             StatusClass = "error";
-            AddTimeularChange("Device disconnected");
+            AddTimeularChange(_localizer["TimeularDeviceDisconnected"]);
 
             _ = _notificationService.NotifyAsync(
                 _localizer["NotificationTimeularDisconnectedTitle"],
@@ -141,14 +141,14 @@ public sealed class TimeularService : ITimeularService, IDisposable
         }
         else if (change.EventType == "orientation")
         {
-            var faceLabel = change.Face.HasValue ? $"Face {change.Face.Value}" : "Face ?";
+            var faceLabel = change.Face.HasValue ? _localizer["TimeularFace", change.Face.Value].Value : _localizer["TimeularFaceUnknown"].Value;
             var rawLabel = string.IsNullOrWhiteSpace(change.RawHex) ? string.Empty : $" ({change.RawHex})";
             var mappingAction = ApplyTimeularFaceMapping(change.Face);
             AddTimeularChange($"{faceLabel}{rawLabel}{mappingAction}", change.TimestampUtc);
         }
         else
         {
-            AddTimeularChange("Received a device event", change.TimestampUtc);
+            AddTimeularChange(_localizer["TimeularEventReceived"], change.TimestampUtc);
         }
 
         NotifyStateChanged();
@@ -173,7 +173,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
                     || !string.IsNullOrWhiteSpace(savedState.DeviceName)
                     || !string.IsNullOrWhiteSpace(savedState.ConnectedAtUtc);
                 IsConnected = false;
-                AddTimeularChange($"Known device: {DeviceName ?? "Timeular"}");
+                AddTimeularChange(_localizer["TimeularKnownDevice", DeviceName ?? "Timeular"]);
             }
         }
         catch
@@ -197,11 +197,11 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 IsConnected = true;
                 HasConnectedBefore = true;
                 DeviceName = result.DeviceName ?? DeviceName;
-                StatusMessage = $"Reconnected to {DeviceName ?? "Timeular"}.";
+                StatusMessage = _localizer["TimeularReconnectedTo", DeviceName ?? "Timeular"];
                 StatusClass = "success";
-                AutoReconnectMessage = $"Auto-reconnect succeeded: {DeviceName ?? "Timeular"} is connected.";
+                AutoReconnectMessage = _localizer["TimeularAutoReconnectSuccess", DeviceName ?? "Timeular"];
                 AutoReconnectClass = "success";
-                AddTimeularChange($"Reconnected to {DeviceName ?? "Timeular"}");
+                AddTimeularChange(_localizer["TimeularReconnectedAction", DeviceName ?? "Timeular"]);
 
                 _ = _notificationService.NotifyAsync(
                     _localizer["NotificationTimeularConnectedTitle"],
@@ -209,16 +209,16 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 return;
             }
 
-            var reason = string.IsNullOrWhiteSpace(result.Message) ? "No details were provided." : result.Message;
+            var reason = string.IsNullOrWhiteSpace(result.Message) ? _localizer["TimeularNoDetails"].Value : result.Message;
             AutoReconnectClass = result.Attempted ? "error" : "info";
             AutoReconnectMessage = result.Attempted
-                ? $"Auto-reconnect failed: {reason}"
-                : $"Auto-reconnect skipped: {reason}";
+                ? _localizer["TimeularAutoReconnectFailed", reason].Value
+                : _localizer["TimeularAutoReconnectSkipped", reason].Value;
         }
         catch
         {
             AutoReconnectClass = "error";
-            AutoReconnectMessage = "Auto-reconnect failed due to an unexpected startup error.";
+            AutoReconnectMessage = _localizer["TimeularUnexpectedError"];
         }
     }
 
@@ -240,7 +240,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
             if (activeEvent is not null)
             {
                 _timeService.DeactivateActivity();
-                return " -> deactivated";
+                return _localizer["TimeularFaceMappingDeactivated"];
             }
 
             return string.Empty;
@@ -251,12 +251,12 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
         if (isTargetAlreadyActive)
         {
-            return " -> already active";
+            return _localizer["TimeularFaceMappingAlreadyActive"];
         }
 
         var mappedIndex = orderedActivities.FindIndex(m => m.Id == targetActivity.Id) + 1;
         _timeService.ActivateActivity(targetActivity.Id, $"Timeular face {mappedIndex}");
-        return $" -> activated #{mappedIndex}";
+        return _localizer["TimeularFaceMappingActivated", mappedIndex];
     }
 
     private void AddTimeularChange(string message, string? timestampUtc = null)
