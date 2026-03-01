@@ -10,6 +10,7 @@ public interface ISupabaseAuthService
     bool IsAuthenticated { get; }
     string? CurrentUserEmail { get; }
     string? CurrentUserId { get; }
+    string? CurrentAccessToken { get; }
 
     event Action? OnAuthStateChanged;
 

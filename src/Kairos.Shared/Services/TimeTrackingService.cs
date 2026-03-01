@@ -1,6 +1,7 @@
 using Kairos.Shared.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Localization;
+using System.Threading;
 
 namespace Kairos.Shared.Services;
 
@@ -14,6 +15,9 @@ public class TimeTrackingService : ITimeTrackingService
     private readonly ISettingsService _settingsService;
     private readonly INotificationService _notificationService;
     private readonly IStringLocalizer<Kairos.Shared.Resources.Strings> _localizer;
+    private readonly ISupabaseAuthService _authService;
+    private readonly ISupabaseActivityStore _supabaseActivityStore;
+    private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
     public const int MaxActivities = 8;
@@ -38,13 +42,23 @@ public class TimeTrackingService : ITimeTrackingService
     
     public event Action? OnStateChanged;
 
-    public TimeTrackingService(IStorageService storage, IActivityConfigurationService activityConfig, ISettingsService settingsService, INotificationService notificationService, IStringLocalizer<Kairos.Shared.Resources.Strings> localizer)
+    public TimeTrackingService(
+        IStorageService storage,
+        IActivityConfigurationService activityConfig,
+        ISettingsService settingsService,
+        INotificationService notificationService,
+        IStringLocalizer<Kairos.Shared.Resources.Strings> localizer,
+        ISupabaseAuthService authService,
+        ISupabaseActivityStore supabaseActivityStore)
     {
         _storage = storage;
         _activityConfig = activityConfig;
         _settingsService = settingsService;
         _notificationService = notificationService;
         _localizer = localizer;
+        _authService = authService;
+        _supabaseActivityStore = supabaseActivityStore;
+        _authService.OnAuthStateChanged += HandleAuthStateChanged;
     }
 
     public TimeSpan GetCurrentBalance()
@@ -277,16 +291,11 @@ public class TimeTrackingService : ITimeTrackingService
         {
             _account.Activities = await _activityConfig.LoadActivitiesAsync();
         }
+
+        await PullActivitiesFromSupabaseOrSeedAsync();
         
         // Auto-stop any active events whose activity no longer exists.
-        var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
-        foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
-        {
-            if (!availableActivityNames.Contains(activeEvent.ActivityName))
-            {
-                activeEvent.EndTime = DateTimeOffset.UtcNow;
-            }
-        }
+        EnsureActiveEventsBelongToExistingActivities();
         
         OnStateChanged?.Invoke();
         await SaveAsync();
@@ -314,6 +323,7 @@ public class TimeTrackingService : ITimeTrackingService
         
         OnStateChanged?.Invoke();
         _ = SaveAsync();
+        _ = PersistActivitiesToSupabaseAsync();
     }
 
     public string ExportData()
@@ -381,17 +391,11 @@ public class TimeTrackingService : ITimeTrackingService
         }
 
         // Auto-stop any active events whose activity no longer exists.
-        var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
-        foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
-        {
-            if (!availableActivityNames.Contains(activeEvent.ActivityName))
-            {
-                activeEvent.EndTime = DateTimeOffset.UtcNow;
-            }
-        }
+        EnsureActiveEventsBelongToExistingActivities();
 
         OnStateChanged?.Invoke();
         await SaveAsync();
+        await PersistActivitiesToSupabaseAsync();
     }
 
     public void DeleteActivity(Guid activityId)
@@ -408,6 +412,7 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities.Remove(activity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
+        _ = PersistActivitiesToSupabaseAsync();
     }
 
     public void AddActivity(string name)
@@ -432,6 +437,7 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities.Add(newActivity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
+        _ = PersistActivitiesToSupabaseAsync();
     }
     public async Task ResetDataAsync()
     {
@@ -443,6 +449,7 @@ public class TimeTrackingService : ITimeTrackingService
         
         OnStateChanged?.Invoke();
         await SaveAsync();
+        await PersistActivitiesToSupabaseAsync();
     }
 
     public void ReorderActivities(List<Guid> orderedActivityIds)
@@ -471,6 +478,85 @@ public class TimeTrackingService : ITimeTrackingService
             _account.Activities = newActivitiesList;
             OnStateChanged?.Invoke();
             _ = SaveAsync();
+            _ = PersistActivitiesToSupabaseAsync();
+        }
+    }
+
+    private void HandleAuthStateChanged()
+    {
+        _ = PullActivitiesFromSupabaseOrSeedAsync();
+    }
+
+    private async Task PullActivitiesFromSupabaseOrSeedAsync()
+    {
+        if (!_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            var remoteActivities = await _supabaseActivityStore.LoadActivitiesAsync();
+            if (remoteActivities.Count > 0)
+            {
+                _account.Activities = remoteActivities
+                    .OrderBy(m => m.DisplayOrder)
+                    .Take(MaxActivities)
+                    .ToList();
+
+                EnsureActiveEventsBelongToExistingActivities();
+                OnStateChanged?.Invoke();
+                await SaveAsync();
+                return;
+            }
+
+            if (_account.Activities.Count > 0)
+            {
+                await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
+            }
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private async Task PersistActivitiesToSupabaseAsync()
+    {
+        if (!_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private void EnsureActiveEventsBelongToExistingActivities()
+    {
+        var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
+        foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
+        {
+            if (!availableActivityNames.Contains(activeEvent.ActivityName))
+            {
+                activeEvent.EndTime = DateTimeOffset.UtcNow;
+            }
         }
     }
 }
