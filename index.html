@@ -7,6 +7,18 @@
     <title>Kairos - Time Tracker</title>
     <meta name="description" content="Track your time with real-time activities. Bank hours or spend them with the tap of a button." />
     <base href="/kairos/" />
+    <script>
+        (function () {
+            try {
+                var rawSettings = localStorage.getItem("Kairos_settings");
+                var parsed = rawSettings ? JSON.parse(rawSettings) : null;
+                var theme = parsed && parsed.Theme === "dark" ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +51,7 @@
     <script src="_content/Kairos.Shared/timeularInterop.js"></script>
     <script src="js/notificationInterop.js"></script>
     <script src="js/pwaInterop.js"></script>
+    <script src="js/themeInterop.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
