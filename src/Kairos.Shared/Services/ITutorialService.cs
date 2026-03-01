@@ -11,6 +11,8 @@ public interface ITutorialService
 {
     bool IsActive { get; }
     TutorialStep? CurrentStep { get; }
+    bool IsInitialSetupStep { get; }
+    bool CanAdvanceFromCurrentStep { get; }
     
     bool HasCompletedTutorial { get; }
 
@@ -25,4 +27,6 @@ public interface ITutorialService
     Task CompleteTutorialAsync();
     Task ResetTutorialAsync();
     Task SetAvatarAsync(string avatarId);
+    void MarkInitialSetupAvatarSelected();
+    void MarkInitialSetupLanguageSelected();
 }

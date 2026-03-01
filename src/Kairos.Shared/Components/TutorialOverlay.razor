@@ -1,6 +1,7 @@
 @using Kairos.Shared.Services
 @using Kairos.Shared.Resources
 @inject ITutorialService TutorialService
+@inject ISettingsService SettingsService
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -16,9 +17,50 @@
                 <div class="dialogue-content">
                     <h3 class="character-name">@Localizer["TutorialGuideName"]</h3>
                     <p class="dialogue-text">@CurrentText</p>
+                    @if (TutorialService.IsInitialSetupStep)
+                    {
+                        <div class="setup-options">
+                            <div class="setup-item">
+                                <span class="setup-label">@Localizer["DisplayLanguage"]</span>
+                                <div class="language-dropdown">
+                                    <button type="button" class="dropdown-trigger" @onclick="ToggleLanguageDropdown">
+                                        <span>@GetLanguageName(SettingsService.Language)</span>
+                                    </button>
+                                    <div class="dropdown-menu @(isLanguageDropdownOpen ? "show" : "")">
+                                        @foreach (var language in Languages)
+                                        {
+                                            <div class="dropdown-item @(SettingsService.Language == language.Code ? "selected" : "")"
+                                                 @onclick="() => SelectLanguage(language.Code)"
+                                                 @onclick:stopPropagation="true">
+                                                <span>@language.Name</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setup-item">
+                                <span class="setup-label">@Localizer["TutorialAvatar"]</span>
+                                <div class="language-dropdown">
+                                    <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
+                                        <span>@(TutorialService.CurrentAvatar?.Name ?? "Unknown")</span>
+                                    </button>
+                                    <div class="dropdown-menu @(isAvatarDropdownOpen ? "show" : "")">
+                                        @foreach (var avatar in TutorialService.AvailableAvatars)
+                                        {
+                                            <div class="dropdown-item @(TutorialService.CurrentAvatar.Id == avatar.Id ? "selected" : "")"
+                                                 @onclick="() => SelectAvatar(avatar.Id)"
+                                                 @onclick:stopPropagation="true">
+                                                <span>@avatar.Name</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div class="dialogue-actions">
-                    <button class="btn-next" @onclick="NextStep">@Localizer["NextStep"] ▶</button>
+                    <button class="btn-next" @onclick="NextStep" disabled="@(!TutorialService.CanAdvanceFromCurrentStep)">@Localizer["NextStep"] ▶</button>
                 </div>
             </div>
         </div>
@@ -104,6 +146,24 @@
         text-align: right;
     }
 
+    .setup-options {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .setup-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .setup-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-text-secondary, #4b635f);
+    }
+
     .btn-next {
         background: transparent;
         border: 1px solid var(--color-accent, #0f766e);
@@ -118,6 +178,13 @@
     .btn-next:hover {
         background: var(--color-accent, #0f766e);
         color: #ffffff;
+    }
+
+    .btn-next:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: transparent;
+        color: var(--color-accent, #0f766e);
     }
 
     @@keyframes slideInLeft {
@@ -147,9 +214,23 @@
 </style>
 
 @code {
+    private bool isLanguageDropdownOpen;
+    private bool isAvatarDropdownOpen;
+
+    private record LanguageOption(string Name, string Code);
+    private readonly List<LanguageOption> Languages = new()
+    {
+        new("English", "en"),
+        new("Deutsch", "de"),
+        new("Español", "es"),
+        new("Galego", "gl"),
+        new("Vorarlbergerisch", "gsw")
+    };
+
     private bool IsVisible => TutorialService.IsActive;
     private string CurrentText => TutorialService.CurrentStep?.Message ?? "";
     private string CurrentImage => TutorialService.CurrentStep?.ImageUrl ?? "img/tutorial-avatar.png";
+    private string GetLanguageName(string code) => Languages.FirstOrDefault(l => l.Code == code)?.Name ?? "English";
     
     protected override async Task OnInitializedAsync()
     {
@@ -163,6 +244,35 @@
     private void NextStep()
     {
         TutorialService.NextStep();
+    }
+
+    private void ToggleLanguageDropdown() => isLanguageDropdownOpen = !isLanguageDropdownOpen;
+    private void ToggleAvatarDropdown() => isAvatarDropdownOpen = !isAvatarDropdownOpen;
+
+    private async Task SelectLanguage(string code)
+    {
+        TutorialService.MarkInitialSetupLanguageSelected();
+
+        if (SettingsService.Language != code)
+        {
+            await SettingsService.SetLanguageAsync(code);
+        }
+
+        isLanguageDropdownOpen = false;
+        StateHasChanged();
+    }
+
+    private async Task SelectAvatar(string avatarId)
+    {
+        TutorialService.MarkInitialSetupAvatarSelected();
+
+        if (TutorialService.CurrentAvatar.Id != avatarId)
+        {
+            await TutorialService.SetAvatarAsync(avatarId);
+        }
+
+        isAvatarDropdownOpen = false;
+        StateHasChanged();
     }
 
     public void Dispose()

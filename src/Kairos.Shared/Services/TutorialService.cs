@@ -17,12 +17,18 @@ public class TutorialService : ITutorialService
     private readonly IStringLocalizer<Strings> _localizer;
     private const string TutorialCompletedKey = "tutorial_completed_v1"; // Kept for migration
     private const string TutorialAvatarKey = "tutorial_avatar_v1";
+    private const int InitialSetupStepIndex = 0;
     
     private int _currentStepIndex = -1;
     private List<TutorialStep> _steps = new();
+    private bool _initialSetupAvatarSelected;
+    private bool _initialSetupLanguageSelected;
+    private string _lastKnownLanguage;
 
     public bool IsActive => _currentStepIndex >= 0 && _currentStepIndex < _steps.Count;
     public TutorialStep? CurrentStep => IsActive ? _steps[_currentStepIndex] : null;
+    public bool IsInitialSetupStep => IsActive && _currentStepIndex == InitialSetupStepIndex;
+    public bool CanAdvanceFromCurrentStep => !IsInitialSetupStep || (_initialSetupAvatarSelected && _initialSetupLanguageSelected);
 
     public bool HasCompletedTutorial => _settingsService.TutorialCompleted;
 
@@ -42,6 +48,8 @@ public class TutorialService : ITutorialService
         _settingsService = settingsService;
         _navigationManager = navigationManager;
         _localizer = localizer;
+        _lastKnownLanguage = settingsService.Language;
+        _settingsService.OnSettingsChanged += HandleSettingsChanged;
         
         CurrentAvatar = AvailableAvatars[0];
         InitializeSteps();
@@ -53,49 +61,52 @@ public class TutorialService : ITutorialService
         
         _steps = new List<TutorialStep>
         {
-            // 1. Intro
+            // 1. Initial setup
+            new TutorialStep(_localizer["TutorialSetupAvatarLanguage"], "", $"{basePath}/tutorial-avatar-10.png"),
+            
+            // 2. Intro
             new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-10.png"),
             
-            // 2. How Kairos works
+            // 3. How Kairos works
             new TutorialStep(_localizer["TutorialHowItWorks"], "", $"{basePath}/tutorial-avatar-2.png"),
 
-            // 3. Overview - current balance
+            // 4. Overview - current balance
             new TutorialStep(_localizer["TutorialOverviewBalance"], "", $"{basePath}/tutorial-avatar-6.png"),
 
-            // 4. Overview - active activity indicator
+            // 5. Overview - active activity indicator
             new TutorialStep(_localizer["TutorialOverviewActive"], "", $"{basePath}/tutorial-avatar-5.png"),
             
-            // 5. Activities - basics
+            // 6. Activities - basics
             new TutorialStep(_localizer["TutorialActivitiesBasics"], "activities", $"{basePath}/tutorial-avatar-3.png"),
 
-            // 6. Activities - comments and switching
+            // 7. Activities - comments and switching
             new TutorialStep(_localizer["TutorialActivitiesComment"], "activities", $"{basePath}/tutorial-avatar-7.png"),
 
-            // 7. Activities - organizing list
+            // 8. Activities - organizing list
             new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", $"{basePath}/tutorial-avatar-9.png"),
             
-            // 8. Timeline - period controls
+            // 9. Timeline - period controls
             new TutorialStep(_localizer["TutorialTimelinePeriods"], "timeline", $"{basePath}/tutorial-avatar-4.png"),
 
-            // 9. Timeline - reading the chart
+            // 10. Timeline - reading the chart
             new TutorialStep(_localizer["TutorialTimelineInterpretation"], "timeline", $"{basePath}/tutorial-avatar-8.png"),
             
-            // 10. History - review entries
+            // 11. History - review entries
             new TutorialStep(_localizer["TutorialHistoryReview"], "history", $"{basePath}/tutorial-avatar.png"),
             
-            // 11. History - edit and delete
+            // 12. History - edit and delete
             new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-10.png"),
 
-            // 12. Settings - personalization
+            // 13. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
 
-            // 13. Settings - integrations and notifications
+            // 14. Settings - integrations and notifications
             new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", $"{basePath}/tutorial-avatar-6.png"),
 
-            // 14. Backups and reset safety
+            // 15. Backups and reset safety
             new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-5.png"),
 
-            // 15. Completion
+            // 16. Completion
             new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-7.png")
         };
     }
@@ -146,6 +157,8 @@ public class TutorialService : ITutorialService
 
     public void StartTutorial()
     {
+        _initialSetupAvatarSelected = false;
+        _initialSetupLanguageSelected = false;
         _currentStepIndex = 0;
         NavigateToCurrentStep();
         NotifyStateChanged();
@@ -154,6 +167,7 @@ public class TutorialService : ITutorialService
     public void NextStep()
     {
         if (!IsActive) return;
+        if (!CanAdvanceFromCurrentStep) return;
 
         _currentStepIndex++;
 
@@ -185,6 +199,28 @@ public class TutorialService : ITutorialService
         StartTutorial();
     }
 
+    public void MarkInitialSetupAvatarSelected()
+    {
+        if (_initialSetupAvatarSelected)
+        {
+            return;
+        }
+
+        _initialSetupAvatarSelected = true;
+        NotifyStateChanged();
+    }
+
+    public void MarkInitialSetupLanguageSelected()
+    {
+        if (_initialSetupLanguageSelected)
+        {
+            return;
+        }
+
+        _initialSetupLanguageSelected = true;
+        NotifyStateChanged();
+    }
+
     private void NavigateToCurrentStep()
     {
         if (CurrentStep?.Route != null)
@@ -196,4 +232,24 @@ public class TutorialService : ITutorialService
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
+
+    private void HandleSettingsChanged()
+    {
+        if (_lastKnownLanguage == _settingsService.Language)
+        {
+            return;
+        }
+
+        _lastKnownLanguage = _settingsService.Language;
+        var currentIndex = _currentStepIndex;
+
+        InitializeSteps();
+
+        if (currentIndex >= 0)
+        {
+            _currentStepIndex = Math.Min(currentIndex, _steps.Count - 1);
+        }
+
+        NotifyStateChanged();
+    }
 }
