@@ -371,25 +371,49 @@
     <value>Versión</value>
   </data>
   <data name="TutorialIntro" xml:space="preserve">
-    <value>¡Hola! ¡Bienvenido a 'Kairos'! Soy tu guía personal del presupuesto de tiempo. ¡Estoy aquí para ayudarte a empezar a gestionar tu tiempo de forma efectiva!</value>
+    <value>Bienvenido a Kairos. Este recorrido te muestra el funcionamiento completo de la aplicación: registrar, revisar y proteger tus datos. Sigue los pasos una vez en orden y luego usa solo lo que necesites en tu rutina diaria.</value>
   </data>
-  <data name="TutorialOverview" xml:space="preserve">
-    <value>Este es tu 'Resumen'. Te ofrece una visión rápida de la salud de tu presupuesto temporal actual. Puedes ver tu saldo de tiempo total y los contadores activos de un vistazo.</value>
+  <data name="TutorialHowItWorks" xml:space="preserve">
+    <value>Kairos se basa en sesiones de actividad. Cada vez que inicias una actividad, se crea un evento con hora de inicio, y al detenerla se guarda la hora de fin. Tu saldo es la suma de todas las duraciones registradas.</value>
   </data>
-  <data name="TutorialActivities" xml:space="preserve">
-    <value>¡Aquí en 'Contadores' defines tus actividades! Puedes configurar contadores para cosas como Trabajo, Estudio u Ocio. Piensa en ellos como el pulso de tu día.</value>
+  <data name="TutorialOverviewBalance" xml:space="preserve">
+    <value>Esta es la pantalla de Resumen. El número grande es tu saldo actual en horas, calculado desde tu historial. Los valores positivos indican tiempo neto registrado y los negativos indican que tu cuenta está por debajo de cero.</value>
   </data>
-  <data name="TutorialTimeline" xml:space="preserve">
-    <value>¡La 'Cronología' es tu ayuda visual! 🔮 Proyecta tu presupuesto de tiempo pasado basado en tus actividades registradas. Úsala para ver tendencias y planificar con antelación.</value>
+  <data name="TutorialOverviewActive" xml:space="preserve">
+    <value>Cuando una actividad está en marcha, verás aquí un indicador activo. Si ese indicador está visible, el tiempo se sigue registrando en ese momento. Úsalo como comprobación rápida antes de cerrar la app.</value>
   </data>
-  <data name="TutorialHistory" xml:space="preserve">
-    <value>¿Quieres ver qué pasó en el pasado? La página de 'Historial' guarda un registro de todas tus entradas y cambios. Es genial para seguir tus hábitos de actividad.</value>
+  <data name="TutorialActivitiesBasics" xml:space="preserve">
+    <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
   </data>
-  <data name="TutorialSync" xml:space="preserve">
-    <value>¡Finalmente, 'Sincronización' mantiene tus datos seguros! Puedes respaldar tus datos de seguimiento de tiempo en Google Drive o exportarlos localmente. ¡No pierdas nunca tu progreso!</value>
+  <data name="TutorialActivitiesComment" xml:space="preserve">
+    <value>Al iniciar una actividad se solicita un comentario. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>
+  </data>
+  <data name="TutorialActivitiesManage" xml:space="preserve">
+    <value>Puedes renombrar actividades, eliminar las inactivas, añadir nuevas y reordenarlas arrastrando. Mantén la lista limpia y estable para que el registro diario sea rápido y consistente.</value>
+  </data>
+  <data name="TutorialTimelinePeriods" xml:space="preserve">
+    <value>La Cronología muestra cómo cambió tu saldo a lo largo del tiempo. Cambia los botones de periodo (1h a 1m) para alternar entre comportamiento a corto plazo y tendencias más largas.</value>
+  </data>
+  <data name="TutorialTimelineInterpretation" xml:space="preserve">
+    <value>Lee la línea de izquierda a derecha: subir significa que el saldo crece, plano significa sin cambios y bajar indica menor saldo neto. Úsalo para detectar problemas de ritmo con antelación.</value>
+  </data>
+  <data name="TutorialHistoryReview" xml:space="preserve">
+    <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración, contribución y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
+  </data>
+  <data name="TutorialHistoryEdit" xml:space="preserve">
+    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula inmediatamente el saldo y la cronología.</value>
+  </data>
+  <data name="TutorialSettingsPersonalize" xml:space="preserve">
+    <value>En Ajustes puedes cambiar idioma, elegir el avatar del tutorial y controlar notificaciones del navegador. Configúralo una vez para que la app se adapte a tu flujo diario.</value>
+  </data>
+  <data name="TutorialSettingsIntegrations" xml:space="preserve">
+    <value>Ajustes también incluye opciones de integración, como la conexión con Timeular. Si usas seguimiento por hardware, verifica aquí el estado de conexión antes de depender de cambios automáticos de actividad.</value>
+  </data>
+  <data name="TutorialBackupAndSafety" xml:space="preserve">
+    <value>Protege tus datos con exportaciones periódicas o copias en la nube cuando estén disponibles en tu configuración. Restablecimiento de fábrica es destructivo y elimina todos los datos de seguimiento, así que úsalo solo cuando quieras empezar de cero de forma intencional.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>¡Esas son las bases! Estás listo para tomar el control de tu tiempo. Si me necesitas de nuevo, solo busca el icono de ayuda. ¡Feliz seguimiento! ✨</value>
+    <value>Ahora tienes la visión completa. Empieza hoy con una o dos actividades, mantén comentarios concisos y revisa el Historial con frecuencia. Puedes reiniciar este tutorial en cualquier momento después de un restablecimiento.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guía</value>

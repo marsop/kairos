@@ -386,25 +386,49 @@
     <value>Version</value>
   </data>
   <data name="TutorialIntro" xml:space="preserve">
-    <value>Hi there! Welcome to 'Kairos'! I'm your personal time budget guide. I'm here to help you get started with managing your time effectively!</value>
+    <value>Welcome to Kairos. This walkthrough will show you how the app works end to end: tracking, reviewing, and protecting your data. Follow the steps in order once, then use only the parts you need day to day.</value>
   </data>
-  <data name="TutorialOverview" xml:space="preserve">
-    <value>This is your 'Overview'. It gives you a quick snapshot of your current temporal budget health. You can see your total time balance and active activities at a glance.</value>
+  <data name="TutorialHowItWorks" xml:space="preserve">
+    <value>Kairos is built around activity sessions. Every time you start an activity, a new event is recorded with a start time, and when you stop it, the end time is saved. Your balance is the sum of all recorded durations.</value>
   </data>
-  <data name="TutorialActivities" xml:space="preserve">
-    <value>Here in 'Activities', you define your activities! You can set up 'Activities' for things like Work, Study, or Leisure. Think of them as the pulse of your day.</value>
+  <data name="TutorialOverviewBalance" xml:space="preserve">
+    <value>This is the Overview screen. The large number is your current time balance in hours, updated from your history. Positive values mean net tracked time, and negative values mean your account is below zero.</value>
   </data>
-  <data name="TutorialTimeline" xml:space="preserve">
-    <value>The 'Timeline' is your visual aid! 🔮 It projects your past time budget based on your recorded activities. Use it to see trends and plan ahead.</value>
+  <data name="TutorialOverviewActive" xml:space="preserve">
+    <value>When an activity is running, you will see an active indicator here. If that indicator is visible, time is still being recorded right now. Use it as a quick safety check before closing the app.</value>
   </data>
-  <data name="TutorialHistory" xml:space="preserve">
-    <value>Want to see what happened in the past? The 'History' page keeps a log of all your entries and changes. It's great for tracking your activity habits.</value>
+  <data name="TutorialActivitiesBasics" xml:space="preserve">
+    <value>On Activities, each tile is one trackable activity. Tap a tile to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
   </data>
-  <data name="TutorialSync" xml:space="preserve">
-    <value>Finally, 'Sync' keeps your data safe! You can back up your time tracking data to Google Drive or export it locally. Never lose your progress!</value>
+  <data name="TutorialActivitiesComment" xml:space="preserve">
+    <value>Starting an activity asks for a comment. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
+  </data>
+  <data name="TutorialActivitiesManage" xml:space="preserve">
+    <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
+  </data>
+  <data name="TutorialTimelinePeriods" xml:space="preserve">
+    <value>The Timeline visualizes how your balance changed over time. Switch period buttons (1h to 1m) to zoom between short-term behavior and longer trends.</value>
+  </data>
+  <data name="TutorialTimelineInterpretation" xml:space="preserve">
+    <value>Read the line from left to right: rising means balance gained, flat means no tracked change, and dips indicate lower net balance. Use this to spot pacing issues early.</value>
+  </data>
+  <data name="TutorialHistoryReview" xml:space="preserve">
+    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, contribution, and comment. This page is the source of truth when checking what happened.</value>
+  </data>
+  <data name="TutorialHistoryEdit" xml:space="preserve">
+    <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your balance and timeline.</value>
+  </data>
+  <data name="TutorialSettingsPersonalize" xml:space="preserve">
+    <value>In Settings you can change language, choose your tutorial avatar, and control browser notifications. Configure these once so the app matches your preferred daily workflow.</value>
+  </data>
+  <data name="TutorialSettingsIntegrations" xml:space="preserve">
+    <value>Settings also includes integration options such as Timeular device connection. If you use hardware tracking, verify connection state here before relying on automatic activity changes.</value>
+  </data>
+  <data name="TutorialBackupAndSafety" xml:space="preserve">
+    <value>Protect your data with regular exports or cloud backups when available in your setup. Factory Reset is destructive and clears all tracking data, so only use it when you intentionally want a fresh start.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>That's the basics! You're all set to take control of your time. If you need me again, just look for the help icon. Happy tracking! ✨</value>
+    <value>You now have the full picture. Start with one or two activities today, keep comments concise, and review History regularly. You can restart this tutorial anytime from Settings after a reset.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>
