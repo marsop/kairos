@@ -54,13 +54,13 @@ public class TutorialService : ITutorialService
         _steps = new List<TutorialStep>
         {
             // 1. Intro
-            new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-10.png"),
             
             // 2. How Kairos works
             new TutorialStep(_localizer["TutorialHowItWorks"], "", $"{basePath}/tutorial-avatar-2.png"),
 
             // 3. Overview - current balance
-            new TutorialStep(_localizer["TutorialOverviewBalance"], "", $"{basePath}/tutorial-avatar-2.png"),
+            new TutorialStep(_localizer["TutorialOverviewBalance"], "", $"{basePath}/tutorial-avatar-6.png"),
 
             // 4. Overview - active activity indicator
             new TutorialStep(_localizer["TutorialOverviewActive"], "", $"{basePath}/tutorial-avatar-5.png"),
@@ -69,34 +69,34 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialActivitiesBasics"], "activities", $"{basePath}/tutorial-avatar-3.png"),
 
             // 6. Activities - comments and switching
-            new TutorialStep(_localizer["TutorialActivitiesComment"], "activities", $"{basePath}/tutorial-avatar-3.png"),
+            new TutorialStep(_localizer["TutorialActivitiesComment"], "activities", $"{basePath}/tutorial-avatar-7.png"),
 
             // 7. Activities - organizing list
-            new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", $"{basePath}/tutorial-avatar-9.png"),
             
             // 8. Timeline - period controls
             new TutorialStep(_localizer["TutorialTimelinePeriods"], "timeline", $"{basePath}/tutorial-avatar-4.png"),
 
             // 9. Timeline - reading the chart
-            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "timeline", $"{basePath}/tutorial-avatar-2.png"),
+            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "timeline", $"{basePath}/tutorial-avatar-8.png"),
             
             // 10. History - review entries
             new TutorialStep(_localizer["TutorialHistoryReview"], "history", $"{basePath}/tutorial-avatar.png"),
             
             // 11. History - edit and delete
-            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-4.png"),
+            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-10.png"),
 
             // 12. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
 
             // 13. Settings - integrations and notifications
-            new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", $"{basePath}/tutorial-avatar.png"),
+            new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", $"{basePath}/tutorial-avatar-6.png"),
 
             // 14. Backups and reset safety
             new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-5.png"),
 
             // 15. Completion
-            new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-3.png")
+            new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-7.png")
         };
     }
 
