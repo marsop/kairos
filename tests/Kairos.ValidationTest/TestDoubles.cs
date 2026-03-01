@@ -1,12 +1,18 @@
 using Kairos.Shared.Models;
 using Kairos.Shared.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
+using System.Net;
+using System.Net.Http;
 
 namespace Kairos.ValidationTest;
 
 internal sealed class InMemoryStorageService : IStorageService
 {
     private readonly Dictionary<string, string> _store = new();
+    public int SetCalls { get; private set; }
+    public List<string> RemovedKeys { get; } = new();
 
     public Task<string?> GetItemAsync(string key)
     {
@@ -17,12 +23,14 @@ internal sealed class InMemoryStorageService : IStorageService
     public Task SetItemAsync(string key, string value)
     {
         _store[key] = value;
+        SetCalls++;
         return Task.CompletedTask;
     }
 
     public Task RemoveItemAsync(string key)
     {
         _store.Remove(key);
+        RemovedKeys.Add(key);
         return Task.CompletedTask;
     }
 }
@@ -97,4 +105,77 @@ internal sealed class StubStringLocalizer : IStringLocalizer<Kairos.Shared.Resou
     public LocalizedString this[string name, params object[] arguments] => new LocalizedString(name, string.Format(name, arguments));
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => Enumerable.Empty<LocalizedString>();
+}
+
+internal sealed class TestNavigationManager : NavigationManager
+{
+    public List<string> Navigations { get; } = new();
+
+    public TestNavigationManager()
+    {
+        Initialize("http://localhost/", "http://localhost/");
+    }
+
+    protected override void NavigateToCore(string uri, bool forceLoad)
+    {
+        var absolute = ToAbsoluteUri(uri).ToString();
+        Navigations.Add(absolute);
+        Uri = absolute;
+    }
+}
+
+internal sealed class TestHttpMessageHandler : HttpMessageHandler
+{
+    private readonly Func<HttpRequestMessage, HttpResponseMessage> _handler;
+
+    public TestHttpMessageHandler(Func<HttpRequestMessage, HttpResponseMessage> handler)
+    {
+        _handler = handler;
+    }
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_handler(request));
+    }
+}
+
+internal sealed class TestJsRuntime : IJSRuntime
+{
+    private readonly Dictionary<string, Func<object?[]?, object?>> _handlers = new();
+    private readonly Dictionary<string, Exception> _exceptions = new();
+
+    public List<(string Identifier, object?[] Arguments)> Invocations { get; } = new();
+
+    public void SetResult(string identifier, object? result)
+    {
+        _handlers[identifier] = _ => result;
+    }
+
+    public void SetException(string identifier, Exception exception)
+    {
+        _exceptions[identifier] = exception;
+    }
+
+    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
+    {
+        return InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+    }
+
+    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
+    {
+        var arguments = args ?? Array.Empty<object?>();
+        Invocations.Add((identifier, arguments));
+
+        if (_exceptions.TryGetValue(identifier, out var exception))
+        {
+            return ValueTask.FromException<TValue>(exception);
+        }
+
+        if (_handlers.TryGetValue(identifier, out var handler))
+        {
+            return ValueTask.FromResult((TValue)handler(arguments)!);
+        }
+
+        return ValueTask.FromResult(default(TValue)!);
+    }
 }
