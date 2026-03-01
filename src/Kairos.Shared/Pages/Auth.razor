@@ -1,0 +1,95 @@
+@using Kairos.Shared.Resources
+@using Kairos.Shared.Services
+@inject ISupabaseAuthService AuthService
+@inject IStringLocalizer<Strings> Localizer
+
+<div class="auth-page">
+    <section class="auth-card">
+        <h1 class="auth-title">Kairos</h1>
+        <p class="auth-subtitle">@Localizer["SupabaseDesc"]</p>
+
+        @if (!AuthService.IsConfigured)
+        {
+            <div class="status-message error">
+                @Localizer["SupabaseConfigNote"]
+            </div>
+        }
+        else
+        {
+            <div class="auth-form">
+                <label class="auth-label" for="auth-email">@Localizer["SignInEmail"]</label>
+                <input id="auth-email" class="auth-input" type="email" @bind="email" @bind:event="oninput" autocomplete="email" />
+
+                <label class="auth-label" for="auth-password">@Localizer["SignInPassword"]</label>
+                <input id="auth-password" class="auth-input" type="password" @bind="password" @bind:event="oninput" autocomplete="current-password" />
+
+                <div class="auth-actions">
+                    <button class="sync-button export-btn" @onclick="SignInAsync" disabled="@isBusy">@Localizer["SignIn"]</button>
+                    <button class="sync-button import-btn" @onclick="SignUpAsync" disabled="@isBusy">@Localizer["SignUp"]</button>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(statusMessage))
+                {
+                    <div class="status-message @(isError ? "error" : "success")">
+                        @statusMessage
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private bool isBusy;
+    private bool isError;
+    private string? statusMessage;
+
+    private async Task SignInAsync()
+    {
+        await ExecuteAsync(() => AuthService.SignInAsync(email, password), Localizer["SuccessSignIn"]);
+    }
+
+    private async Task SignUpAsync()
+    {
+        await ExecuteAsync(() => AuthService.SignUpAsync(email, password), Localizer["SuccessSignUp"]);
+    }
+
+    private async Task ExecuteAsync(Func<Task<SupabaseAuthResult>> operation, string successMessage)
+    {
+        isBusy = true;
+        statusMessage = null;
+        isError = false;
+
+        try
+        {
+            var result = await operation();
+            if (!result.Succeeded)
+            {
+                isError = true;
+                statusMessage = result.ErrorMessage ?? Localizer["ErrorSignUpFailed"];
+                return;
+            }
+
+            if (result.RequiresEmailConfirmation)
+            {
+                isError = false;
+                statusMessage = Localizer["SuccessSignUpConfirm"];
+                return;
+            }
+
+            isError = false;
+            statusMessage = successMessage;
+        }
+        catch (Exception ex)
+        {
+            isError = true;
+            statusMessage = ex.Message;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+}

@@ -12,6 +12,7 @@ builder.Services.AddLocalization();
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.Configure<SupabaseAuthOptions>(builder.Configuration.GetSection("Supabase"));
 
 // Register services
 builder.Services.AddScoped<IStorageService, BrowserStorageService>();
@@ -22,6 +23,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IPwaService, PwaService>();
 builder.Services.AddScoped<ITutorialService, TutorialService>();
 builder.Services.AddScoped<ITimeularService, TimeularService>();
+builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 // Load configuration
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
@@ -30,6 +32,9 @@ var host = builder.Build();
 // Load saved data on startup
 var settingsService = host.Services.GetRequiredService<ISettingsService>();
 await settingsService.LoadAsync();
+
+var authService = host.Services.GetRequiredService<ISupabaseAuthService>();
+await authService.InitializeAsync();
 
 var timeService = host.Services.GetRequiredService<ITimeTrackingService>();
 await timeService.LoadAsync();

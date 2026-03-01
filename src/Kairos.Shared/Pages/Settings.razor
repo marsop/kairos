@@ -9,6 +9,7 @@
 @inject IJSRuntime JSRuntime
 @inject ITimeularService TimeularService
 @inject INotificationService NotificationService
+@inject ISupabaseAuthService AuthService
 @implements IDisposable
 
 <div class="settings-page">
@@ -141,6 +142,24 @@
                     }
                 </ul>
             </div>
+        }
+    </div>
+
+    <div class="settings-section">
+        <h2 class="section-title">Supabase</h2>
+        @if (AuthService.IsAuthenticated)
+        {
+            <div class="setting-item">
+                <span class="setting-label">Signed in as @AuthService.CurrentUserEmail</span>
+            </div>
+            <button class="sync-button signout-btn" @onclick="SignOutAsync">
+                <span class="btn-icon">↩️</span>
+                <span>@Localizer["SignOut"]</span>
+            </button>
+        }
+        else
+        {
+            <p class="setting-description">@Localizer["SupabaseDesc"]</p>
         }
     </div>
 
@@ -293,6 +312,12 @@
     private async Task OpenBuyMeACoffee()
     {
         await JSRuntime.InvokeVoidAsync("open", "https://www.buymeacoffee.com/albertogregorio", "_blank");
+    }
+
+    private async Task SignOutAsync()
+    {
+        await AuthService.SignOutAsync();
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 
     private void RequestReset()
