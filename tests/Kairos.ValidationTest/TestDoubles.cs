@@ -180,3 +180,53 @@ internal sealed class TestJsRuntime : IJSRuntime
         return ValueTask.FromResult(default(TValue)!);
     }
 }
+
+internal sealed class StubSupabaseAuthService : ISupabaseAuthService
+{
+    public bool IsInitialized { get; set; } = true;
+    public bool IsConfigured { get; set; } = true;
+    public bool IsAuthenticated { get; set; }
+    public string? CurrentUserEmail { get; set; }
+    public string? CurrentUserId { get; set; }
+    public string? CurrentAccessToken { get; set; }
+    public event Action? OnAuthStateChanged;
+
+    public Task InitializeAsync() => Task.CompletedTask;
+    public Task<SupabaseAuthResult> SignInAsync(string email, string password) => Task.FromResult(new SupabaseAuthResult { Succeeded = true });
+    public Task<SupabaseAuthResult> SignUpAsync(string email, string password) => Task.FromResult(new SupabaseAuthResult { Succeeded = true });
+    public Task SignOutAsync() => Task.CompletedTask;
+
+    public void RaiseAuthStateChanged() => OnAuthStateChanged?.Invoke();
+}
+
+internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
+{
+    public List<Activity> Activities { get; set; } = new();
+    public int LoadCalls { get; private set; }
+    public int SaveCalls { get; private set; }
+
+    public Task<IReadOnlyList<Activity>> LoadActivitiesAsync()
+    {
+        LoadCalls++;
+        return Task.FromResult<IReadOnlyList<Activity>>(Activities.Select(a => new Activity
+        {
+            Id = a.Id,
+            Name = a.Name,
+            Factor = a.Factor,
+            DisplayOrder = a.DisplayOrder
+        }).ToList());
+    }
+
+    public Task SaveActivitiesAsync(IReadOnlyList<Activity> activities)
+    {
+        SaveCalls++;
+        Activities = activities.Select(a => new Activity
+        {
+            Id = a.Id,
+            Name = a.Name,
+            Factor = a.Factor,
+            DisplayOrder = a.DisplayOrder
+        }).ToList();
+        return Task.CompletedTask;
+    }
+}

@@ -24,6 +24,7 @@ builder.Services.AddScoped<IPwaService, PwaService>();
 builder.Services.AddScoped<ITutorialService, TutorialService>();
 builder.Services.AddScoped<ITimeularService, TimeularService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
+builder.Services.AddScoped<ISupabaseActivityStore, SupabaseActivityStore>();
 // Load configuration
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 

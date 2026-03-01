@@ -73,7 +73,14 @@ public class TimeularServiceTests
         });
         var settings = new StubSettingsService();
         var notifications = new StubNotificationService();
-        var service = new TimeTrackingService(storage, config, settings, notifications, new StubStringLocalizer());
+        var service = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            new StubSupabaseAuthService(),
+            new StubSupabaseActivityStore());
         await service.LoadAsync();
         return service;
     }

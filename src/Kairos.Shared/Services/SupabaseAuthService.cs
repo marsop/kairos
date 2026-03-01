@@ -23,6 +23,7 @@ public sealed class SupabaseAuthService : ISupabaseAuthService
     public bool IsAuthenticated => _session is not null && _session.ExpiresAt > DateTimeOffset.UtcNow;
     public string? CurrentUserEmail => _session?.User?.Email;
     public string? CurrentUserId => _session?.User?.Id;
+    public string? CurrentAccessToken => IsAuthenticated ? _session?.AccessToken : null;
 
     public event Action? OnAuthStateChanged;
 

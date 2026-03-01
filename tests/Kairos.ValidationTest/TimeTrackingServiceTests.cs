@@ -18,7 +18,14 @@ public class TimeTrackingServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(defaultActivities);
         var settings = new StubSettingsService();
-        var sut = new TimeTrackingService(storage, config, settings, new StubNotificationService(), new StubStringLocalizer());
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            new StubNotificationService(),
+            new StubStringLocalizer(),
+            new StubSupabaseAuthService(),
+            new StubSupabaseActivityStore());
 
         await sut.LoadAsync();
 
@@ -47,7 +54,14 @@ public class TimeTrackingServiceTests
             new Activity { Name = "Default", Factor = 1, DisplayOrder = 0 }
         });
         var settings = new StubSettingsService();
-        var sut = new TimeTrackingService(storage, config, settings, new StubNotificationService(), new StubStringLocalizer());
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            new StubNotificationService(),
+            new StubStringLocalizer(),
+            new StubSupabaseAuthService(),
+            new StubSupabaseActivityStore());
 
         await sut.LoadAsync();
 
@@ -255,7 +269,14 @@ public class TimeTrackingServiceTests
         var settings = settingsService ?? new StubSettingsService();
         var notifications = new StubNotificationService();
         var localizer = new StubStringLocalizer();
-        var service = new TimeTrackingService(storage, config, settings, notifications, localizer);
+        var service = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            localizer,
+            new StubSupabaseAuthService(),
+            new StubSupabaseActivityStore());
         await service.LoadAsync();
         return service;
     }
