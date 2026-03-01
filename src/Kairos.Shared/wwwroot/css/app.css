@@ -54,6 +54,30 @@
     --transition-slow: 350ms ease;
 }
 
+html[data-theme="light"] {
+    color-scheme: light;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-bg-primary: #0f1716;
+    --color-bg-secondary: #15201f;
+    --color-bg-tertiary: #223130;
+    --color-text-primary: #ecf2f1;
+    --color-text-secondary: #c4d4d1;
+    --color-text-muted: #92a9a4;
+
+    --color-positive: #4dd497;
+    --color-positive-glow: rgba(77, 212, 151, 0.25);
+    --color-negative: #ff7d7d;
+    --color-negative-glow: rgba(255, 125, 125, 0.23);
+
+    --color-accent: #35b4aa;
+    --color-accent-hover: #2ea69d;
+    --color-accent-glow: rgba(53, 180, 170, 0.22);
+}
+
 /* ===== Base Styles ===== */
 
 *,
@@ -883,6 +907,10 @@ body {
     font-family: inherit;
     font-size: var(--font-size-md);
     transition: border-color var(--transition-fast);
+    color-scheme: light;
+}
+
+html[data-theme="dark"] .edit-input {
     color-scheme: dark;
 }
 

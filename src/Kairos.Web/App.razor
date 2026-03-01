@@ -1,6 +1,8 @@
 @using Kairos.Shared.Layout
 @using Kairos.Shared.Services
+@using Microsoft.JSInterop
 @inject ISettingsService SettingsService
+@inject IJSRuntime JSRuntime
 @inject ISupabaseAuthService AuthService
 @implements IDisposable
 
@@ -29,16 +31,36 @@ else
 }
 
 @code {
+    private bool _isInitialized;
+
     protected override void OnInitialized()
     {
         SettingsService.OnSettingsChanged += OnSettingsChanged;
         AuthService.OnAuthStateChanged += OnAuthStateChanged;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_isInitialized)
+        {
+            _isInitialized = true;
+            await ApplyThemeAsync();
+        }
+    }
+
     private void OnSettingsChanged()
     {
         Console.WriteLine($"[App] Settings changed. Re-rendering. CurrentCulture: {System.Globalization.CultureInfo.CurrentCulture.Name}");
-        StateHasChanged();
+        _ = InvokeAsync(async () =>
+        {
+            await ApplyThemeAsync();
+            StateHasChanged();
+        });
+    }
+
+    private async Task ApplyThemeAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("kairosTheme.applyTheme", SettingsService.Theme);
     }
 
     private void OnAuthStateChanged()

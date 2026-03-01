@@ -371,25 +371,49 @@
     <value>Versión</value>
   </data>
   <data name="TutorialIntro" xml:space="preserve">
-    <value>Ola! Benvido a 'Kairos'! Son o teu guía persoal para o orzamento de tempo. Estou aquí para axudarche a comezar a xestionar o teu tempo con eficacia!</value>
+    <value>Benvido a Kairos. Esta guía amósache o funcionamento completo da aplicación: rexistrar, revisar e protexer os teus datos. Sigue os pasos unha vez en orde e despois usa só o que necesites no día a día.</value>
   </data>
-  <data name="TutorialOverview" xml:space="preserve">
-    <value>Esta é a túa 'Visión xeral'. Ofrece unha imaxe rápida da saúde do teu orzamento temporal actual. Podes ver o teu saldo total de tempo e os contadores activos dunha ollada.</value>
+  <data name="TutorialHowItWorks" xml:space="preserve">
+    <value>Kairos baséase en sesións de actividade. Cada vez que inicias unha actividade, créase un evento coa hora de inicio, e ao detela gárdase a hora de fin. O teu saldo é a suma de todas as duracións rexistradas.</value>
   </data>
-  <data name="TutorialActivities" xml:space="preserve">
-    <value>Aquí en 'Contadores' defines as túas actividades! Podes configurar contadores para cousas como Traballo, Estudo ou Lecer. Pensa neles como o pulso do teu día.</value>
+  <data name="TutorialOverviewBalance" xml:space="preserve">
+    <value>Esta é a pantalla de Visión xeral. O número grande é o teu saldo actual en horas, calculado a partir do historial. Valores positivos significan tempo neto rexistrado e valores negativos significan que a conta está por baixo de cero.</value>
   </data>
-  <data name="TutorialTimeline" xml:space="preserve">
-    <value>A 'Cronoloxía' é a túa axuda visual! 🔮 Proxecta o teu orzamento de tempo pasado baseándose nas actividades rexistradas. Úsaa para ver tendencias e planificar con antelación.</value>
+  <data name="TutorialOverviewActive" xml:space="preserve">
+    <value>Cando unha actividade está en execución, verás aquí un indicador activo. Se ese indicador está visible, o tempo segue rexistrándose nese momento. Úsao como comprobación rápida antes de pechar a app.</value>
   </data>
-  <data name="TutorialHistory" xml:space="preserve">
-    <value>Queres ver o que pasou no pasado? A páxina de 'Historial' garda un rexistro de todas as túas entradas e cambios. É xenial para seguir os teus hábitos de actividade.</value>
+  <data name="TutorialActivitiesBasics" xml:space="preserve">
+    <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
   </data>
-  <data name="TutorialSync" xml:space="preserve">
-    <value>Finalmente, 'Sincronización' mantén os teus datos seguros! Podes facer copias de seguridade dos teus datos de seguimento de tempo en Google Drive ou exportalos localmente. Non perdas nunca o teu progreso!</value>
+  <data name="TutorialActivitiesComment" xml:space="preserve">
+    <value>Ao iniciar unha actividade pídesche un comentario. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>
+  </data>
+  <data name="TutorialActivitiesManage" xml:space="preserve">
+    <value>Podes renomear actividades, borrar as inactivas, engadir novas e reordenalas arrastrando. Mantén a lista limpa e estable para que o rexistro diario sexa rápido e consistente.</value>
+  </data>
+  <data name="TutorialTimelinePeriods" xml:space="preserve">
+    <value>A Cronoloxía amosa como cambiou o teu saldo co paso do tempo. Cambia os botóns de período (1h a 1m) para pasar de comportamento a curto prazo a tendencias máis longas.</value>
+  </data>
+  <data name="TutorialTimelineInterpretation" xml:space="preserve">
+    <value>Le a liña de esquerda a dereita: subir significa que o saldo medra, plano significa sen cambios e baixar indica menor saldo neto. Úsao para detectar problemas de ritmo con antelación.</value>
+  </data>
+  <data name="TutorialHistoryReview" xml:space="preserve">
+    <value>Historial é o teu rexistro detallado de auditoría. Cada tarxeta mostra nome da actividade, inicio, fin, duración, contribución e comentario. Esta páxina é a fonte fiable cando precisas comprobar o que pasou.</value>
+  </data>
+  <data name="TutorialHistoryEdit" xml:space="preserve">
+    <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula de inmediato o saldo e a cronoloxía.</value>
+  </data>
+  <data name="TutorialSettingsPersonalize" xml:space="preserve">
+    <value>En Axustes podes cambiar idioma, escoller o avatar do tutorial e controlar as notificacións do navegador. Configúrao unha vez para que a app se adapte ao teu fluxo diario.</value>
+  </data>
+  <data name="TutorialSettingsIntegrations" xml:space="preserve">
+    <value>Axustes tamén inclúe opcións de integración, como a conexión con Timeular. Se usas seguimento por hardware, comproba aquí o estado da conexión antes de depender de cambios automáticos de actividade.</value>
+  </data>
+  <data name="TutorialBackupAndSafety" xml:space="preserve">
+    <value>Protexe os teus datos con exportacións periódicas ou copias na nube cando estean dispoñibles na túa configuración. Restablecemento de fábrica é destrutivo e borra todos os datos de seguimento, así que úsao só cando queiras comezar de cero de forma intencional.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Eses son os puntos básicos! Xa estás listo para tomar o control do teu tempo. Se me necesitas de novo, busca a icona de axuda. Feliz seguimento! ✨</value>
+    <value>Agora xa tes a visión completa. Empeza hoxe con unha ou dúas actividades, mantén comentarios concisos e revisa o Historial con frecuencia. Podes reiniciar este tutorial en calquera momento despois dun restablecemento.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guía</value>

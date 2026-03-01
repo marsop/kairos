@@ -371,25 +371,49 @@
     <value>Version</value>
   </data>
   <data name="TutorialIntro" xml:space="preserve">
-    <value>Servus! Willkomma bi 'Kairos'! I bin din persönlicher Guide fürs Zitbudget. I hilf dr dabei, dini Zit gschit zum iiteila!</value>
+    <value>Willkomma bi Kairos. In dera Anleitung zeig i dr dr komplette Ablauf vo dr App: erfassa, kontrolliera und d'Data absichara. Gang d'Schritt amol der Reih no durch und nutz nachher num des, was im Alltag bruuchsch.</value>
   </data>
-  <data name="TutorialOverview" xml:space="preserve">
-    <value>Des isch din 'Überblick'. Do siehsch uf oan Blick, wie's um din Zitbudget stoht. Di gsamt Guthaben und d'aktiva Zähler uf oam Fleck.</value>
+  <data name="TutorialHowItWorks" xml:space="preserve">
+    <value>Kairos schafft mit Aktivitäts-Sitziga. Jedes Mol wenn du e Aktivität startesch, wird a Ereignis mit Startzit erstellt, und bim Stoppa wird d'Endzit gspeichert. Din Saldo isch d'Summa vo allna erfassta Dauera.</value>
   </data>
-  <data name="TutorialActivities" xml:space="preserve">
-    <value>Do bi da 'Zähler' seisch, was du machsch! Du kasch Zähler für Arbet, Beruaf oder Freizit macha. Des isch da Puls vo dinam Tag.</value>
+  <data name="TutorialOverviewBalance" xml:space="preserve">
+    <value>Des isch d'Überblick-Seita. D'grosse Zahl isch din aktueller Saldo in Stunda, berechnet us dr Historie. Positive Wert bedütat netto erfassti Zit, negative Wert bedütat, dass dis Konto unter Null isch.</value>
   </data>
-  <data name="TutorialTimeline" xml:space="preserve">
-    <value>D'Zitachse' isch dini Hufe! 🔮 Do siehsch, wie des mit dinam Zitbudget in dr Vergangenheit war. Gut zum luaga, wie's usschaut und zum plana.</value>
+  <data name="TutorialOverviewActive" xml:space="preserve">
+    <value>Wenn e Aktivität lauft, siehsch do a Aktiv-Indikator. Wenn dr sichtbar isch, wird grad no Zit erfasst. Nutz des als schnella Check, bevor d'App zumachsch.</value>
   </data>
-  <data name="TutorialHistory" xml:space="preserve">
-    <value>Witt wissa, was gester war? Da 'Verloff' hät alle dine Iträg und Änderungen. Super zum luaga, was ma so den ganza Tag triebt.</value>
+  <data name="TutorialActivitiesBasics" xml:space="preserve">
+    <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
   </data>
-  <data name="TutorialSync" xml:space="preserve">
-    <value>Und dazua hebt 'Sync' dine Data uff! Du kasch dine Data uf Google Drive sichara oder lokal exportiera. So goht nix verlora!</value>
+  <data name="TutorialActivitiesComment" xml:space="preserve">
+    <value>Biim Starta vo a Aktivität wirst no am Kommentar gfrogt. Nutz kurzi, klare Notiza, zum Bispil was d gmacht hesch, wo oder für wen. Kommentara erschinat im Verloff und machat spätere Reviews viel eifacher.</value>
+  </data>
+  <data name="TutorialActivitiesManage" xml:space="preserve">
+    <value>Du kasch Aktivitäta umbenenna, inaktivi löscha, neue hinzufüega und per Drag-and-Drop umsortiera. Halt d'Lista sauber und stabil, damit s'tägliche Erfassa schnell und konsistent blibt.</value>
+  </data>
+  <data name="TutorialTimelinePeriods" xml:space="preserve">
+    <value>D'Zitachse zeigt, wie sich din Saldo über d'Zit verändert hät. Mit dr Perioda-Buttons (1h bis 1m) wechslisch zwischa kurzfristigem Verlauf und längera Trends.</value>
+  </data>
+  <data name="TutorialTimelineInterpretation" xml:space="preserve">
+    <value>Lies d'Linia vo links nach rechts: ufwärts bedütat meh Saldo, flach bedütat kei Änderung, und Abfälle zeigat weniger Netto-Saldo. So erkennsch früah, wenn dr Rhythmus nid passt.</value>
+  </data>
+  <data name="TutorialHistoryReview" xml:space="preserve">
+    <value>Dr Verloff isch dis detaillierte Prüfprotokoll. Jedi Charte zeigt Aktivitätsname, Startzit, Endzit, Dauer, Beitrag und Kommentar. Die Seita isch dini zuverlässige Quella, wenn du prüefa willsch, was passiert isch.</value>
+  </data>
+  <data name="TutorialHistoryEdit" xml:space="preserve">
+    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat din Saldo und d'Zitachse sofort neu.</value>
+  </data>
+  <data name="TutorialSettingsPersonalize" xml:space="preserve">
+    <value>In dr Istelliga kasch Sprach, Tutorial-Avatar und Browser-Benachrichtigunga anpassa. Stell des amol passend i, damit d'App zu dim täglicha Ablauf passt.</value>
+  </data>
+  <data name="TutorialSettingsIntegrations" xml:space="preserve">
+    <value>I dr Istelliga findsch au Integrations-Optiona, zum Bispil d'Timeular-Verbindig. Wenn du Hardware-Tracking nutzsch, prüef do dr Verbindigsstatus, bevor du di uf automatische Aktivitätswechsel verlahsch.</value>
+  </data>
+  <data name="TutorialBackupAndSafety" xml:space="preserve">
+    <value>Sicher dini Data mit regelmäßiga Exporta oder Cloud-Backups, wenn si i dr Konfiguration verfügbar sind. Werkseinstellungen isch destruktiv und löscht alli Tracking-Data, drum nur nutza, wenn du bewusst neu starta willsch.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Des wär's fürs Erschte! Jetz kasch d'Zügel sälber in d'Hand nehma. Wenn mi wieder bruuchst, druck uf des Hilfe-Symbol. Viel Spaß beim Tracka! ✨</value>
+    <value>Du hesch jetzt s'ganze Bild. Start hüt mit oin oder zwoi Aktivitäta, halt Kommentara kurz und lueg dr Verloff regelmäßig ah. Nach am Reset kasch des Tutorial jederzeit wieder starta.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>

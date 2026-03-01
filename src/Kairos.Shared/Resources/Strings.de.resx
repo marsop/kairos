@@ -371,25 +371,49 @@
     <value>Version</value>
   </data>
   <data name="TutorialIntro" xml:space="preserve">
-    <value>Hallo! Willkommen bei 'Kairos'! Ich bin dein persönlicher Zeitbudget-Guide. Ich bin hier, um dir den Einstieg in ein effektives Zeitmanagement zu erleichtern!</value>
+    <value>Willkommen bei Kairos. Diese Anleitung zeigt dir den kompletten Ablauf der App: erfassen, auswerten und Daten absichern. Geh die Schritte einmal der Reihe nach durch und nutze danach nur noch das, was du im Alltag brauchst.</value>
   </data>
-  <data name="TutorialOverview" xml:space="preserve">
-    <value>Dies ist deine 'Übersicht'. Sie gibt dir einen schnellen Überblick über deinen aktuellen Zeitbudget-Status. Du siehst dein gesamtes Zeitguthaben und die aktiven Zähler auf einen Blick.</value>
+  <data name="TutorialHowItWorks" xml:space="preserve">
+    <value>Kairos arbeitet mit Aktivitäts-Sitzungen. Jedes Mal, wenn du eine Aktivität startest, wird ein Ereignis mit Startzeit angelegt. Beim Stoppen wird die Endzeit gespeichert. Dein Kontostand ist die Summe aller erfassten Dauern.</value>
   </data>
-  <data name="TutorialActivities" xml:space="preserve">
-    <value>Hier unter 'Zähler' definierst du deine Aktivitäten! Du kannst Zähler für Dinge wie Arbeit, Studium oder Freizeit einrichten. Betrachte sie als den Puls deines Tages.</value>
+  <data name="TutorialOverviewBalance" xml:space="preserve">
+    <value>Das ist die Übersichtsseite. Die große Zahl zeigt deinen aktuellen Zeitkontostand in Stunden, berechnet aus deinem Verlauf. Positive Werte bedeuten netto erfasste Zeit, negative Werte bedeuten ein Minus auf dem Konto.</value>
   </data>
-  <data name="TutorialTimeline" xml:space="preserve">
-    <value>Die 'Zeitachse' ist deine visuelle Hilfe! 🔮 Sie stellt dein vergangenes Zeitbudget basierend auf deinen aufgezeichneten Aktivitäten dar. Nutze sie, um Trends zu erkennen und vorauszuplanen.</value>
+  <data name="TutorialOverviewActive" xml:space="preserve">
+    <value>Wenn eine Aktivität läuft, siehst du hier einen Aktiv-Indikator. Ist dieser sichtbar, wird gerade weiterhin Zeit erfasst. Nutze das als schnellen Sicherheitscheck, bevor du die App schließt.</value>
   </data>
-  <data name="TutorialHistory" xml:space="preserve">
-    <value>Möchtest du sehen, was in der Vergangenheit passiert ist? Die 'Verlauf'-Seite führt ein Protokoll aller deiner Einträge und Änderungen. Sie ist ideal, um deine Aktivitätsgewohnheiten zu verfolgen.</value>
+  <data name="TutorialActivitiesBasics" xml:space="preserve">
+    <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
   </data>
-  <data name="TutorialSync" xml:space="preserve">
-    <value>Schließlich hält 'Sync' deine Daten sicher! Du kannst deine Zeittracking-Daten in Google Drive sichern oder lokal exportieren. Verliere nie deinen Fortschritt!</value>
+  <data name="TutorialActivitiesComment" xml:space="preserve">
+    <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>
+  </data>
+  <data name="TutorialActivitiesManage" xml:space="preserve">
+    <value>Du kannst Aktivitäten umbenennen, inaktive löschen, neue hinzufügen und per Drag-and-Drop neu sortieren. Halte die Liste klar und stabil, damit die tägliche Erfassung schnell und konsistent bleibt.</value>
+  </data>
+  <data name="TutorialTimelinePeriods" xml:space="preserve">
+    <value>Die Zeitachse zeigt, wie sich dein Kontostand über die Zeit verändert hat. Mit den Zeitraum-Buttons (1h bis 1m) wechselst du zwischen kurzfristigem Verhalten und langfristigen Trends.</value>
+  </data>
+  <data name="TutorialTimelineInterpretation" xml:space="preserve">
+    <value>Lies die Linie von links nach rechts: steigend bedeutet mehr Guthaben, flach bedeutet keine Änderung, und Abfälle zeigen geringeren Nettostand. So erkennst du frühzeitig Muster in deinem Rhythmus.</value>
+  </data>
+  <data name="TutorialHistoryReview" xml:space="preserve">
+    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer, Beitrag und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
+  </data>
+  <data name="TutorialHistoryEdit" xml:space="preserve">
+    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen Kontostand und Zeitachse sofort neu.</value>
+  </data>
+  <data name="TutorialSettingsPersonalize" xml:space="preserve">
+    <value>In den Einstellungen kannst du Sprache, Tutorial-Avatar und Browser-Benachrichtigungen anpassen. Richte das einmal passend ein, damit die App zu deinem täglichen Ablauf passt.</value>
+  </data>
+  <data name="TutorialSettingsIntegrations" xml:space="preserve">
+    <value>In den Einstellungen findest du auch Integrationen wie die Timeular-Verbindung. Wenn du Hardware-Tracking nutzt, prüfe hier den Verbindungsstatus, bevor du dich auf automatische Aktivitätswechsel verlässt.</value>
+  </data>
+  <data name="TutorialBackupAndSafety" xml:space="preserve">
+    <value>Schütze deine Daten mit regelmäßigen Exporten oder Cloud-Backups, wenn diese in deiner Konfiguration verfügbar sind. Werkseinstellungen ist destruktiv und löscht alle Tracking-Daten, also nur verwenden, wenn du bewusst neu starten willst.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Das sind die Grundlagen! Du bist bereit, die Kontrolle über deine Zeit zu übernehmen. Wenn du mich wieder brauchst, schau einfach nach dem Hilfe-Symbol. Viel Spaß beim Tracken! ✨</value>
+    <value>Du hast jetzt das komplette Bild. Starte heute mit ein oder zwei Aktivitäten, halte Kommentare kurz und prüfe den Verlauf regelmäßig. Nach einem Reset kannst du dieses Tutorial jederzeit erneut starten.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>

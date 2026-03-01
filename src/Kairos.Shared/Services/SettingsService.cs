@@ -11,10 +11,27 @@ public class SettingsService : ISettingsService
     private readonly IStorageService _storage;
     private const string StorageKey = "Kairos_settings";
     private const string DefaultLanguage = "en";
+    private const string DefaultTheme = "light";
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
     private string _language = DefaultLanguage;
+    private string _theme = DefaultTheme;
+
+    public string Theme
+    {
+        get => _theme;
+        set
+        {
+            var sanitizedTheme = SanitizeTheme(value);
+            if (_theme != sanitizedTheme)
+            {
+                _theme = sanitizedTheme;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
 
     public bool TutorialCompleted
     {
@@ -84,6 +101,7 @@ public class SettingsService : ISettingsService
                 var data = JsonSerializer.Deserialize<SettingsData>(json);
                 if (data != null)
                 {
+                    _theme = SanitizeTheme(data.Theme);
                     _language = string.IsNullOrEmpty(data.Language) ? DefaultLanguage : data.Language;
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
@@ -92,6 +110,7 @@ public class SettingsService : ISettingsService
             catch
             {
                 // If deserialization fails, keep defaults
+                _theme = DefaultTheme;
                 _language = DefaultLanguage;
                 _tutorialCompleted = false;
                 _browserNotificationsEnabled = false;
@@ -128,12 +147,18 @@ public class SettingsService : ISettingsService
     {
         var data = new SettingsData 
         { 
+            Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled
         };
         var json = JsonSerializer.Serialize(data);
         await _storage.SetItemAsync(StorageKey, json);
+    }
+
+    private static string SanitizeTheme(string? theme)
+    {
+        return string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase) ? "dark" : DefaultTheme;
     }
 }
 
@@ -142,6 +167,7 @@ public class SettingsService : ISettingsService
 /// </summary>
 internal class SettingsData
 {
+    public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }

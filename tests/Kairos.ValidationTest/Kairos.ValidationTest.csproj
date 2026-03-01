@@ -19,5 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Kairos.Shared\Kairos.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Kairos.Web\Kairos.Web.csproj" />
   </ItemGroup>
 </Project>
