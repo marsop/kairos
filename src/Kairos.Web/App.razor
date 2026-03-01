@@ -3,20 +3,32 @@
 @using Microsoft.JSInterop
 @inject ISettingsService SettingsService
 @inject IJSRuntime JSRuntime
+@inject ISupabaseAuthService AuthService
 @implements IDisposable
 
-<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.Shared.Pages.Overview).Assembly }">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+@if (!AuthService.IsInitialized)
+{
+    <div class="auth-loading">Loading...</div>
+}
+else if (!AuthService.IsAuthenticated)
+{
+    <Kairos.Shared.Pages.Auth />
+}
+else
+{
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.Shared.Pages.Overview).Assembly }">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+}
 
 @code {
     private bool _isInitialized;
@@ -24,6 +36,7 @@
     protected override void OnInitialized()
     {
         SettingsService.OnSettingsChanged += OnSettingsChanged;
+        AuthService.OnAuthStateChanged += OnAuthStateChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -49,9 +62,15 @@
     {
         await JSRuntime.InvokeVoidAsync("kairosTheme.applyTheme", SettingsService.Theme);
     }
+
+    private void OnAuthStateChanged()
+    {
+        StateHasChanged();
+    }
     
     public void Dispose()
     {
         SettingsService.OnSettingsChanged -= OnSettingsChanged;
+        AuthService.OnAuthStateChanged -= OnAuthStateChanged;
     }
 }
