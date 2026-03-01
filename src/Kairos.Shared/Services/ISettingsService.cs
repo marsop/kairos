@@ -6,6 +6,11 @@ namespace Kairos.Shared.Services;
 public interface ISettingsService
 {
     /// <summary>
+    /// Gets or sets the current application theme ("light" or "dark").
+    /// </summary>
+    string Theme { get; set; }
+
+    /// <summary>
     /// Gets or sets the current language code (e.g., "en", "de", "es", "gl", "gsw").
     /// </summary>
     string Language { get; set; }

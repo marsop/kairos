@@ -38,6 +38,25 @@
         </div>
 
         <div class="setting-item">
+            <span class="setting-label">@Localizer["Theme"]</span>
+            <div class="language-dropdown">
+                <button type="button" class="dropdown-trigger" @onclick="ToggleThemeDropdown">
+                    <span>@GetThemeName(SelectedTheme)</span>
+                </button>
+                <div class="dropdown-menu @(isThemeDropdownOpen ? "show" : "")">
+                    @foreach (var theme in Themes)
+                    {
+                        <div class="dropdown-item @(SelectedTheme == theme.Code ? "selected" : "")"
+                             @onclick="() => SelectTheme(theme.Code)"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer[theme.LabelKey]</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-item">
             <span class="setting-label">@Localizer["TutorialAvatar"]</span>
             <div class="language-dropdown">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
@@ -185,14 +204,17 @@
 
 @code {
     private bool isDropdownOpen;
+    private bool isThemeDropdownOpen;
     private bool isAvatarDropdownOpen;
     private bool showConfirmation1;
     private bool showConfirmation2;
     private bool browserNotificationsDenied;
 
     private string SelectedLanguage => SettingsService.Language;
+    private string SelectedTheme => SettingsService.Theme;
 
     private record LanguageOption(string Name, string Code, RenderFragment Flag);
+    private record ThemeOption(string LabelKey, string Code);
 
     private static readonly RenderFragment FlagEn = @<svg viewBox="0 0 640 480"><rect width="640" height="480" fill="#012169"/><path d="M75 0l245 180L565 0h75v60L395 240l245 180v60h-75L320 300 75 480H0v-60l245-180L0 60V0h75z" fill="#fff"/><path d="M424 281l216 159v40L369 281h55zM216 199L0 41v40l161 118h55zm0 82L0 439v40l216-159v-40zm208-82l216-159V41L424 199h0z" fill="#C8102E"/><path d="M240 0v480h160V0H240zM0 160v160h640V160H0z" fill="#fff"/><path d="M280 0v480h80V0h-80zM0 200v80h640v-80H0z" fill="#C8102E"/></svg>;
     private static readonly RenderFragment FlagDe = @<svg viewBox="0 0 5 3"><rect width="5" height="3" y="0" fill="#000"/><rect width="5" height="2" y="1" fill="#D00"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>;
@@ -208,9 +230,19 @@
         new("Galego", "gl", FlagGl),
         new("Vorarlbergerisch", "gsw", FlagVo)
     };
+    private List<ThemeOption> Themes = new()
+    {
+        new("ThemeLight", "light"),
+        new("ThemeDark", "dark")
+    };
 
     private string GetLanguageName(string code) => Languages.FirstOrDefault(l => l.Code == code)?.Name ?? "English";
     private RenderFragment GetFlag(string code) => Languages.FirstOrDefault(l => l.Code == code)?.Flag ?? FlagEn;
+    private string GetThemeName(string code)
+    {
+        var labelKey = Themes.FirstOrDefault(t => t.Code == code)?.LabelKey ?? "ThemeLight";
+        return Localizer[labelKey];
+    }
 
     protected override void OnInitialized()
     {
@@ -247,6 +279,15 @@
         await SettingsService.SetLanguageAsync(code);
         isDropdownOpen = false;
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
+
+    private void ToggleThemeDropdown() => isThemeDropdownOpen = !isThemeDropdownOpen;
+
+    private Task SelectTheme(string themeCode)
+    {
+        SettingsService.Theme = themeCode;
+        isThemeDropdownOpen = false;
+        return Task.CompletedTask;
     }
 
     private void ToggleAvatarDropdown() => isAvatarDropdownOpen = !isAvatarDropdownOpen;

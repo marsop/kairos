@@ -66,6 +66,7 @@ internal sealed class StubActivityConfigurationService : IActivityConfigurationS
 
 internal sealed class StubSettingsService : ISettingsService
 {
+    public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }

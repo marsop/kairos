@@ -16,6 +16,7 @@ public class SettingsServiceTests
 
         await sut.LoadAsync();
 
+        Assert.Equal("light", sut.Theme);
         Assert.Equal("en", sut.Language);
         Assert.False(sut.TutorialCompleted);
         Assert.False(sut.BrowserNotificationsEnabled);
@@ -38,6 +39,24 @@ public class SettingsServiceTests
         Assert.NotNull(savedJson);
         using var doc = JsonDocument.Parse(savedJson!);
         Assert.Equal("de", doc.RootElement.GetProperty("Language").GetString());
+    }
+
+    [Fact]
+    public async Task Theme_WhenChanged_PersistsAndNotifies()
+    {
+        var storage = new InMemoryStorageService();
+        var sut = new SettingsService(storage);
+        var events = 0;
+        sut.OnSettingsChanged += () => events++;
+
+        sut.Theme = "dark";
+
+        Assert.Equal("dark", sut.Theme);
+        Assert.Equal(1, events);
+        var savedJson = await storage.GetItemAsync("Kairos_settings");
+        Assert.NotNull(savedJson);
+        using var doc = JsonDocument.Parse(savedJson!);
+        Assert.Equal("dark", doc.RootElement.GetProperty("Theme").GetString());
     }
 
     [Fact]
