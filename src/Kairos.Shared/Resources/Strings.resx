@@ -394,6 +394,9 @@
   <data name="Version" xml:space="preserve">
     <value>Version</value>
   </data>
+  <data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+    <value>Before we continue, choose your display language and tutorial avatar here. Once both are selected, the rest of the walkthrough will continue.</value>
+  </data>
   <data name="TutorialIntro" xml:space="preserve">
     <value>Welcome to Kairos. This walkthrough will show you how the app works end to end: tracking, reviewing, and protecting your data. Follow the steps in order once, then use only the parts you need day to day.</value>
   </data>
