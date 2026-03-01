@@ -2,6 +2,7 @@
 @using Kairos.Shared.Resources
 @inject ITutorialService TutorialService
 @inject ISettingsService SettingsService
+@inject NavigationManager NavigationManager
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -211,6 +212,11 @@
             width: 100%;
         }
     }
+
+    .dialogue-box .language-dropdown .dropdown-menu {
+        top: auto;
+        bottom: calc(100% + 4px);
+    }
 </style>
 
 @code {
@@ -256,6 +262,9 @@
         if (SettingsService.Language != code)
         {
             await SettingsService.SetLanguageAsync(code);
+            isLanguageDropdownOpen = false;
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            return;
         }
 
         isLanguageDropdownOpen = false;
