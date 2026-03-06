@@ -8,77 +8,82 @@
 @inject IStringLocalizer<Strings> Localizer
 
 <div class="statistics-page">
-    <h2 class="page-title">Statistics</h2>
-    
-    <div class="period-tabs">
-        <button class="tab @(CurrentView == ViewMode.Week ? "active" : "")" @onclick="() => SetView(ViewMode.Week)">This Week</button>
-        <button class="tab @(CurrentView == ViewMode.Month ? "active" : "")" @onclick="() => SetView(ViewMode.Month)">This Month</button>
+    <h2 class="page-title">@Localizer["NavStatistics"]</h2>
+
+    <div class="period-selector">
+        <button class="period-button @(CurrentView == ViewMode.Week ? "selected" : "")" @onclick="() => SetView(ViewMode.Week)">This Week</button>
+        <button class="period-button @(CurrentView == ViewMode.Month ? "selected" : "")" @onclick="() => SetView(ViewMode.Month)">This Month</button>
     </div>
 
-    <div class="summary-cards">
-        <div class="card total-time">
-            <h3>Total Tracked Time</h3>
-            <div class="value">@TotalTime.TotalHours.ToString("F1")h</div>
-            <div class="subtitle">@PeriodLabel</div>
-        </div>
+    <div class="stat-summary-card">
+        <div class="stat-label">Total Tracked Time</div>
+        <div class="stat-big-value">@((int)TotalTime.TotalHours)<span class="stat-unit">h</span> @(TotalTime.Minutes)<span class="stat-unit">m</span></div>
+        <div class="stat-period">@PeriodLabel</div>
     </div>
-    
+
     <!-- Budgets List -->
     <div class="budgets-section">
-        <h3>Activities & Budgets</h3>
-        <div class="budgets-grid">
+        <h3 class="section-title">Activities &amp; Budgets</h3>
+        <div class="budgets-list">
             @foreach (var activity in TimeService.Account.Activities.OrderBy(a => a.DisplayOrder))
             {
                 var tracked = GetTrackedTimeForActivity(activity.Name);
                 var budget = GetBudgetForActivity(activity.Id);
-                var progress = budget != null && budget.AllocatedTimeSpan.TotalHours > 0 
-                    ? Math.Min(100, (tracked.TotalHours / budget.AllocatedTimeSpan.TotalHours) * 100) 
+                var hasBudget = budget != null && budget.AllocatedTimeSpan.TotalSeconds > 0;
+                var progress = hasBudget
+                    ? Math.Min(100, (tracked.TotalHours / budget!.AllocatedTimeSpan.TotalHours) * 100)
                     : 0;
+                var isOver = progress >= 100;
 
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <span class="activity-name">@activity.Name</span>
-                        <span class="budget-values">
-                            @tracked.TotalHours.ToString("F1")h 
-                            @if (budget != null && budget.AllocatedTimeSpan.TotalHours > 0)
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span class="budget-activity-name">@activity.Name</span>
+                        <span class="budget-time @(isOver ? "over" : "")">
+                            @tracked.TotalHours.ToString("F1")h
+                            @if (hasBudget)
                             {
-                                <span> / @budget.AllocatedTimeSpan.TotalHours.ToString("F1")h</span>
+                                <span class="budget-of"> / @budget!.AllocatedTimeSpan.TotalHours.ToString("F0")h</span>
                             }
                         </span>
                     </div>
-                    @if (budget != null && budget.AllocatedTimeSpan.TotalHours > 0)
+                    @if (hasBudget)
                     {
-                        <div class="progress-bar-container">
-                            <div class="progress-bar @(progress >= 100 ? "overage" : "")" style="width: @progress.ToString(CultureInfo.InvariantCulture)%"></div>
+                        <div class="budget-progress-track">
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="width: @progress.ToString(CultureInfo.InvariantCulture)%"></div>
                         </div>
                     }
-                    <button class="edit-budget-btn" @onclick="() => EditBudget(activity.Id)">Edit Budget</button>
+                    <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">Set budget</button>
                 </div>
             }
         </div>
     </div>
 
-    @if (IsEditingBudget)
-    {
-        <!-- Simple modal for editing budget -->
-        <div class="modal">
-            <div class="modal-content">
-                <h4>Edit Budget for @EditingActivityName</h4>
-                <label>Budgeted Hours for this @(CurrentView == ViewMode.Week ? "Week" : "Month"):</label>
-                <input type="number" @bind="EditingBudgetHours" min="0" step="0.5" />
-                <div class="modal-actions">
-                    <button @onclick="SaveBudget">Save</button>
-                    <button @onclick="CancelEdit">Cancel</button>
-                </div>
-            </div>
-        </div>
-    }
-    
     <!-- Timeline Chart -->
     <div class="chart-container">
         @((MarkupString)RenderChart())
     </div>
 </div>
+
+@if (IsEditingBudget)
+{
+    <div class="modal-overlay" @onclick="CancelEdit">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>Budget for @EditingActivityName</h3>
+            <p>Hours for @(CurrentView == ViewMode.Week ? "this week" : "this month")</p>
+            <div class="edit-form">
+                <div class="edit-field">
+                    <label class="edit-label">Allocated hours</label>
+                    <input type="number" class="edit-input" @bind="EditingBudgetHours" min="0" step="1" />
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelEdit">Cancel</button>
+                <button class="btn-save" @onclick="SaveBudget">Save</button>
+            </div>
+        </div>
+    </div>
+}
+
 
 @code {
     private enum ViewMode { Week, Month }

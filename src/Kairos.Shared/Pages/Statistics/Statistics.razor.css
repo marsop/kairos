@@ -1,28 +1,230 @@
+/* ===== Statistics Page ===== */
+
 .statistics-page {
-    padding: 1rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.period-tabs {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 0.5rem;
+    flex-direction: column;
+    gap: var(--spacing-xl);
 }
 
-.tab {
+/* ===== Summary Card ===== */
+
+.stat-summary-card {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    text-align: center;
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-big-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-positive);
+    font-variant-numeric: tabular-nums;
+    text-shadow: var(--shadow-glow-positive);
+}
+
+.stat-unit {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.stat-period {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* ===== Budgets Section ===== */
+
+.budgets-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.section-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.budgets-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* ===== Budget Item ===== */
+
+.budget-item {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    transition: border-color var(--transition-fast);
+}
+
+.budget-item:hover {
+    border-color: var(--color-text-muted);
+}
+
+.budget-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.budget-activity-name {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.budget-time {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.budget-time.over {
+    color: var(--color-negative);
+}
+
+.budget-of {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+/* ===== Budget Progress Bar ===== */
+
+.budget-progress-track {
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    height: 6px;
+    overflow: hidden;
+}
+
+.budget-progress-fill {
+    background: var(--color-positive);
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-normal), background var(--transition-fast);
+}
+
+.budget-progress-fill.over {
+    background: var(--color-negative);
+}
+
+/* ===== Budget Edit Button ===== */
+
+.budget-edit-btn {
+    align-self: flex-start;
     background: none;
-    border: none;
-    color: #888;
-    font-size: 1.1rem;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
     cursor: pointer;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    transition: all var(--transition-fast);
 }
 
-.tab.active {
-    color: #fff;
-    background-color: #333;
+.budget-edit-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* ===== Edit Form (in modal) ===== */
+
+.edit-form {
+    margin: var(--spacing-md) 0;
+}
+
+.edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.edit-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.edit-input {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    width: 100%;
+    transition: border-color var(--transition-fast);
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+/* ===== Modal Actions ===== */
+
+.modal-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+}
+
+.btn-cancel {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    background: none;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-cancel:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.btn-save {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: white;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-save:hover {
+    background: var(--color-accent-hover);
 }
