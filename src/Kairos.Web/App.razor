@@ -16,7 +16,7 @@ else if (!AuthService.IsAuthenticated)
 }
 else
 {
-    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.Shared.Pages.Overview).Assembly }">
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.Shared.Pages.Statistics.Statistics).Assembly }">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

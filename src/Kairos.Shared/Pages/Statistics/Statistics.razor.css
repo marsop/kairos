@@ -1,0 +1,28 @@
+.statistics-page {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.period-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+}
+
+.tab {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.tab.active {
+    color: #fff;
+    background-color: #333;
+}

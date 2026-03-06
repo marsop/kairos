@@ -61,9 +61,7 @@
   <data name="AppName" xml:space="preserve">
     <value>Kairos</value>
   </data>
-  <data name="NavOverview" xml:space="preserve">
-    <value>Übersicht</value>
-  </data>
+
   <data name="NavActivities" xml:space="preserve">
     <value>Zähler</value>
   </data>

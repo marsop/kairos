@@ -61,14 +61,12 @@
   <data name="AppName" xml:space="preserve">
     <value>Kairos</value>
   </data>
-  <data name="NavOverview" xml:space="preserve">
-    <value>Overview</value>
-  </data>
+
   <data name="NavActivities" xml:space="preserve">
     <value>Activities</value>
   </data>
-  <data name="NavTimeline" xml:space="preserve">
-    <value>Timeline</value>
+  <data name="NavStatistics" xml:space="preserve">
+    <value>Statistics</value>
   </data>
   <data name="NavHistory" xml:space="preserve">
     <value>History</value>
