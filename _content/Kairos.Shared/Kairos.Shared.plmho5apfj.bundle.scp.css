@@ -1,0 +1,234 @@
+/* _content/Kairos.Shared/Pages/Statistics/Statistics.razor.rz.scp.css */
+/* ===== Statistics Page ===== */
+
+.statistics-page[b-3cpehur2mf] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+/* ===== Summary Card ===== */
+
+.stat-summary-card[b-3cpehur2mf] {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    text-align: center;
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+.stat-label[b-3cpehur2mf] {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-big-value[b-3cpehur2mf] {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-positive);
+    font-variant-numeric: tabular-nums;
+    text-shadow: var(--shadow-glow-positive);
+}
+
+.stat-unit[b-3cpehur2mf] {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.stat-period[b-3cpehur2mf] {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* ===== Budgets Section ===== */
+
+.budgets-section[b-3cpehur2mf] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.section-title[b-3cpehur2mf] {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.budgets-list[b-3cpehur2mf] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* ===== Budget Item ===== */
+
+.budget-item[b-3cpehur2mf] {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    transition: border-color var(--transition-fast);
+}
+
+.budget-item:hover[b-3cpehur2mf] {
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.budget-item-header[b-3cpehur2mf] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.budget-activity-name[b-3cpehur2mf] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.budget-time[b-3cpehur2mf] {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.budget-time.over[b-3cpehur2mf] {
+    color: var(--color-negative);
+}
+
+.budget-of[b-3cpehur2mf] {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+/* ===== Budget Progress Bar ===== */
+
+.budget-progress-track[b-3cpehur2mf] {
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    height: 6px;
+    overflow: hidden;
+}
+
+.budget-progress-fill[b-3cpehur2mf] {
+    background: var(--color-positive);
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-normal), background var(--transition-fast);
+}
+
+.budget-progress-fill.over[b-3cpehur2mf] {
+    background: var(--color-negative);
+}
+
+/* ===== Budget Edit Button ===== */
+
+.budget-edit-btn[b-3cpehur2mf] {
+    align-self: flex-start;
+    background: none;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.budget-edit-btn:hover[b-3cpehur2mf] {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* ===== Edit Form (in modal) ===== */
+
+.edit-form[b-3cpehur2mf] {
+    margin: var(--spacing-md) 0;
+}
+
+.edit-field[b-3cpehur2mf] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.edit-label[b-3cpehur2mf] {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.edit-input[b-3cpehur2mf] {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    width: 100%;
+    transition: border-color var(--transition-fast);
+}
+
+.edit-input:focus[b-3cpehur2mf] {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+/* ===== Modal Actions ===== */
+
+.modal-actions[b-3cpehur2mf] {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+}
+
+.btn-cancel[b-3cpehur2mf] {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-full);
+    background: none;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-cancel:hover[b-3cpehur2mf] {
+    background: var(--color-bg-tertiary);
+}
+
+.btn-save[b-3cpehur2mf] {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: white;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-save:hover[b-3cpehur2mf] {
+    background: var(--color-accent-hover);
+}

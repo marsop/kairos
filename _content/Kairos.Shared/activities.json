@@ -1,6 +1,6 @@
 {
   "activities": [
-    { "name": "Work" },
-    { "name": "Personal" }
+    { "name": "Work", "color": "#10B981" },
+    { "name": "Personal", "color": "#3B82F6" }
   ]
 }
