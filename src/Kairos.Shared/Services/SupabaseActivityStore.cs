@@ -29,7 +29,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activities?select=id,name,display_order&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
+            BuildUrl($"rest/v1/activities?select=id,name,color,display_order&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -42,6 +42,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
             {
                 Id = m.Id,
                 Name = m.Name!,
+                Color = Activity.SanitizeColor(m.Color),
                 Factor = 1.0,
                 DisplayOrder = m.DisplayOrder
             })
@@ -63,6 +64,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Id = m.Id,
                 UserId = userId!,
                 Name = m.Name,
+                Color = Activity.SanitizeColor(m.Color),
                 DisplayOrder = m.DisplayOrder
             })
             .ToList();
@@ -129,6 +131,9 @@ internal sealed class SupabaseActivityRow
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
+    [JsonPropertyName("color")]
+    public string? Color { get; set; }
+
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }
 }
@@ -143,6 +148,9 @@ internal sealed class SupabaseActivityWriteRow
 
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
+
+    [JsonPropertyName("color")]
+    public string Color { get; set; } = Activity.DefaultColor;
 
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }

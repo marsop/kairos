@@ -22,9 +22,12 @@
         <div class="events-list">
             @foreach (var evt in Events)
             {
-                <div class="event-card @(evt.IsActive ? "active" : "")">
+                <div class="event-card @(evt.IsActive ? "active" : "")" style="@GetEventStyle(evt)">
                     <div class="event-header">
-                        <span class="event-activity-name">@evt.ActivityName</span>
+                        <div class="event-activity-heading">
+                            <span class="activity-color-dot" style="@GetColorDotStyle(GetEventColor(evt))"></span>
+                            <span class="event-activity-name">@evt.ActivityName</span>
+                        </div>
                         <div class="event-header-actions">
                             @if (evt.IsActive)
                             {
@@ -300,5 +303,37 @@
     {
         TimeService.OnStateChanged -= StateHasChanged;
         _timer?.Dispose();
+    }
+
+    private string GetEventColor(ActivityEvent evt)
+    {
+        if (!string.IsNullOrWhiteSpace(evt.ActivityColor))
+        {
+            return Activity.SanitizeColor(evt.ActivityColor);
+        }
+
+        var matchingActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Name == evt.ActivityName);
+        return Activity.SanitizeColor(matchingActivity?.Color);
+    }
+
+    private string GetEventStyle(ActivityEvent evt)
+    {
+        var color = GetEventColor(evt);
+        return $"border-left: 3px solid {color}; box-shadow: inset 0 1px 0 {ToRgba(color, 0.06)};";
+    }
+
+    private static string GetColorDotStyle(string color)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        return $"background: {normalized}; box-shadow: 0 0 0 4px {ToRgba(normalized, 0.16)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
     }
 }

@@ -353,24 +353,15 @@ body {
     transform: translateY(-2px);
 }
 
-.activity-button.positive {
-    border-color: rgba(16, 185, 129, 0.3);
+.activity-button.activity-colored {
+    border-color: var(--activity-color-border, rgba(16, 185, 129, 0.3));
 }
 
-.activity-button.positive:hover,
-.activity-button.positive.active {
-    border-color: var(--color-positive);
-    box-shadow: var(--shadow-glow-positive);
-}
-
-.activity-button.negative {
-    border-color: rgba(239, 68, 68, 0.3);
-}
-
-.activity-button.negative:hover,
-.activity-button.negative.active {
-    border-color: var(--color-negative);
-    box-shadow: var(--shadow-glow-negative);
+.activity-button.activity-colored:hover,
+.activity-button.activity-colored.active {
+    border-color: var(--activity-color, var(--color-positive));
+    box-shadow: 0 10px 24px var(--activity-color-glow, rgba(16, 185, 129, 0.18));
+    background: linear-gradient(180deg, var(--activity-color-tint, rgba(16, 185, 129, 0.06)), var(--color-bg-secondary));
 }
 
 .activity-button.active {
@@ -400,12 +391,8 @@ body {
     background: var(--color-bg-tertiary);
 }
 
-.activity-button.positive .activity-name {
-    color: var(--color-positive);
-}
-
-.activity-button.negative .activity-name {
-    color: var(--color-negative);
+.activity-button.activity-colored .activity-name {
+    color: var(--activity-color, var(--color-text-primary));
 }
 
 .activity-status {
@@ -544,14 +531,6 @@ body {
     transition: all var(--transition-normal);
 }
 
-.event-card.positive {
-    border-left: 3px solid var(--color-positive);
-}
-
-.event-card.negative {
-    border-left: 3px solid var(--color-negative);
-}
-
 .event-card.active {
     background: var(--color-bg-tertiary);
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
@@ -564,18 +543,29 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
+.event-activity-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
 .event-activity-name {
     font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--color-text-primary);
 }
 
-.event-card.positive .event-activity-name {
-    color: var(--color-positive);
+.activity-color-dot {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 999px;
+    display: inline-block;
+    flex: 0 0 auto;
 }
 
-.event-card.negative .event-activity-name {
-    color: var(--color-negative);
+.activity-color-dot.small {
+    width: 0.75rem;
+    height: 0.75rem;
 }
 
 .event-badge {
@@ -1657,6 +1647,42 @@ html[data-theme="dark"] .edit-input {
 .activity-name-input.invalid {
     border-color: var(--color-negative);
     box-shadow: 0 0 0 3px var(--color-negative-glow);
+}
+
+.activity-color-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.activity-color-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.activity-color-picker-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.activity-color-input {
+    width: 48px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-tertiary);
+    cursor: pointer;
+}
+
+.activity-color-value {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
 }
 
 .edit-actions {

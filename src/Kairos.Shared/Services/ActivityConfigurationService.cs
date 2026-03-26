@@ -32,6 +32,7 @@ public class ActivityConfigurationService : IActivityConfigurationService
             activities.Add(new Activity
             {
                 Name = activityConfig.Name,
+                Color = Activity.SanitizeColor(activityConfig.Color),
                 DisplayOrder = i
             });
         }
@@ -54,4 +55,5 @@ internal class ActivityConfiguration
 internal class ActivityConfigItem
 {
     public string Name { get; set; } = string.Empty;
+    public string Color { get; set; } = Activity.DefaultColor;
 }

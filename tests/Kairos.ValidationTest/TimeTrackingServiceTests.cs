@@ -11,8 +11,8 @@ public class TimeTrackingServiceTests
     {
         var defaultActivities = new[]
         {
-            new Activity { Name = "Work", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Factor = -1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", Factor = -1, DisplayOrder = 1 }
         };
 
         var storage = new InMemoryStorageService();
@@ -33,6 +33,7 @@ public class TimeTrackingServiceTests
         Assert.Equal(1, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(24), sut.TimelinePeriod);
         Assert.All(sut.Account.Activities, activity => Assert.Equal(1.0, activity.Factor));
+        Assert.Equal("#10B981", sut.Account.Activities[0].Color);
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public class TimeTrackingServiceTests
         {
             Activities = new List<Activity>
             {
-                new Activity { Name = "Stored", Factor = 2, DisplayOrder = 0 }
+                new Activity { Name = "Stored", Color = "#3B82F6", Factor = 2, DisplayOrder = 0 }
             },
             TimelinePeriod = TimeSpan.FromHours(12)
         };
@@ -67,6 +68,7 @@ public class TimeTrackingServiceTests
 
         Assert.Single(sut.Account.Activities);
         Assert.Equal("Stored", sut.Account.Activities[0].Name);
+        Assert.Equal("#3B82F6", sut.Account.Activities[0].Color);
         Assert.Equal(1.0, sut.Account.Activities[0].Factor);
         Assert.Equal(0, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(12), sut.TimelinePeriod);
@@ -79,10 +81,11 @@ public class TimeTrackingServiceTests
         var beforeCount = sut.Account.Activities.Count;
         var maxOrder = sut.Account.Activities.Max(m => m.DisplayOrder);
 
-        sut.AddActivity("New Activity");
+        sut.AddActivity("New Activity", "#8B5CF6");
 
         Assert.Equal(beforeCount + 1, sut.Account.Activities.Count);
         var activity = sut.Account.Activities.Single(m => m.Name == "New Activity");
+        Assert.Equal("#8B5CF6", activity.Color);
         Assert.Equal(1.0, activity.Factor);
         Assert.Equal(maxOrder + 1, activity.DisplayOrder);
     }
@@ -98,8 +101,15 @@ public class TimeTrackingServiceTests
     public async Task AddActivity_AlwaysUsesFactorOne()
     {
         var sut = await CreateLoadedServiceAsync();
-        sut.AddActivity("Invalid");
+        sut.AddActivity("Invalid", "#F59E0B");
         Assert.Equal(1.0, sut.Account.Activities.Single(m => m.Name == "Invalid").Factor);
+    }
+
+    [Fact]
+    public async Task AddActivity_InvalidColor_Throws()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        Assert.Throws<ArgumentException>(() => sut.AddActivity("Invalid Color", "green"));
     }
 
     [Fact]
@@ -125,6 +135,7 @@ public class TimeTrackingServiceTests
         var active = sut.GetActiveEvent();
         Assert.NotNull(active);
         Assert.Equal(activity.Name, active!.ActivityName);
+        Assert.Equal(activity.Color, active.ActivityColor);
         Assert.Equal(activity.Factor, active.Factor);
         Assert.Equal("Deep work", active.Comment);
     }
@@ -208,6 +219,7 @@ public class TimeTrackingServiceTests
         Assert.True(settings.TutorialCompleted);
         Assert.Single(sut.Account.Activities);
         Assert.Equal(0, sut.Account.Activities[0].DisplayOrder);
+        Assert.Equal(Activity.DefaultColor, sut.Account.Activities[0].Color);
     }
 
     [Fact]
@@ -227,7 +239,7 @@ public class TimeTrackingServiceTests
     public async Task ReorderActivities_ValidInput_ReordersAndRewritesDisplayOrder()
     {
         var sut = await CreateLoadedServiceAsync();
-        sut.AddActivity("Third");
+        sut.AddActivity("Third", "#14B8A6");
         var orderedByCurrent = sut.Account.Activities.OrderBy(m => m.DisplayOrder).ToList();
         var reversedIds = orderedByCurrent.Select(m => m.Id).Reverse().ToList();
 
@@ -263,8 +275,8 @@ public class TimeTrackingServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Factor = -1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", Factor = -1, DisplayOrder = 1 }
         });
         var settings = settingsService ?? new StubSettingsService();
         var notifications = new StubNotificationService();

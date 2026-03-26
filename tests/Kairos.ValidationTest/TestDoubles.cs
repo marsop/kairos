@@ -58,6 +58,7 @@ internal sealed class StubActivityConfigurationService : IActivityConfigurationS
         {
             Id = activity.Id,
             Name = activity.Name,
+            Color = activity.Color,
             Factor = activity.Factor,
             DisplayOrder = activity.DisplayOrder
         };
@@ -212,6 +213,7 @@ internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
         {
             Id = a.Id,
             Name = a.Name,
+            Color = a.Color,
             Factor = a.Factor,
             DisplayOrder = a.DisplayOrder
         }).ToList());
@@ -224,6 +226,7 @@ internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
         {
             Id = a.Id,
             Name = a.Name,
+            Color = a.Color,
             Factor = a.Factor,
             DisplayOrder = a.DisplayOrder
         }).ToList();

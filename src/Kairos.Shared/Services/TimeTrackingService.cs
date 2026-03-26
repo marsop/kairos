@@ -85,6 +85,7 @@ public class TimeTrackingService : ITimeTrackingService
             StartTime = DateTimeOffset.UtcNow,
             Factor = 1.0,
             ActivityName = activity.Name,
+            ActivityColor = activity.Color,
             Comment = normalizedComment
         };
         
@@ -257,12 +258,12 @@ public class TimeTrackingService : ITimeTrackingService
                 // Factor is fixed at 1.0; normalize persisted legacy data.
                 foreach (var activity in _account.Activities)
                 {
-                    activity.Factor = 1.0;
+                    NormalizePersistedActivity(activity);
                 }
 
                 foreach (var activityEvent in _account.Events)
                 {
-                    activityEvent.Factor = 1.0;
+                    NormalizePersistedActivityEvent(activityEvent);
                 }
 
                 // Enforce maximum activity limit
@@ -303,22 +304,32 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void RenameActivity(Guid activityId, string newName)
     {
+        var existingColor = _account.Activities.FirstOrDefault(m => m.Id == activityId)?.Color ?? Activity.DefaultColor;
+        UpdateActivity(activityId, newName, existingColor);
+    }
+
+    public void UpdateActivity(Guid activityId, string newName, string newColor)
+    {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
             throw new ArgumentException("Activity name must be between 1 and 40 characters.");
         }
+
+        var normalizedColor = Activity.NormalizeColor(newColor);
 
         var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
         if (activity == null) return;
 
         var oldName = activity.Name;
         activity.Name = newName.Trim();
+        activity.Color = normalizedColor;
         
         // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();
         if (activeEvent != null && activeEvent.ActivityName == oldName)
         {
             activeEvent.ActivityName = activity.Name;
+            activeEvent.ActivityColor = activity.Color;
         }
         
         OnStateChanged?.Invoke();
@@ -382,12 +393,12 @@ public class TimeTrackingService : ITimeTrackingService
         // Factor is fixed at 1.0; normalize imported legacy data.
         foreach (var activity in _account.Activities)
         {
-            activity.Factor = 1.0;
+            NormalizePersistedActivity(activity);
         }
 
         foreach (var activityEvent in _account.Events)
         {
-            activityEvent.Factor = 1.0;
+            NormalizePersistedActivityEvent(activityEvent);
         }
 
         // Auto-stop any active events whose activity no longer exists.
@@ -417,6 +428,11 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void AddActivity(string name)
     {
+        AddActivity(name, Activity.DefaultColor);
+    }
+
+    public void AddActivity(string name, string color)
+    {
         if (_account.Activities.Count >= MaxActivities)
         {
             throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
@@ -427,9 +443,12 @@ public class TimeTrackingService : ITimeTrackingService
             throw new ArgumentException("Activity name must be between 1 and 40 characters.");
         }
 
+        var normalizedColor = Activity.NormalizeColor(color);
+
         var newActivity = new Activity
         {
             Name = name.Trim(),
+            Color = normalizedColor,
             Factor = 1.0,
             DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0
         };
@@ -505,6 +524,11 @@ public class TimeTrackingService : ITimeTrackingService
                     .Take(MaxActivities)
                     .ToList();
 
+                foreach (var activity in _account.Activities)
+                {
+                    NormalizePersistedActivity(activity);
+                }
+
                 EnsureActiveEventsBelongToExistingActivities();
                 OnStateChanged?.Invoke();
                 await SaveAsync();
@@ -558,6 +582,18 @@ public class TimeTrackingService : ITimeTrackingService
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
             }
         }
+    }
+
+    private static void NormalizePersistedActivity(Activity activity)
+    {
+        activity.Factor = 1.0;
+        activity.Color = Activity.SanitizeColor(activity.Color);
+    }
+
+    private static void NormalizePersistedActivityEvent(ActivityEvent activityEvent)
+    {
+        activityEvent.Factor = 1.0;
+        activityEvent.ActivityColor = Activity.SanitizeColor(activityEvent.ActivityColor);
     }
 }
 

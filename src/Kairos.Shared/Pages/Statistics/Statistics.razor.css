@@ -80,7 +80,7 @@
 }
 
 .budget-item:hover {
-    border-color: var(--color-text-muted);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .budget-item-header {
@@ -90,6 +90,9 @@
 }
 
 .budget-activity-name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
     font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--color-text-primary);

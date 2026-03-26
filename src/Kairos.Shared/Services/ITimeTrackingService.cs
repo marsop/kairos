@@ -93,6 +93,14 @@ public interface ITimeTrackingService
     void RenameActivity(Guid activityId, string newName);
 
     /// <summary>
+    /// Updates the editable properties of an activity.
+    /// </summary>
+    /// <param name="activityId">The ID of the activity to update.</param>
+    /// <param name="newName">The new name (1-40 characters).</param>
+    /// <param name="newColor">The new color in #RRGGBB format.</param>
+    void UpdateActivity(Guid activityId, string newName, string newColor);
+
+    /// <summary>
     /// Deletes a activity by its ID.
     /// </summary>
     /// <param name="activityId">The ID of the activity to delete.</param>
@@ -105,6 +113,13 @@ public interface ITimeTrackingService
     /// <param name="name">Name of the activity.</param>
     /// <exception cref="ArgumentException">Thrown when name is invalid.</exception>
     void AddActivity(string name);
+
+    /// <summary>
+    /// Adds a new activity with the specified name and color.
+    /// </summary>
+    /// <param name="name">Name of the activity.</param>
+    /// <param name="color">Hex color in #RRGGBB format.</param>
+    void AddActivity(string name, string color);
     /// <summary>
     /// Resets all data to initial state (default activities, no history).
     /// </summary>

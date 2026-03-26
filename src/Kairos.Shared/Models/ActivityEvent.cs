@@ -39,6 +39,11 @@ public class ActivityEvent
     public string ActivityName { get; set; } = string.Empty;
 
     /// <summary>
+    /// Hex color captured from the activity when this event started.
+    /// </summary>
+    public string ActivityColor { get; set; } = Activity.DefaultColor;
+
+    /// <summary>
     /// User comment captured when this activity event started.
     /// </summary>
     public string Comment { get; set; } = string.Empty;

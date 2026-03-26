@@ -35,9 +35,12 @@
                     : 0;
                 var isOver = progress >= 100;
 
-                <div class="budget-item">
+                <div class="budget-item" style="@GetBudgetItemStyle(activity.Color)">
                     <div class="budget-item-header">
-                        <span class="budget-activity-name">@activity.Name</span>
+                        <span class="budget-activity-name">
+                            <span class="activity-color-dot small" style="@GetColorDotStyle(activity.Color)"></span>
+                            @activity.Name
+                        </span>
                         <span class="budget-time @(isOver ? "over" : "")">
                             @tracked.TotalHours.ToString("F1")h
                             @if (hasBudget)
@@ -49,7 +52,7 @@
                     @if (hasBudget)
                     {
                         <div class="budget-progress-track">
-                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="width: @progress.ToString(CultureInfo.InvariantCulture)%"></div>
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
                         </div>
                     }
                     <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">Set budget</button>
@@ -407,5 +410,32 @@
         {
             return time.ToString("dd MMM");
         }
+    }
+
+    private static string GetBudgetItemStyle(string color)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        return $"border-color: {ToRgba(normalized, 0.24)};";
+    }
+
+    private static string GetBudgetProgressStyle(string color, double progress, bool isOver)
+    {
+        var normalized = isOver ? "#EF4444" : Activity.SanitizeColor(color);
+        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {normalized};";
+    }
+
+    private static string GetColorDotStyle(string color)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        return $"background: {normalized}; box-shadow: 0 0 0 4px {ToRgba(normalized, 0.16)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(CultureInfo.InvariantCulture)})";
     }
 }

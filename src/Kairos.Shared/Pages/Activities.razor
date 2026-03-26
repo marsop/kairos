@@ -38,9 +38,18 @@
                                @bind="_editingActivityName"
                                @bind:event="oninput"
                                @onkeydown="HandleEditKeyDown"
-                               @onblur="SaveEdit"
                                maxlength="40"
                                autofocus />
+                        <div class="activity-color-field">
+                            <label class="activity-color-label">Color</label>
+                            <div class="activity-color-picker-row">
+                                <input type="color"
+                                       class="activity-color-input"
+                                       @bind="_editingActivityColor"
+                                       @bind:event="oninput" />
+                                <span class="activity-color-value">@_editingActivityColor</span>
+                            </div>
+                        </div>
                         <div class="edit-actions">
                             <button class="edit-action-btn save" @onclick="SaveEdit" title="@Localizer["Save"]">✓</button>
                             <button class="edit-action-btn cancel" @onclick="CancelEdit" @onclick:stopPropagation="true" title="@Localizer["Cancel"]">✕</button>
@@ -56,7 +65,8 @@
                 }
                 else
                 {
-                    <button class="activity-button @(isActive ? "active" : "") positive"
+                    <button class="activity-button activity-colored @(isActive ? "active" : "")"
+                            style="@GetActivityStyle(activity.Color, isActive)"
                             @onclick="() => ToggleActivity(activity.Id)">
                         <div class="activity-index">#@(index + 1)</div>
                         <div class="activity-name">@activity.Name</div>
@@ -99,7 +109,17 @@
                            @bind="_newActivityName"
                            maxlength="40"
                            autofocus />
-                           
+                    <div class="activity-color-field">
+                        <label class="activity-color-label">Color</label>
+                        <div class="activity-color-picker-row">
+                            <input type="color"
+                                   class="activity-color-input"
+                                   @bind="_newActivityColor"
+                                   @bind:event="oninput" />
+                            <span class="activity-color-value">@_newActivityColor</span>
+                        </div>
+                    </div>
+                            
                     <div class="edit-actions">
                         <button class="edit-action-btn save" @onclick="SaveNewActivity" title="@Localizer["Add"]">✓</button>
                         <button class="edit-action-btn cancel" @onclick="CancelAdd" title="@Localizer["Cancel"]">✕</button>
@@ -172,11 +192,13 @@
     private System.Threading.Timer? _timer;
     private Guid? _editingActivityId;
     private string? _editingActivityName;
+    private string _editingActivityColor = Activity.DefaultColor;
     private string? _validationError;
 
     // Add Activity State
     private bool _isAddingActivity;
     private string _newActivityName = string.Empty;
+    private string _newActivityColor = Activity.DefaultColor;
     private string? _addValidationError;
     private Guid? _startCommentActivityId;
     private string _startComment = string.Empty;
@@ -275,6 +297,7 @@
     {
         _editingActivityId = activity.Id;
         _editingActivityName = activity.Name;
+        _editingActivityColor = Activity.SanitizeColor(activity.Color);
         _validationError = null;
         CancelAdd();
     }
@@ -297,7 +320,7 @@
 
         try
         {
-            TimeService.RenameActivity(_editingActivityId.Value, trimmedName);
+            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor);
             CancelEdit();
         }
         catch (ArgumentException ex)
@@ -310,6 +333,7 @@
     {
         _editingActivityId = null;
         _editingActivityName = null;
+        _editingActivityColor = Activity.DefaultColor;
         _validationError = null;
     }
 
@@ -352,6 +376,7 @@
     {
         _isAddingActivity = true;
         _newActivityName = string.Empty;
+        _newActivityColor = GetSuggestedColor();
         _addValidationError = null;
         CancelEdit();
     }
@@ -360,6 +385,7 @@
     {
         _isAddingActivity = false;
         _newActivityName = string.Empty;
+        _newActivityColor = Activity.DefaultColor;
         _addValidationError = null;
     }
 
@@ -373,7 +399,7 @@
         
         try
         {
-            TimeService.AddActivity(_newActivityName);
+            TimeService.AddActivity(_newActivityName, _newActivityColor);
             CancelAdd();
         }
         catch (Exception ex)
@@ -442,5 +468,44 @@
     {
         TimeService.OnStateChanged -= StateHasChanged;
         _timer?.Dispose();
+    }
+
+    private string GetSuggestedColor()
+    {
+        var palette = new[]
+        {
+            "#10B981",
+            "#3B82F6",
+            "#F59E0B",
+            "#EF4444",
+            "#8B5CF6",
+            "#14B8A6",
+            "#EC4899",
+            "#84CC16"
+        };
+
+        var usedColors = TimeService.Account.Activities
+            .Select(m => Activity.SanitizeColor(m.Color))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return palette.FirstOrDefault(color => !usedColors.Contains(color)) ?? Activity.DefaultColor;
+    }
+
+    private static string GetActivityStyle(string color, bool isActive)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var borderAlpha = isActive ? 0.88 : 0.42;
+        var glowAlpha = isActive ? 0.28 : 0.16;
+        var tintAlpha = isActive ? 0.12 : 0.07;
+        return $"--activity-color: {normalized}; --activity-color-border: {ToRgba(normalized, borderAlpha)}; --activity-color-glow: {ToRgba(normalized, glowAlpha)}; --activity-color-tint: {ToRgba(normalized, tintAlpha)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
     }
 }
