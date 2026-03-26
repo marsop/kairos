@@ -94,6 +94,16 @@ cd src/Kairos.Web
 dotnet publish -c Release
 ```
 
+## Versioning
+
+This repository uses `Nerdbank.GitVersioning` for assembly and build version metadata.
+
+- The version source of truth is [version.json](version.json).
+- The package is applied solution-wide through [Directory.Build.props](Directory.Build.props).
+- The app's Settings page shows the generated build version.
+
+The developer and release workflow is documented in [docs/versioning.md](docs/versioning.md).
+
 ## Google Drive Sync Setup
 
 To enable Google Drive synchronization:
