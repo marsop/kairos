@@ -361,7 +361,14 @@ body {
 .activity-button.activity-colored.active {
     border-color: var(--activity-color, var(--color-positive));
     box-shadow: 0 10px 24px var(--activity-color-glow, rgba(16, 185, 129, 0.18));
+}
+
+.activity-button.activity-colored:hover {
     background: linear-gradient(180deg, var(--activity-color-tint, rgba(16, 185, 129, 0.06)), var(--color-bg-secondary));
+}
+
+.activity-button.activity-colored.active {
+    background: linear-gradient(180deg, var(--activity-color-active-tint, rgba(16, 185, 129, 0.18)), var(--activity-color-tint, rgba(16, 185, 129, 0.06)));
 }
 
 .activity-button.active {
@@ -1566,10 +1573,17 @@ html[data-theme="dark"] .edit-input {
 
 .activity-container {
     position: relative;
+    display: flex;
 }
 
 .activity-container .activity-button {
     width: 100%;
+    height: 100%;
+}
+
+.activity-container .activity-edit-form {
+    width: 100%;
+    height: 100%;
 }
 
 .activity-actions {
