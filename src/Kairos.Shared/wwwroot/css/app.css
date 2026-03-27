@@ -373,7 +373,7 @@ body {
 .activity-button.activity-colored.active {
     background: linear-gradient(180deg, color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent), color-mix(in srgb, var(--activity-color, #10b981) 10%, var(--color-bg-secondary)));
     border-color: color-mix(in srgb, var(--activity-color, #10b981) 76%, var(--color-bg-tertiary));
-    animation: active-activity-glow 8s ease-in-out infinite;
+    animation: active-activity-glow 18s ease-in-out infinite;
 }
 
 .activity-button.activity-colored.active>* {
@@ -389,16 +389,14 @@ body {
     pointer-events: none;
     z-index: 1;
     background:
-        radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--activity-color, #10b981) 20%, transparent) 0%, transparent 56%),
-        linear-gradient(140deg,
-            color-mix(in srgb, var(--activity-color, #10b981) 18%, transparent) 0%,
-            color-mix(in srgb, var(--activity-color, #10b981) 10%, transparent) 35%,
-            color-mix(in srgb, var(--activity-color, #10b981) 7%, var(--color-bg-secondary)) 70%,
-            color-mix(in srgb, var(--activity-color, #10b981) 16%, transparent) 100%);
-    background-size: 185% 185%, 230% 230%;
-    background-position: 0% 20%, 20% 80%;
-    opacity: 0.48;
-    animation: active-color-drift 9s ease-in-out infinite;
+        radial-gradient(130% 115% at 50% 20%, color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent) 0%, transparent 62%),
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--activity-color, #10b981) 20%, transparent) 0%,
+            color-mix(in srgb, var(--activity-color, #10b981) 8%, var(--color-bg-secondary)) 100%);
+    opacity: 0.34;
+    transform: scale(1);
+    transform-origin: center;
+    animation: active-color-drift 18s ease-in-out infinite;
 }
 
 .activity-button.activity-colored.active::before {
@@ -419,8 +417,7 @@ body {
     -webkit-mask-composite: xor;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
-    opacity: 0.85;
-    animation: active-border-orbit 4.8s linear infinite;
+    opacity: 0.5;
 }
 
 .activity-button.active {
@@ -431,65 +428,25 @@ body {
 
     0%,
     100% {
-        box-shadow: 0 10px 24px color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent);
+        box-shadow: 0 10px 24px color-mix(in srgb, var(--activity-color, #10b981) 18%, transparent);
     }
 
     50% {
-        box-shadow: 0 14px 34px color-mix(in srgb, var(--activity-color, #10b981) 30%, transparent);
+        box-shadow: 0 16px 38px color-mix(in srgb, var(--activity-color, #10b981) 28%, transparent);
     }
 }
 
 @keyframes active-color-drift {
 
-    0% {
-        background-position: 0% 20%, 20% 80%;
-        opacity: 0.44;
-    }
-
-    12.5% {
-        background-position: 8% 14%, 30% 72%;
-        opacity: 0.47;
-    }
-
-    25% {
-        background-position: 18% 8%, 40% 64%;
-        opacity: 0.5;
-    }
-
-    37.5% {
-        background-position: 28% 5%, 52% 56%;
-        opacity: 0.53;
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
     }
 
     50% {
-        background-position: 38% 10%, 64% 48%;
-        opacity: 0.56;
-    }
-
-    62.5% {
-        background-position: 48% 18%, 74% 40%;
-        opacity: 0.53;
-    }
-
-    75% {
-        background-position: 56% 26%, 84% 34%;
-        opacity: 0.5;
-    }
-
-    87.5% {
-        background-position: 64% 32%, 92% 28%;
-        opacity: 0.47;
-    }
-
-    100% {
-        background-position: 72% 36%, 100% 24%;
-        opacity: 0.44;
-    }
-}
-
-@keyframes active-border-orbit {
-    to {
-        transform: rotate(1turn);
+        opacity: 0.48;
+        transform: scale(1.035);
     }
 }
 
