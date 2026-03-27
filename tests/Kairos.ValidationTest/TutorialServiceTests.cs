@@ -51,7 +51,7 @@ public class TutorialServiceTests
     }
 
     [Fact]
-    public void NextStep_AfterLastStep_CompletesTutorial()
+    public async Task NextStepAsync_AfterLastStep_CompletesTutorial()
     {
         var settings = new StubSettingsService();
         var sut = new TutorialService(
@@ -63,7 +63,7 @@ public class TutorialServiceTests
 
         while (sut.IsActive)
         {
-            sut.NextStep();
+            await sut.NextStepAsync();
         }
 
         Assert.True(settings.TutorialCompleted);

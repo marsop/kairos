@@ -113,6 +113,11 @@ public class TutorialService : ITutorialService
 
     public async Task InitializeAsync()
     {
+        if (IsActive || _settingsService.TutorialCompleted)
+        {
+            return;
+        }
+
         var avatarId = await _storageService.GetItemAsync(TutorialAvatarKey);
         if (!string.IsNullOrEmpty(avatarId))
         {
@@ -132,6 +137,7 @@ public class TutorialService : ITutorialService
             {
                 // Migrate to settings
                 _settingsService.TutorialCompleted = true;
+                await _settingsService.SaveAsync();
                 // We can optionally remove the old key, but keeping it is harmless for now
                 await _storageService.RemoveItemAsync(TutorialCompletedKey);
             }
@@ -164,7 +170,7 @@ public class TutorialService : ITutorialService
         NotifyStateChanged();
     }
 
-    public void NextStep()
+    public async Task NextStepAsync()
     {
         if (!IsActive) return;
         if (!CanAdvanceFromCurrentStep) return;
@@ -174,7 +180,7 @@ public class TutorialService : ITutorialService
         if (_currentStepIndex >= _steps.Count)
         {
             // Tutorial finished
-            _ = CompleteTutorialAsync();
+            await CompleteTutorialAsync();
         }
         else
         {
@@ -187,13 +193,14 @@ public class TutorialService : ITutorialService
     {
         _currentStepIndex = -1;
         _settingsService.TutorialCompleted = true;
+        await _settingsService.SaveAsync();
         NotifyStateChanged();
-        await Task.CompletedTask; 
     }
 
     public async Task ResetTutorialAsync()
     {
         _settingsService.TutorialCompleted = false;
+        await _settingsService.SaveAsync();
         // Ensure legacy key is gone too
         await _storageService.RemoveItemAsync(TutorialCompletedKey);
         StartTutorial();

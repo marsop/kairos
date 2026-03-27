@@ -23,7 +23,7 @@ public interface ITutorialService
 
     Task InitializeAsync();
     void StartTutorial();
-    void NextStep();
+    Task NextStepAsync();
     Task CompleteTutorialAsync();
     Task ResetTutorialAsync();
     Task SetAvatarAsync(string avatarId);

@@ -241,9 +241,9 @@
         await TutorialService.InitializeAsync();
     }
 
-    private void NextStep()
+    private async Task NextStep()
     {
-        TutorialService.NextStep();
+        await TutorialService.NextStepAsync();
     }
 
     private void ToggleLanguageDropdown() => isLanguageDropdownOpen = !isLanguageDropdownOpen;
