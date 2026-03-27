@@ -398,7 +398,7 @@
     <value>Le a liña de esquerda a dereita: subir significa que o saldo medra, plano significa sen cambios e baixar indica menor saldo neto. Úsao para detectar problemas de ritmo con antelación.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Historial é o teu rexistro detallado de auditoría. Cada tarxeta mostra nome da actividade, inicio, fin, duración, contribución e comentario. Esta páxina é a fonte fiable cando precisas comprobar o que pasou.</value>
+    <value>Historial é o teu rexistro detallado de auditoría. Cada tarxeta mostra nome da actividade, inicio, fin, duración e comentario. Esta páxina é a fonte fiable cando precisas comprobar o que pasou.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula de inmediato o saldo e a cronoloxía.</value>

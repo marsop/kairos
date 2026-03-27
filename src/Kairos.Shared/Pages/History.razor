@@ -78,20 +78,14 @@
                         </div>
                     }
                     
-                    <div class="event-stats">
-                        <div class="event-stat">
-                            <span class="stat-label">@Localizer["Duration"]</span>
-                            <span class="stat-value">@FormatDuration(evt.Duration)</span>
-                        </div>
-                        <div class="event-stat">
-                            <span class="stat-label">@Localizer["Contribution"]</span>
-                            <span class="stat-value contribution @(evt.TimeContribution.TotalHours >= 0 ? "positive" : "negative")">
-                                @FormatContribution(evt.TimeContribution)
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            }
+                     <div class="event-stats">
+                         <div class="event-stat">
+                             <span class="stat-label">@Localizer["Duration"]</span>
+                             <span class="stat-value">@FormatDuration(evt.Duration)</span>
+                         </div>
+                     </div>
+                 </div>
+             }
         </div>
     }
 </div>

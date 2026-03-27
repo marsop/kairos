@@ -743,14 +743,6 @@ body {
     font-variant-numeric: tabular-nums;
 }
 
-.stat-value.contribution.positive {
-    color: var(--color-positive);
-}
-
-.stat-value.contribution.negative {
-    color: var(--color-negative);
-}
-
 /* ===== Responsive ===== */
 
 @media (min-width: 480px) {

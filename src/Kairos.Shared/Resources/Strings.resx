@@ -423,7 +423,7 @@
     <value>Read the line from left to right: rising means balance gained, flat means no tracked change, and dips indicate lower net balance. Use this to spot pacing issues early.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, contribution, and comment. This page is the source of truth when checking what happened.</value>
+    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. This page is the source of truth when checking what happened.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your balance and timeline.</value>

@@ -396,7 +396,7 @@
     <value>Lee la línea de izquierda a derecha: subir significa que el saldo crece, plano significa sin cambios y bajar indica menor saldo neto. Úsalo para detectar problemas de ritmo con antelación.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración, contribución y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
+    <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula inmediatamente el saldo y la cronología.</value>

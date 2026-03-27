@@ -396,7 +396,7 @@
     <value>Lies die Linie von links nach rechts: steigend bedeutet mehr Guthaben, flach bedeutet keine Änderung, und Abfälle zeigen geringeren Nettostand. So erkennst du frühzeitig Muster in deinem Rhythmus.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer, Beitrag und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
+    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen Kontostand und Zeitachse sofort neu.</value>
