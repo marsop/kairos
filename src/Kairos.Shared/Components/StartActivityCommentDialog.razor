@@ -1,0 +1,97 @@
+@using Kairos.Shared.Resources
+@using Kairos.Shared.Services
+@inject IActivityStartPromptService ActivityStartPromptService
+@inject IStringLocalizer<Strings> Localizer
+@implements IDisposable
+
+@if (ActivityStartPromptService.PendingActivityId.HasValue)
+{
+    <div class="modal-overlay" @onclick="Cancel">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["StartActivityCommentTitle"]</h3>
+            <p>@Localizer["StartActivityCommentPrompt"]</p>
+            <div class="edit-form">
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["Comment"]</label>
+                    <input type="text"
+                           class="edit-input @(_errorMessage != null ? "invalid" : "")"
+                           @bind="_comment"
+                           @bind:event="oninput"
+                           maxlength="250"
+                           @onkeydown="HandleKeyDown"
+                           autofocus />
+                </div>
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <p class="edit-error">@_errorMessage</p>
+                }
+                <div class="char-count @(_comment.Length > 250 ? "over-limit" : "")">
+                    @_comment.Length/250
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="Cancel">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="Confirm">@Localizer["Start"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string _comment = string.Empty;
+    private string? _errorMessage;
+    private Guid? _lastPendingActivityId;
+
+    protected override void OnInitialized()
+    {
+        _lastPendingActivityId = ActivityStartPromptService.PendingActivityId;
+        ActivityStartPromptService.OnStateChanged += HandlePromptStateChanged;
+    }
+
+    private void HandlePromptStateChanged()
+    {
+        var pendingActivityId = ActivityStartPromptService.PendingActivityId;
+        if (pendingActivityId != _lastPendingActivityId)
+        {
+            _comment = string.Empty;
+            _errorMessage = null;
+            _lastPendingActivityId = pendingActivityId;
+        }
+
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void Cancel()
+    {
+        ActivityStartPromptService.Cancel();
+    }
+
+    private void Confirm()
+    {
+        if (ActivityStartPromptService.TryConfirm(_comment, out var errorMessage))
+        {
+            _comment = string.Empty;
+            _errorMessage = null;
+            return;
+        }
+
+        _errorMessage = errorMessage;
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Confirm();
+        }
+        else if (e.Key == "Escape")
+        {
+            Cancel();
+        }
+    }
+
+    public void Dispose()
+    {
+        ActivityStartPromptService.OnStateChanged -= HandlePromptStateChanged;
+    }
+}

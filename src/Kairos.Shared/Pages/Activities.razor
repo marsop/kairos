@@ -3,6 +3,7 @@
 @using Kairos.Shared.Services
 @using Kairos.Shared.Resources
 @inject ITimeTrackingService TimeService
+@inject IActivityStartPromptService ActivityStartPromptService
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -153,39 +154,6 @@
     }
 </div>
 
-@if (_startCommentActivityId.HasValue)
-{
-    <div class="modal-overlay" @onclick="CancelStartComment">
-        <div class="modal-dialog" @onclick:stopPropagation="true">
-            <h3>@Localizer["StartActivityCommentTitle"]</h3>
-            <p>@Localizer["StartActivityCommentPrompt"]</p>
-            <div class="edit-form">
-                <div class="edit-field">
-                    <label class="edit-label">@Localizer["Comment"]</label>
-                    <input type="text"
-                           class="edit-input @(_startCommentError != null ? "invalid" : "")"
-                           @bind="_startComment"
-                           @bind:event="oninput"
-                           maxlength="250"
-                           @onkeydown="HandleStartCommentKeyDown"
-                           autofocus />
-                </div>
-                @if (!string.IsNullOrWhiteSpace(_startCommentError))
-                {
-                    <p class="edit-error">@_startCommentError</p>
-                }
-                <div class="char-count @(_startComment.Length > 250 ? "over-limit" : "")">
-                    @_startComment.Length/250
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" @onclick="CancelStartComment">@Localizer["Cancel"]</button>
-                <button class="btn-save" @onclick="ConfirmStartComment">@Localizer["Start"]</button>
-            </div>
-        </div>
-    </div>
-}
-
 @code {
     private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
     
@@ -200,9 +168,6 @@
     private string _newActivityName = string.Empty;
     private string _newActivityColor = Activity.DefaultColor;
     private string? _addValidationError;
-    private Guid? _startCommentActivityId;
-    private string _startComment = string.Empty;
-    private string? _startCommentError;
 
     // Drag and Drop State
     private Activity? _draggedActivity;
@@ -242,55 +207,9 @@
 
     private void StartActivityWithComment(Guid activityId)
     {
-        _startCommentActivityId = activityId;
-        _startComment = string.Empty;
-        _startCommentError = null;
+        ActivityStartPromptService.RequestStart(activityId);
         CancelEdit();
         CancelAdd();
-    }
-
-    private void CancelStartComment()
-    {
-        _startCommentActivityId = null;
-        _startComment = string.Empty;
-        _startCommentError = null;
-    }
-
-    private void ConfirmStartComment()
-    {
-        if (!_startCommentActivityId.HasValue)
-        {
-            return;
-        }
-
-        var comment = _startComment.Trim();
-        if (comment.Length < TimeTrackingService.MinCommentLength || comment.Length > TimeTrackingService.MaxCommentLength)
-        {
-            _startCommentError = Localizer["CommentLengthError"];
-            return;
-        }
-
-        try
-        {
-            TimeService.ActivateActivity(_startCommentActivityId.Value, comment);
-            CancelStartComment();
-        }
-        catch (ArgumentException ex)
-        {
-            _startCommentError = ex.Message;
-        }
-    }
-
-    private void HandleStartCommentKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter")
-        {
-            ConfirmStartComment();
-        }
-        else if (e.Key == "Escape")
-        {
-            CancelStartComment();
-        }
     }
 
     private void StartEditing(Activity activity)

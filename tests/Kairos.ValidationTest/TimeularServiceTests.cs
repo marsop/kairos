@@ -9,8 +9,9 @@ public class TimeularServiceTests
     public async Task OnTimeularChange_OrientationFaceOne_ActivatesFirstActivityAndLogs()
     {
         var timeTracking = await CreateLoadedTimeTrackingServiceAsync();
+        var activityPrompt = new ActivityStartPromptService(timeTracking, new StubStringLocalizer());
         var notifications = new StubNotificationService();
-        var sut = new TimeularService(new TestJsRuntime(), timeTracking, notifications, new StubStringLocalizer());
+        var sut = new TimeularService(new TestJsRuntime(), timeTracking, activityPrompt, notifications, new StubStringLocalizer());
 
         await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent
         {
@@ -19,11 +20,10 @@ public class TimeularServiceTests
             RawHex = "0x01"
         });
 
-        var active = timeTracking.GetActiveEvent();
-        Assert.NotNull(active);
-        Assert.Equal(timeTracking.Account.Activities.OrderBy(m => m.DisplayOrder).First().Name, active!.ActivityName);
+        Assert.Null(timeTracking.GetActiveEvent());
+        Assert.Equal(timeTracking.Account.Activities.OrderBy(m => m.DisplayOrder).First().Id, activityPrompt.PendingActivityId);
         Assert.NotEmpty(sut.ChangeLog);
-        Assert.Contains("activated #1", sut.ChangeLog[0].Message);
+        Assert.Contains("comment requested for #1", sut.ChangeLog[0].Message);
     }
 
     [Fact]
@@ -32,7 +32,12 @@ public class TimeularServiceTests
         var timeTracking = await CreateLoadedTimeTrackingServiceAsync();
         var firstActivity = timeTracking.Account.Activities.OrderBy(m => m.DisplayOrder).First();
         timeTracking.ActivateActivity(firstActivity.Id, "Manual");
-        var sut = new TimeularService(new TestJsRuntime(), timeTracking, new StubNotificationService(), new StubStringLocalizer());
+        var sut = new TimeularService(
+            new TestJsRuntime(),
+            timeTracking,
+            new ActivityStartPromptService(timeTracking, new StubStringLocalizer()),
+            new StubNotificationService(),
+            new StubStringLocalizer());
 
         await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent
         {
@@ -49,9 +54,11 @@ public class TimeularServiceTests
     public async Task OnTimeularChange_Disconnected_UpdatesStatusAndSendsNotification()
     {
         var notifications = new StubNotificationService();
+        var timeTracking = await CreateLoadedTimeTrackingServiceAsync();
         var sut = new TimeularService(
             new TestJsRuntime(),
-            await CreateLoadedTimeTrackingServiceAsync(),
+            timeTracking,
+            new ActivityStartPromptService(timeTracking, new StubStringLocalizer()),
             notifications,
             new StubStringLocalizer());
 

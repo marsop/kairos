@@ -12,6 +12,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
 {
     private readonly IJSRuntime _jsRuntime;
     private readonly ITimeTrackingService _timeService;
+    private readonly IActivityStartPromptService _activityStartPromptService;
     private readonly INotificationService _notificationService;
     private readonly IStringLocalizer<Strings> _localizer;
     private readonly List<TimeularLogEntry> _changeLog = new();
@@ -30,10 +31,16 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
     public event Action? OnStateChanged;
 
-    public TimeularService(IJSRuntime jsRuntime, ITimeTrackingService timeService, INotificationService notificationService, IStringLocalizer<Strings> localizer)
+    public TimeularService(
+        IJSRuntime jsRuntime,
+        ITimeTrackingService timeService,
+        IActivityStartPromptService activityStartPromptService,
+        INotificationService notificationService,
+        IStringLocalizer<Strings> localizer)
     {
         _jsRuntime = jsRuntime;
         _timeService = timeService;
+        _activityStartPromptService = activityStartPromptService;
         _notificationService = notificationService;
         _localizer = localizer;
     }
@@ -255,8 +262,8 @@ public sealed class TimeularService : ITimeularService, IDisposable
         }
 
         var mappedIndex = orderedActivities.FindIndex(m => m.Id == targetActivity.Id) + 1;
-        _timeService.ActivateActivity(targetActivity.Id, $"Timeular face {mappedIndex}");
-        return $" -> activated #{mappedIndex}";
+        _activityStartPromptService.RequestStart(targetActivity.Id);
+        return $" -> comment requested for #{mappedIndex}";
     }
 
     private void AddTimeularChange(string message, string? timestampUtc = null)

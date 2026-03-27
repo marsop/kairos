@@ -19,6 +19,7 @@ builder.Services.AddScoped<IStorageService, BrowserStorageService>();
 builder.Services.AddScoped<IActivityConfigurationService, ActivityConfigurationService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<ITimeTrackingService, TimeTrackingService>();
+builder.Services.AddScoped<IActivityStartPromptService, ActivityStartPromptService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IPwaService, PwaService>();
 builder.Services.AddScoped<ITutorialService, TutorialService>();
