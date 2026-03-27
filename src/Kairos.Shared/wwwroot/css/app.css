@@ -361,7 +361,14 @@ body {
 .activity-button.activity-colored.active {
     border-color: var(--activity-color, var(--color-positive));
     box-shadow: 0 10px 24px var(--activity-color-glow, rgba(16, 185, 129, 0.18));
+}
+
+.activity-button.activity-colored:hover {
     background: linear-gradient(180deg, var(--activity-color-tint, rgba(16, 185, 129, 0.06)), var(--color-bg-secondary));
+}
+
+.activity-button.activity-colored.active {
+    background: linear-gradient(180deg, var(--activity-color-active-tint, rgba(16, 185, 129, 0.18)), var(--activity-color-tint, rgba(16, 185, 129, 0.06)));
 }
 
 .activity-button.active {
