@@ -355,6 +355,9 @@ body {
 
 .activity-button.activity-colored {
     border-color: var(--activity-color-border, rgba(16, 185, 129, 0.3));
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
 }
 
 .activity-button.activity-colored:hover,
@@ -368,11 +371,126 @@ body {
 }
 
 .activity-button.activity-colored.active {
-    background: linear-gradient(180deg, var(--activity-color-active-tint, rgba(16, 185, 129, 0.18)), var(--activity-color-tint, rgba(16, 185, 129, 0.06)));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent), color-mix(in srgb, var(--activity-color, #10b981) 10%, var(--color-bg-secondary)));
+    border-color: color-mix(in srgb, var(--activity-color, #10b981) 76%, var(--color-bg-tertiary));
+    animation: active-activity-glow 8s ease-in-out infinite;
+}
+
+.activity-button.activity-colored.active>* {
+    position: relative;
+    z-index: 2;
+}
+
+.activity-button.activity-colored.active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    background:
+        radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--activity-color, #10b981) 20%, transparent) 0%, transparent 56%),
+        linear-gradient(140deg,
+            color-mix(in srgb, var(--activity-color, #10b981) 18%, transparent) 0%,
+            color-mix(in srgb, var(--activity-color, #10b981) 10%, transparent) 35%,
+            color-mix(in srgb, var(--activity-color, #10b981) 7%, var(--color-bg-secondary)) 70%,
+            color-mix(in srgb, var(--activity-color, #10b981) 16%, transparent) 100%);
+    background-size: 185% 185%, 230% 230%;
+    background-position: 0% 20%, 20% 80%;
+    opacity: 0.48;
+    animation: active-color-drift 9s ease-in-out infinite;
+}
+
+.activity-button.activity-colored.active::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 2px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 3;
+    background: conic-gradient(from 0deg,
+            transparent 0deg,
+            transparent 286deg,
+            color-mix(in srgb, var(--activity-color, #10b981) 68%, transparent) 314deg,
+            color-mix(in srgb, var(--activity-color, #10b981) 36%, transparent) 342deg,
+            transparent 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0.85;
+    animation: active-border-orbit 4.8s linear infinite;
 }
 
 .activity-button.active {
     transform: scale(1.02);
+}
+
+@keyframes active-activity-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 10px 24px color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent);
+    }
+
+    50% {
+        box-shadow: 0 14px 34px color-mix(in srgb, var(--activity-color, #10b981) 30%, transparent);
+    }
+}
+
+@keyframes active-color-drift {
+
+    0% {
+        background-position: 0% 20%, 20% 80%;
+        opacity: 0.44;
+    }
+
+    12.5% {
+        background-position: 8% 14%, 30% 72%;
+        opacity: 0.47;
+    }
+
+    25% {
+        background-position: 18% 8%, 40% 64%;
+        opacity: 0.5;
+    }
+
+    37.5% {
+        background-position: 28% 5%, 52% 56%;
+        opacity: 0.53;
+    }
+
+    50% {
+        background-position: 38% 10%, 64% 48%;
+        opacity: 0.56;
+    }
+
+    62.5% {
+        background-position: 48% 18%, 74% 40%;
+        opacity: 0.53;
+    }
+
+    75% {
+        background-position: 56% 26%, 84% 34%;
+        opacity: 0.5;
+    }
+
+    87.5% {
+        background-position: 64% 32%, 92% 28%;
+        opacity: 0.47;
+    }
+
+    100% {
+        background-position: 72% 36%, 100% 24%;
+        opacity: 0.44;
+    }
+}
+
+@keyframes active-border-orbit {
+    to {
+        transform: rotate(1turn);
+    }
 }
 
 .activity-name {
@@ -402,12 +520,15 @@ body {
     color: var(--activity-color, var(--color-text-primary));
 }
 
-.activity-status {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+@media (prefers-reduced-motion: reduce) {
+    .activity-button.activity-colored.active {
+        animation: none;
+    }
+
+    .activity-button.activity-colored.active::after,
+    .activity-button.activity-colored.active::before {
+        animation: none;
+    }
 }
 
 .active-info {

@@ -71,17 +71,6 @@
                             @onclick="() => ToggleActivity(activity.Id)">
                         <div class="activity-index">#@(index + 1)</div>
                         <div class="activity-name">@activity.Name</div>
-                        <div class="activity-status">
-                            @if (isActive)
-                            {
-                                <span class="pulse"></span>
-                                <span>@Localizer["Running"]</span>
-                            }
-                            else
-                            {
-                                <span>@Localizer["TapToStart"]</span>
-                            }
-                        </div>
                     </button>
                     <div class="activity-actions">
                         <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
