@@ -377,10 +377,10 @@
     <value>Kairos schafft mit Aktivitäts-Sitziga. Jedes Mol wenn du e Aktivität startesch, wird a Ereignis mit Startzit erstellt, und bim Stoppa wird d'Endzit gspeichert. Din Saldo isch d'Summa vo allna erfassta Dauera.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Des isch d'Überblick-Seita. D'grosse Zahl isch din aktueller Saldo in Stunda, berechnet us dr Historie. Positive Wert bedütat netto erfassti Zit, negative Wert bedütat, dass dis Konto unter Null isch.</value>
+    <value>Des isch d'Statistik-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über dia Wucha oder dr Monet.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Wenn e Aktivität lauft, siehsch do a Aktiv-Indikator. Wenn dr sichtbar isch, wird grad no Zit erfasst. Nutz des als schnella Check, bevor d'App zumachsch.</value>
+    <value>Under dr Zämmefassig bricht Kairos dini Zit noch Aktivitäta uf. Du kasch erfassti Zit vergliicha, eifachi Budgets setza und im Diagramm luega, ob dr Ziitrum uffa, gliich oder abe goht.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
@@ -392,16 +392,16 @@
     <value>Du kasch Aktivitäta umbenenna, inaktivi löscha, neue hinzufüega und per Drag-and-Drop umsortiera. Halt d'Lista sauber und stabil, damit s'tägliche Erfassa schnell und konsistent blibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>D'Zitachse zeigt, wie sich din Saldo über d'Zit verändert hät. Mit dr Perioda-Buttons (1h bis 1m) wechslisch zwischa kurzfristigem Verlauf und längera Trends.</value>
+    <value>S'Diagramm isch uf dr Statistik-Soita. Mit Diese Wucha und Dieser Monet wechslisch dr Ziitrum und berechnisch Summä und Aktivitäts-Budgets für genau den Bereich neu.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
-    <value>Lies d'Linia vo links nach rechts: ufwärts bedütat meh Saldo, flach bedütat kei Änderung, und Abfälle zeigat weniger Netto-Saldo. So erkennsch früah, wenn dr Rhythmus nid passt.</value>
+    <value>Lies s'Diagramm vo links nach rechts: stiigendi Abschnitt bedütat bessers Guthaba, flachi Abschnitt kei Änderig und Abfäll zeigat an sinkenda Saldo. So erkennsch ungliichmäßigi Phase früah.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
     <value>Dr Verloff isch dis detaillierte Prüfprotokoll. Jedi Charte zeigt Aktivitätsname, Startzit, Endzit, Dauer und Kommentar. Die Seita isch dini zuverlässige Quella, wenn du prüefa willsch, was passiert isch.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat din Saldo und d'Zitachse sofort neu.</value>
+    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat dini Summä neu und aktualisierat d'Statistik-Soita sofort.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>In dr Istelliga kasch Sprach, Tutorial-Avatar und Browser-Benachrichtigunga anpassa. Stell des amol passend i, damit d'App zu dim täglicha Ablauf passt.</value>
@@ -410,10 +410,10 @@
     <value>I dr Istelliga findsch au Integrations-Optiona, zum Bispil d'Timeular-Verbindig. Wenn du Hardware-Tracking nutzsch, prüef do dr Verbindigsstatus, bevor du di uf automatische Aktivitätswechsel verlahsch.</value>
   </data>
   <data name="TutorialBackupAndSafety" xml:space="preserve">
-    <value>Sicher dini Data mit regelmäßiga Exporta oder Cloud-Backups, wenn si i dr Konfiguration verfügbar sind. Werkseinstellungen isch destruktiv und löscht alli Tracking-Data, drum nur nutza, wenn du bewusst neu starta willsch.</value>
+    <value>Di wichtigschti Sicherheitsfunktion do isch Werkseinstelliga. Sie löscht Aktivitäta, Verloff, Budgets und dr Tutorial-Fortschritt. Nutz sie drum nur, wenn du d'App würklich komplett zruggsetza willsch.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Du hesch jetzt s'ganze Bild. Start hüt mit oin oder zwoi Aktivitäta, halt Kommentara kurz und lueg dr Verloff regelmäßig ah. Nach am Reset kasch des Tutorial jederzeit wieder starta.</value>
+    <value>Du hesch jetzt s'ganze Bild. Start hüt mit oin oder zwoi Aktivitäta, halt Kommentara kurz und lueg dr Verloff regelmäßig ah. Wenn du d'App später zruggsetzasch, fangt des Tutorial wieder vo vorn aa.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>

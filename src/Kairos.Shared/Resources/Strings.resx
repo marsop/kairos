@@ -402,10 +402,10 @@
     <value>Kairos is built around activity sessions. Every time you start an activity, a new event is recorded with a start time, and when you stop it, the end time is saved. Your balance is the sum of all recorded durations.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>This is the Overview screen. The large number is your current time balance in hours, updated from your history. Positive values mean net tracked time, and negative values mean your account is below zero.</value>
+    <value>This is the Statistics screen. The large summary card shows how much time you tracked in the currently selected period. Use it as your quick read for this week or this month before you dig into the details.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>When an activity is running, you will see an active indicator here. If that indicator is visible, time is still being recorded right now. Use it as a quick safety check before closing the app.</value>
+    <value>Below the summary, Kairos breaks time down by activity. You can compare tracked time, set simple budgets, and use the chart to see whether the period is trending up, flat, or down.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>On Activities, each tile is one trackable activity. Tap a tile to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
@@ -417,16 +417,16 @@
     <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>The Timeline visualizes how your balance changed over time. Switch period buttons (1h to 1m) to zoom between short-term behavior and longer trends.</value>
+    <value>The chart lives on the Statistics screen. Use the This Week and This Month buttons to switch the period and recalculate both the totals and the activity budgets for that range.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
-    <value>Read the line from left to right: rising means balance gained, flat means no tracked change, and dips indicate lower net balance. Use this to spot pacing issues early.</value>
+    <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
     <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. This page is the source of truth when checking what happened.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your balance and timeline.</value>
+    <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Statistics screen.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>In Settings you can change language, choose your tutorial avatar, and control browser notifications. Configure these once so the app matches your preferred daily workflow.</value>
@@ -435,10 +435,10 @@
     <value>Settings also includes integration options such as Timeular device connection. If you use hardware tracking, verify connection state here before relying on automatic activity changes.</value>
   </data>
   <data name="TutorialBackupAndSafety" xml:space="preserve">
-    <value>Protect your data with regular exports or cloud backups when available in your setup. Factory Reset is destructive and clears all tracking data, so only use it when you intentionally want a fresh start.</value>
+    <value>The most important safety control here is Factory Reset. It clears your activities, event history, budgets, and tutorial progress, so treat it as a true fresh start and only use it when you really mean to wipe the app.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>You now have the full picture. Start with one or two activities today, keep comments concise, and review History regularly. You can restart this tutorial anytime from Settings after a reset.</value>
+    <value>You now have the full picture. Start with one or two activities today, keep comments concise, and review History regularly. If you ever reset the app, this walkthrough will start again from the beginning.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>

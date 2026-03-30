@@ -47,7 +47,7 @@
                                     <div class="dropdown-menu @(isAvatarDropdownOpen ? "show" : "")">
                                         @foreach (var avatar in TutorialService.AvailableAvatars)
                                         {
-                                            <div class="dropdown-item @(TutorialService.CurrentAvatar.Id == avatar.Id ? "selected" : "")"
+                                            <div class="dropdown-item @(TutorialService.CurrentAvatar?.Id == avatar.Id ? "selected" : "")"
                                                  @onclick="() => SelectAvatar(avatar.Id)"
                                                  @onclick:stopPropagation="true">
                                                 <span>@avatar.Name</span>

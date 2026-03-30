@@ -375,10 +375,10 @@
     <value>Kairos arbeitet mit Aktivitäts-Sitzungen. Jedes Mal, wenn du eine Aktivität startest, wird ein Ereignis mit Startzeit angelegt. Beim Stoppen wird die Endzeit gespeichert. Dein Kontostand ist die Summe aller erfassten Dauern.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Das ist die Übersichtsseite. Die große Zahl zeigt deinen aktuellen Zeitkontostand in Stunden, berechnet aus deinem Verlauf. Positive Werte bedeuten netto erfasste Zeit, negative Werte bedeuten ein Minus auf dem Konto.</value>
+    <value>Das ist die Statistik-Seite. Die große Zusammenfassung zeigt dir, wie viel Zeit du im aktuell gewählten Zeitraum erfasst hast. So bekommst du schnell einen Überblick über diese Woche oder diesen Monat.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Wenn eine Aktivität läuft, siehst du hier einen Aktiv-Indikator. Ist dieser sichtbar, wird gerade weiterhin Zeit erfasst. Nutze das als schnellen Sicherheitscheck, bevor du die App schließt.</value>
+    <value>Unter der Zusammenfassung zerlegt Kairos deine Zeit nach Aktivitäten. Du kannst erfasste Zeit vergleichen, einfache Budgets setzen und im Diagramm sehen, ob sich der Zeitraum nach oben, seitwärts oder nach unten entwickelt.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
@@ -390,16 +390,16 @@
     <value>Du kannst Aktivitäten umbenennen, inaktive löschen, neue hinzufügen und per Drag-and-Drop neu sortieren. Halte die Liste klar und stabil, damit die tägliche Erfassung schnell und konsistent bleibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>Die Zeitachse zeigt, wie sich dein Kontostand über die Zeit verändert hat. Mit den Zeitraum-Buttons (1h bis 1m) wechselst du zwischen kurzfristigem Verhalten und langfristigen Trends.</value>
+    <value>Das Diagramm befindet sich auf der Statistik-Seite. Mit den Schaltern Diese Woche und Dieser Monat wechselst du den Zeitraum und berechnest Summen sowie Aktivitätsbudgets für genau diesen Bereich neu.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
-    <value>Lies die Linie von links nach rechts: steigend bedeutet mehr Guthaben, flach bedeutet keine Änderung, und Abfälle zeigen geringeren Nettostand. So erkennst du frühzeitig Muster in deinem Rhythmus.</value>
+    <value>Lies das Diagramm von links nach rechts: steigende Abschnitte bedeuten besseres Guthaben, flache Abschnitte keine Änderung und Abfälle zeigen sinkenden Kontostand. So erkennst du ungleichmäßige Phasen frühzeitig.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
     <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen Kontostand und Zeitachse sofort neu.</value>
+    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen deine Summen neu und aktualisieren die Statistik-Seite sofort.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>In den Einstellungen kannst du Sprache, Tutorial-Avatar und Browser-Benachrichtigungen anpassen. Richte das einmal passend ein, damit die App zu deinem täglichen Ablauf passt.</value>
@@ -408,10 +408,10 @@
     <value>In den Einstellungen findest du auch Integrationen wie die Timeular-Verbindung. Wenn du Hardware-Tracking nutzt, prüfe hier den Verbindungsstatus, bevor du dich auf automatische Aktivitätswechsel verlässt.</value>
   </data>
   <data name="TutorialBackupAndSafety" xml:space="preserve">
-    <value>Schütze deine Daten mit regelmäßigen Exporten oder Cloud-Backups, wenn diese in deiner Konfiguration verfügbar sind. Werkseinstellungen ist destruktiv und löscht alle Tracking-Daten, also nur verwenden, wenn du bewusst neu starten willst.</value>
+    <value>Die wichtigste Sicherheitsfunktion hier ist Werkseinstellungen. Sie löscht Aktivitäten, Verlauf, Budgets und den Tutorial-Fortschritt. Nutze sie also nur, wenn du die App wirklich komplett zurücksetzen willst.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Du hast jetzt das komplette Bild. Starte heute mit ein oder zwei Aktivitäten, halte Kommentare kurz und prüfe den Verlauf regelmäßig. Nach einem Reset kannst du dieses Tutorial jederzeit erneut starten.</value>
+    <value>Du hast jetzt das komplette Bild. Starte heute mit ein oder zwei Aktivitäten, halte Kommentare kurz und prüfe den Verlauf regelmäßig. Wenn du die App später zurücksetzt, beginnt dieses Tutorial wieder von vorn.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guide</value>

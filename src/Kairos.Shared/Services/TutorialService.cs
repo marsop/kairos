@@ -70,10 +70,10 @@ public class TutorialService : ITutorialService
             // 3. How Kairos works
             new TutorialStep(_localizer["TutorialHowItWorks"], "", $"{basePath}/tutorial-avatar-2.png"),
 
-            // 4. Overview - current balance
+            // 4. Statistics - period summary
             new TutorialStep(_localizer["TutorialOverviewBalance"], "", $"{basePath}/tutorial-avatar-6.png"),
 
-            // 5. Overview - active activity indicator
+            // 5. Statistics - budgets and chart
             new TutorialStep(_localizer["TutorialOverviewActive"], "", $"{basePath}/tutorial-avatar-5.png"),
             
             // 6. Activities - basics
@@ -85,11 +85,11 @@ public class TutorialService : ITutorialService
             // 8. Activities - organizing list
             new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", $"{basePath}/tutorial-avatar-9.png"),
             
-            // 9. Timeline - period controls
-            new TutorialStep(_localizer["TutorialTimelinePeriods"], "timeline", $"{basePath}/tutorial-avatar-4.png"),
+            // 9. Statistics - period controls
+            new TutorialStep(_localizer["TutorialTimelinePeriods"], "", $"{basePath}/tutorial-avatar-4.png"),
 
-            // 10. Timeline - reading the chart
-            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "timeline", $"{basePath}/tutorial-avatar-8.png"),
+            // 10. Statistics - reading the chart
+            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "", $"{basePath}/tutorial-avatar-8.png"),
             
             // 11. History - review entries
             new TutorialStep(_localizer["TutorialHistoryReview"], "history", $"{basePath}/tutorial-avatar.png"),
@@ -163,8 +163,8 @@ public class TutorialService : ITutorialService
 
     public void StartTutorial()
     {
-        _initialSetupAvatarSelected = false;
-        _initialSetupLanguageSelected = false;
+        _initialSetupAvatarSelected = HasInitialAvatarSelection();
+        _initialSetupLanguageSelected = HasInitialLanguageSelection();
         _currentStepIndex = 0;
         NavigateToCurrentStep();
         NotifyStateChanged();
@@ -227,6 +227,10 @@ public class TutorialService : ITutorialService
         _initialSetupLanguageSelected = true;
         NotifyStateChanged();
     }
+
+    private bool HasInitialAvatarSelection() => CurrentAvatar is not null;
+
+    private bool HasInitialLanguageSelection() => !string.IsNullOrWhiteSpace(_settingsService.Language);
 
     private void NavigateToCurrentStep()
     {

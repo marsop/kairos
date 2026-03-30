@@ -377,10 +377,10 @@
     <value>Kairos baséase en sesións de actividade. Cada vez que inicias unha actividade, créase un evento coa hora de inicio, e ao detela gárdase a hora de fin. O teu saldo é a suma de todas as duracións rexistradas.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Esta é a pantalla de Visión xeral. O número grande é o teu saldo actual en horas, calculado a partir do historial. Valores positivos significan tempo neto rexistrado e valores negativos significan que a conta está por baixo de cero.</value>
+    <value>Esta é a pantalla de Estatísticas. A tarxeta principal amosa canto tempo rexistraches no período seleccionado. Úsaa como lectura rápida desta semana ou deste mes antes de entrar no detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Cando unha actividade está en execución, verás aquí un indicador activo. Se ese indicador está visible, o tempo segue rexistrándose nese momento. Úsao como comprobación rápida antes de pechar a app.</value>
+    <value>Debaixo do resumo, Kairos desagrega o tempo por actividade. Podes comparar o tempo rexistrado, definir orzamentos sinxelos e usar a gráfica para ver se o período sobe, queda plano ou baixa.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
@@ -392,16 +392,16 @@
     <value>Podes renomear actividades, borrar as inactivas, engadir novas e reordenalas arrastrando. Mantén a lista limpa e estable para que o rexistro diario sexa rápido e consistente.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>A Cronoloxía amosa como cambiou o teu saldo co paso do tempo. Cambia os botóns de período (1h a 1m) para pasar de comportamento a curto prazo a tendencias máis longas.</value>
+    <value>A gráfica está dentro da pantalla de Estatísticas. Usa os botóns Esta semana e Este mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
-    <value>Le a liña de esquerda a dereita: subir significa que o saldo medra, plano significa sen cambios e baixar indica menor saldo neto. Úsao para detectar problemas de ritmo con antelación.</value>
+    <value>Le a gráfica de esquerda a dereita: os tramos ascendentes significan que o saldo mellora, os tramos planos que non hai cambios e as baixadas mostran que o saldo cae. É a forma máis rápida de detectar ritmos irregulares no período escollido.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
     <value>Historial é o teu rexistro detallado de auditoría. Cada tarxeta mostra nome da actividade, inicio, fin, duración e comentario. Esta páxina é a fonte fiable cando precisas comprobar o que pasou.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula de inmediato o saldo e a cronoloxía.</value>
+    <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula os teus totais e actualiza de inmediato a pantalla de Estatísticas.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>En Axustes podes cambiar idioma, escoller o avatar do tutorial e controlar as notificacións do navegador. Configúrao unha vez para que a app se adapte ao teu fluxo diario.</value>
@@ -410,10 +410,10 @@
     <value>Axustes tamén inclúe opcións de integración, como a conexión con Timeular. Se usas seguimento por hardware, comproba aquí o estado da conexión antes de depender de cambios automáticos de actividade.</value>
   </data>
   <data name="TutorialBackupAndSafety" xml:space="preserve">
-    <value>Protexe os teus datos con exportacións periódicas ou copias na nube cando estean dispoñibles na túa configuración. Restablecemento de fábrica é destrutivo e borra todos os datos de seguimento, así que úsao só cando queiras comezar de cero de forma intencional.</value>
+    <value>A medida de seguridade máis importante aquí é o Restablecemento de fábrica. Borra actividades, historial de eventos, orzamentos e progreso do tutorial, así que trátao como un reinicio real e úsao só cando de verdade queiras baleirar a aplicación.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Agora xa tes a visión completa. Empeza hoxe con unha ou dúas actividades, mantén comentarios concisos e revisa o Historial con frecuencia. Podes reiniciar este tutorial en calquera momento despois dun restablecemento.</value>
+    <value>Agora xa tes a visión completa. Empeza hoxe con unha ou dúas actividades, mantén os comentarios breves e revisa o Historial con frecuencia. Se algunha vez restableces a app, este percorrido volverá comezar desde o principio.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guía</value>

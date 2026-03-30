@@ -51,6 +51,40 @@ public class TutorialServiceTests
     }
 
     [Fact]
+    public void StartTutorial_WithDefaultLanguageAndAvatar_AllowsInitialAdvance()
+    {
+        var sut = new TutorialService(
+            new InMemoryStorageService(),
+            new StubSettingsService(),
+            new TestNavigationManager(),
+            new StubStringLocalizer());
+
+        sut.StartTutorial();
+
+        Assert.True(sut.IsInitialSetupStep);
+        Assert.True(sut.CanAdvanceFromCurrentStep);
+    }
+
+    [Fact]
+    public async Task InitializeAsync_WithStoredAvatar_AllowsInitialAdvance()
+    {
+        var storage = new InMemoryStorageService();
+        await storage.SetItemAsync("tutorial_avatar_v1", "zarzaparrilla");
+
+        var sut = new TutorialService(
+            storage,
+            new StubSettingsService(),
+            new TestNavigationManager(),
+            new StubStringLocalizer());
+
+        await sut.InitializeAsync();
+
+        Assert.True(sut.IsInitialSetupStep);
+        Assert.True(sut.CanAdvanceFromCurrentStep);
+        Assert.Equal("zarzaparrilla", sut.CurrentAvatar.Id);
+    }
+
+    [Fact]
     public async Task NextStepAsync_AfterLastStep_CompletesTutorial()
     {
         var settings = new StubSettingsService();
@@ -68,5 +102,28 @@ public class TutorialServiceTests
 
         Assert.True(settings.TutorialCompleted);
         Assert.False(sut.IsActive);
+    }
+
+    [Fact]
+    public async Task NextStepAsync_TutorialRoutes_OnlyNavigateToExistingPages()
+    {
+        var navigation = new TestNavigationManager();
+        var sut = new TutorialService(
+            new InMemoryStorageService(),
+            new StubSettingsService(),
+            navigation,
+            new StubStringLocalizer());
+
+        sut.StartTutorial();
+
+        while (sut.IsActive)
+        {
+            await sut.NextStepAsync();
+        }
+
+        Assert.DoesNotContain(navigation.Navigations, uri => uri.Contains("/timeline", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("http://localhost/activities", navigation.Navigations);
+        Assert.Contains("http://localhost/history", navigation.Navigations);
+        Assert.Contains("http://localhost/settings", navigation.Navigations);
     }
 }

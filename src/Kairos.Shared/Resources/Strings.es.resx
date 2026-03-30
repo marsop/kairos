@@ -375,10 +375,10 @@
     <value>Kairos se basa en sesiones de actividad. Cada vez que inicias una actividad, se crea un evento con hora de inicio, y al detenerla se guarda la hora de fin. Tu saldo es la suma de todas las duraciones registradas.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Esta es la pantalla de Resumen. El número grande es tu saldo actual en horas, calculado desde tu historial. Los valores positivos indican tiempo neto registrado y los negativos indican que tu cuenta está por debajo de cero.</value>
+    <value>Esta es la pantalla de Estadísticas. La tarjeta principal muestra cuánto tiempo registraste en el periodo seleccionado. Úsala como lectura rápida de esta semana o de este mes antes de entrar en más detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Cuando una actividad está en marcha, verás aquí un indicador activo. Si ese indicador está visible, el tiempo se sigue registrando en ese momento. Úsalo como comprobación rápida antes de cerrar la app.</value>
+    <value>Debajo del resumen, Kairos desglosa el tiempo por actividad. Puedes comparar tiempo registrado, definir presupuestos sencillos y usar la gráfica para ver si el periodo sube, se mantiene plano o baja.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
@@ -390,16 +390,16 @@
     <value>Puedes renombrar actividades, eliminar las inactivas, añadir nuevas y reordenarlas arrastrando. Mantén la lista limpia y estable para que el registro diario sea rápido y consistente.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>La Cronología muestra cómo cambió tu saldo a lo largo del tiempo. Cambia los botones de periodo (1h a 1m) para alternar entre comportamiento a corto plazo y tendencias más largas.</value>
+    <value>La gráfica está dentro de la pantalla de Estadísticas. Usa los botones Esta semana y Este mes para cambiar el periodo y recalcular tanto los totales como los presupuestos de actividades para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
-    <value>Lee la línea de izquierda a derecha: subir significa que el saldo crece, plano significa sin cambios y bajar indica menor saldo neto. Úsalo para detectar problemas de ritmo con antelación.</value>
+    <value>Lee la gráfica de izquierda a derecha: los tramos ascendentes significan que el saldo mejora, los tramos planos que no hay cambios y las caídas muestran que el saldo baja. Es la forma más rápida de detectar ritmos irregulares en el periodo elegido.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
     <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula inmediatamente el saldo y la cronología.</value>
+    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Estadísticas.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>En Ajustes puedes cambiar idioma, elegir el avatar del tutorial y controlar notificaciones del navegador. Configúralo una vez para que la app se adapte a tu flujo diario.</value>
@@ -408,10 +408,10 @@
     <value>Ajustes también incluye opciones de integración, como la conexión con Timeular. Si usas seguimiento por hardware, verifica aquí el estado de conexión antes de depender de cambios automáticos de actividad.</value>
   </data>
   <data name="TutorialBackupAndSafety" xml:space="preserve">
-    <value>Protege tus datos con exportaciones periódicas o copias en la nube cuando estén disponibles en tu configuración. Restablecimiento de fábrica es destructivo y elimina todos los datos de seguimiento, así que úsalo solo cuando quieras empezar de cero de forma intencional.</value>
+    <value>La medida de seguridad más importante aquí es Restablecimiento de fábrica. Borra actividades, historial de eventos, presupuestos y progreso del tutorial, así que trátalo como un reinicio real y úsalo solo cuando de verdad quieras vaciar la aplicación.</value>
   </data>
   <data name="TutorialCompletion" xml:space="preserve">
-    <value>Ahora tienes la visión completa. Empieza hoy con una o dos actividades, mantén comentarios concisos y revisa el Historial con frecuencia. Puedes reiniciar este tutorial en cualquier momento después de un restablecimiento.</value>
+    <value>Ahora ya tienes la visión completa. Empieza hoy con una o dos actividades, mantén los comentarios breves y revisa el Historial con frecuencia. Si alguna vez restableces la app, este recorrido volverá a comenzar desde el principio.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
     <value>Guía</value>
