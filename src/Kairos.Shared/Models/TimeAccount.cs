@@ -19,4 +19,9 @@ public class TimeAccount
     /// The selected timeline period for the chart.
     /// </summary>
     public TimeSpan TimelinePeriod { get; set; } = TimeSpan.FromHours(24);
+
+    /// <summary>
+    /// When this account was last modified.
+    /// </summary>
+    public DateTimeOffset LastModifiedAtUtc { get; set; }
 }

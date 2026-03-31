@@ -38,8 +38,7 @@ public class TimeTrackingService : ITimeTrackingService
             if (_account.TimelinePeriod != value)
             {
                 _account.TimelinePeriod = value;
-                OnStateChanged?.Invoke();
-                _ = SaveAsync();
+                SaveAndNotify();
             }
         }
     }
@@ -105,8 +104,7 @@ public class TimeTrackingService : ITimeTrackingService
         };
         
         _account.Events.Add(newEvent);
-        OnStateChanged?.Invoke();
-        _ = SaveAsync();
+        SaveAndNotify();
         _ = _notificationService.NotifyAsync(
             _localizer["NotificationActivityStartedTitle"],
             string.Format(_localizer["NotificationActivityStartedBody"], activity.Name)
@@ -144,8 +142,7 @@ public class TimeTrackingService : ITimeTrackingService
         if (activeEvent != null)
         {
             activeEvent.EndTime = DateTimeOffset.UtcNow;
-            OnStateChanged?.Invoke();
-            _ = SaveAsync();
+            SaveAndNotify();
         }
     }
 
@@ -155,8 +152,7 @@ public class TimeTrackingService : ITimeTrackingService
         if (eventToDelete != null)
         {
             _account.Events.Remove(eventToDelete);
-            OnStateChanged?.Invoke();
-            _ = SaveAsync();
+            SaveAndNotify();
         }
     }
 
@@ -182,8 +178,7 @@ public class TimeTrackingService : ITimeTrackingService
 
         activityEvent.StartTime = newStartTime;
         activityEvent.EndTime = newEndTime;
-        OnStateChanged?.Invoke();
-        _ = SaveAsync();
+        SaveAndNotify();
     }
 
     public List<TimelineDataPoint> GetTimelineData(TimeSpan period)
@@ -270,6 +265,7 @@ public class TimeTrackingService : ITimeTrackingService
             {
                 _account.Events = loaded.Events ?? new List<ActivityEvent>();
                 _account.Activities = loaded.Activities ?? new List<Activity>();
+                _account.LastModifiedAtUtc = loaded.LastModifiedAtUtc;
 
                 // Factor is fixed at 1.0; normalize persisted legacy data.
                 foreach (var activity in _account.Activities)
@@ -348,8 +344,7 @@ public class TimeTrackingService : ITimeTrackingService
             activeEvent.ActivityColor = activity.Color;
         }
         
-        OnStateChanged?.Invoke();
-        _ = SaveAsync();
+        SaveAndNotify();
     }
 
     public string ExportData()
@@ -452,8 +447,7 @@ public class TimeTrackingService : ITimeTrackingService
         // Auto-stop any active events whose activity no longer exists.
         EnsureActiveEventsBelongToExistingActivities();
 
-        OnStateChanged?.Invoke();
-        await SaveAsync();
+        await SaveAndNotifyAsync();
     }
 
     public void DeleteActivity(Guid activityId)
@@ -468,8 +462,7 @@ public class TimeTrackingService : ITimeTrackingService
         }
         
         _account.Activities.Remove(activity);
-        OnStateChanged?.Invoke();
-        _ = SaveAsync();
+        SaveAndNotify();
     }
 
     public void AddActivity(string name)
@@ -500,8 +493,7 @@ public class TimeTrackingService : ITimeTrackingService
         };
 
         _account.Activities.Add(newActivity);
-        OnStateChanged?.Invoke();
-        _ = SaveAsync();
+        SaveAndNotify();
     }
     public async Task ResetDataAsync()
     {
@@ -511,8 +503,7 @@ public class TimeTrackingService : ITimeTrackingService
         // Reset timeline period to default
         _account.TimelinePeriod = TimeSpan.FromHours(24);
         
-        OnStateChanged?.Invoke();
-        await SaveAsync();
+        await SaveAndNotifyAsync();
     }
 
     public void ReorderActivities(List<Guid> orderedActivityIds)
@@ -539,8 +530,7 @@ public class TimeTrackingService : ITimeTrackingService
         if (newActivitiesList.Count == _account.Activities.Count)
         {
             _account.Activities = newActivitiesList;
-            OnStateChanged?.Invoke();
-            _ = SaveAsync();
+            SaveAndNotify();
         }
     }
 
@@ -578,8 +568,7 @@ public class TimeTrackingService : ITimeTrackingService
             if (didPullActivities || didPullAccount)
             {
                 EnsureActiveEventsBelongToExistingActivities();
-                OnStateChanged?.Invoke();
-                await SaveLocalAsync();
+                await SaveLocalAndNotifyAsync();
             }
         }
         catch
@@ -606,8 +595,7 @@ public class TimeTrackingService : ITimeTrackingService
             if (didPull)
             {
                 EnsureActiveEventsBelongToExistingActivities();
-                OnStateChanged?.Invoke();
-                await SaveLocalAsync();
+                await SaveLocalAndNotifyAsync();
             }
         }
         catch
@@ -634,8 +622,7 @@ public class TimeTrackingService : ITimeTrackingService
             if (didPull)
             {
                 EnsureActiveEventsBelongToExistingActivities();
-                OnStateChanged?.Invoke();
-                await SaveLocalAsync();
+                await SaveLocalAndNotifyAsync();
             }
         }
         catch
@@ -679,7 +666,13 @@ public class TimeTrackingService : ITimeTrackingService
         var remoteAccount = await _supabaseTimeAccountStore!.LoadAccountAsync();
         if (remoteAccount is not null)
         {
+            if (IsRemoteAccountStale(remoteAccount))
+            {
+                return false;
+            }
+
             _account.Events = remoteAccount.Events ?? new List<ActivityEvent>();
+            _account.LastModifiedAtUtc = remoteAccount.LastModifiedAtUtc;
 
             foreach (var activityEvent in _account.Events)
             {
@@ -770,10 +763,61 @@ public class TimeTrackingService : ITimeTrackingService
             : escaped;
     }
 
+    private void SaveAndNotify(bool markModified = true)
+    {
+        if (markModified)
+        {
+            MarkAccountModified();
+        }
+
+        var saveTask = SaveAsync();
+        OnStateChanged?.Invoke();
+        _ = saveTask;
+    }
+
+    private async Task SaveAndNotifyAsync(bool markModified = true)
+    {
+        if (markModified)
+        {
+            MarkAccountModified();
+        }
+
+        var saveTask = SaveAsync();
+        OnStateChanged?.Invoke();
+        await saveTask;
+    }
+
+    private async Task SaveLocalAndNotifyAsync()
+    {
+        var saveTask = SaveLocalAsync();
+        OnStateChanged?.Invoke();
+        await saveTask;
+    }
+
     private async Task SaveLocalAsync()
     {
         var json = JsonSerializer.Serialize(_account);
         await _storage.SetItemAsync(StorageKey, json);
+    }
+
+    private void MarkAccountModified()
+    {
+        _account.LastModifiedAtUtc = DateTimeOffset.UtcNow;
+    }
+
+    private bool IsRemoteAccountStale(TimeAccount remoteAccount)
+    {
+        if (_account.LastModifiedAtUtc == default)
+        {
+            return false;
+        }
+
+        if (remoteAccount.LastModifiedAtUtc == default)
+        {
+            return true;
+        }
+
+        return remoteAccount.LastModifiedAtUtc < _account.LastModifiedAtUtc;
     }
 }
 

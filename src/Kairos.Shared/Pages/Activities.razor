@@ -184,6 +184,11 @@
 
     private void ToggleActivity(Guid activityId)
     {
+        if (ActivityStartPromptService.ConsumeRecentConfirmation(activityId, TimeSpan.FromMilliseconds(500)))
+        {
+            return;
+        }
+
         if (IsActiveActivity(activityId))
         {
             TimeService.DeactivateActivity();

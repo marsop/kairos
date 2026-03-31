@@ -327,6 +327,85 @@ public class TimeTrackingServiceTests
         Assert.EndsWith("Active", row);
     }
 
+    [Fact]
+    public async Task ActivateActivity_WhenStateListenerThrows_StillStartsPersistence()
+    {
+        var storage = new InMemoryStorageService();
+        var config = new StubActivityConfigurationService(new[]
+        {
+            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 }
+        });
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            new StubSettingsService(),
+            new StubNotificationService(),
+            new StubStringLocalizer(),
+            new StubSupabaseAuthService(),
+            new StubSupabaseActivityStore());
+
+        await sut.LoadAsync();
+        var previousSetCalls = storage.SetCalls;
+        sut.OnStateChanged += () => throw new InvalidOperationException("UI update failed");
+
+        Assert.Throws<InvalidOperationException>(() => sut.ActivateActivity(sut.Account.Activities[0].Id, "Deep work"));
+
+        Assert.True(storage.SetCalls > previousSetCalls);
+        var persisted = await storage.GetItemAsync("Kairos_account");
+        Assert.Contains("Deep work", persisted);
+    }
+
+    [Fact]
+    public async Task RealtimeReload_WithOlderRemoteSnapshot_DoesNotOverwriteRecentLocalActivation()
+    {
+        var storage = new InMemoryStorageService();
+        var config = new StubActivityConfigurationService(new[]
+        {
+            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", Factor = 1, DisplayOrder = 1 }
+        });
+        var settings = new StubSettingsService();
+        var notifications = new StubNotificationService();
+        var auth = new StubSupabaseAuthService
+        {
+            IsAuthenticated = true,
+            CurrentUserId = "user-1",
+            CurrentAccessToken = "token"
+        };
+        var activityStore = new StubSupabaseActivityStore();
+        var accountStore = new StubSupabaseTimeAccountStore();
+        var realtime = new StubSupabaseRealtimeService();
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            auth,
+            activityStore,
+            accountStore,
+            realtime);
+
+        await sut.LoadAsync();
+        sut.ActivateActivity(sut.Account.Activities[0].Id, "Deep work");
+        var localModifiedAt = sut.Account.LastModifiedAtUtc;
+
+        accountStore.LoadedAccount = new TimeAccount
+        {
+            Events = new List<ActivityEvent>(),
+            TimelinePeriod = sut.TimelinePeriod,
+            LastModifiedAtUtc = localModifiedAt.AddSeconds(-10)
+        };
+
+        realtime.RaiseTableChanged("time_accounts");
+        await Task.Delay(100);
+
+        var active = sut.GetActiveEvent();
+        Assert.NotNull(active);
+        Assert.Equal("Deep work", active!.Comment);
+        Assert.Single(sut.Account.Events);
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
         StubSettingsService? settingsService = null)
     {

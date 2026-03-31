@@ -14,4 +14,6 @@ public interface IActivityStartPromptService
     void Cancel();
 
     bool TryConfirm(string comment, out string? errorMessage);
+
+    bool ConsumeRecentConfirmation(Guid activityId, TimeSpan maxAge);
 }

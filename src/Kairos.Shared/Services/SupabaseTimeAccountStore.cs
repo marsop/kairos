@@ -60,7 +60,8 @@ public sealed class SupabaseTimeAccountStore : ISupabaseTimeAccountStore
             Payload = JsonSerializer.SerializeToElement(new SupabaseTimeAccountPayload
             {
                 Events = account.Events,
-                TimelinePeriod = account.TimelinePeriod
+                TimelinePeriod = account.TimelinePeriod,
+                LastModifiedAtUtc = account.LastModifiedAtUtc
             })
         };
 
@@ -120,4 +121,7 @@ internal sealed class SupabaseTimeAccountPayload
 
     [JsonPropertyName("timelinePeriod")]
     public TimeSpan TimelinePeriod { get; set; } = TimeSpan.FromHours(24);
+
+    [JsonPropertyName("lastModifiedAtUtc")]
+    public DateTimeOffset LastModifiedAtUtc { get; set; }
 }

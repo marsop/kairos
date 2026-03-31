@@ -10,6 +10,8 @@ public sealed class ActivityStartPromptService : IActivityStartPromptService
 {
     private readonly ITimeTrackingService _timeService;
     private readonly IStringLocalizer<Strings> _localizer;
+    private Guid? _recentlyConfirmedActivityId;
+    private DateTimeOffset? _recentConfirmationAtUtc;
 
     public Guid? PendingActivityId { get; private set; }
 
@@ -57,6 +59,8 @@ public sealed class ActivityStartPromptService : IActivityStartPromptService
         try
         {
             _timeService.ActivateActivity(PendingActivityId.Value, trimmedComment);
+            _recentlyConfirmedActivityId = PendingActivityId.Value;
+            _recentConfirmationAtUtc = DateTimeOffset.UtcNow;
             PendingActivityId = null;
             OnStateChanged?.Invoke();
             return true;
@@ -66,5 +70,18 @@ public sealed class ActivityStartPromptService : IActivityStartPromptService
             errorMessage = ex.Message;
             return false;
         }
+    }
+
+    public bool ConsumeRecentConfirmation(Guid activityId, TimeSpan maxAge)
+    {
+        if (_recentlyConfirmedActivityId != activityId || !_recentConfirmationAtUtc.HasValue)
+        {
+            return false;
+        }
+
+        var age = DateTimeOffset.UtcNow - _recentConfirmationAtUtc.Value;
+        _recentlyConfirmedActivityId = null;
+        _recentConfirmationAtUtc = null;
+        return age <= maxAge;
     }
 }

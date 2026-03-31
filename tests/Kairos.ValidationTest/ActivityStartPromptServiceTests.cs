@@ -40,6 +40,21 @@ public class ActivityStartPromptServiceTests
         Assert.Null(timeTracking.GetActiveEvent());
     }
 
+    [Fact]
+    public async Task ConsumeRecentConfirmation_ReturnsTrueOnceForRecentlyConfirmedActivity()
+    {
+        var timeTracking = await CreateLoadedTimeTrackingServiceAsync();
+        var activity = timeTracking.Account.Activities.First();
+        var sut = new ActivityStartPromptService(timeTracking, new StubStringLocalizer());
+
+        sut.RequestStart(activity.Id);
+        var confirmed = sut.TryConfirm("Focus block", out _);
+
+        Assert.True(confirmed);
+        Assert.True(sut.ConsumeRecentConfirmation(activity.Id, TimeSpan.FromSeconds(1)));
+        Assert.False(sut.ConsumeRecentConfirmation(activity.Id, TimeSpan.FromSeconds(1)));
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedTimeTrackingServiceAsync()
     {
         var storage = new InMemoryStorageService();

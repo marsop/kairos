@@ -233,3 +233,67 @@ internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
         return Task.CompletedTask;
     }
 }
+
+internal sealed class StubSupabaseTimeAccountStore : ISupabaseTimeAccountStore
+{
+    public TimeAccount? LoadedAccount { get; set; }
+    public int LoadCalls { get; private set; }
+    public int SaveCalls { get; private set; }
+
+    public Task<TimeAccount?> LoadAccountAsync()
+    {
+        LoadCalls++;
+        return Task.FromResult(CloneAccount(LoadedAccount));
+    }
+
+    public Task SaveAccountAsync(TimeAccount account)
+    {
+        SaveCalls++;
+        LoadedAccount = CloneAccount(account);
+        return Task.CompletedTask;
+    }
+
+    private static TimeAccount? CloneAccount(TimeAccount? account)
+    {
+        if (account is null)
+        {
+            return null;
+        }
+
+        return new TimeAccount
+        {
+            Events = account.Events.Select(e => new ActivityEvent
+            {
+                Id = e.Id,
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Factor = e.Factor,
+                ActivityName = e.ActivityName,
+                ActivityColor = e.ActivityColor,
+                Comment = e.Comment
+            }).ToList(),
+            Activities = account.Activities.Select(a => new Activity
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Color = a.Color,
+                Factor = a.Factor,
+                DisplayOrder = a.DisplayOrder
+            }).ToList(),
+            TimelinePeriod = account.TimelinePeriod,
+            LastModifiedAtUtc = account.LastModifiedAtUtc
+        };
+    }
+}
+
+internal sealed class StubSupabaseRealtimeService : ISupabaseRealtimeService
+{
+    public event Action<string>? OnTableChanged;
+
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public void RaiseTableChanged(string table)
+    {
+        OnTableChanged?.Invoke(table);
+    }
+}
