@@ -78,7 +78,12 @@ public interface ITimeTrackingService
     /// Exports all data (activities and events) as a JSON string.
     /// </summary>
     string ExportData();
-    
+
+    /// <summary>
+    /// Exports all events whose local start date matches the specified day as CSV.
+    /// </summary>
+    string ExportDayAsCsv(DateOnly day);
+
     /// <summary>
     /// Imports data from a JSON string, replacing current activities and events.
     /// </summary>

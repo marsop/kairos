@@ -197,6 +197,15 @@
   <data name="CommentLengthError" xml:space="preserve">
     <value>Comment must be 1-250 characters</value>
   </data>
+  <data name="HistoryDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="NoEventsForDate" xml:space="preserve">
+    <value>No entries found for the selected date.</value>
+  </data>
   <data name="NoDataPeriod" xml:space="preserve">
     <value>No data for selected period</value>
   </data>

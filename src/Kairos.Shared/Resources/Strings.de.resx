@@ -194,6 +194,15 @@
   <data name="ExportData" xml:space="preserve">
     <value>Daten exportieren</value>
   </data>
+  <data name="HistoryDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>CSV exportieren</value>
+  </data>
+  <data name="NoEventsForDate" xml:space="preserve">
+    <value>Fur das gewahlte Datum wurden keine Eintrage gefunden.</value>
+  </data>
   <data name="ExportDesc" xml:space="preserve">
     <value>Laden Sie alle Ihre Daten (Zähler und Ereignisse) als JSON-Datei herunter.</value>
   </data>

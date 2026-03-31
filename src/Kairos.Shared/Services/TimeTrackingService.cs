@@ -1,4 +1,6 @@
 using Kairos.Shared.Models;
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Localization;
 using System.Threading;
@@ -367,6 +369,39 @@ public class TimeTrackingService : ITimeTrackingService
         });
     }
 
+    public string ExportDayAsCsv(DateOnly day)
+    {
+        var events = _account.Events
+            .Where(m => DateOnly.FromDateTime(m.StartTime.ToLocalTime().Date) == day)
+            .OrderBy(m => m.StartTime)
+            .ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("Activity,Comment,Start,End,DurationMinutes,DurationHours,Status");
+
+        foreach (var activityEvent in events)
+        {
+            var startLocal = activityEvent.StartTime.ToLocalTime();
+            var endLocal = activityEvent.EndTime?.ToLocalTime();
+
+            csv.Append(EscapeCsv(activityEvent.ActivityName));
+            csv.Append(',');
+            csv.Append(EscapeCsv(activityEvent.Comment));
+            csv.Append(',');
+            csv.Append(EscapeCsv(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
+            csv.Append(',');
+            csv.Append(EscapeCsv(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty));
+            csv.Append(',');
+            csv.Append(activityEvent.Duration.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture));
+            csv.Append(',');
+            csv.Append(activityEvent.Duration.TotalHours.ToString("0.####", CultureInfo.InvariantCulture));
+            csv.Append(',');
+            csv.AppendLine(activityEvent.IsActive ? "Active" : "Completed");
+        }
+
+        return csv.ToString();
+    }
+
     public async Task ImportDataAsync(string json)
     {
         var importData = JsonSerializer.Deserialize<KairosExportData>(json);
@@ -720,6 +755,19 @@ public class TimeTrackingService : ITimeTrackingService
     {
         activityEvent.Factor = 1.0;
         activityEvent.ActivityColor = Activity.SanitizeColor(activityEvent.ActivityColor);
+    }
+
+    private static string EscapeCsv(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        var escaped = value.Replace("\"", "\"\"");
+        return escaped.IndexOfAny([',', '"', '\r', '\n']) >= 0
+            ? $"\"{escaped}\""
+            : escaped;
     }
 
     private async Task SaveLocalAsync()

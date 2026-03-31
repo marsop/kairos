@@ -2,14 +2,33 @@
 @using Kairos.Shared.Services
 @using Kairos.Shared.Models
 @using Kairos.Shared.Resources
+@using Microsoft.JSInterop
 @inject ITimeTrackingService TimeService
 @inject IStringLocalizer<Strings> Localizer
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 
 <div class="history-page">
-    <h1 class="page-title">@Localizer["NavHistory"]</h1>
-    
-    @if (!Events.Any())
+    <div class="history-header">
+        <h1 class="page-title">@Localizer["NavHistory"]</h1>
+        <div class="history-toolbar">
+            <div class="history-date-filter">
+                <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
+                <input id="history-date"
+                       class="history-date-input"
+                       type="date"
+                       value="@SelectedDateValue"
+                       @onchange="OnSelectedDateChanged" />
+            </div>
+            <button class="history-export-btn"
+                    @onclick="ExportSelectedDayCsvAsync"
+                    disabled="@(!FilteredEvents.Any())">
+                @Localizer["ExportCsv"]
+            </button>
+        </div>
+    </div>
+
+    @if (!AllEvents.Any())
     {
         <div class="empty-state">
             <span class="empty-icon">📭</span>
@@ -17,10 +36,18 @@
             <p class="empty-hint">@Localizer["StartActivityHint"]</p>
         </div>
     }
+    else if (!FilteredEvents.Any())
+    {
+        <div class="empty-state">
+            <span class="empty-icon">🗓️</span>
+            <p>@Localizer["NoEventsForDate"]</p>
+            <p class="empty-hint">@SelectedDate.ToString("D")</p>
+        </div>
+    }
     else
     {
         <div class="events-list">
-            @foreach (var evt in Events)
+            @foreach (var evt in FilteredEvents)
             {
                 <div class="event-card @(evt.IsActive ? "active" : "")" style="@GetEventStyle(evt)">
                     <div class="event-header">
@@ -55,7 +82,7 @@
                             }
                         </div>
                     </div>
-                    
+
                     <div class="event-times">
                         <div class="event-time">
                             <span class="time-label">@Localizer["Started"]</span>
@@ -77,15 +104,15 @@
                             <p class="comment-value">@evt.Comment</p>
                         </div>
                     }
-                    
-                     <div class="event-stats">
-                         <div class="event-stat">
-                             <span class="stat-label">@Localizer["Duration"]</span>
-                             <span class="stat-value">@FormatDuration(evt.Duration)</span>
-                         </div>
-                     </div>
-                 </div>
-             }
+
+                    <div class="event-stats">
+                        <div class="event-stat">
+                            <span class="stat-label">@Localizer["Duration"]</span>
+                            <span class="stat-value">@FormatDuration(evt.Duration)</span>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
 </div>
@@ -113,14 +140,14 @@
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["StartTime"]</label>
-                    <input type="datetime-local" class="edit-input" 
-                           value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")" 
+                    <input type="datetime-local" class="edit-input"
+                           value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
                            @onchange="OnStartTimeChanged" />
                 </div>
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["EndTime"]</label>
-                    <input type="datetime-local" class="edit-input" 
-                           value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")" 
+                    <input type="datetime-local" class="edit-input"
+                           value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
                            @onchange="OnEndTimeChanged" />
                 </div>
                 @if (!string.IsNullOrEmpty(_editError))
@@ -137,9 +164,22 @@
 }
 
 @code {
-    private IEnumerable<ActivityEvent> Events => TimeService.Account.Events
+    private IEnumerable<ActivityEvent> AllEvents => TimeService.Account.Events
         .OrderByDescending(e => e.StartTime);
-    
+
+    private IEnumerable<ActivityEvent> FilteredEvents => AllEvents
+        .Where(e => DateOnly.FromDateTime(e.StartTime.ToLocalTime().Date) == SelectedDate);
+
+    private DateOnly SelectedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
+    private string SelectedDateValue => SelectedDate.ToString("yyyy-MM-dd");
+
+    private string CsvFileName => $"kairos-entries-{SelectedDate:yyyy-MM-dd}.csv";
+
+    private const string CsvMimeType = "text/csv;charset=utf-8";
+
+    private sealed record FileDownloadRequest(string FileName, string Content, string ContentType);
+
     private System.Threading.Timer? _timer;
     private ActivityEvent? _eventToDelete;
     private ActivityEvent? _eventToEdit;
@@ -149,9 +189,9 @@
 
     protected override void OnInitialized()
     {
-        TimeService.OnStateChanged += StateHasChanged;
-        
-        // Update every second when a activity is active
+        SyncSelectedDateWithHistory();
+        TimeService.OnStateChanged += HandleTimeServiceStateChanged;
+
         _timer = new System.Threading.Timer(_ =>
         {
             if (TimeService.GetActiveEvent() != null)
@@ -161,11 +201,35 @@
         }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
+    private void HandleTimeServiceStateChanged()
+    {
+        SyncSelectedDateWithHistory();
+        StateHasChanged();
+    }
+
+    private void SyncSelectedDateWithHistory()
+    {
+        if (!TimeService.Account.Events.Any())
+        {
+            return;
+        }
+
+        var availableDates = TimeService.Account.Events
+            .Select(m => DateOnly.FromDateTime(m.StartTime.ToLocalTime().Date))
+            .Distinct()
+            .ToHashSet();
+
+        if (!availableDates.Contains(SelectedDate))
+        {
+            SelectedDate = availableDates.Max();
+        }
+    }
+
     private string FormatDateTime(DateTimeOffset dateTime)
     {
         var local = dateTime.ToLocalTime();
         var now = DateTimeOffset.Now;
-        
+
         if (local.Date == now.Date)
         {
             return Localizer["TodayAt", local.ToString("HH:mm")];
@@ -200,7 +264,7 @@
     {
         var sign = contribution.TotalHours >= 0 ? "+" : "";
         var hours = contribution.TotalHours;
-        
+
         if (Math.Abs(hours) >= 1)
         {
             return $"{sign}{hours:F2}h";
@@ -293,9 +357,25 @@
         }
     }
 
+    private void OnSelectedDateChanged(ChangeEventArgs args)
+    {
+        if (DateOnly.TryParse(args.Value?.ToString(), out var selectedDate))
+        {
+            SelectedDate = selectedDate;
+        }
+    }
+
+    private async Task ExportSelectedDayCsvAsync()
+    {
+        var csv = TimeService.ExportDayAsCsv(SelectedDate);
+        await JSRuntime.InvokeVoidAsync(
+            "kairosFile.downloadText",
+            new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
+    }
+
     public void Dispose()
     {
-        TimeService.OnStateChanged -= StateHasChanged;
+        TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
         _timer?.Dispose();
     }
 

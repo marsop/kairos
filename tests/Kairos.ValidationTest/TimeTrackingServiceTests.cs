@@ -269,6 +269,64 @@ public class TimeTrackingServiceTests
         Assert.Throws<ArgumentException>(() => sut.ActivateActivity(activity.Id, comment));
     }
 
+    [Fact]
+    public async Task ExportDayAsCsv_SelectedDay_ExportsOnlyMatchingEventsInOrder()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 30));
+        sut.Account.Events.Clear();
+        sut.Account.Events.Add(new ActivityEvent
+        {
+            ActivityName = "Deep Work",
+            Comment = "Finish roadmap",
+            StartTime = new DateTimeOffset(2026, 3, 30, 9, 15, 0, offset),
+            EndTime = new DateTimeOffset(2026, 3, 30, 10, 45, 0, offset)
+        });
+        sut.Account.Events.Add(new ActivityEvent
+        {
+            ActivityName = "Break",
+            Comment = "Coffee, outside",
+            StartTime = new DateTimeOffset(2026, 3, 30, 11, 0, 0, offset),
+            EndTime = new DateTimeOffset(2026, 3, 30, 11, 15, 0, offset)
+        });
+        sut.Account.Events.Add(new ActivityEvent
+        {
+            ActivityName = "Other Day",
+            Comment = "Ignore me",
+            StartTime = new DateTimeOffset(2026, 3, 29, 16, 0, 0, offset),
+            EndTime = new DateTimeOffset(2026, 3, 29, 17, 0, 0, offset)
+        });
+
+        var csv = sut.ExportDayAsCsv(new DateOnly(2026, 3, 30));
+        var rows = csv.Trim().Split(Environment.NewLine);
+
+        Assert.Equal(3, rows.Length);
+        Assert.Equal("Activity,Comment,Start,End,DurationMinutes,DurationHours,Status", rows[0]);
+        Assert.Contains("Deep Work,Finish roadmap,2026-03-30 09:15:00,2026-03-30 10:45:00,90,1.5,Completed", rows[1]);
+        Assert.Contains("Break,\"Coffee, outside\",2026-03-30 11:00:00,2026-03-30 11:15:00,15,0.25,Completed", rows[2]);
+    }
+
+    [Fact]
+    public async Task ExportDayAsCsv_EscapesQuotesAndLeavesBlankEndForActiveEvent()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 31));
+        sut.Account.Events.Clear();
+        sut.Account.Events.Add(new ActivityEvent
+        {
+            ActivityName = "Review",
+            Comment = "Discuss \"Phase 2\"",
+            StartTime = new DateTimeOffset(2026, 3, 31, 14, 0, 0, offset)
+        });
+
+        var csv = sut.ExportDayAsCsv(new DateOnly(2026, 3, 31));
+        var row = csv.Trim().Split(Environment.NewLine).Last();
+
+        Assert.Contains("\"Discuss \"\"Phase 2\"\"\"", row);
+        Assert.Contains("2026-03-31 14:00:00,,", row);
+        Assert.EndsWith("Active", row);
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
         StubSettingsService? settingsService = null)
     {

@@ -196,6 +196,15 @@
   <data name="ExportData" xml:space="preserve">
     <value>Data exportiera</value>
   </data>
+  <data name="HistoryDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>CSV exportiera</value>
+  </data>
+  <data name="NoEventsForDate" xml:space="preserve">
+    <value>Fir des Datum sind koi Itrag gfunda worda.</value>
+  </data>
   <data name="ExportDesc" xml:space="preserve">
     <value>Lad alle dine Data (Zähler und Ereignis) als JSON-Datei aba.</value>
   </data>
