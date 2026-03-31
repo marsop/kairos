@@ -15,8 +15,10 @@ public class TimeTrackingService : ITimeTrackingService
     private readonly ISettingsService _settingsService;
     private readonly INotificationService _notificationService;
     private readonly IStringLocalizer<Kairos.Shared.Resources.Strings> _localizer;
-    private readonly ISupabaseAuthService _authService;
-    private readonly ISupabaseActivityStore _supabaseActivityStore;
+    private readonly ISupabaseAuthService? _authService;
+    private readonly ISupabaseActivityStore? _supabaseActivityStore;
+    private readonly ISupabaseTimeAccountStore? _supabaseTimeAccountStore;
+    private readonly ISupabaseRealtimeService? _realtimeService;
     private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
@@ -48,8 +50,10 @@ public class TimeTrackingService : ITimeTrackingService
         ISettingsService settingsService,
         INotificationService notificationService,
         IStringLocalizer<Kairos.Shared.Resources.Strings> localizer,
-        ISupabaseAuthService authService,
-        ISupabaseActivityStore supabaseActivityStore)
+        ISupabaseAuthService? authService = null,
+        ISupabaseActivityStore? supabaseActivityStore = null,
+        ISupabaseTimeAccountStore? supabaseTimeAccountStore = null,
+        ISupabaseRealtimeService? realtimeService = null)
     {
         _storage = storage;
         _activityConfig = activityConfig;
@@ -58,7 +62,16 @@ public class TimeTrackingService : ITimeTrackingService
         _localizer = localizer;
         _authService = authService;
         _supabaseActivityStore = supabaseActivityStore;
-        _authService.OnAuthStateChanged += HandleAuthStateChanged;
+        _supabaseTimeAccountStore = supabaseTimeAccountStore;
+        _realtimeService = realtimeService;
+        if (_authService is not null)
+        {
+            _authService.OnAuthStateChanged += HandleAuthStateChanged;
+        }
+        if (_realtimeService is not null)
+        {
+            _realtimeService.OnTableChanged += HandleRemoteTableChanged;
+        }
     }
 
     public TimeSpan GetCurrentBalance()
@@ -242,6 +255,7 @@ public class TimeTrackingService : ITimeTrackingService
     {
         var json = JsonSerializer.Serialize(_account);
         await _storage.SetItemAsync(StorageKey, json);
+        await PersistAccountToSupabaseAsync();
     }
 
     public async Task LoadAsync()
@@ -293,7 +307,7 @@ public class TimeTrackingService : ITimeTrackingService
             _account.Activities = await _activityConfig.LoadActivitiesAsync();
         }
 
-        await PullActivitiesFromSupabaseOrSeedAsync();
+        await PullFromSupabaseOrSeedAsync();
         
         // Auto-stop any active events whose activity no longer exists.
         EnsureActiveEventsBelongToExistingActivities();
@@ -334,7 +348,6 @@ public class TimeTrackingService : ITimeTrackingService
         
         OnStateChanged?.Invoke();
         _ = SaveAsync();
-        _ = PersistActivitiesToSupabaseAsync();
     }
 
     public string ExportData()
@@ -406,7 +419,6 @@ public class TimeTrackingService : ITimeTrackingService
 
         OnStateChanged?.Invoke();
         await SaveAsync();
-        await PersistActivitiesToSupabaseAsync();
     }
 
     public void DeleteActivity(Guid activityId)
@@ -423,7 +435,6 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities.Remove(activity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
-        _ = PersistActivitiesToSupabaseAsync();
     }
 
     public void AddActivity(string name)
@@ -456,7 +467,6 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities.Add(newActivity);
         OnStateChanged?.Invoke();
         _ = SaveAsync();
-        _ = PersistActivitiesToSupabaseAsync();
     }
     public async Task ResetDataAsync()
     {
@@ -468,7 +478,6 @@ public class TimeTrackingService : ITimeTrackingService
         
         OnStateChanged?.Invoke();
         await SaveAsync();
-        await PersistActivitiesToSupabaseAsync();
     }
 
     public void ReorderActivities(List<Guid> orderedActivityIds)
@@ -497,18 +506,30 @@ public class TimeTrackingService : ITimeTrackingService
             _account.Activities = newActivitiesList;
             OnStateChanged?.Invoke();
             _ = SaveAsync();
-            _ = PersistActivitiesToSupabaseAsync();
         }
     }
 
     private void HandleAuthStateChanged()
     {
-        _ = PullActivitiesFromSupabaseOrSeedAsync();
+        _ = PullFromSupabaseOrSeedAsync();
     }
 
-    private async Task PullActivitiesFromSupabaseOrSeedAsync()
+    private void HandleRemoteTableChanged(string table)
     {
-        if (!_authService.IsAuthenticated)
+        switch (table)
+        {
+            case "activities":
+                _ = ReloadActivitiesFromSupabaseAsync(seedWhenMissing: false);
+                break;
+            case "time_accounts":
+                _ = ReloadAccountFromSupabaseAsync(seedWhenMissing: false);
+                break;
+        }
+    }
+
+    private async Task PullFromSupabaseOrSeedAsync()
+    {
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
         {
             return;
         }
@@ -516,28 +537,14 @@ public class TimeTrackingService : ITimeTrackingService
         await _supabaseSyncLock.WaitAsync();
         try
         {
-            var remoteActivities = await _supabaseActivityStore.LoadActivitiesAsync();
-            if (remoteActivities.Count > 0)
+            var didPullActivities = await ReloadActivitiesFromSupabaseCoreAsync(seedWhenMissing: true);
+            var didPullAccount = await ReloadAccountFromSupabaseCoreAsync(seedWhenMissing: true);
+
+            if (didPullActivities || didPullAccount)
             {
-                _account.Activities = remoteActivities
-                    .OrderBy(m => m.DisplayOrder)
-                    .Take(MaxActivities)
-                    .ToList();
-
-                foreach (var activity in _account.Activities)
-                {
-                    NormalizePersistedActivity(activity);
-                }
-
                 EnsureActiveEventsBelongToExistingActivities();
                 OnStateChanged?.Invoke();
-                await SaveAsync();
-                return;
-            }
-
-            if (_account.Activities.Count > 0)
-            {
-                await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
+                await SaveLocalAsync();
             }
         }
         catch
@@ -550,9 +557,123 @@ public class TimeTrackingService : ITimeTrackingService
         }
     }
 
-    private async Task PersistActivitiesToSupabaseAsync()
+    private async Task ReloadActivitiesFromSupabaseAsync(bool seedWhenMissing)
     {
-        if (!_authService.IsAuthenticated)
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            var didPull = await ReloadActivitiesFromSupabaseCoreAsync(seedWhenMissing);
+            if (didPull)
+            {
+                EnsureActiveEventsBelongToExistingActivities();
+                OnStateChanged?.Invoke();
+                await SaveLocalAsync();
+            }
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private async Task ReloadAccountFromSupabaseAsync(bool seedWhenMissing)
+    {
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            var didPull = await ReloadAccountFromSupabaseCoreAsync(seedWhenMissing);
+            if (didPull)
+            {
+                EnsureActiveEventsBelongToExistingActivities();
+                OnStateChanged?.Invoke();
+                await SaveLocalAsync();
+            }
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private async Task<bool> ReloadActivitiesFromSupabaseCoreAsync(bool seedWhenMissing)
+    {
+        var remoteActivities = await _supabaseActivityStore!.LoadActivitiesAsync();
+        if (remoteActivities.Count > 0 || !seedWhenMissing)
+        {
+            _account.Activities = remoteActivities
+                .OrderBy(m => m.DisplayOrder)
+                .Take(MaxActivities)
+                .ToList();
+
+            foreach (var activity in _account.Activities)
+            {
+                NormalizePersistedActivity(activity);
+            }
+
+            return true;
+        }
+
+        if (_account.Activities.Count > 0)
+        {
+            await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
+        }
+
+        return false;
+    }
+
+    private async Task<bool> ReloadAccountFromSupabaseCoreAsync(bool seedWhenMissing)
+    {
+        var remoteAccount = await _supabaseTimeAccountStore!.LoadAccountAsync();
+        if (remoteAccount is not null)
+        {
+            _account.Events = remoteAccount.Events ?? new List<ActivityEvent>();
+
+            foreach (var activityEvent in _account.Events)
+            {
+                NormalizePersistedActivityEvent(activityEvent);
+            }
+
+            if (remoteAccount.TimelinePeriod != TimeSpan.Zero)
+            {
+                _account.TimelinePeriod = remoteAccount.TimelinePeriod;
+            }
+
+            return true;
+        }
+
+        if (seedWhenMissing)
+        {
+            await _supabaseTimeAccountStore.SaveAccountAsync(new TimeAccount
+            {
+                Events = _account.Events,
+                TimelinePeriod = _account.TimelinePeriod
+            });
+        }
+
+        return false;
+    }
+
+    private async Task PersistAccountToSupabaseAsync()
+    {
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
         {
             return;
         }
@@ -561,6 +682,11 @@ public class TimeTrackingService : ITimeTrackingService
         try
         {
             await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
+            await _supabaseTimeAccountStore.SaveAccountAsync(new TimeAccount
+            {
+                Events = _account.Events,
+                TimelinePeriod = _account.TimelinePeriod
+            });
         }
         catch
         {
@@ -594,6 +720,12 @@ public class TimeTrackingService : ITimeTrackingService
     {
         activityEvent.Factor = 1.0;
         activityEvent.ActivityColor = Activity.SanitizeColor(activityEvent.ActivityColor);
+    }
+
+    private async Task SaveLocalAsync()
+    {
+        var json = JsonSerializer.Serialize(_account);
+        await _storage.SetItemAsync(StorageKey, json);
     }
 }
 

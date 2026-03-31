@@ -26,6 +26,9 @@ builder.Services.AddScoped<ITutorialService, TutorialService>();
 builder.Services.AddScoped<ITimeularService, TimeularService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 builder.Services.AddScoped<ISupabaseActivityStore, SupabaseActivityStore>();
+builder.Services.AddScoped<ISupabaseTimeAccountStore, SupabaseTimeAccountStore>();
+builder.Services.AddScoped<ISupabaseSettingsStore, SupabaseSettingsStore>();
+builder.Services.AddScoped<ISupabaseRealtimeService, SupabaseRealtimeService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 // Load configuration
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -38,6 +41,9 @@ await settingsService.LoadAsync();
 
 var authService = host.Services.GetRequiredService<ISupabaseAuthService>();
 await authService.InitializeAsync();
+
+var realtimeService = host.Services.GetRequiredService<ISupabaseRealtimeService>();
+await realtimeService.InitializeAsync();
 
 var timeService = host.Services.GetRequiredService<ITimeTrackingService>();
 await timeService.LoadAsync();

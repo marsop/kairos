@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Globalization;
+using System.Threading;
 
 namespace Kairos.Shared.Services;
 
@@ -9,6 +10,10 @@ namespace Kairos.Shared.Services;
 public class SettingsService : ISettingsService
 {
     private readonly IStorageService _storage;
+    private readonly ISupabaseAuthService? _authService;
+    private readonly ISupabaseSettingsStore? _supabaseSettingsStore;
+    private readonly ISupabaseRealtimeService? _realtimeService;
+    private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private const string StorageKey = "Kairos_settings";
     private const string DefaultLanguage = "en";
     private const string DefaultTheme = "light";
@@ -86,9 +91,24 @@ public class SettingsService : ISettingsService
 
     public event Action? OnSettingsChanged;
 
-    public SettingsService(IStorageService storage)
+    public SettingsService(
+        IStorageService storage,
+        ISupabaseAuthService? authService = null,
+        ISupabaseSettingsStore? supabaseSettingsStore = null,
+        ISupabaseRealtimeService? realtimeService = null)
     {
         _storage = storage;
+        _authService = authService;
+        _supabaseSettingsStore = supabaseSettingsStore;
+        _realtimeService = realtimeService;
+        if (_authService is not null)
+        {
+            _authService.OnAuthStateChanged += HandleAuthStateChanged;
+        }
+        if (_realtimeService is not null)
+        {
+            _realtimeService.OnTableChanged += HandleRemoteTableChanged;
+        }
     }
 
     public async Task LoadAsync()
@@ -117,6 +137,7 @@ public class SettingsService : ISettingsService
             }
         }
         
+        await PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: true);
         UpdateCulture(_language);
         OnSettingsChanged?.Invoke();
     }
@@ -154,11 +175,113 @@ public class SettingsService : ISettingsService
         };
         var json = JsonSerializer.Serialize(data);
         await _storage.SetItemAsync(StorageKey, json);
+        await PersistSettingsToSupabaseAsync();
     }
 
     private static string SanitizeTheme(string? theme)
     {
         return string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase) ? "dark" : DefaultTheme;
+    }
+
+    private void HandleAuthStateChanged()
+    {
+        _ = PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: true);
+    }
+
+    private void HandleRemoteTableChanged(string table)
+    {
+        if (string.Equals(table, "user_settings", StringComparison.Ordinal))
+        {
+            _ = PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: false);
+        }
+    }
+
+    private async Task PullSettingsFromSupabaseOrSeedAsync(bool seedWhenMissing)
+    {
+        if (_authService is null || _supabaseSettingsStore is null || !_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            var remote = await _supabaseSettingsStore.LoadSettingsAsync();
+            if (remote is not null)
+            {
+                ApplySyncedSettings(remote);
+                await SaveLocalAsync();
+                OnSettingsChanged?.Invoke();
+                return;
+            }
+
+            if (seedWhenMissing)
+            {
+                await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+            }
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private async Task PersistSettingsToSupabaseAsync()
+    {
+        if (_authService is null || _supabaseSettingsStore is null || !_authService.IsAuthenticated)
+        {
+            return;
+        }
+
+        await _supabaseSyncLock.WaitAsync();
+        try
+        {
+            await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+        }
+        catch
+        {
+            // Keep local storage as fallback if cloud sync fails.
+        }
+        finally
+        {
+            _supabaseSyncLock.Release();
+        }
+    }
+
+    private SyncedSettingsData BuildSyncedSettings()
+    {
+        return new SyncedSettingsData
+        {
+            Theme = _theme,
+            Language = _language,
+            TutorialCompleted = _tutorialCompleted
+        };
+    }
+
+    private void ApplySyncedSettings(SyncedSettingsData settings)
+    {
+        _theme = SanitizeTheme(settings.Theme);
+        _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
+        _tutorialCompleted = settings.TutorialCompleted;
+        UpdateCulture(_language);
+    }
+
+    private async Task SaveLocalAsync()
+    {
+        var data = new SettingsData
+        {
+            Theme = _theme,
+            Language = _language,
+            TutorialCompleted = _tutorialCompleted,
+            BrowserNotificationsEnabled = _browserNotificationsEnabled
+        };
+
+        var json = JsonSerializer.Serialize(data);
+        await _storage.SetItemAsync(StorageKey, json);
     }
 }
 
@@ -171,4 +294,11 @@ internal class SettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+}
+
+public class SyncedSettingsData
+{
+    public string Theme { get; set; } = "light";
+    public string Language { get; set; } = "en";
+    public bool TutorialCompleted { get; set; }
 }

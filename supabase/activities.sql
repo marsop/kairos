@@ -56,3 +56,17 @@ create policy "Users can delete own activities"
 on public.activities
 for delete
 using (auth.uid() = user_id);
+
+do $$
+begin
+    if not exists (
+        select 1
+        from pg_publication_tables
+        where pubname = 'supabase_realtime'
+          and schemaname = 'public'
+          and tablename = 'activities'
+    ) then
+        execute 'alter publication supabase_realtime add table public.activities';
+    end if;
+end;
+$$;
