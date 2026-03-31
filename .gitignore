@@ -9,6 +9,7 @@
 
 
 .agent/
+.dotnet/
 
 # Build results
 [Dd]ebug/
