@@ -4,6 +4,7 @@
 @inject ISettingsService SettingsService
 @inject IJSRuntime JSRuntime
 @inject ISupabaseAuthService AuthService
+@inject ILogger<App> Logger
 @implements IDisposable
 
 @if (!AuthService.IsInitialized)
@@ -50,7 +51,7 @@ else
 
     private void OnSettingsChanged()
     {
-        Console.WriteLine($"[App] Settings changed. Re-rendering. CurrentCulture: {System.Globalization.CultureInfo.CurrentCulture.Name}");
+        Logger.LogInformation("Settings changed. Re-rendering. CurrentCulture: {Culture}", System.Globalization.CultureInfo.CurrentCulture.Name);
         _ = InvokeAsync(async () =>
         {
             await ApplyThemeAsync();
