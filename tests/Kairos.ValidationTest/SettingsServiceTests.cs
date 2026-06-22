@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Kairos.Shared.Services;
 using System.Text.Json;
 
@@ -10,7 +11,7 @@ public class SettingsServiceTests
     {
         var storage = new InMemoryStorageService();
         await storage.SetItemAsync("Kairos_settings", "{ invalid");
-        var sut = new SettingsService(storage);
+        var sut = new SettingsService(storage, NullLogger<SettingsService>.Instance);
         var events = 0;
         sut.OnSettingsChanged += () => events++;
 
@@ -27,7 +28,7 @@ public class SettingsServiceTests
     public async Task SetLanguageAsync_NewLanguage_PersistsAndNotifies()
     {
         var storage = new InMemoryStorageService();
-        var sut = new SettingsService(storage);
+        var sut = new SettingsService(storage, NullLogger<SettingsService>.Instance);
         var events = 0;
         sut.OnSettingsChanged += () => events++;
 
@@ -45,7 +46,7 @@ public class SettingsServiceTests
     public async Task Theme_WhenChanged_PersistsAndNotifies()
     {
         var storage = new InMemoryStorageService();
-        var sut = new SettingsService(storage);
+        var sut = new SettingsService(storage, NullLogger<SettingsService>.Instance);
         var events = 0;
         sut.OnSettingsChanged += () => events++;
 
@@ -63,7 +64,7 @@ public class SettingsServiceTests
     public void TutorialCompleted_WhenChanged_SavesAndNotifies()
     {
         var storage = new InMemoryStorageService();
-        var sut = new SettingsService(storage);
+        var sut = new SettingsService(storage, NullLogger<SettingsService>.Instance);
         var events = 0;
         sut.OnSettingsChanged += () => events++;
 

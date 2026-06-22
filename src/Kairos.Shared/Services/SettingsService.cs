@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Globalization;
 using System.Threading;
@@ -13,6 +14,7 @@ public class SettingsService : ISettingsService
     private readonly ISupabaseAuthService? _authService;
     private readonly ISupabaseSettingsStore? _supabaseSettingsStore;
     private readonly ISupabaseRealtimeService? _realtimeService;
+    private readonly ILogger<SettingsService> _logger;
     private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private const string StorageKey = "Kairos_settings";
     private const string DefaultLanguage = "en";
@@ -93,11 +95,13 @@ public class SettingsService : ISettingsService
 
     public SettingsService(
         IStorageService storage,
+        ILogger<SettingsService> logger,
         ISupabaseAuthService? authService = null,
         ISupabaseSettingsStore? supabaseSettingsStore = null,
         ISupabaseRealtimeService? realtimeService = null)
     {
         _storage = storage;
+        _logger = logger;
         _authService = authService;
         _supabaseSettingsStore = supabaseSettingsStore;
         _realtimeService = realtimeService;
@@ -146,17 +150,17 @@ public class SettingsService : ISettingsService
     {
         try
         {
-            Console.WriteLine($"[SettingsService] Updating culture to '{languageCode}'");
+            _logger.LogInformation("Updating culture to '{LanguageCode}'", languageCode);
             var culture = new CultureInfo(languageCode);
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
-            Console.WriteLine($"[SettingsService] Culture set to: {CultureInfo.CurrentCulture.Name}, UI: {CultureInfo.CurrentUICulture.Name}");
+            _logger.LogInformation("Culture set to: {Culture}, UI: {UICulture}", CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);
         }
         catch (CultureNotFoundException ex)
         {
-            Console.WriteLine($"[SettingsService] Culture '{languageCode}' not found: {ex.Message}. Falling back to default.");
+            _logger.LogWarning(ex, "Culture '{LanguageCode}' not found. Falling back to default.", languageCode);
             // Fallback to default if culture code is invalid
             var defaultCulture = new CultureInfo(DefaultLanguage);
             CultureInfo.DefaultThreadCurrentCulture = defaultCulture;

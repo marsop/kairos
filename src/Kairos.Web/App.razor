@@ -53,6 +53,7 @@ else
     private void OnSettingsChanged()
     {
         Logger.LogInformation("[App] Settings changed. Re-rendering. CurrentCulture: {CurrentCulture}", System.Globalization.CultureInfo.CurrentCulture.Name);
+
         _ = InvokeAsync(async () =>
         {
             await ApplyThemeAsync();
