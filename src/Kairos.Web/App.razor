@@ -1,6 +1,7 @@
 @using Kairos.Shared.Layout
 @using Kairos.Shared.Services
 @using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
 @inject ISettingsService SettingsService
 @inject IJSRuntime JSRuntime
 @inject ISupabaseAuthService AuthService
@@ -51,7 +52,8 @@ else
 
     private void OnSettingsChanged()
     {
-        Logger.LogInformation("Settings changed. Re-rendering. CurrentCulture: {Culture}", System.Globalization.CultureInfo.CurrentCulture.Name);
+        Logger.LogInformation("[App] Settings changed. Re-rendering. CurrentCulture: {CurrentCulture}", System.Globalization.CultureInfo.CurrentCulture.Name);
+
         _ = InvokeAsync(async () =>
         {
             await ApplyThemeAsync();
