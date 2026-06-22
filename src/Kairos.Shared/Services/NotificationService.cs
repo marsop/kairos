@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace Kairos.Shared.Services;
@@ -9,13 +10,15 @@ public class NotificationService : INotificationService
 {
     private readonly IJSRuntime _jsRuntime;
     private readonly ISettingsService _settingsService;
+    private readonly ILogger<NotificationService> _logger;
 
     public event Action<ToastMessage>? OnToastReceived;
 
-    public NotificationService(IJSRuntime jsRuntime, ISettingsService settingsService)
+    public NotificationService(IJSRuntime jsRuntime, ISettingsService settingsService, ILogger<NotificationService> logger)
     {
         _jsRuntime = jsRuntime;
         _settingsService = settingsService;
+        _logger = logger;
     }
 
     public async Task NotifyAsync(string title, string body)
@@ -36,7 +39,7 @@ public class NotificationService : INotificationService
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[NotificationService] Browser notification failed: {ex.Message}");
+                _logger.LogWarning(ex, "Browser notification failed.");
             }
         }
     }
