@@ -374,7 +374,7 @@ public class TimeTrackingService : ITimeTrackingService
             .ToList();
 
         var csv = new StringBuilder();
-        csv.AppendLine("Activity,Comment,Metadata,Start,End,DurationMinutes,DurationHours,Status");
+        csv.AppendLine("Activity,Comment,Metadata,Start,End,Status");
 
         foreach (var activityEvent in events)
         {
@@ -390,10 +390,6 @@ public class TimeTrackingService : ITimeTrackingService
             csv.Append(EscapeCsv(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
             csv.Append(',');
             csv.Append(EscapeCsv(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty));
-            csv.Append(',');
-            csv.Append(activityEvent.Duration.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture));
-            csv.Append(',');
-            csv.Append(activityEvent.Duration.TotalHours.ToString("0.####", CultureInfo.InvariantCulture));
             csv.Append(',');
             csv.AppendLine(activityEvent.IsActive ? "Active" : "Completed");
         }
