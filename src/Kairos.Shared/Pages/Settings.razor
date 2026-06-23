@@ -172,6 +172,12 @@
             <div class="setting-item">
                 <span class="setting-label">Signed in as @AuthService.CurrentUserEmail</span>
             </div>
+            @if (SettingsService.LastSupabaseSync.HasValue)
+            {
+                <div class="setting-item">
+                    <span class="setting-description">@GetLastSyncText()</span>
+                </div>
+            }
             <button class="sync-button signout-btn" @onclick="SignOutAsync">
                 <span class="btn-icon">↩️</span>
                 <span>@Localizer["SignOut"]</span>
@@ -410,5 +416,34 @@
         {
             // Intentionally ignore to preserve existing UX behavior.
         }
+    }
+
+    private string GetLastSyncText()
+    {
+        if (!SettingsService.LastSupabaseSync.HasValue)
+        {
+            return string.Empty;
+        }
+
+        var delta = DateTimeOffset.UtcNow - SettingsService.LastSupabaseSync.Value;
+        string relativeTime;
+        if (delta.TotalMinutes < 1)
+        {
+            relativeTime = Localizer["TimeJustNow"];
+        }
+        else if (delta.TotalHours < 1)
+        {
+            relativeTime = string.Format(Localizer["TimeMinutesAgo"], (int)delta.TotalMinutes);
+        }
+        else if (delta.TotalDays < 1)
+        {
+            relativeTime = string.Format(Localizer["TimeHoursAgo"], (int)delta.TotalHours);
+        }
+        else
+        {
+            relativeTime = string.Format(Localizer["TimeDaysAgo"], (int)delta.TotalDays);
+        }
+
+        return string.Format(Localizer["LastSupabaseSync"], relativeTime);
     }
 }

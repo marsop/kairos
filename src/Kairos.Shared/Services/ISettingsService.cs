@@ -26,6 +26,11 @@ public interface ISettingsService
     bool BrowserNotificationsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets the last time Supabase was synchronized (in-memory only).
+    /// </summary>
+    DateTimeOffset? LastSupabaseSync { get; set; }
+
+    /// <summary>
     /// Event raised when any setting changes.
     /// </summary>
     event Action? OnSettingsChanged;

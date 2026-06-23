@@ -71,6 +71,7 @@ internal sealed class StubSettingsService : ISettingsService
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+    public DateTimeOffset? LastSupabaseSync { get; set; }
     public event Action? OnSettingsChanged;
 
     public Task LoadAsync() => Task.CompletedTask;
