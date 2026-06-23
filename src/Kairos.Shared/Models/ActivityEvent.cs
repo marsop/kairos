@@ -49,6 +49,11 @@ public class ActivityEvent
     public string Comment { get; set; } = string.Empty;
     
     /// <summary>
+    /// Metadata captured from the activity when this event started.
+    /// </summary>
+    public string Metadata { get; set; } = string.Empty;
+
+    /// <summary>
     /// Whether this event is currently active (activity still running).
     /// </summary>
     public bool IsActive => EndTime == null;

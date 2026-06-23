@@ -100,7 +100,8 @@ public class TimeTrackingService : ITimeTrackingService
             Factor = 1.0,
             ActivityName = activity.Name,
             ActivityColor = activity.Color,
-            Comment = normalizedComment
+            Comment = normalizedComment,
+            Metadata = activity.Metadata ?? string.Empty
         };
         
         _account.Events.Add(newEvent);
@@ -320,7 +321,7 @@ public class TimeTrackingService : ITimeTrackingService
         UpdateActivity(activityId, newName, existingColor);
     }
 
-    public void UpdateActivity(Guid activityId, string newName, string newColor)
+    public void UpdateActivity(Guid activityId, string newName, string newColor, string metadata = "")
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
@@ -335,6 +336,7 @@ public class TimeTrackingService : ITimeTrackingService
         var oldName = activity.Name;
         activity.Name = newName.Trim();
         activity.Color = normalizedColor;
+        activity.Metadata = metadata ?? string.Empty;
         
         // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();
@@ -372,7 +374,7 @@ public class TimeTrackingService : ITimeTrackingService
             .ToList();
 
         var csv = new StringBuilder();
-        csv.AppendLine("Activity,Comment,Start,End,DurationMinutes,DurationHours,Status");
+        csv.AppendLine("Activity,Comment,Metadata,Start,End,DurationMinutes,DurationHours,Status");
 
         foreach (var activityEvent in events)
         {
@@ -382,6 +384,8 @@ public class TimeTrackingService : ITimeTrackingService
             csv.Append(EscapeCsv(activityEvent.ActivityName));
             csv.Append(',');
             csv.Append(EscapeCsv(activityEvent.Comment));
+            csv.Append(',');
+            csv.Append(EscapeCsv(activityEvent.Metadata));
             csv.Append(',');
             csv.Append(EscapeCsv(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
             csv.Append(',');
@@ -470,7 +474,7 @@ public class TimeTrackingService : ITimeTrackingService
         AddActivity(name, Activity.DefaultColor);
     }
 
-    public void AddActivity(string name, string color)
+    public void AddActivity(string name, string color, string metadata = "")
     {
         if (_account.Activities.Count >= MaxActivities)
         {
@@ -489,7 +493,8 @@ public class TimeTrackingService : ITimeTrackingService
             Name = name.Trim(),
             Color = normalizedColor,
             Factor = 1.0,
-            DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0
+            DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0,
+            Metadata = metadata ?? string.Empty
         };
 
         _account.Activities.Add(newActivity);
