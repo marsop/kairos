@@ -301,9 +301,9 @@ public class TimeTrackingServiceTests
         var rows = csv.Trim().Split(Environment.NewLine);
 
         Assert.Equal(3, rows.Length);
-        Assert.Equal("Activity,Comment,Start,End,DurationMinutes,DurationHours,Status", rows[0]);
-        Assert.Contains("Deep Work,Finish roadmap,2026-03-30 09:15:00,2026-03-30 10:45:00,90,1.5,Completed", rows[1]);
-        Assert.Contains("Break,\"Coffee, outside\",2026-03-30 11:00:00,2026-03-30 11:15:00,15,0.25,Completed", rows[2]);
+        Assert.Equal("Activity,Comment,Metadata,Start,End,DurationMinutes,DurationHours,Status", rows[0]);
+        Assert.Equal("Deep Work,Finish roadmap,,2026-03-30 09:15:00,2026-03-30 10:45:00,90,1.5,Completed", rows[1]);
+        Assert.Equal("Break,\"Coffee, outside\",,2026-03-30 11:00:00,2026-03-30 11:15:00,15,0.25,Completed", rows[2]);
     }
 
     [Fact]

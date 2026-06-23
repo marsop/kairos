@@ -38,6 +38,11 @@ public class Activity
     /// </summary>
     public int DisplayOrder { get; set; }
 
+    /// <summary>
+    /// Optional metadata string for the activity.
+    /// </summary>
+    public string Metadata { get; set; } = string.Empty;
+
     public static string NormalizeColor(string? color)
     {
         if (string.IsNullOrWhiteSpace(color))
