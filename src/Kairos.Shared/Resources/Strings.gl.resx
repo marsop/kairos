@@ -595,4 +595,7 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>O teu rastrexador Timeular desconectouse.</value>
   </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>Xeral</value>
+  </data>
 </root>

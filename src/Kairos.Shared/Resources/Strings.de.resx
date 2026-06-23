@@ -593,4 +593,7 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Dein Timeular-Tracker wurde getrennt.</value>
   </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
 </root>

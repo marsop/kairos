@@ -593,4 +593,7 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Tu rastreador Timeular se ha desconectado.</value>
   </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
 </root>

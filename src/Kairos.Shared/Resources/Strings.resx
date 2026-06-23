@@ -623,4 +623,7 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Your Timeular tracker has been disconnected.</value>
   </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
 </root>
