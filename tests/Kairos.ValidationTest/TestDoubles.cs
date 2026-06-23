@@ -71,7 +71,7 @@ internal sealed class StubSettingsService : ISettingsService
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
-    public DateTimeOffset? LastSupabaseSync { get; set; }
+    public DateTimeOffset? LastSupabaseSync { get; private set; }
     public event Action? OnSettingsChanged;
 
     public Task LoadAsync() => Task.CompletedTask;
@@ -82,6 +82,12 @@ internal sealed class StubSettingsService : ISettingsService
         Language = language;
         OnSettingsChanged?.Invoke();
         return Task.CompletedTask;
+    }
+
+    public void UpdateLastSupabaseSync()
+    {
+        LastSupabaseSync = DateTimeOffset.UtcNow;
+        OnSettingsChanged?.Invoke();
     }
 }
 

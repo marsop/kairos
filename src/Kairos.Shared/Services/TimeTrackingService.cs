@@ -565,7 +565,7 @@ public class TimeTrackingService : ITimeTrackingService
             var didPullActivities = await ReloadActivitiesFromSupabaseCoreAsync(seedWhenMissing: true);
             var didPullAccount = await ReloadAccountFromSupabaseCoreAsync(seedWhenMissing: true);
 
-            _settingsService.LastSupabaseSync = DateTimeOffset.UtcNow;
+            _settingsService.UpdateLastSupabaseSync();
 
             if (didPullActivities || didPullAccount)
             {
@@ -594,7 +594,7 @@ public class TimeTrackingService : ITimeTrackingService
         try
         {
             var didPull = await ReloadActivitiesFromSupabaseCoreAsync(seedWhenMissing);
-            _settingsService.LastSupabaseSync = DateTimeOffset.UtcNow;
+            _settingsService.UpdateLastSupabaseSync();
             if (didPull)
             {
                 EnsureActiveEventsBelongToExistingActivities();
@@ -622,7 +622,7 @@ public class TimeTrackingService : ITimeTrackingService
         try
         {
             var didPull = await ReloadAccountFromSupabaseCoreAsync(seedWhenMissing);
-            _settingsService.LastSupabaseSync = DateTimeOffset.UtcNow;
+            _settingsService.UpdateLastSupabaseSync();
             if (didPull)
             {
                 EnsureActiveEventsBelongToExistingActivities();
@@ -719,7 +719,7 @@ public class TimeTrackingService : ITimeTrackingService
                 Events = _account.Events,
                 TimelinePeriod = _account.TimelinePeriod
             });
-            _settingsService.LastSupabaseSync = DateTimeOffset.UtcNow;
+            _settingsService.UpdateLastSupabaseSync();
         }
         catch
         {

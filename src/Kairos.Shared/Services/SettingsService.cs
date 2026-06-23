@@ -41,17 +41,12 @@ public class SettingsService : ISettingsService
         }
     }
 
-    public DateTimeOffset? LastSupabaseSync
+    public DateTimeOffset? LastSupabaseSync => _lastSupabaseSync;
+
+    public void UpdateLastSupabaseSync()
     {
-        get => _lastSupabaseSync;
-        set
-        {
-            if (_lastSupabaseSync != value)
-            {
-                _lastSupabaseSync = value;
-                OnSettingsChanged?.Invoke();
-            }
-        }
+        _lastSupabaseSync = DateTimeOffset.UtcNow;
+        OnSettingsChanged?.Invoke();
     }
 
     public bool TutorialCompleted
@@ -229,7 +224,7 @@ public class SettingsService : ISettingsService
             {
                 ApplySyncedSettings(remote);
                 await SaveLocalAsync();
-                LastSupabaseSync = DateTimeOffset.UtcNow;
+                UpdateLastSupabaseSync();
                 OnSettingsChanged?.Invoke();
                 return;
             }
@@ -237,7 +232,7 @@ public class SettingsService : ISettingsService
             if (seedWhenMissing)
             {
                 await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
-                LastSupabaseSync = DateTimeOffset.UtcNow;
+                UpdateLastSupabaseSync();
             }
         }
         catch
@@ -261,7 +256,7 @@ public class SettingsService : ISettingsService
         try
         {
             await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
-            LastSupabaseSync = DateTimeOffset.UtcNow;
+            UpdateLastSupabaseSync();
         }
         catch
         {
