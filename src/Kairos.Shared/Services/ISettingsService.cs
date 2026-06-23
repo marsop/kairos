@@ -26,6 +26,11 @@ public interface ISettingsService
     bool BrowserNotificationsEnabled { get; set; }
 
     /// <summary>
+    /// Gets the last time Supabase was synchronized (in-memory only).
+    /// </summary>
+    DateTimeOffset? LastSupabaseSync { get; }
+
+    /// <summary>
     /// Event raised when any setting changes.
     /// </summary>
     event Action? OnSettingsChanged;
@@ -41,4 +46,9 @@ public interface ISettingsService
     Task SaveAsync();
 
     Task SetLanguageAsync(string language);
+
+    /// <summary>
+    /// Updates the last Supabase synchronization time to the current UTC time.
+    /// </summary>
+    void UpdateLastSupabaseSync();
 }

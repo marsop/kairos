@@ -293,6 +293,21 @@
   <data name="LastAutoSync" xml:space="preserve">
     <value>Last auto-sync: {0}</value>
   </data>
+  <data name="LastSupabaseSync" xml:space="preserve">
+    <value>Last synchronized: {0}</value>
+  </data>
+  <data name="TimeJustNow" xml:space="preserve">
+    <value>just now</value>
+  </data>
+  <data name="TimeMinutesAgo" xml:space="preserve">
+    <value>{0} minutes ago</value>
+  </data>
+  <data name="TimeHoursAgo" xml:space="preserve">
+    <value>{0} hours ago</value>
+  </data>
+  <data name="TimeDaysAgo" xml:space="preserve">
+    <value>{0} days ago</value>
+  </data>
   <data name="SyncFailedRetry" xml:space="preserve">
     <value>Sync failed - will retry on next change</value>
   </data>

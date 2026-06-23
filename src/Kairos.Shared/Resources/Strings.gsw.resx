@@ -280,6 +280,21 @@
   <data name="LastAutoSync" xml:space="preserve">
     <value>Letzter Auto-Sync: {0}</value>
   </data>
+  <data name="LastSupabaseSync" xml:space="preserve">
+    <value>Zuletzt synchronisiert: {0}</value>
+  </data>
+  <data name="TimeJustNow" xml:space="preserve">
+    <value>grad eba</value>
+  </data>
+  <data name="TimeMinutesAgo" xml:space="preserve">
+    <value>vor {0} Minuta</value>
+  </data>
+  <data name="TimeHoursAgo" xml:space="preserve">
+    <value>vor {0} Stunda</value>
+  </data>
+  <data name="TimeDaysAgo" xml:space="preserve">
+    <value>vor {0} Täg</value>
+  </data>
   <data name="SyncFailedRetry" xml:space="preserve">
     <value>Sync in d'Hosa ganga - wird nomal probiert</value>
   </data>

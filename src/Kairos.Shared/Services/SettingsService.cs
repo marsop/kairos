@@ -24,6 +24,7 @@ public class SettingsService : ISettingsService
     private bool _browserNotificationsEnabled;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
+    private DateTimeOffset? _lastSupabaseSync;
 
     public string Theme
     {
@@ -38,6 +39,14 @@ public class SettingsService : ISettingsService
                 _ = SaveAsync();
             }
         }
+    }
+
+    public DateTimeOffset? LastSupabaseSync => _lastSupabaseSync;
+
+    public void UpdateLastSupabaseSync()
+    {
+        _lastSupabaseSync = DateTimeOffset.UtcNow;
+        OnSettingsChanged?.Invoke();
     }
 
     public bool TutorialCompleted
@@ -215,6 +224,7 @@ public class SettingsService : ISettingsService
             {
                 ApplySyncedSettings(remote);
                 await SaveLocalAsync();
+                UpdateLastSupabaseSync();
                 OnSettingsChanged?.Invoke();
                 return;
             }
@@ -222,6 +232,7 @@ public class SettingsService : ISettingsService
             if (seedWhenMissing)
             {
                 await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+                UpdateLastSupabaseSync();
             }
         }
         catch
@@ -245,6 +256,7 @@ public class SettingsService : ISettingsService
         try
         {
             await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+            UpdateLastSupabaseSync();
         }
         catch
         {
