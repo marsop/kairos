@@ -95,6 +95,10 @@
                                 <span class="time-value">@FormatDateTime(evt.EndTime.Value)</span>
                             </div>
                         }
+                        <div class="event-time event-duration">
+                            <span class="time-label">@Localizer["Duration"]</span>
+                            <span class="time-value" style="font-weight: 600; font-variant-numeric: tabular-nums;">@FormatDuration(evt.Duration)</span>
+                        </div>
                     </div>
 
                     @if (!string.IsNullOrWhiteSpace(evt.Comment))
@@ -104,13 +108,6 @@
                             <p class="comment-value">@evt.Comment</p>
                         </div>
                     }
-
-                    <div class="event-stats">
-                        <div class="event-stat">
-                            <span class="stat-label">@Localizer["Duration"]</span>
-                            <span class="stat-value">@FormatDuration(evt.Duration)</span>
-                        </div>
-                    </div>
                 </div>
             }
         </div>
