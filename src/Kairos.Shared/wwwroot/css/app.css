@@ -1653,15 +1653,6 @@ html[data-theme="dark"] .edit-input {
     box-shadow: 0 0 20px rgba(14, 165, 168, 0.35);
 }
 
-.timeular-disconnect-btn {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-}
-
-.timeular-disconnect-btn:hover:not(:disabled) {
-    background: var(--color-bg-primary);
-}
-
 .timeular-log {
     margin-top: var(--spacing-md);
     padding: var(--spacing-md);

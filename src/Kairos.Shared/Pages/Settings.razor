@@ -127,14 +127,16 @@
         }
 
         <div class="timeular-actions">
-            <button class="sync-button timeular-connect-btn" @onclick="ConnectTimeularDevice" disabled="@TimeularService.IsConnecting">
-                <span class="btn-icon">🔗</span>
-                <span>@(TimeularService.IsConnecting ? "Connecting..." : (TimeularService.IsConnected ? "Reconnect Timeular" : "Connect Timeular"))</span>
-            </button>
-
-            @if (TimeularService.IsConnected)
+            @if (!TimeularService.IsConnected)
             {
-                <button class="sync-button timeular-disconnect-btn" @onclick="DisconnectTimeularDevice">
+                <button class="sync-button timeular-connect-btn" @onclick="ConnectTimeularDevice" disabled="@TimeularService.IsConnecting">
+                    <span class="btn-icon">🔗</span>
+                    <span>@(TimeularService.IsConnecting ? "Connecting..." : (TimeularService.HasConnectedBefore ? "Reconnect Timeular" : "Connect Timeular"))</span>
+                </button>
+            }
+            else
+            {
+                <button class="sync-button timeular-connect-btn" @onclick="DisconnectTimeularDevice">
                     <span class="btn-icon">🔌</span>
                     <span>Disconnect</span>
                 </button>
