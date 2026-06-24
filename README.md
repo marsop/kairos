@@ -13,9 +13,12 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ## Features
 
 ### Time Tracking with Activities
-- **Customizable Activities**: Create multiple time trackers with custom names
+- **Customizable Activities**: Create multiple time trackers with custom names and metadata
 - **One-Touch Activation**: Tap a activity to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
+
+### Hardware Integration
+- **Timeular Tracker**: Connect via Bluetooth to automatically start/stop activities by flipping your device
 
 ### Overview Dashboard
 - **Current Balance**: At-a-glance view of your total time balance in hours
@@ -28,11 +31,12 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ### History
 - **Complete Log**: Access your full time-tracking history
 - **Detailed Events**: View start times, durations, and associated activities
+- **Calendar View**: Visualize daily events in a vertical calendar format
 
 ### Sync & Backup
-- **Local Export/Import**: Download your data as JSON files
-- **Google Drive Integration**: Backup and restore data to/from Google Drive
-- **Auto-Sync**: Enable automatic synchronization when connected to Google Drive
+- **Local Export/Import**: Download your data as JSON or export days as CSV files
+- **Supabase Integration**: Backup and restore data to/from a Supabase cloud database
+- **Auto-Sync**: Enable automatic synchronization when signed in to Supabase
 
 ### Settings
 - **Multi-Language Support**: Available in English, Deutsch, Español, Galego, and Vorarlbergerisch
@@ -104,15 +108,23 @@ This repository uses `Nerdbank.GitVersioning` for assembly and build version met
 
 The developer and release workflow is documented in [docs/versioning.md](docs/versioning.md).
 
-## Google Drive Sync Setup
+## Supabase Sync Setup
 
-To enable Google Drive synchronization:
+To enable Supabase synchronization, you need a Supabase project.
 
-1. Create a Google Cloud Project at [console.cloud.google.com](https://console.cloud.google.com)
-2. Enable the Google Drive API
-3. Create OAuth 2.0 credentials (Web application type)
-4. Add your deployment URL to authorized JavaScript origins
-5. Copy the Client ID and configure it in the app's Sync settings
+1. Go to your Supabase project dashboard
+2. Navigate to Project Settings -> API
+3. Copy the Project URL and the `anon` `public` key
+4. Configure them either in the app's Settings under the Supabase tab, or by adding them to `src/Kairos.Web/wwwroot/appsettings.json`:
+
+```json
+{
+  "Supabase": {
+    "Url": "https://your-project.supabase.co",
+    "AnonKey": "your-anon-key"
+  }
+}
+```
 
 ## Data Storage
 
