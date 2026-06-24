@@ -378,7 +378,6 @@
 
     private string GetEventColor(ActivityEvent evt)
     {
-        if (!string.IsNullOrWhiteSpace(evt.ActivityColor))
         {
             return Activity.SanitizeColor(evt.ActivityColor);
         }
@@ -397,6 +396,32 @@
     {
         var normalized = Activity.SanitizeColor(color);
         return $"background: {normalized}; box-shadow: 0 0 0 4px {ToRgba(normalized, 0.16)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
+    }
+}
+
+    private string GetCalendarEventStyle(ActivityEvent evt)
+    {
+        var color = GetEventColor(evt);
+        var localStart = evt.StartTime.ToLocalTime();
+        var topPx = localStart.Hour * 60 + localStart.Minute;
+
+        var localEnd = evt.EndTime?.ToLocalTime() ?? DateTimeOffset.Now.ToLocalTime();
+        if (localEnd.Date > localStart.Date)
+        {
+            localEnd = localStart.Date.AddDays(1).AddTicks(-1);
+        }
+        var heightPx = Math.Max(15, (localEnd - localStart).TotalMinutes);
+
+        return $"top: {topPx}px; height: {heightPx}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
     }
 
     private static string ToRgba(string color, double alpha)
