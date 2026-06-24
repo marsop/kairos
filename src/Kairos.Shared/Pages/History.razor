@@ -6,6 +6,7 @@
 @inject ITimeTrackingService TimeService
 @inject IStringLocalizer<Strings> Localizer
 @inject IJSRuntime JSRuntime
+@inject ISettingsService SettingsService
 @implements IDisposable
 
 <div class="history-page">
@@ -19,6 +20,10 @@
                        type="date"
                        value="@SelectedDateValue"
                        @onchange="OnSelectedDateChanged" />
+            </div>
+            <div class="history-view-toggle">
+                <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SettingsService.HistoryView = "list")">List</button>
+                <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SettingsService.HistoryView = "calendar")">Calendar</button>
             </div>
             <button class="history-export-btn"
                     @onclick="ExportSelectedDayCsvAsync"
@@ -46,9 +51,41 @@
     }
     else
     {
-        <div class="events-list">
-            @foreach (var evt in FilteredEvents)
-            {
+        @if (SettingsService.HistoryView == "calendar")
+        {
+            <div class="calendar-scroll-area">
+                <div class="calendar-y-axis">
+                    @for (int i = 0; i < 24; i++)
+                    {
+                        <div class="calendar-hour-marker" style="top: @(i * 60)px;">
+                            @i.ToString("00"):00
+                        </div>
+                    }
+                </div>
+                <div class="calendar-grid">
+                    @for (int i = 0; i < 24; i++)
+                    {
+                        <div class="calendar-grid-line" style="top: @(i * 60)px;"></div>
+                    }
+                </div>
+                <div class="calendar-events">
+                    @foreach (var evt in FilteredEvents)
+                    {
+                        <div class="calendar-event-block" style="@GetCalendarEventStyle(evt)">
+                            @if (!string.IsNullOrWhiteSpace(evt.Comment))
+                            {
+                                <span class="calendar-event-comment">@evt.Comment</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="events-list">
+                @foreach (var evt in FilteredEvents)
+                {
                 <div class="event-card @(evt.IsActive ? "active" : "")" style="@GetEventStyle(evt)">
                     <div class="event-header">
                         <div class="event-activity-heading">
@@ -109,8 +146,9 @@
                         </div>
                     }
                 </div>
-            }
-        </div>
+                }
+            </div>
+        }
     }
 </div>
 
@@ -188,6 +226,7 @@
     {
         SyncSelectedDateWithHistory();
         TimeService.OnStateChanged += HandleTimeServiceStateChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
 
         _timer = new System.Threading.Timer(_ =>
         {
@@ -373,6 +412,7 @@
     public void Dispose()
     {
         TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
         _timer?.Dispose();
     }
 
@@ -407,7 +447,6 @@
         var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
         return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
     }
-}
 
     private string GetCalendarEventStyle(ActivityEvent evt)
     {
@@ -425,12 +464,4 @@
         return $"top: {topPx}px; height: {heightPx}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
     }
 
-    private static string ToRgba(string color, double alpha)
-    {
-        var normalized = Activity.SanitizeColor(color);
-        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
-        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
-        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
-        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
-    }
 }
