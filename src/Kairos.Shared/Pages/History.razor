@@ -378,6 +378,7 @@
 
     private string GetEventColor(ActivityEvent evt)
     {
+        if (!string.IsNullOrWhiteSpace(evt.ActivityColor))
         {
             return Activity.SanitizeColor(evt.ActivityColor);
         }
