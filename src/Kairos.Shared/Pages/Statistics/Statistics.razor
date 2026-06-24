@@ -39,7 +39,7 @@
                     <div class="budget-item-header">
                         <span class="budget-activity-name">
                             <span class="activity-color-dot small" style="@GetColorDotStyle(activity.Color)"></span>
-                            @activity.Name
+                            @activity.Emoji @activity.Name
                         </span>
                         <span class="budget-time @(isOver ? "over" : "")">
                             @tracked.TotalHours.ToString("F1")h
