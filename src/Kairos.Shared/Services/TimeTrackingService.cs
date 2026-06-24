@@ -99,6 +99,7 @@ public class TimeTrackingService : ITimeTrackingService
             StartTime = DateTimeOffset.UtcNow,
             Factor = 1.0,
             ActivityName = activity.Name,
+            ActivityId = activity.Id,
             ActivityColor = activity.Color,
             Comment = normalizedComment,
             Metadata = activity.Metadata ?? string.Empty
@@ -374,18 +375,16 @@ public class TimeTrackingService : ITimeTrackingService
             .ToList();
 
         var csv = new StringBuilder();
-        csv.AppendLine("Activity,Comment,Metadata,Start,End,Status");
+        csv.AppendLine("ActivityId,Comment,Start,End,Status");
 
         foreach (var activityEvent in events)
         {
             var startLocal = activityEvent.StartTime.ToLocalTime();
             var endLocal = activityEvent.EndTime?.ToLocalTime();
 
-            csv.Append(EscapeCsv(activityEvent.ActivityName));
+            csv.Append(activityEvent.ActivityId.ToString());
             csv.Append(',');
             csv.Append(EscapeCsv(activityEvent.Comment));
-            csv.Append(',');
-            csv.Append(EscapeCsv(activityEvent.Metadata));
             csv.Append(',');
             csv.Append(EscapeCsv(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
             csv.Append(',');
