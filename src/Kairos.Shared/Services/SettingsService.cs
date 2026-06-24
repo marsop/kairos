@@ -63,6 +63,21 @@ public class SettingsService : ISettingsService
         }
     }
 
+    private string _historyView = "list";
+    public string HistoryView
+    {
+        get => _historyView;
+        set
+        {
+            if (_historyView != value)
+            {
+                _historyView = value;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+
     public bool BrowserNotificationsEnabled
     {
         get => _browserNotificationsEnabled;
@@ -138,6 +153,7 @@ public class SettingsService : ISettingsService
                     _language = string.IsNullOrEmpty(data.Language) ? DefaultLanguage : data.Language;
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
+                    _historyView = data.HistoryView ?? "list";
                 }
             }
             catch
@@ -184,7 +200,8 @@ public class SettingsService : ISettingsService
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
-            BrowserNotificationsEnabled = _browserNotificationsEnabled
+            BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
         await _storage.SetItemAsync(StorageKey, json);
@@ -293,7 +310,8 @@ public class SettingsService : ISettingsService
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
-            BrowserNotificationsEnabled = _browserNotificationsEnabled
+            BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            HistoryView = _historyView
         };
 
         var json = JsonSerializer.Serialize(data);
@@ -310,6 +328,7 @@ internal class SettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+    public string HistoryView { get; set; } = "list";
 }
 
 public class SyncedSettingsData

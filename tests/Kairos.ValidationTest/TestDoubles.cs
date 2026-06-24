@@ -70,6 +70,7 @@ internal sealed class StubSettingsService : ISettingsService
     public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
+    public string HistoryView { get; set; } = "list";
     public bool BrowserNotificationsEnabled { get; set; }
     public DateTimeOffset? LastSupabaseSync { get; private set; }
     public event Action? OnSettingsChanged;
