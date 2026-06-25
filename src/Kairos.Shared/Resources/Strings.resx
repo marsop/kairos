@@ -176,6 +176,9 @@
   <data name="NameRequired" xml:space="preserve">
     <value>Name is required</value>
   </data>
+  <data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
+  </data>
   <data name="Metadata" xml:space="preserve">
     <value>Metadata</value>
   </data>

@@ -4,6 +4,8 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Localization;
 using System.Threading;
+using CsvHelper;
+using System.IO;
 
 namespace Kairos.Shared.Services;
 
@@ -27,7 +29,7 @@ public class TimeTrackingService : ITimeTrackingService
     public const int MaxActivities = 8;
     public const int MinCommentLength = 1;
     public const int MaxCommentLength = 250;
-    
+
     public TimeAccount Account => _account;
 
     public TimeSpan TimelinePeriod
@@ -42,7 +44,7 @@ public class TimeTrackingService : ITimeTrackingService
             }
         }
     }
-    
+
     public event Action? OnStateChanged;
 
     public TimeTrackingService(
@@ -89,11 +91,11 @@ public class TimeTrackingService : ITimeTrackingService
     {
         // Deactivate any active activity silently (no notification since we're switching)
         DeactivateInternal();
-        
+
         var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
         if (activity == null) return;
         var normalizedComment = NormalizeComment(comment);
-        
+
         var newEvent = new ActivityEvent
         {
             StartTime = DateTimeOffset.UtcNow,
@@ -103,7 +105,7 @@ public class TimeTrackingService : ITimeTrackingService
             Comment = normalizedComment,
             Metadata = activity.Metadata ?? string.Empty
         };
-        
+
         _account.Events.Add(newEvent);
         SaveAndNotify();
         _ = _notificationService.NotifyAsync(
@@ -187,19 +189,19 @@ public class TimeTrackingService : ITimeTrackingService
         var points = new List<TimelineDataPoint>();
         var endTime = DateTimeOffset.UtcNow;
         var startTime = endTime - period;
-        
+
         // Get all events that overlap with the period
         var relevantEvents = _account.Events
             .Where(e => e.StartTime <= endTime && (e.EndTime ?? endTime) >= startTime)
             .OrderBy(e => e.StartTime)
             .ToList();
-        
+
         // Calculate balance before the period starts
         double runningBalance = 0;
         var eventsBefore = _account.Events
             .Where(e => e.StartTime < startTime)
             .ToList();
-        
+
         foreach (var evt in eventsBefore)
         {
             var effectiveEnd = evt.EndTime ?? startTime;
@@ -207,23 +209,23 @@ public class TimeTrackingService : ITimeTrackingService
             var duration = effectiveEnd - evt.StartTime;
             runningBalance += duration.TotalHours;
         }
-        
+
         // Always add start point
         points.Add(new TimelineDataPoint { Timestamp = startTime, BalanceHours = runningBalance });
-        
+
         // Add points for each event transition in the period
         foreach (var evt in relevantEvents)
         {
             // Point at start of event (before contribution)
             if (evt.StartTime >= startTime)
             {
-                points.Add(new TimelineDataPoint 
-                { 
-                    Timestamp = evt.StartTime, 
-                    BalanceHours = runningBalance 
+                points.Add(new TimelineDataPoint
+                {
+                    Timestamp = evt.StartTime,
+                    BalanceHours = runningBalance
                 });
             }
-            
+
             // Calculate contribution up to end or now
             var effectiveStart = evt.StartTime < startTime ? startTime : evt.StartTime;
             var effectiveEnd = evt.EndTime ?? endTime;
@@ -231,21 +233,21 @@ public class TimeTrackingService : ITimeTrackingService
             
             var contribution = (effectiveEnd - effectiveStart).TotalHours;
             runningBalance += contribution;
-            
+
             // Point at end of event (or now)
             if (evt.EndTime.HasValue && evt.EndTime.Value <= endTime)
             {
-                points.Add(new TimelineDataPoint 
-                { 
-                    Timestamp = evt.EndTime.Value, 
-                    BalanceHours = runningBalance 
+                points.Add(new TimelineDataPoint
+                {
+                    Timestamp = evt.EndTime.Value,
+                    BalanceHours = runningBalance
                 });
             }
         }
-        
+
         // Always add current point
         points.Add(new TimelineDataPoint { Timestamp = endTime, BalanceHours = runningBalance });
-        
+
         return points.OrderBy(p => p.Timestamp).ToList();
     }
 
@@ -287,7 +289,7 @@ public class TimeTrackingService : ITimeTrackingService
                         .Take(MaxActivities)
                         .ToList();
                 }
-                
+
                 // Ensure TimelinePeriod is valid (handle migration from versions without it)
                 if (loaded.TimelinePeriod != TimeSpan.Zero)
                 {
@@ -307,10 +309,10 @@ public class TimeTrackingService : ITimeTrackingService
         }
 
         await PullFromSupabaseOrSeedAsync();
-        
+
         // Auto-stop any active events whose activity no longer exists.
         EnsureActiveEventsBelongToExistingActivities();
-        
+
         OnStateChanged?.Invoke();
         await SaveAsync();
     }
@@ -321,7 +323,7 @@ public class TimeTrackingService : ITimeTrackingService
         UpdateActivity(activityId, newName, existingColor);
     }
 
-    public void UpdateActivity(Guid activityId, string newName, string newColor, string metadata = "")
+    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", string metadata = "")
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
@@ -336,8 +338,9 @@ public class TimeTrackingService : ITimeTrackingService
         var oldName = activity.Name;
         activity.Name = newName.Trim();
         activity.Color = normalizedColor;
+        activity.Emoji = emoji ?? string.Empty;
         activity.Metadata = metadata ?? string.Empty;
-        
+
         // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();
         if (activeEvent != null && activeEvent.ActivityName == oldName)
@@ -345,7 +348,7 @@ public class TimeTrackingService : ITimeTrackingService
             activeEvent.ActivityName = activity.Name;
             activeEvent.ActivityColor = activity.Color;
         }
-        
+
         SaveAndNotify();
     }
 
@@ -359,10 +362,10 @@ public class TimeTrackingService : ITimeTrackingService
             Activities = _account.Activities,
             Events = _account.Events
         };
-        
-        return JsonSerializer.Serialize(exportData, new JsonSerializerOptions 
-        { 
-            WriteIndented = true 
+
+        return JsonSerializer.Serialize(exportData, new JsonSerializerOptions
+        {
+            WriteIndented = true
         });
     }
 
@@ -373,32 +376,42 @@ public class TimeTrackingService : ITimeTrackingService
             .OrderBy(m => m.StartTime)
             .ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ActivityId,Comment,Start,End,Status");
+        using var writer = new StringWriter();
+        var csvConfig = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            NewLine = Environment.NewLine
+        };
+        using var csv = new CsvWriter(writer, csvConfig);
+
+        csv.WriteField("Activity");
+        csv.WriteField("Comment");
+        csv.WriteField("Metadata");
+        csv.WriteField("Start");
+        csv.WriteField("End");
+        csv.WriteField("Status");
+        csv.NextRecord();
 
         foreach (var activityEvent in events)
         {
             var startLocal = activityEvent.StartTime.ToLocalTime();
             var endLocal = activityEvent.EndTime?.ToLocalTime();
 
-            csv.Append(activityEvent.ActivityId.ToString());
-            csv.Append(',');
-            csv.Append(EscapeCsv(activityEvent.Comment));
-            csv.Append(',');
-            csv.Append(EscapeCsv(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
-            csv.Append(',');
-            csv.Append(EscapeCsv(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty));
-            csv.Append(',');
-            csv.AppendLine(activityEvent.IsActive ? "Active" : "Completed");
+            csv.WriteField(activityEvent.ActivityName);
+            csv.WriteField(activityEvent.Comment);
+            csv.WriteField(activityEvent.Metadata);
+            csv.WriteField(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            csv.WriteField(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty);
+            csv.WriteField(activityEvent.IsActive ? "Active" : "Completed");
+            csv.NextRecord();
         }
 
-        return csv.ToString();
+        return writer.ToString();
     }
 
     public async Task ImportDataAsync(string json)
     {
         var importData = JsonSerializer.Deserialize<KairosExportData>(json);
-        
+
         if (importData == null)
         {
             throw new InvalidOperationException("Invalid import data format.");
@@ -411,7 +424,7 @@ public class TimeTrackingService : ITimeTrackingService
 
         // Apply language setting (defaults to "en" if not present in import data)
         _settingsService.Language = string.IsNullOrEmpty(importData.Language) ? "en" : importData.Language;
-        
+
         // Apply tutorial completion setting
         _settingsService.TutorialCompleted = importData.TutorialCompleted;
 
@@ -458,7 +471,7 @@ public class TimeTrackingService : ITimeTrackingService
         {
             throw new InvalidOperationException("Cannot delete the currently active activity.");
         }
-        
+
         _account.Activities.Remove(activity);
         SaveAndNotify();
     }
@@ -468,7 +481,7 @@ public class TimeTrackingService : ITimeTrackingService
         AddActivity(name, Activity.DefaultColor);
     }
 
-    public void AddActivity(string name, string color, string metadata = "")
+    public void AddActivity(string name, string color, string emoji = "", string metadata = "")
     {
         if (_account.Activities.Count >= MaxActivities)
         {
@@ -487,6 +500,7 @@ public class TimeTrackingService : ITimeTrackingService
             Name = name.Trim(),
             Color = normalizedColor,
             DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0,
+            Emoji = emoji ?? string.Empty,
             Metadata = metadata ?? string.Empty
         };
 
@@ -497,10 +511,10 @@ public class TimeTrackingService : ITimeTrackingService
     {
         _account.Events.Clear();
         _account.Activities = await _activityConfig.LoadActivitiesAsync();
-        
+
         // Reset timeline period to default
         _account.TimelinePeriod = TimeSpan.FromHours(24);
-        
+
         await SaveAndNotifyAsync();
     }
 
@@ -749,19 +763,6 @@ public class TimeTrackingService : ITimeTrackingService
     private static void NormalizePersistedActivityEvent(ActivityEvent activityEvent)
     {
         activityEvent.ActivityColor = Activity.SanitizeColor(activityEvent.ActivityColor);
-    }
-
-    private static string EscapeCsv(string value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return string.Empty;
-        }
-
-        var escaped = value.Replace("\"", "\"\"");
-        return escaped.IndexOfAny([',', '"', '\r', '\n']) >= 0
-            ? $"\"{escaped}\""
-            : escaped;
     }
 
     private void SaveAndNotify(bool markModified = true)

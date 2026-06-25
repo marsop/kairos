@@ -10,6 +10,11 @@ public class Activity
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
+    /// Emoji representing the activity.
+    /// </summary>
+    public string Emoji { get; set; } = string.Empty;
+
+    /// <summary>
     /// Display name for the activity.
     /// </summary>
     public string Name { get; set; } = string.Empty;

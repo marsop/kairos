@@ -18,7 +18,7 @@ public class ActivityConfigurationService : IActivityConfigurationService
     public async Task<List<Activity>> LoadActivitiesAsync()
     {
         var config = await _httpClient.GetFromJsonAsync<ActivityConfiguration>("_content/Kairos.Shared/activities.json");
-        
+
         if (config?.Activities == null || config.Activities.Count == 0)
         {
             throw new InvalidOperationException("No activities configured in activities.json");

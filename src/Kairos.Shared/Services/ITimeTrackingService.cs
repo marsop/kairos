@@ -16,39 +16,39 @@ public interface ITimeTrackingService
     /// Gets or sets the current timeline period.
     /// </summary>
     TimeSpan TimelinePeriod { get; set; }
-    
+
     /// <summary>
     /// Gets the current balance, calculated in real-time.
     /// </summary>
     TimeSpan GetCurrentBalance();
-    
+
     /// <summary>
     /// Gets the currently active activity event, if any.
     /// </summary>
     ActivityEvent? GetActiveEvent();
-    
+
     /// <summary>
     /// Activates a activity by its ID. Deactivates any currently active activity first.
     /// </summary>
     /// <param name="activityId">The ID of the activity to activate.</param>
     /// <param name="comment">A required comment between 1 and 250 characters.</param>
     void ActivateActivity(Guid activityId, string comment);
-    
+
     /// <summary>
     /// Deactivates the currently active activity.
     /// </summary>
     void DeactivateActivity();
-    
+
     /// <summary>
     /// Gets timeline data points for the specified period.
     /// </summary>
     List<TimelineDataPoint> GetTimelineData(TimeSpan period);
-    
+
     /// <summary>
     /// Deletes an event by its ID. Updates balance and triggers state change.
     /// </summary>
     void DeleteEvent(Guid eventId);
-    
+
     /// <summary>
     /// Updates the start and end times of a non-active event.
     /// </summary>
@@ -58,22 +58,22 @@ public interface ITimeTrackingService
     /// <exception cref="InvalidOperationException">Thrown when the event is active.</exception>
     /// <exception cref="ArgumentException">Thrown when newStartTime >= newEndTime or newEndTime is in the future.</exception>
     void UpdateEventTimes(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime);
-    
+
     /// <summary>
     /// Saves the current state to persistent storage.
     /// </summary>
     Task SaveAsync();
-    
+
     /// <summary>
     /// Loads the state from persistent storage.
     /// </summary>
     Task LoadAsync();
-    
+
     /// <summary>
     /// Event raised when the account state changes.
     /// </summary>
     event Action? OnStateChanged;
-    
+
     /// <summary>
     /// Exports all data (activities and events) as a JSON string.
     /// </summary>
@@ -88,7 +88,7 @@ public interface ITimeTrackingService
     /// Imports data from a JSON string, replacing current activities and events.
     /// </summary>
     Task ImportDataAsync(string json);
-    
+
     /// <summary>
     /// Renames a activity. Only affects future events; existing events keep the old name.
     /// </summary>
@@ -103,8 +103,9 @@ public interface ITimeTrackingService
     /// <param name="activityId">The ID of the activity to update.</param>
     /// <param name="newName">The new name (1-40 characters).</param>
     /// <param name="newColor">The new color in #RRGGBB format.</param>
+    /// <param name="emoji">Optional emoji string.</param>
     /// <param name="metadata">Optional metadata string.</param>
-    void UpdateActivity(Guid activityId, string newName, string newColor, string metadata = "");
+    void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", string metadata = "");
 
     /// <summary>
     /// Deletes a activity by its ID.
@@ -125,8 +126,9 @@ public interface ITimeTrackingService
     /// </summary>
     /// <param name="name">Name of the activity.</param>
     /// <param name="color">Hex color in #RRGGBB format.</param>
+    /// <param name="emoji">Optional emoji string.</param>
     /// <param name="metadata">Optional metadata string.</param>
-    void AddActivity(string name, string color, string metadata = "");
+    void AddActivity(string name, string color, string emoji = "", string metadata = "");
     /// <summary>
     /// Resets all data to initial state (default activities, no history).
     /// </summary>

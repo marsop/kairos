@@ -50,8 +50,9 @@ public class NotificationService : INotificationService
         {
             return await _jsRuntime.InvokeAsync<string>("notificationInterop.getPermissionState");
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to get browser permission state.");
             return "denied";
         }
     }
@@ -62,8 +63,9 @@ public class NotificationService : INotificationService
         {
             return await _jsRuntime.InvokeAsync<string>("notificationInterop.requestPermission");
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to request browser permission.");
             return "denied";
         }
     }
