@@ -20,12 +20,6 @@ public class ActivityEvent
     public DateTimeOffset? EndTime { get; set; }
     
     /// <summary>
-    /// </summary>
-
-    /// <summary>
-    /// </summary>
-    
-    /// <summary>
     /// Display name for the activity.
     /// </summary>
     public string ActivityName { get; set; } = string.Empty;
@@ -61,7 +55,4 @@ public class ActivityEvent
     public TimeSpan Duration => IsActive 
         ? DateTimeOffset.UtcNow - StartTime 
         : (EndTime!.Value - StartTime);
-    
-    /// <summary>
-    /// </summary>
 }

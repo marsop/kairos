@@ -20,12 +20,6 @@ public class Activity
     public string Color { get; set; } = DefaultColor;
 
     /// <summary>
-    /// </summary>
-
-    /// <summary>
-    /// </summary>
-
-    /// <summary>
     /// Order in which this activity appears in the UI.
     /// </summary>
     public int DisplayOrder { get; set; }
