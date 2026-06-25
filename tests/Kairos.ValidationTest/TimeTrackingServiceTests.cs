@@ -275,9 +275,13 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 30));
         sut.Account.Events.Clear();
+        var deepWorkId = Guid.NewGuid();
+        var breakId = Guid.NewGuid();
+        var otherDayId = Guid.NewGuid();
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Deep Work",
+            ActivityId = deepWorkId,
             Comment = "Finish roadmap",
             StartTime = new DateTimeOffset(2026, 3, 30, 9, 15, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 30, 10, 45, 0, offset)
@@ -285,6 +289,7 @@ public class TimeTrackingServiceTests
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Break",
+            ActivityId = breakId,
             Comment = "Coffee, outside",
             StartTime = new DateTimeOffset(2026, 3, 30, 11, 0, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 30, 11, 15, 0, offset)
@@ -292,6 +297,7 @@ public class TimeTrackingServiceTests
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Other Day",
+            ActivityId = otherDayId,
             Comment = "Ignore me",
             StartTime = new DateTimeOffset(2026, 3, 29, 16, 0, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 29, 17, 0, 0, offset)
@@ -301,9 +307,9 @@ public class TimeTrackingServiceTests
         var rows = csv.Trim().Split(Environment.NewLine);
 
         Assert.Equal(3, rows.Length);
-        Assert.Equal("Activity,Comment,Metadata,Start,End,Status", rows[0]);
-        Assert.Equal("Deep Work,Finish roadmap,,2026-03-30 09:15:00,2026-03-30 10:45:00,Completed", rows[1]);
-        Assert.Equal("Break,\"Coffee, outside\",,2026-03-30 11:00:00,2026-03-30 11:15:00,Completed", rows[2]);
+        Assert.Equal("ActivityId,Comment,Start,End,Status", rows[0]);
+        Assert.Equal($"{deepWorkId},Finish roadmap,2026-03-30 09:15:00,2026-03-30 10:45:00,Completed", rows[1]);
+        Assert.Equal($"{breakId},\"Coffee, outside\",2026-03-30 11:00:00,2026-03-30 11:15:00,Completed", rows[2]);
     }
 
     [Fact]
@@ -312,9 +318,11 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 31));
         sut.Account.Events.Clear();
+        var reviewId = Guid.NewGuid();
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Review",
+            ActivityId = reviewId,
             Comment = "Discuss \"Phase 2\"",
             StartTime = new DateTimeOffset(2026, 3, 31, 14, 0, 0, offset)
         });
@@ -323,7 +331,7 @@ public class TimeTrackingServiceTests
         var row = csv.Trim().Split(Environment.NewLine).Last();
 
         Assert.Contains("\"Discuss \"\"Phase 2\"\"\"", row);
-        Assert.Contains("2026-03-31 14:00:00,,", row);
+        Assert.Contains("2026-03-31 14:00:00,", row);
         Assert.EndsWith("Active", row);
     }
 
