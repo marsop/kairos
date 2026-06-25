@@ -137,6 +137,11 @@ public interface ITimeTrackingService
     /// </summary>
     /// <param name="orderedActivityIds">The list of activity IDs in the desired order.</param>
     void ReorderActivities(List<Guid> orderedActivityIds);
+
+    /// <summary>
+    /// Replaces the local events with the ones from the server.
+    /// </summary>
+    void UpdateEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents);
 }
 
 /// <summary>

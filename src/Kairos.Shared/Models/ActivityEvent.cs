@@ -8,6 +8,11 @@ namespace Kairos.Shared.Models;
 public class ActivityEvent
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Foreign key reference to the configured Activity, if applicable.
+    /// </summary>
+    public Guid? ActivityId { get; set; }
     
     /// <summary>
     /// When the activity was activated.
