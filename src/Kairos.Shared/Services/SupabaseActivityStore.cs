@@ -43,7 +43,6 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Id = m.Id,
                 Name = m.Name!,
                 Color = Activity.SanitizeColor(m.Color),
-                Factor = 1.0,
                 DisplayOrder = m.DisplayOrder
             })
             .ToList();

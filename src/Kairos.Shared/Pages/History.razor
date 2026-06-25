@@ -158,7 +158,7 @@
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@Localizer["DeleteEntryTitle"]</h3>
             <p>@Localizer["DeleteEntryConfirm", _eventToDelete.ActivityName]</p>
-            <p class="modal-contribution">@Localizer["DeleteEntryWarning", FormatContribution(_eventToDelete.TimeContribution)]</p>
+            <p class="modal-contribution">@Localizer["DeleteEntryWarning", FormatContribution(_eventToDelete.Duration)]</p>
             <div class="modal-actions">
                 <button class="btn-cancel" @onclick="CancelDelete">@Localizer["Cancel"]</button>
                 <button class="btn-delete" @onclick="DeleteEvent">@Localizer["Delete"]</button>

@@ -20,18 +20,10 @@ public class Activity
     public string Color { get; set; } = DefaultColor;
 
     /// <summary>
-    /// Activity factor is fixed at 1.0.
     /// </summary>
-    private double _factor = 1.0;
 
     /// <summary>
-    /// Activity factor is fixed at 1.0.
     /// </summary>
-    public double Factor
-    {
-        get => _factor;
-        set => _factor = 1.0;
-    }
 
     /// <summary>
     /// Order in which this activity appears in the UI.

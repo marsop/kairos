@@ -77,7 +77,7 @@ public class TimeTrackingService : ITimeTrackingService
 
     public TimeSpan GetCurrentBalance()
     {
-        return TimeSpan.FromTicks(_account.Events.Sum(e => e.TimeContribution.Ticks));
+        return TimeSpan.FromTicks(_account.Events.Sum(e => e.Duration.Ticks));
     }
 
     public ActivityEvent? GetActiveEvent()
@@ -97,7 +97,6 @@ public class TimeTrackingService : ITimeTrackingService
         var newEvent = new ActivityEvent
         {
             StartTime = DateTimeOffset.UtcNow,
-            Factor = 1.0,
             ActivityName = activity.Name,
             ActivityId = activity.Id,
             ActivityColor = activity.Color,
@@ -206,7 +205,7 @@ public class TimeTrackingService : ITimeTrackingService
             var effectiveEnd = evt.EndTime ?? startTime;
             if (effectiveEnd > startTime) effectiveEnd = startTime;
             var duration = effectiveEnd - evt.StartTime;
-            runningBalance += duration.TotalHours * evt.Factor;
+            runningBalance += duration.TotalHours;
         }
         
         // Always add start point
@@ -230,7 +229,7 @@ public class TimeTrackingService : ITimeTrackingService
             var effectiveEnd = evt.EndTime ?? endTime;
             if (effectiveEnd > endTime) effectiveEnd = endTime;
             
-            var contribution = (effectiveEnd - effectiveStart).TotalHours * evt.Factor;
+            var contribution = (effectiveEnd - effectiveStart).TotalHours;
             runningBalance += contribution;
             
             // Point at end of event (or now)
@@ -269,7 +268,7 @@ public class TimeTrackingService : ITimeTrackingService
                 _account.Activities = loaded.Activities ?? new List<Activity>();
                 _account.LastModifiedAtUtc = loaded.LastModifiedAtUtc;
 
-                // Factor is fixed at 1.0; normalize persisted legacy data.
+                // Normalize persisted legacy data.
                 foreach (var activity in _account.Activities)
                 {
                     NormalizePersistedActivity(activity);
@@ -432,7 +431,7 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities = importData.Activities;
         _account.Events = importData.Events ?? new List<ActivityEvent>();
 
-        // Factor is fixed at 1.0; normalize imported legacy data.
+        // Normalize imported legacy data.
         foreach (var activity in _account.Activities)
         {
             NormalizePersistedActivity(activity);
@@ -487,7 +486,6 @@ public class TimeTrackingService : ITimeTrackingService
         {
             Name = name.Trim(),
             Color = normalizedColor,
-            Factor = 1.0,
             DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0,
             Metadata = metadata ?? string.Empty
         };
@@ -745,13 +743,11 @@ public class TimeTrackingService : ITimeTrackingService
 
     private static void NormalizePersistedActivity(Activity activity)
     {
-        activity.Factor = 1.0;
         activity.Color = Activity.SanitizeColor(activity.Color);
     }
 
     private static void NormalizePersistedActivityEvent(ActivityEvent activityEvent)
     {
-        activityEvent.Factor = 1.0;
         activityEvent.ActivityColor = Activity.SanitizeColor(activityEvent.ActivityColor);
     }
 

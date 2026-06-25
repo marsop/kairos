@@ -60,8 +60,8 @@ public class ActivityStartPromptServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Color = "#EF4444", Factor = 1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", DisplayOrder = 1 }
         });
         var settings = new StubSettingsService();
         var notifications = new StubNotificationService();

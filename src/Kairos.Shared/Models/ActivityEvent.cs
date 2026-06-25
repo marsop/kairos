@@ -20,18 +20,10 @@ public class ActivityEvent
     public DateTimeOffset? EndTime { get; set; }
     
     /// <summary>
-    /// Activity factor is fixed at 1.0.
     /// </summary>
-    private double _factor = 1.0;
 
     /// <summary>
-    /// Activity factor is fixed at 1.0.
     /// </summary>
-    public double Factor
-    {
-        get => _factor;
-        set => _factor = 1.0;
-    }
     
     /// <summary>
     /// Display name for the activity.
@@ -71,7 +63,5 @@ public class ActivityEvent
         : (EndTime!.Value - StartTime);
     
     /// <summary>
-    /// Calculates the time contribution of this event (duration * 1.0).
     /// </summary>
-    public TimeSpan TimeContribution => TimeSpan.FromTicks((long)(Duration.Ticks * Factor));
 }
