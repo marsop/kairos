@@ -247,7 +247,7 @@
                 var end = (e.EndTime ?? DateTimeOffset.UtcNow) < EndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : EndDate;
                 if (end > start)
                 {
-                    totalHours += (end - start).TotalHours * e.Factor;
+                    totalHours += (end - start).TotalHours;
                 }
             }
             return TimeSpan.FromHours(totalHours);
@@ -270,7 +270,7 @@
             var end = (e.EndTime ?? DateTimeOffset.UtcNow) < EndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : EndDate;
             if (end > start)
             {
-                totalHours += (end - start).TotalHours * e.Factor;
+                totalHours += (end - start).TotalHours;
             }
         }
         return TimeSpan.FromHours(totalHours);

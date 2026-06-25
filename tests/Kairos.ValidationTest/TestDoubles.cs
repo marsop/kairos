@@ -59,7 +59,7 @@ internal sealed class StubActivityConfigurationService : IActivityConfigurationS
             Id = activity.Id,
             Name = activity.Name,
             Color = activity.Color,
-            Factor = activity.Factor,
+
             DisplayOrder = activity.DisplayOrder
         };
     }
@@ -222,7 +222,7 @@ internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
             Id = a.Id,
             Name = a.Name,
             Color = a.Color,
-            Factor = a.Factor,
+
             DisplayOrder = a.DisplayOrder
         }).ToList());
     }
@@ -235,7 +235,7 @@ internal sealed class StubSupabaseActivityStore : ISupabaseActivityStore
             Id = a.Id,
             Name = a.Name,
             Color = a.Color,
-            Factor = a.Factor,
+
             DisplayOrder = a.DisplayOrder
         }).ToList();
         return Task.CompletedTask;
@@ -275,7 +275,7 @@ internal sealed class StubSupabaseTimeAccountStore : ISupabaseTimeAccountStore
                 Id = e.Id,
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
-                Factor = e.Factor,
+
                 ActivityName = e.ActivityName,
                 ActivityColor = e.ActivityColor,
                 Comment = e.Comment
@@ -285,7 +285,7 @@ internal sealed class StubSupabaseTimeAccountStore : ISupabaseTimeAccountStore
                 Id = a.Id,
                 Name = a.Name,
                 Color = a.Color,
-                Factor = a.Factor,
+
                 DisplayOrder = a.DisplayOrder
             }).ToList(),
             TimelinePeriod = account.TimelinePeriod,
