@@ -13,7 +13,7 @@ public interface ITutorialService
     TutorialStep? CurrentStep { get; }
     bool IsInitialSetupStep { get; }
     bool CanAdvanceFromCurrentStep { get; }
-    
+
     bool HasCompletedTutorial { get; }
 
     IReadOnlyList<AvatarProfile> AvailableAvatars { get; }
