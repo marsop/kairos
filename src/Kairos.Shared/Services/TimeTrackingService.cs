@@ -101,6 +101,7 @@ public class TimeTrackingService : ITimeTrackingService
             StartTime = DateTimeOffset.UtcNow,
             Factor = 1.0,
             ActivityName = activity.Name,
+            ActivityId = activity.Id,
             ActivityColor = activity.Color,
             Comment = normalizedComment,
             Metadata = activity.Metadata ?? string.Empty
@@ -323,7 +324,7 @@ public class TimeTrackingService : ITimeTrackingService
         UpdateActivity(activityId, newName, existingColor);
     }
 
-    public void UpdateActivity(Guid activityId, string newName, string newColor, string metadata = "")
+    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", string metadata = "")
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
@@ -338,6 +339,7 @@ public class TimeTrackingService : ITimeTrackingService
         var oldName = activity.Name;
         activity.Name = newName.Trim();
         activity.Color = normalizedColor;
+        activity.Emoji = emoji ?? string.Empty;
         activity.Metadata = metadata ?? string.Empty;
 
         // Update active event if this activity is currently running
@@ -480,7 +482,7 @@ public class TimeTrackingService : ITimeTrackingService
         AddActivity(name, Activity.DefaultColor);
     }
 
-    public void AddActivity(string name, string color, string metadata = "")
+    public void AddActivity(string name, string color, string emoji = "", string metadata = "")
     {
         if (_account.Activities.Count >= MaxActivities)
         {
@@ -500,6 +502,7 @@ public class TimeTrackingService : ITimeTrackingService
             Color = normalizedColor,
             Factor = 1.0,
             DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0,
+            Emoji = emoji ?? string.Empty,
             Metadata = metadata ?? string.Empty
         };
 

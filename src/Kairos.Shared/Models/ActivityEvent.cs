@@ -39,6 +39,11 @@ public class ActivityEvent
     public string ActivityName { get; set; } = string.Empty;
 
     /// <summary>
+    /// ID of the activity this event belongs to.
+    /// </summary>
+    public Guid ActivityId { get; set; } = Guid.Empty;
+
+    /// <summary>
     /// Hex color captured from the activity when this event started.
     /// </summary>
     public string ActivityColor { get; set; } = Activity.DefaultColor;

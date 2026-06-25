@@ -48,6 +48,14 @@
                                    @bind="_editingActivityMetadata"
                                    maxlength="250" />
                         </div>
+                        <div class="activity-emoji-field">
+                            <label class="activity-color-label">@Localizer["Emoji"]</label>
+                            <input type="text"
+                                   class="activity-metadata-input emoji-input"
+                                   placeholder="😃"
+                                   @bind="_editingActivityEmoji"
+                                   maxlength="10" />
+                        </div>
                         <div class="activity-color-field">
                             <label class="activity-color-label">Color</label>
                             <div class="activity-color-picker-row">
@@ -77,7 +85,7 @@
                             style="@GetActivityStyle(activity.Color, isActive)"
                             @onclick="() => ToggleActivity(activity.Id)">
                         <div class="activity-index">#@(index + 1)</div>
-                        <div class="activity-name">@activity.Name</div>
+                        <div class="activity-name">@activity.Emoji @activity.Name</div>
                     </button>
                     <div class="activity-actions">
                         <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
@@ -112,6 +120,14 @@
                                placeholder="@Localizer["Metadata"]"
                                @bind="_newActivityMetadata"
                                maxlength="250" />
+                    </div>
+                    <div class="activity-emoji-field">
+                        <label class="activity-color-label">@Localizer["Emoji"]</label>
+                        <input type="text"
+                               class="activity-metadata-input emoji-input"
+                               placeholder="😃"
+                               @bind="_newActivityEmoji"
+                               maxlength="10" />
                     </div>
                     <div class="activity-color-field">
                         <label class="activity-color-label">Color</label>
@@ -164,6 +180,7 @@
     private Guid? _editingActivityId;
     private string? _editingActivityName;
     private string _editingActivityColor = Activity.DefaultColor;
+    private string? _editingActivityEmoji;
     private string? _editingActivityMetadata;
     private string? _validationError;
 
@@ -171,6 +188,7 @@
     private bool _isAddingActivity;
     private string _newActivityName = string.Empty;
     private string _newActivityColor = Activity.DefaultColor;
+    private string? _newActivityEmoji;
     private string? _newActivityMetadata;
     private string? _addValidationError;
 
@@ -227,6 +245,7 @@
         _editingActivityId = activity.Id;
         _editingActivityName = activity.Name;
         _editingActivityColor = Activity.SanitizeColor(activity.Color);
+        _editingActivityEmoji = activity.Emoji;
         _editingActivityMetadata = activity.Metadata;
         _validationError = null;
         CancelAdd();
@@ -250,7 +269,7 @@
 
         try
         {
-            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor, _editingActivityMetadata ?? string.Empty);
+            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor, _editingActivityEmoji ?? string.Empty, _editingActivityMetadata ?? string.Empty);
             CancelEdit();
         }
         catch (ArgumentException ex)
@@ -264,6 +283,7 @@
         _editingActivityId = null;
         _editingActivityName = null;
         _editingActivityColor = Activity.DefaultColor;
+        _editingActivityEmoji = null;
         _editingActivityMetadata = null;
         _validationError = null;
     }
@@ -308,6 +328,7 @@
         _isAddingActivity = true;
         _newActivityName = string.Empty;
         _newActivityColor = GetSuggestedColor();
+        _newActivityEmoji = null;
         _newActivityMetadata = null;
         _addValidationError = null;
         CancelEdit();
@@ -318,6 +339,7 @@
         _isAddingActivity = false;
         _newActivityName = string.Empty;
         _newActivityColor = Activity.DefaultColor;
+        _newActivityEmoji = null;
         _newActivityMetadata = null;
         _addValidationError = null;
     }
@@ -332,7 +354,7 @@
         
         try
         {
-            TimeService.AddActivity(_newActivityName, _newActivityColor, _newActivityMetadata ?? string.Empty);
+            TimeService.AddActivity(_newActivityName, _newActivityColor, _newActivityEmoji ?? string.Empty, _newActivityMetadata ?? string.Empty);
             CancelAdd();
         }
         catch (Exception ex)
