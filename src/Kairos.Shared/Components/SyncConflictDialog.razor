@@ -1,0 +1,47 @@
+@using Kairos.Shared.Services
+@inject ISyncConflictNotifier Notifier
+@implements IDisposable
+
+@if (_isVisible)
+{
+    <div class="modal-backdrop">
+        <div class="modal-content">
+            <h3>Sync Conflict</h3>
+            <p>New activity events were found on the server, but you also have unsynced local changes.</p>
+            <p>Which data should be kept?</p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" @onclick="() => Respond(true)">Use Server Data</button>
+                <button class="btn btn-secondary" @onclick="() => Respond(false)">Keep Local Data</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool _isVisible;
+    private Action<bool>? _resolveCallback;
+
+    protected override void OnInitialized()
+    {
+        Notifier.OnConflictDetected += HandleConflict;
+    }
+
+    private void HandleConflict(Action<bool> callback)
+    {
+        _resolveCallback = callback;
+        _isVisible = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Respond(bool useServer)
+    {
+        _isVisible = false;
+        _resolveCallback?.Invoke(useServer);
+        _resolveCallback = null;
+    }
+
+    public void Dispose()
+    {
+        Notifier.OnConflictDetected -= HandleConflict;
+    }
+}

@@ -16,6 +16,7 @@ builder.Services.Configure<SupabaseAuthOptions>(builder.Configuration.GetSection
 
 // Register services
 builder.Services.AddScoped<IStorageService, BrowserStorageService>();
+builder.Services.AddScoped<ISyncConflictNotifier, SyncConflictNotifier>();
 builder.Services.AddScoped<IActivityConfigurationService, ActivityConfigurationService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<ITimeTrackingService, TimeTrackingService>();
@@ -26,9 +27,11 @@ builder.Services.AddScoped<ITutorialService, TutorialService>();
 builder.Services.AddScoped<ITimeularService, TimeularService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 builder.Services.AddScoped<ISupabaseActivityStore, SupabaseActivityStore>();
+builder.Services.AddScoped<ISupabaseActivityEventStore, SupabaseActivityEventStore>();
 builder.Services.AddScoped<ISupabaseTimeAccountStore, SupabaseTimeAccountStore>();
 builder.Services.AddScoped<ISupabaseSettingsStore, SupabaseSettingsStore>();
 builder.Services.AddScoped<ISupabaseRealtimeService, SupabaseRealtimeService>();
+builder.Services.AddScoped<IActivityEventSyncService, ActivityEventSyncService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 // Load configuration
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -47,5 +50,8 @@ await realtimeService.InitializeAsync();
 
 var timeService = host.Services.GetRequiredService<ITimeTrackingService>();
 await timeService.LoadAsync();
+
+var syncService = host.Services.GetRequiredService<IActivityEventSyncService>();
+syncService.StartSync();
 
 await host.RunAsync();

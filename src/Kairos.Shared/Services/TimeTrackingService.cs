@@ -461,6 +461,17 @@ public class TimeTrackingService : ITimeTrackingService
         await SaveAndNotifyAsync();
     }
 
+    public void UpdateEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents)
+    {
+        _account.Events = serverEvents.ToList();
+        _account.LastModifiedAtUtc = DateTimeOffset.UtcNow;
+        EnsureActiveEventsBelongToExistingActivities();
+
+        var saveTask = SaveLocalAsync();
+        OnStateChanged?.Invoke();
+        _ = saveTask;
+    }
+
     public void DeleteActivity(Guid activityId)
     {
         var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);
@@ -560,6 +571,10 @@ public class TimeTrackingService : ITimeTrackingService
                 break;
             case "time_accounts":
                 _ = ReloadAccountFromSupabaseAsync(seedWhenMissing: false);
+                break;
+            case "activity_events":
+                // Realtime will trigger this if server data changes (e.g., from another device).
+                // The sync service handles polling and conflicts, but this can be a hint.
                 break;
         }
     }
