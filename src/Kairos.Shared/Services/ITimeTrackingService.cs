@@ -103,8 +103,9 @@ public interface ITimeTrackingService
     /// <param name="activityId">The ID of the activity to update.</param>
     /// <param name="newName">The new name (1-40 characters).</param>
     /// <param name="newColor">The new color in #RRGGBB format.</param>
+    /// <param name="emoji">Optional emoji string.</param>
     /// <param name="metadata">Optional metadata string.</param>
-    void UpdateActivity(Guid activityId, string newName, string newColor, string metadata = "");
+    void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", string metadata = "");
 
     /// <summary>
     /// Deletes a activity by its ID.
@@ -125,8 +126,9 @@ public interface ITimeTrackingService
     /// </summary>
     /// <param name="name">Name of the activity.</param>
     /// <param name="color">Hex color in #RRGGBB format.</param>
+    /// <param name="emoji">Optional emoji string.</param>
     /// <param name="metadata">Optional metadata string.</param>
-    void AddActivity(string name, string color, string metadata = "");
+    void AddActivity(string name, string color, string emoji = "", string metadata = "");
     /// <summary>
     /// Resets all data to initial state (default activities, no history).
     /// </summary>

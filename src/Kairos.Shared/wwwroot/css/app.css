@@ -1784,6 +1784,18 @@ html[data-theme="dark"] .edit-input {
     font-weight: 400;
 }
 
+.activity-emoji-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.emoji-input {
+    font-size: var(--font-size-2xl);
+    width: 60px;
+    align-self: center;
+}
+
 .activity-name-input:focus,
 .activity-metadata-input:focus {
     outline: none;
