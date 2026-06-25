@@ -10,6 +10,11 @@ public class Activity
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
+    /// Emoji representing the activity.
+    /// </summary>
+    public string Emoji { get; set; } = string.Empty;
+
+    /// <summary>
     /// Display name for the activity.
     /// </summary>
     public string Name { get; set; } = string.Empty;
@@ -18,20 +23,6 @@ public class Activity
     /// Hex color used to identify the activity in the UI.
     /// </summary>
     public string Color { get; set; } = DefaultColor;
-
-    /// <summary>
-    /// Activity factor is fixed at 1.0.
-    /// </summary>
-    private double _factor = 1.0;
-
-    /// <summary>
-    /// Activity factor is fixed at 1.0.
-    /// </summary>
-    public double Factor
-    {
-        get => _factor;
-        set => _factor = 1.0;
-    }
 
     /// <summary>
     /// Order in which this activity appears in the UI.

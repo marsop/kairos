@@ -75,8 +75,8 @@ public class TimeularServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Factor = 1, DisplayOrder = 1 }
+            new Activity { Name = "Work", DisplayOrder = 0 },
+            new Activity { Name = "Break", DisplayOrder = 1 }
         });
         var settings = new StubSettingsService();
         var notifications = new StubNotificationService();

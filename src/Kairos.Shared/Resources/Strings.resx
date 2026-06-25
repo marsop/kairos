@@ -152,9 +152,6 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="ActivityFactor" xml:space="preserve">
-    <value>Factor: {0}</value>
-  </data>
   <data name="Running" xml:space="preserve">
     <value>Running</value>
   </data>
@@ -178,6 +175,9 @@
   </data>
   <data name="NameRequired" xml:space="preserve">
     <value>Name is required</value>
+  </data>
+  <data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
   </data>
   <data name="Metadata" xml:space="preserve">
     <value>Metadata</value>

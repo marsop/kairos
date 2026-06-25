@@ -7,7 +7,7 @@ public class StatisticsService : IStatisticsService
 {
     private const string StorageKey = "Kairos_budgets";
     private readonly IStorageService _storage;
-    
+
     // In-memory cache
     private List<ActivityBudget> _budgets = new();
     private bool _isLoaded = false;
@@ -20,7 +20,7 @@ public class StatisticsService : IStatisticsService
     private async Task EnsureLoadedAsync()
     {
         if (_isLoaded) return;
-        
+
         var json = await _storage.GetItemAsync(StorageKey);
         if (!string.IsNullOrEmpty(json))
         {
@@ -44,14 +44,14 @@ public class StatisticsService : IStatisticsService
     public async Task SaveBudgetAsync(ActivityBudget budget)
     {
         await EnsureLoadedAsync();
-        
+
         // Validation: Check for overlap with existing budgets for the same activity
-        var overlapping = _budgets.Any(b => 
-            b.Id != budget.Id && 
-            b.ActivityId == budget.ActivityId && 
-            b.StartDate <= budget.EndDate && 
+        var overlapping = _budgets.Any(b =>
+            b.Id != budget.Id &&
+            b.ActivityId == budget.ActivityId &&
+            b.StartDate <= budget.EndDate &&
             budget.StartDate <= b.EndDate);
-            
+
         if (overlapping)
         {
             throw new InvalidOperationException("Budgets for the same activity cannot overlap in time.");
@@ -62,7 +62,7 @@ public class StatisticsService : IStatisticsService
         {
             _budgets.Remove(existing);
         }
-        
+
         _budgets.Add(budget);
         await SaveChangesAsync();
     }
@@ -81,9 +81,9 @@ public class StatisticsService : IStatisticsService
     public async Task<ActivityBudget?> GetBudgetForPeriodAsync(Guid activityId, DateOnly startDate, DateOnly endDate)
     {
         await EnsureLoadedAsync();
-        return _budgets.FirstOrDefault(b => 
-            b.ActivityId == activityId && 
-            b.StartDate <= endDate && 
+        return _budgets.FirstOrDefault(b =>
+            b.ActivityId == activityId &&
+            b.StartDate <= endDate &&
             startDate <= b.EndDate);
     }
 }

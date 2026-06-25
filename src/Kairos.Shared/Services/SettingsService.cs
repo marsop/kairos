@@ -165,7 +165,7 @@ public class SettingsService : ISettingsService
                 _browserNotificationsEnabled = false;
             }
         }
-        
+
         await PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: true);
         UpdateCulture(_language);
         OnSettingsChanged?.Invoke();
@@ -195,8 +195,8 @@ public class SettingsService : ISettingsService
 
     public async Task SaveAsync()
     {
-        var data = new SettingsData 
-        { 
+        var data = new SettingsData
+        {
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,

@@ -18,7 +18,7 @@ public class TutorialService : ITutorialService
     private const string TutorialCompletedKey = "tutorial_completed_v1"; // Kept for migration
     private const string TutorialAvatarKey = "tutorial_avatar_v1";
     private const int InitialSetupStepIndex = 0;
-    
+
     private int _currentStepIndex = -1;
     private List<TutorialStep> _steps = new();
     private bool _initialSetupAvatarSelected;
@@ -50,7 +50,7 @@ public class TutorialService : ITutorialService
         _localizer = localizer;
         _lastKnownLanguage = settingsService.Language;
         _settingsService.OnSettingsChanged += HandleSettingsChanged;
-        
+
         CurrentAvatar = AvailableAvatars[0];
         InitializeSteps();
     }
@@ -58,7 +58,7 @@ public class TutorialService : ITutorialService
     private void InitializeSteps()
     {
         var basePath = CurrentAvatar.BasePath;
-        
+
         _steps = new List<TutorialStep>
         {
             // 1. Initial setup

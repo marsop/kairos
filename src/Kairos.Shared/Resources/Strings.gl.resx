@@ -154,9 +154,6 @@
   <data name="DurationSeconds" xml:space="preserve">
     <value>{0}s</value>
   </data>
-  <data name="ActivityFactor" xml:space="preserve">
-    <value>Factor: {0}</value>
-  </data>
   <data name="Running" xml:space="preserve">
     <value>En execución</value>
   </data>

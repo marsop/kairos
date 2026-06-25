@@ -27,7 +27,7 @@ public class ActivityConfigurationServiceTests
         Assert.Equal("Break", activities[1].Name);
         Assert.Equal(0, activities[0].DisplayOrder);
         Assert.Equal(1, activities[1].DisplayOrder);
-        Assert.All(activities, activity => Assert.Equal(1.0, activity.Factor));
+
     }
 
     [Fact]

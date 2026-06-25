@@ -11,8 +11,8 @@ public class TimeTrackingServiceTests
     {
         var defaultActivities = new[]
         {
-            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Color = "#EF4444", Factor = -1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", DisplayOrder = 1 }
         };
 
         var storage = new InMemoryStorageService();
@@ -32,7 +32,7 @@ public class TimeTrackingServiceTests
         Assert.Equal(2, sut.Account.Activities.Count);
         Assert.Equal(1, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(24), sut.TimelinePeriod);
-        Assert.All(sut.Account.Activities, activity => Assert.Equal(1.0, activity.Factor));
+
         Assert.Equal("#10B981", sut.Account.Activities[0].Color);
     }
 
@@ -44,7 +44,7 @@ public class TimeTrackingServiceTests
         {
             Activities = new List<Activity>
             {
-                new Activity { Name = "Stored", Color = "#3B82F6", Factor = 2, DisplayOrder = 0 }
+                new Activity { Name = "Stored", Color = "#3B82F6", DisplayOrder = 0 }
             },
             TimelinePeriod = TimeSpan.FromHours(12)
         };
@@ -52,7 +52,7 @@ public class TimeTrackingServiceTests
 
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Default", Factor = 1, DisplayOrder = 0 }
+            new Activity { Name = "Default", DisplayOrder = 0 }
         });
         var settings = new StubSettingsService();
         var sut = new TimeTrackingService(
@@ -69,7 +69,7 @@ public class TimeTrackingServiceTests
         Assert.Single(sut.Account.Activities);
         Assert.Equal("Stored", sut.Account.Activities[0].Name);
         Assert.Equal("#3B82F6", sut.Account.Activities[0].Color);
-        Assert.Equal(1.0, sut.Account.Activities[0].Factor);
+
         Assert.Equal(0, config.LoadCalls);
         Assert.Equal(TimeSpan.FromHours(12), sut.TimelinePeriod);
     }
@@ -86,7 +86,7 @@ public class TimeTrackingServiceTests
         Assert.Equal(beforeCount + 1, sut.Account.Activities.Count);
         var activity = sut.Account.Activities.Single(m => m.Name == "New Activity");
         Assert.Equal("#8B5CF6", activity.Color);
-        Assert.Equal(1.0, activity.Factor);
+
         Assert.Equal(maxOrder + 1, activity.DisplayOrder);
     }
 
@@ -95,14 +95,6 @@ public class TimeTrackingServiceTests
     {
         var sut = await CreateLoadedServiceAsync();
         Assert.Throws<ArgumentException>(() => sut.AddActivity(""));
-    }
-
-    [Fact]
-    public async Task AddActivity_AlwaysUsesFactorOne()
-    {
-        var sut = await CreateLoadedServiceAsync();
-        sut.AddActivity("Invalid", "#F59E0B");
-        Assert.Equal(1.0, sut.Account.Activities.Single(m => m.Name == "Invalid").Factor);
     }
 
     [Fact]
@@ -136,7 +128,7 @@ public class TimeTrackingServiceTests
         Assert.NotNull(active);
         Assert.Equal(activity.Name, active!.ActivityName);
         Assert.Equal(activity.Color, active.ActivityColor);
-        Assert.Equal(activity.Factor, active.Factor);
+
         Assert.Equal("Deep work", active.Comment);
     }
 
@@ -208,7 +200,7 @@ public class TimeTrackingServiceTests
             TutorialCompleted = true,
             Activities = new List<Activity>
             {
-                new Activity { Name = "Imported", Factor = 1.5, DisplayOrder = 50 }
+                new Activity { Name = "Imported", DisplayOrder = 50 }
             },
             Events = new List<ActivityEvent>()
         };
@@ -275,9 +267,13 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 30));
         sut.Account.Events.Clear();
+        var deepWorkId = Guid.NewGuid();
+        var breakId = Guid.NewGuid();
+        var otherDayId = Guid.NewGuid();
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Deep Work",
+            ActivityId = deepWorkId,
             Comment = "Finish roadmap",
             StartTime = new DateTimeOffset(2026, 3, 30, 9, 15, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 30, 10, 45, 0, offset)
@@ -285,6 +281,7 @@ public class TimeTrackingServiceTests
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Break",
+            ActivityId = breakId,
             Comment = "Coffee, outside",
             StartTime = new DateTimeOffset(2026, 3, 30, 11, 0, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 30, 11, 15, 0, offset)
@@ -292,6 +289,7 @@ public class TimeTrackingServiceTests
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Other Day",
+            ActivityId = otherDayId,
             Comment = "Ignore me",
             StartTime = new DateTimeOffset(2026, 3, 29, 16, 0, 0, offset),
             EndTime = new DateTimeOffset(2026, 3, 29, 17, 0, 0, offset)
@@ -301,9 +299,9 @@ public class TimeTrackingServiceTests
         var rows = csv.Trim().Split(Environment.NewLine);
 
         Assert.Equal(3, rows.Length);
-        Assert.Equal("Activity,Comment,Metadata,Start,End,Status", rows[0]);
-        Assert.Equal("Deep Work,Finish roadmap,,2026-03-30 09:15:00,2026-03-30 10:45:00,Completed", rows[1]);
-        Assert.Equal("Break,\"Coffee, outside\",,2026-03-30 11:00:00,2026-03-30 11:15:00,Completed", rows[2]);
+        Assert.Equal("ActivityId,Comment,Start,End,Status", rows[0]);
+        Assert.Equal($"{deepWorkId},Finish roadmap,2026-03-30 09:15:00,2026-03-30 10:45:00,Completed", rows[1]);
+        Assert.Equal($"{breakId},\"Coffee, outside\",2026-03-30 11:00:00,2026-03-30 11:15:00,Completed", rows[2]);
     }
 
     [Fact]
@@ -312,9 +310,11 @@ public class TimeTrackingServiceTests
         var sut = await CreateLoadedServiceAsync();
         var offset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2026, 3, 31));
         sut.Account.Events.Clear();
+        var reviewId = Guid.NewGuid();
         sut.Account.Events.Add(new ActivityEvent
         {
             ActivityName = "Review",
+            ActivityId = reviewId,
             Comment = "Discuss \"Phase 2\"",
             StartTime = new DateTimeOffset(2026, 3, 31, 14, 0, 0, offset)
         });
@@ -323,7 +323,7 @@ public class TimeTrackingServiceTests
         var row = csv.Trim().Split(Environment.NewLine).Last();
 
         Assert.Contains("\"Discuss \"\"Phase 2\"\"\"", row);
-        Assert.Contains("2026-03-31 14:00:00,,", row);
+        Assert.Contains("2026-03-31 14:00:00,", row);
         Assert.EndsWith("Active", row);
     }
 
@@ -333,7 +333,7 @@ public class TimeTrackingServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 }
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 }
         });
         var sut = new TimeTrackingService(
             storage,
@@ -361,8 +361,8 @@ public class TimeTrackingServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Color = "#EF4444", Factor = 1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", DisplayOrder = 1 }
         });
         var settings = new StubSettingsService();
         var notifications = new StubNotificationService();
@@ -412,8 +412,8 @@ public class TimeTrackingServiceTests
         var storage = new InMemoryStorageService();
         var config = new StubActivityConfigurationService(new[]
         {
-            new Activity { Name = "Work", Color = "#10B981", Factor = 1, DisplayOrder = 0 },
-            new Activity { Name = "Break", Color = "#EF4444", Factor = -1, DisplayOrder = 1 }
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", DisplayOrder = 1 }
         });
         var settings = settingsService ?? new StubSettingsService();
         var notifications = new StubNotificationService();
