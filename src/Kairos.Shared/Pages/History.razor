@@ -15,11 +15,15 @@
         <div class="history-toolbar">
             <div class="history-date-filter">
                 <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
-                <input id="history-date"
-                       class="history-date-input"
-                       type="date"
-                       value="@SelectedDateValue"
-                       @onchange="OnSelectedDateChanged" />
+                <div class="history-date-selector">
+                    <button class="history-date-nav-btn" aria-label="Previous Day" @onclick="PreviousDay">&lt;</button>
+                    <input id="history-date"
+                           class="history-date-input"
+                           type="date"
+                           value="@SelectedDateValue"
+                           @onchange="OnSelectedDateChanged" />
+                    <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
+                </div>
             </div>
             <div class="history-view-toggle">
                 <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
@@ -456,6 +460,16 @@
         {
             SelectedDate = selectedDate;
         }
+    }
+
+    private void PreviousDay()
+    {
+        SelectedDate = SelectedDate.AddDays(-1);
+    }
+
+    private void NextDay()
+    {
+        SelectedDate = SelectedDate.AddDays(1);
     }
 
     private async Task ExportSelectedDayCsvAsync()
