@@ -10,7 +10,14 @@
 @implements IDisposable
 
 <div class="activities-page">
-    <h2 class="page-title">@Localizer["NavActivities"]</h2>
+    <div class="activities-header">
+        <h2 class="page-title">@Localizer["NavActivities"]</h2>
+        <button class="history-export-btn"
+                @onclick="ExportActivitiesCsvAsync"
+                disabled="@(!TimeService.Account.Activities.Any())">
+            @Localizer["ExportCsv"]
+        </button>
+    </div>
     
     <div class="activities-grid">
         @{
@@ -201,6 +208,10 @@
     private Guid? _dragTargetActivityId;
 
     private DotNetObjectReference<Activities>? _objRef;
+
+    private string CsvFileName => $"kairos-activities-{DateTime.Now:yyyy-MM-dd}.csv";
+    private const string CsvMimeType = "text/csv;charset=utf-8";
+    private sealed record FileDownloadRequest(string FileName, string Content, string ContentType);
 
     protected override void OnInitialized()
     {
@@ -423,6 +434,14 @@
 
         _draggedActivity = null;
         _dragTargetActivityId = null;
+    }
+
+    private async Task ExportActivitiesCsvAsync()
+    {
+        var csv = TimeService.ExportActivitiesAsCsv();
+        await JSRuntime.InvokeVoidAsync(
+            "kairosFile.downloadText",
+            new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
     }
 
     public void Dispose()

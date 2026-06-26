@@ -321,10 +321,17 @@ body {
     gap: var(--spacing-xl);
 }
 
+.activities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .page-title {
     font-size: var(--font-size-xl);
     font-weight: 600;
     color: var(--color-text-primary);
+    margin: 0;
 }
 
 .activities-grid {

@@ -85,6 +85,11 @@ public interface ITimeTrackingService
     string ExportDayAsCsv(DateOnly day);
 
     /// <summary>
+    /// Exports all activities as CSV.
+    /// </summary>
+    string ExportActivitiesAsCsv();
+
+    /// <summary>
     /// Imports data from a JSON string, replacing current activities and events.
     /// </summary>
     Task ImportDataAsync(string json);
