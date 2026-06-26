@@ -165,7 +165,7 @@
     </div>
 
     <div class="settings-section">
-        <h2 class="section-title">@Localizer["SettingsAccount"]</h2>
+        <h2 class="section-title">👤 @Localizer["SettingsAccount"]</h2>
         @if (AuthService.IsAuthenticated)
         {
             <div class="setting-item">
@@ -189,7 +189,7 @@
     </div>
 
     <div class="settings-section">
-        <h2 class="section-title">@Localizer["About"]</h2>
+        <h2 class="section-title">ℹ️ @Localizer["About"]</h2>
         <div class="setting-item">
             <span class="setting-label">@Localizer["Version"]</span>
             <span class="setting-value">@ApplicationVersion</span>
@@ -197,7 +197,7 @@
     </div>
 
     <div class="settings-section">
-        <h2 class="section-title">@Localizer["Support"]</h2>
+        <h2 class="section-title">❤️ @Localizer["Support"]</h2>
         <p class="setting-description">@Localizer["SupportDesc"]</p>
         <button class="support-btn" @onclick="OpenBuyMeACoffee">
             <span class="btn-icon">☕</span>
@@ -218,7 +218,7 @@
         OnClose="OnConfirm2" />
 
     <div class="settings-section danger-zone">
-        <h2 class="section-title">@Localizer["FactoryReset"]</h2>
+        <h2 class="section-title">⚠️ @Localizer["FactoryReset"]</h2>
         <p class="setting-description">@Localizer["FactoryResetDesc"]</p>
         <button class="reset-btn" @onclick="RequestReset">
             <span class="btn-icon">⚠️</span>
