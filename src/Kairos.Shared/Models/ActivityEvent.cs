@@ -60,4 +60,20 @@ public class ActivityEvent
     public TimeSpan Duration => IsActive
         ? DateTimeOffset.UtcNow - StartTime
         : (EndTime!.Value - StartTime);
+
+    public ActivityEvent Clone()
+    {
+        return new ActivityEvent
+        {
+            Id = Id,
+            StartTime = StartTime,
+            EndTime = EndTime,
+            ActivityName = ActivityName,
+            ActivityEmoji = ActivityEmoji,
+            ActivityId = ActivityId,
+            ActivityColor = ActivityColor,
+            Comment = Comment,
+            Metadata = Metadata
+        };
+    }
 }

@@ -162,7 +162,7 @@ public class TimeTrackingServiceTests
     }
 
     [Fact]
-    public async Task UpdateEventTimes_ActiveEvent_Throws()
+    public async Task UpdateEventDetails_ActiveEvent_Throws()
     {
         var sut = await CreateLoadedServiceAsync();
         var activity = sut.Account.Activities.First();
@@ -171,11 +171,11 @@ public class TimeTrackingServiceTests
         Assert.NotNull(active);
 
         var now = DateTimeOffset.UtcNow;
-        Assert.Throws<InvalidOperationException>(() => sut.UpdateEventTimes(active!.Id, now.AddHours(-2), now.AddHours(-1)));
+        Assert.Throws<InvalidOperationException>(() => sut.UpdateEventDetails(active!.Id, now.AddHours(-2), now.AddHours(-1), ""));
     }
 
     [Fact]
-    public async Task UpdateEventTimes_EndBeforeStart_Throws()
+    public async Task UpdateEventDetails_EndBeforeStart_Throws()
     {
         var sut = await CreateLoadedServiceAsync();
         var activity = sut.Account.Activities.First();
@@ -185,7 +185,7 @@ public class TimeTrackingServiceTests
 
         var start = DateTimeOffset.UtcNow.AddHours(-1);
         var end = DateTimeOffset.UtcNow.AddHours(-2);
-        Assert.Throws<ArgumentException>(() => sut.UpdateEventTimes(evt.Id, start, end));
+        Assert.Throws<ArgumentException>(() => sut.UpdateEventDetails(evt.Id, start, end, ""));
     }
 
     [Fact]

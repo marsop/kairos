@@ -460,11 +460,11 @@
   <data name="BuyMeACoffee" xml:space="preserve">
     <value>Convídame a un café</value>
   </data>
-  <data name="EditTimes" xml:space="preserve">
-    <value>Editar horarios</value>
+  <data name="EditEvent" xml:space="preserve">
+    <value>Editar evento</value>
   </data>
-  <data name="EditTimesTitle" xml:space="preserve">
-    <value>Editar horarios do evento</value>
+  <data name="EditEventTitle" xml:space="preserve">
+    <value>Editar evento</value>
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Hora de inicio</value>
@@ -595,19 +595,48 @@
   <data name="SettingsGeneral" xml:space="preserve">
     <value>Xeral</value>
   </data>
+  <data name="SettingsAccount" xml:space="preserve">
+    <value>Conta</value>
+  </data>
   <data name="SyncConflictTitle" xml:space="preserve">
-    <value>Sync Conflict</value>
+    <value>Conflito de Sincronización</value>
   </data>
   <data name="SyncConflictMessage1" xml:space="preserve">
-    <value>New activity events were found on the server, but you also have unsynced local changes.</value>
+    <value>Atopáronse novos eventos de actividade no servidor, pero tamén tes cambios locais sen sincronizar.</value>
   </data>
   <data name="SyncConflictMessage2" xml:space="preserve">
-    <value>Which data should be kept?</value>
+    <value>Que datos se deben conservar?</value>
   </data>
   <data name="UseServerData" xml:space="preserve">
-    <value>Use Server Data</value>
+    <value>Usar Datos do Servidor</value>
   </data>
   <data name="KeepLocalData" xml:space="preserve">
-    <value>Keep Local Data</value>
+    <value>Manter Datos Locais</value>
   </data>
-</root>
+<data name="NavStatistics" xml:space="preserve">
+    <value>Estatísticas</value>
+  </data><data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
+  </data><data name="Metadata" xml:space="preserve">
+    <value>Metadatos</value>
+  </data><data name="Comment" xml:space="preserve">
+    <value>Comentario</value>
+  </data><data name="Start" xml:space="preserve">
+    <value>Iniciar</value>
+  </data><data name="StartActivityCommentTitle" xml:space="preserve">
+    <value>Engadir Comentario</value>
+  </data><data name="StartActivityCommentPrompt" xml:space="preserve">
+    <value>Que estás a facer?</value>
+  </data><data name="CommentLengthError" xml:space="preserve">
+    <value>O comentario non pode ter máis de 200 caracteres.</value>
+  </data><data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data><data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data><data name="ThemeDark" xml:space="preserve">
+    <value>Escuro</value>
+  </data><data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+    <value>Configurar Avatar e Idioma</value>
+  </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
+    <value>O Client ID está configurado mediante un arquivo.</value>
+  </data></root>

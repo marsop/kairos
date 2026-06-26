@@ -57,7 +57,7 @@ public interface ITimeTrackingService
     /// <param name="newEndTime">The new end time.</param>
     /// <exception cref="InvalidOperationException">Thrown when the event is active.</exception>
     /// <exception cref="ArgumentException">Thrown when newStartTime >= newEndTime or newEndTime is in the future.</exception>
-    void UpdateEventTimes(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime);
+    void UpdateEventDetails(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime, string comment);
 
     /// <summary>
     /// Saves the current state to persistent storage.
@@ -83,6 +83,11 @@ public interface ITimeTrackingService
     /// Exports all events whose local start date matches the specified day as CSV.
     /// </summary>
     string ExportDayAsCsv(DateOnly day);
+
+    /// <summary>
+    /// Exports all activities as CSV.
+    /// </summary>
+    string ExportActivitiesAsCsv();
 
     /// <summary>
     /// Imports data from a JSON string, replacing current activities and events.

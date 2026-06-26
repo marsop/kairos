@@ -160,7 +160,7 @@ public class TimeTrackingService : ITimeTrackingService
         }
     }
 
-    public void UpdateEventTimes(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime)
+    public void UpdateEventDetails(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime, string comment)
     {
         var activityEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
         if (activityEvent == null) return;
@@ -182,6 +182,7 @@ public class TimeTrackingService : ITimeTrackingService
 
         activityEvent.StartTime = newStartTime;
         activityEvent.EndTime = newEndTime;
+        activityEvent.Comment = comment;
         SaveAndNotify();
     }
 
@@ -404,6 +405,37 @@ public class TimeTrackingService : ITimeTrackingService
             csv.WriteField(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
             csv.WriteField(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty);
             csv.WriteField(activityEvent.IsActive ? "Active" : "Completed");
+            csv.NextRecord();
+        }
+
+        return writer.ToString();
+    }
+
+    public string ExportActivitiesAsCsv()
+    {
+        using var writer = new StringWriter();
+        var csvConfig = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            NewLine = Environment.NewLine
+        };
+        using var csv = new CsvWriter(writer, csvConfig);
+
+        csv.WriteField("Id");
+        csv.WriteField("Name");
+        csv.WriteField("Emoji");
+        csv.WriteField("Color");
+        csv.WriteField("Metadata");
+        csv.WriteField("DisplayOrder");
+        csv.NextRecord();
+
+        foreach (var activity in _account.Activities)
+        {
+            csv.WriteField(activity.Id);
+            csv.WriteField(activity.Name);
+            csv.WriteField(activity.Emoji);
+            csv.WriteField(activity.Color);
+            csv.WriteField(activity.Metadata);
+            csv.WriteField(activity.DisplayOrder);
             csv.NextRecord();
         }
 

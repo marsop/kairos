@@ -493,11 +493,11 @@
   <data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>Client ID is configured via file.</value>
   </data>
-  <data name="EditTimes" xml:space="preserve">
-    <value>Edit times</value>
+  <data name="EditEvent" xml:space="preserve">
+    <value>Edit event</value>
   </data>
-  <data name="EditTimesTitle" xml:space="preserve">
-    <value>Edit Event Times</value>
+  <data name="EditEventTitle" xml:space="preserve">
+    <value>Edit Event</value>
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Start Time</value>
@@ -627,6 +627,9 @@
   </data>
   <data name="SettingsGeneral" xml:space="preserve">
     <value>General</value>
+  </data>
+  <data name="SettingsAccount" xml:space="preserve">
+    <value>Account</value>
   </data>
   <data name="SyncConflictTitle" xml:space="preserve">
     <value>Sync Conflict</value>
