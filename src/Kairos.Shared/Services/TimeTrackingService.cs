@@ -110,8 +110,8 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Events.Add(newEvent);
         SaveAndNotify();
         _ = _notificationService.NotifyAsync(
-            _localizer["NotificationActivityStartedTitle"],
-            string.Format(_localizer["NotificationActivityStartedBody"], activity.Name)
+            string.Format(_localizer["NotificationActivityStartedTitle"], activity.Name),
+            string.Format(_localizer["NotificationActivityStartedBody"], normalizedComment)
         );
     }
 
@@ -132,10 +132,11 @@ public class TimeTrackingService : ITimeTrackingService
         if (activeEvent != null)
         {
             var activityName = activeEvent.ActivityName;
+            var comment = activeEvent.Comment;
             DeactivateInternal();
             _ = _notificationService.NotifyAsync(
-                _localizer["NotificationActivityStoppedTitle"],
-                string.Format(_localizer["NotificationActivityStoppedBody"], activityName)
+                string.Format(_localizer["NotificationActivityStoppedTitle"], activityName),
+                string.Format(_localizer["NotificationActivityStoppedBody"], comment)
             );
         }
     }
