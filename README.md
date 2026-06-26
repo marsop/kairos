@@ -13,9 +13,13 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ## Features
 
 ### Time Tracking with Activities
-- **Customizable Activities**: Create multiple time trackers with custom names and metadata
+- **Customizable Activities**: Create multiple time trackers with custom names, metadata, emojis, and colors
+- **Activity Comments**: Add an optional descriptive comment when starting an activity
 - **One-Touch Activation**: Tap a activity to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
+
+### Statistics
+- **Data Visualization**: Understand your time distribution with charts and visual styling
 
 ### Hardware Integration
 - **Timeular Tracker**: Connect via Bluetooth to automatically start/stop activities by flipping your device
@@ -24,17 +28,14 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 - **Current Balance**: At-a-glance view of your total time balance in hours
 - **Active Indicator**: Shows which activity is currently running
 
-### Timeline View
-- **Event History**: View all recorded time events chronologically
-- **Daily Breakdown**: See how time was spent each day
-
 ### History
-- **Complete Log**: Access your full time-tracking history
+- **Event History**: View all recorded time events chronologically and filter by date
+- **Daily Breakdown**: See how time was spent each day
 - **Detailed Events**: View start times, durations, and associated activities
 - **Calendar View**: Visualize daily events in a vertical calendar format
 
 ### Sync & Backup
-- **Local Export/Import**: Download your data as JSON or export days as CSV files
+- **Local Export/Import**: Download your data as JSON or export days as CSV files (includes Activity ID, metadata, and comments)
 - **Supabase Integration**: Backup and restore data to/from a Supabase cloud database
 - **Auto-Sync**: Enable automatic synchronization when signed in to Supabase
 
@@ -62,7 +63,7 @@ Kairos/
 │   │   ├── Components/       # Reusable UI components
 │   │   ├── Layout/           # Application layout
 │   │   ├── Models/           # Data models (Activity, ActivityEvent, TimeAccount)
-│   │   ├── Pages/            # Application pages (Overview, Activities, Timeline, etc.)
+│   │   ├── Pages/            # Application pages (Overview, Activities, History, Statistics, etc.)
 │   │   ├── Resources/        # Localization files
 │   │   └── Services/         # Core business logic services
 │   └── Kairos.Web/          # Blazor WebAssembly project
@@ -128,7 +129,7 @@ To enable Supabase synchronization, you need a Supabase project.
 
 ## Data Storage
 
-Data is stored in the browser's localStorage, which persists across sessions.
+Data is stored locally in the browser's `localStorage` for offline use and quick access. Additionally, it synchronizes with a cloud database (Supabase) to ensure your data is backed up and accessible across devices when signed in.
 
 ## Author
 
