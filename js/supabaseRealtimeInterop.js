@@ -100,6 +100,7 @@ window.kairosSupabaseRealtime = (() => {
             state.reconnectAttempts = 0;
             startHeartbeat();
             sendJoin();
+            notifyConnected();
         };
 
         socket.onmessage = (event) => {
@@ -161,6 +162,12 @@ window.kairosSupabaseRealtime = (() => {
                         event: "*",
                         schema: "public",
                         table: "user_settings",
+                        filter: `user_id=eq.${state.config.userId}`
+                    },
+                    {
+                        event: "*",
+                        schema: "public",
+                        table: "activity_events",
                         filter: `user_id=eq.${state.config.userId}`
                     }
                 ],
@@ -232,6 +239,17 @@ window.kairosSupabaseRealtime = (() => {
         }
 
         state.dotNetRef.invokeMethodAsync("NotifyTableChanged", table)
+            .catch(() => {
+                // Ignore interop failures during teardown/navigation.
+            });
+    }
+
+    function notifyConnected() {
+        if (!state.dotNetRef) {
+            return;
+        }
+
+        state.dotNetRef.invokeMethodAsync("NotifyConnected")
             .catch(() => {
                 // Ignore interop failures during teardown/navigation.
             });
