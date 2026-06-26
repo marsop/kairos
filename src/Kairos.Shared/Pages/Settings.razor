@@ -119,13 +119,6 @@
             </div>
         }
 
-        @if (!string.IsNullOrWhiteSpace(TimeularService.AutoReconnectMessage))
-        {
-            <div class="timeular-auto-reconnect-message @TimeularService.AutoReconnectClass">
-                @TimeularService.AutoReconnectMessage
-            </div>
-        }
-
         <div class="timeular-actions">
             @if (!TimeularService.IsConnected)
             {
