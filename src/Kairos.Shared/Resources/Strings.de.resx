@@ -71,7 +71,7 @@
     <value>Verlauf</value>
   </data>
   <data name="NavSync" xml:space="preserve">
-    <value>Sync</value>
+    <value>Synchronisieren</value>
   </data>
   <data name="NavSettings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -434,7 +434,7 @@
     <value>Du hast jetzt das komplette Bild. Starte heute mit ein oder zwei Aktivitäten, halte Kommentare kurz und prüfe den Verlauf regelmäßig. Wenn du die App später zurücksetzt, beginnt dieses Tutorial wieder von vorn.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
-    <value>Guide</value>
+    <value>Anleitung</value>
   </data>
   <data name="NextStep" xml:space="preserve">
     <value>Weiter</value>
@@ -446,7 +446,7 @@
     <value>Sind Sie sicher, dass Sie fortfahren möchten?</value>
   </data>
   <data name="TutorialAvatar" xml:space="preserve">
-    <value>Tutorial Avatar</value>
+    <value>Tutorial-Avatar</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Unterstützung</value>
@@ -596,18 +596,44 @@
     <value>Konto</value>
   </data>
   <data name="SyncConflictTitle" xml:space="preserve">
-    <value>Sync Conflict</value>
+    <value>Synchronisierungskonflikt</value>
   </data>
   <data name="SyncConflictMessage1" xml:space="preserve">
-    <value>New activity events were found on the server, but you also have unsynced local changes.</value>
+    <value>Auf dem Server wurden neue Aktivitätsereignisse gefunden, aber Sie haben auch nicht synchronisierte lokale Änderungen.</value>
   </data>
   <data name="SyncConflictMessage2" xml:space="preserve">
-    <value>Which data should be kept?</value>
+    <value>Welche Daten sollen behalten werden?</value>
   </data>
   <data name="UseServerData" xml:space="preserve">
-    <value>Use Server Data</value>
+    <value>Serverdaten verwenden</value>
   </data>
   <data name="KeepLocalData" xml:space="preserve">
-    <value>Keep Local Data</value>
+    <value>Lokale Daten behalten</value>
   </data>
-</root>
+<data name="NavStatistics" xml:space="preserve">
+    <value>Statistiken</value>
+  </data><data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
+  </data><data name="Metadata" xml:space="preserve">
+    <value>Metadaten</value>
+  </data><data name="Comment" xml:space="preserve">
+    <value>Kommentar</value>
+  </data><data name="Start" xml:space="preserve">
+    <value>Starten</value>
+  </data><data name="StartActivityCommentTitle" xml:space="preserve">
+    <value>Kommentar Hinzufügen</value>
+  </data><data name="StartActivityCommentPrompt" xml:space="preserve">
+    <value>Was machst du gerade?</value>
+  </data><data name="CommentLengthError" xml:space="preserve">
+    <value>Der Kommentar darf nicht länger als 200 Zeichen sein.</value>
+  </data><data name="Theme" xml:space="preserve">
+    <value>Design</value>
+  </data><data name="ThemeLight" xml:space="preserve">
+    <value>Hell</value>
+  </data><data name="ThemeDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data><data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+    <value>Avatar und Sprache einrichten</value>
+  </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
+    <value>Die Client-ID wird über eine Datei konfiguriert.</value>
+  </data></root>

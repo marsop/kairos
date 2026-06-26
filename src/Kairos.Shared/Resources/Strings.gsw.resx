@@ -74,7 +74,7 @@
     <value>Verloff</value>
   </data>
   <data name="NavSync" xml:space="preserve">
-    <value>Sync</value>
+    <value>Synchronisiere</value>
   </data>
   <data name="NavSettings" xml:space="preserve">
     <value>Istellunga</value>
@@ -437,7 +437,7 @@
     <value>Du hesch jetzt s'ganze Bild. Start hüt mit oin oder zwoi Aktivitäta, halt Kommentara kurz und lueg dr Verloff regelmäßig ah. Wenn du d'App später zruggsetzasch, fangt des Tutorial wieder vo vorn aa.</value>
   </data>
   <data name="TutorialGuideName" xml:space="preserve">
-    <value>Guide</value>
+    <value>Aleitig</value>
   </data>
   <data name="NextStep" xml:space="preserve">
     <value>Weiter</value>
@@ -449,7 +449,7 @@
     <value>Bisch sicher, dass des macha witt?</value>
   </data>
   <data name="TutorialAvatar" xml:space="preserve">
-    <value>Tutorial Avatar</value>
+    <value>Tutorial-Avatar</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Unterstützung</value>
@@ -599,18 +599,44 @@
     <value>Konto</value>
   </data>
   <data name="SyncConflictTitle" xml:space="preserve">
-    <value>Sync Conflict</value>
+    <value>Synchronisierigskonflikt</value>
   </data>
   <data name="SyncConflictMessage1" xml:space="preserve">
-    <value>New activity events were found on the server, but you also have unsynced local changes.</value>
+    <value>Uf em Server sind neui Aktivitätsereigniss gfunde worde, aber du hesch au nid synchronisierti lokali Änderige.</value>
   </data>
   <data name="SyncConflictMessage2" xml:space="preserve">
-    <value>Which data should be kept?</value>
+    <value>Welli Date sölled bhalte werde?</value>
   </data>
   <data name="UseServerData" xml:space="preserve">
-    <value>Use Server Data</value>
+    <value>Serverdate verwände</value>
   </data>
   <data name="KeepLocalData" xml:space="preserve">
-    <value>Keep Local Data</value>
+    <value>Lokali Date bhalte</value>
   </data>
-</root>
+<data name="NavStatistics" xml:space="preserve">
+    <value>Statischtike</value>
+  </data><data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
+  </data><data name="Metadata" xml:space="preserve">
+    <value>Metadate</value>
+  </data><data name="Comment" xml:space="preserve">
+    <value>Kommentar</value>
+  </data><data name="Start" xml:space="preserve">
+    <value>Starte</value>
+  </data><data name="StartActivityCommentTitle" xml:space="preserve">
+    <value>Kommentar hinzuefüege</value>
+  </data><data name="StartActivityCommentPrompt" xml:space="preserve">
+    <value>Was machsch grad?</value>
+  </data><data name="CommentLengthError" xml:space="preserve">
+    <value>Dr Kommentar dörf nid lenger als 200 Zeiche si.</value>
+  </data><data name="Theme" xml:space="preserve">
+    <value>Design</value>
+  </data><data name="ThemeLight" xml:space="preserve">
+    <value>Hell</value>
+  </data><data name="ThemeDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data><data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+    <value>Avatar und Sprach iirichte</value>
+  </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
+    <value>D Client-ID wird über e Datei konfiguriert.</value>
+  </data></root>
