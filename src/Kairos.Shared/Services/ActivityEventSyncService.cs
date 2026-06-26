@@ -37,6 +37,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
         _realtimeService.OnTableChanged += HandleRemoteTableChanged;
         _realtimeService.OnConnected += HandleRemoteConnected;
+        _timeTrackingService.OnStateChanged += HandleLocalStateChanged;
     }
 
     public void StartSync()
@@ -57,6 +58,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private void HandleRemoteConnected()
     {
         _logger.LogInformation("Supabase Realtime connected, triggering catch-up sync.");
+        _ = TriggerImmediateSyncAsync();
+    }
+
+    private void HandleLocalStateChanged()
+    {
+        _logger.LogInformation("Local state changed, triggering sync.");
         _ = TriggerImmediateSyncAsync();
     }
 
@@ -164,13 +171,18 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         // Simple heuristic: if count differs, it changed.
         if (local.Count != server.Count) return true;
 
-        // More advanced: check if any event IDs differ or if the end times differ (e.g., stopping an active event)
+        // More advanced: check if any event IDs differ or if the fields differ
         var localDict = local.ToDictionary(e => e.Id);
         foreach (var s in server)
         {
             if (!localDict.TryGetValue(s.Id, out var l)) return true; // new event on server
-            if (s.EndTime != l.EndTime) return true; // event state changed
+            if (s.StartTime != l.StartTime) return true; // event state changed
+            if (s.EndTime != l.EndTime) return true;
             if (s.Comment != l.Comment) return true;
+            if (s.ActivityName != l.ActivityName) return true;
+            if (s.ActivityColor != l.ActivityColor) return true;
+            if (s.ActivityId != l.ActivityId) return true;
+            if (s.Metadata != l.Metadata) return true;
         }
 
         return false;
@@ -182,6 +194,11 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         {
             _realtimeService.OnTableChanged -= HandleRemoteTableChanged;
             _realtimeService.OnConnected -= HandleRemoteConnected;
+        }
+
+        if (_timeTrackingService is not null)
+        {
+            _timeTrackingService.OnStateChanged -= HandleLocalStateChanged;
         }
 
         _timer?.Dispose();
