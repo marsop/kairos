@@ -17,6 +17,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     // Track the last known state we synced with the server to detect if we have local unpushed changes
     private DateTimeOffset? _lastSyncedLocalModification;
+    private IReadOnlyList<ActivityEvent>? _lastSyncedServerEvents;
 
     public ActivityEventSyncService(
         ISupabaseActivityEventStore eventStore,
@@ -82,6 +83,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             var serverEvents = await _eventStore.LoadEventsAsync();
             _timeTrackingService.UpdateEventsFromServer(serverEvents);
             _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+            _lastSyncedServerEvents = serverEvents;
             _settingsService.UpdateLastSupabaseSync();
         }
         catch (Exception ex)
@@ -119,7 +121,9 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             // For a robust sync, we would check if server data is different.
             // Since we don't have a reliable LastModifiedAtUtc on the server side easily accessible here
             // without pulling the whole list, we pull it and do a hash/count check.
-            bool hasServerChanges = DetermineIfServerChanged(localEvents, serverEvents);
+            // Use the last synced server events snapshot if available, otherwise fallback to local events
+            var baseEventsForComparison = _lastSyncedServerEvents ?? localEvents;
+            bool hasServerChanges = DetermineIfServerChanged(baseEventsForComparison, serverEvents);
 
             if (hasLocalChanges && hasServerChanges)
             {
@@ -131,11 +135,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 {
                     _timeTrackingService.UpdateEventsFromServer(serverEvents);
                     _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+                    _lastSyncedServerEvents = serverEvents;
                 }
                 else
                 {
                     await _eventStore.SaveEventsAsync(localEvents);
                     _lastSyncedLocalModification = localModification;
+                    _lastSyncedServerEvents = localEvents.ToList();
                 }
             }
             else if (hasServerChanges)
@@ -143,12 +149,19 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 _logger.LogInformation("Server has changes. Overwriting local data.");
                 _timeTrackingService.UpdateEventsFromServer(serverEvents);
                 _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+                _lastSyncedServerEvents = serverEvents;
             }
             else if (hasLocalChanges)
             {
                 _logger.LogInformation("Local has changes. Pushing to server.");
                 await _eventStore.SaveEventsAsync(localEvents);
                 _lastSyncedLocalModification = localModification;
+                _lastSyncedServerEvents = localEvents.ToList();
+            }
+            else
+            {
+                // No changes, but we might be on first sync where snapshot is null
+                _lastSyncedServerEvents ??= serverEvents;
             }
 
             if (hasServerChanges || hasLocalChanges)
@@ -166,23 +179,23 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         }
     }
 
-    private bool DetermineIfServerChanged(IReadOnlyList<ActivityEvent> local, IReadOnlyList<ActivityEvent> server)
+    private bool DetermineIfServerChanged(IReadOnlyList<ActivityEvent> baseState, IReadOnlyList<ActivityEvent> server)
     {
         // Simple heuristic: if count differs, it changed.
-        if (local.Count != server.Count) return true;
+        if (baseState.Count != server.Count) return true;
 
         // More advanced: check if any event IDs differ or if the fields differ
-        var localDict = local.ToDictionary(e => e.Id);
+        var baseDict = baseState.ToDictionary(e => e.Id);
         foreach (var s in server)
         {
-            if (!localDict.TryGetValue(s.Id, out var l)) return true; // new event on server
-            if (s.StartTime != l.StartTime) return true; // event state changed
-            if (s.EndTime != l.EndTime) return true;
-            if (s.Comment != l.Comment) return true;
-            if (s.ActivityName != l.ActivityName) return true;
-            if (s.ActivityColor != l.ActivityColor) return true;
-            if (s.ActivityId != l.ActivityId) return true;
-            if (s.Metadata != l.Metadata) return true;
+            if (!baseDict.TryGetValue(s.Id, out var b)) return true; // new event on server
+            if (s.StartTime != b.StartTime) return true; // event state changed
+            if (s.EndTime != b.EndTime) return true;
+            if (s.Comment != b.Comment) return true;
+            if (s.ActivityName != b.ActivityName) return true;
+            if (s.ActivityColor != b.ActivityColor) return true;
+            if (s.ActivityId != b.ActivityId) return true;
+            if (s.Metadata != b.Metadata) return true;
         }
 
         return false;
