@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
 
+### Fixed
+- Fix sync conflict dialog falsely appearing on page refresh.
+- Prevent URI Too Long error in Supabase activity event synchronization.
+
 ## [1.3.0] - 2026-06-26
 
 ### Changed

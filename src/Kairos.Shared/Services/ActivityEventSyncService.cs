@@ -153,8 +153,16 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             }
             else if (hasLocalChanges)
             {
-                _logger.LogInformation("Local has changes. Pushing to server.");
-                await _eventStore.SaveEventsAsync(localEvents);
+                if (_lastSyncedServerEvents == null)
+                {
+                    _logger.LogInformation("Initial sync: Local and server are identical. Skipping redundant push.");
+                }
+                else
+                {
+                    _logger.LogInformation("Local has changes. Pushing to server.");
+                    await _eventStore.SaveEventsAsync(localEvents);
+                }
+
                 _lastSyncedLocalModification = localModification;
                 _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
             }
@@ -201,6 +209,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             if (s.Comment != b.Comment) return true;
             if (s.ActivityName != b.ActivityName) return true;
             if (s.ActivityColor != b.ActivityColor) return true;
+            if (s.ActivityEmoji != b.ActivityEmoji) return true;
             if (s.ActivityId != b.ActivityId) return true;
             if (s.Metadata != b.Metadata) return true;
         }

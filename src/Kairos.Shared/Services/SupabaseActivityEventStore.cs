@@ -102,21 +102,32 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             return;
         }
 
-        // NOTE: The delete logic assumes we sync the ENTIRE event list.
-        // If there are thousands of events, this could be a large URL.
-        // A safer way is to query all IDs, find which ones to delete, and send a delete request.
-        // But to keep parity with SupabaseActivityStore, we construct id=not.in.()
-        var idList = string.Join(",", rows.Select(m => m.Id));
+        // Query existing IDs to determine what to delete, avoiding 'URI Too Long' exceptions
+        using var fetchIdsRequest = new HttpRequestMessage(
+            HttpMethod.Get,
+            BuildUrl($"rest/v1/activity_events?select=id&user_id=eq.{Uri.EscapeDataString(userId!)}"));
+        AddHeaders(fetchIdsRequest);
+        using var fetchIdsResponse = await _httpClient.SendAsync(fetchIdsRequest);
+        fetchIdsResponse.EnsureSuccessStatusCode();
 
-        // Let's do chunked deletes if there are many rows, or just use the whole list if it fits.
-        // For production, maybe batch this or skip full delete sync.
-        // But for now, we follow the pattern.
-        using var deleteRequest = new HttpRequestMessage(
-            HttpMethod.Delete,
-            BuildUrl($"rest/v1/activity_events?user_id=eq.{Uri.EscapeDataString(userId!)}&id=not.in.({idList})"));
-        AddHeaders(deleteRequest);
-        using var deleteResponse = await _httpClient.SendAsync(deleteRequest);
-        deleteResponse.EnsureSuccessStatusCode();
+        var existingRows = await fetchIdsResponse.Content.ReadFromJsonAsync<List<SupabaseActivityEventRow>>() ?? new List<SupabaseActivityEventRow>();
+
+        var localIds = rows.Select(m => m.Id).ToHashSet();
+        var toDelete = existingRows.Select(r => r.Id).Where(id => !localIds.Contains(id)).ToList();
+
+        // Perform chunked deletes to keep URIs reasonably sized
+        const int batchSize = 50;
+        for (int i = 0; i < toDelete.Count; i += batchSize)
+        {
+            var chunk = toDelete.Skip(i).Take(batchSize);
+            var idList = string.Join(",", chunk);
+            using var deleteRequest = new HttpRequestMessage(
+                HttpMethod.Delete,
+                BuildUrl($"rest/v1/activity_events?user_id=eq.{Uri.EscapeDataString(userId!)}&id=in.({idList})"));
+            AddHeaders(deleteRequest);
+            using var deleteResponse = await _httpClient.SendAsync(deleteRequest);
+            deleteResponse.EnsureSuccessStatusCode();
+        }
     }
 
     private bool CanSync(string? userId)
