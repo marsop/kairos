@@ -2071,6 +2071,14 @@ html[data-theme="dark"] .edit-input {
     border-bottom: 1px solid var(--color-bg-tertiary);
 }
 
+.setting-item.compact {
+    padding: var(--spacing-sm) 0;
+}
+
+.setting-item.no-border, .setting-item.no-border:not(:last-child) {
+    border-bottom: none;
+}
+
 .setting-label {
     font-size: var(--font-size-md);
     color: var(--color-text-secondary);
