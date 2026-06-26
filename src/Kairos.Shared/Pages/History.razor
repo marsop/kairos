@@ -11,7 +11,14 @@
 
 <div class="history-page">
     <div class="history-header">
-        <h1 class="page-title">@Localizer["NavHistory"]</h1>
+        <div class="page-header">
+            <h1 class="page-title">@Localizer["NavHistory"]</h1>
+            <button class="history-export-btn"
+                    @onclick="ExportSelectedDayCsvAsync"
+                    disabled="@(!FilteredEvents.Any())">
+                @Localizer["ExportCsv"]
+            </button>
+        </div>
         <div class="history-toolbar">
             <div class="history-date-filter">
                 <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
@@ -29,11 +36,6 @@
                 <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
                 <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
             </div>
-            <button class="history-export-btn"
-                    @onclick="ExportSelectedDayCsvAsync"
-                    disabled="@(!FilteredEvents.Any())">
-                @Localizer["ExportCsv"]
-            </button>
         </div>
     </div>
 
