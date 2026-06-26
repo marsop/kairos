@@ -25,8 +25,6 @@ public sealed class TimeularService : ITimeularService, IDisposable
     public string? DeviceName { get; private set; }
     public string? StatusMessage { get; private set; }
     public string StatusClass { get; private set; } = string.Empty;
-    public string? AutoReconnectMessage { get; private set; }
-    public string AutoReconnectClass { get; private set; } = string.Empty;
     public IReadOnlyList<TimeularLogEntry> ChangeLog => _changeLog;
 
     public event Action? OnStateChanged;
@@ -206,26 +204,16 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 DeviceName = result.DeviceName ?? DeviceName;
                 StatusMessage = $"Reconnected to {DeviceName ?? "Timeular"}.";
                 StatusClass = "success";
-                AutoReconnectMessage = $"Auto-reconnect succeeded: {DeviceName ?? "Timeular"} is connected.";
-                AutoReconnectClass = "success";
                 AddTimeularChange($"Reconnected to {DeviceName ?? "Timeular"}");
 
                 _ = _notificationService.NotifyAsync(
                     _localizer["NotificationTimeularConnectedTitle"],
                     _localizer["NotificationTimeularConnectedBody"]);
-                return;
             }
-
-            var reason = string.IsNullOrWhiteSpace(result.Message) ? "No details were provided." : result.Message;
-            AutoReconnectClass = result.Attempted ? "error" : "info";
-            AutoReconnectMessage = result.Attempted
-                ? $"Auto-reconnect failed: {reason}"
-                : $"Auto-reconnect skipped: {reason}";
         }
         catch
         {
-            AutoReconnectClass = "error";
-            AutoReconnectMessage = "Auto-reconnect failed due to an unexpected startup error.";
+            // Ignore unexpected startup errors during auto-reconnect
         }
     }
 

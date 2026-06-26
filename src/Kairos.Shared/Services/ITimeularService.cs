@@ -12,8 +12,6 @@ public interface ITimeularService
     string? DeviceName { get; }
     string? StatusMessage { get; }
     string StatusClass { get; }
-    string? AutoReconnectMessage { get; }
-    string AutoReconnectClass { get; }
     IReadOnlyList<TimeularLogEntry> ChangeLog { get; }
 
     event Action? OnStateChanged;
