@@ -6,5 +6,6 @@ namespace Kairos.Shared.Services;
 public interface ISupabaseRealtimeService
 {
     event Action<string>? OnTableChanged;
+    event Action? OnConnected;
     Task InitializeAsync();
 }

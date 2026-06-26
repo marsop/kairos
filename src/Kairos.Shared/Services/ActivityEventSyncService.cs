@@ -10,6 +10,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private readonly ISupabaseAuthService _authService;
     private readonly ISyncConflictNotifier _conflictNotifier;
     private readonly ISettingsService _settingsService;
+    private readonly ISupabaseRealtimeService _realtimeService;
     private readonly ILogger<ActivityEventSyncService> _logger;
     private readonly SemaphoreSlim _syncLock = new(1, 1);
     private Timer? _timer;
@@ -23,6 +24,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         ISupabaseAuthService authService,
         ISyncConflictNotifier conflictNotifier,
         ISettingsService settingsService,
+        ISupabaseRealtimeService realtimeService,
         ILogger<ActivityEventSyncService> logger)
     {
         _eventStore = eventStore;
@@ -30,13 +32,32 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         _authService = authService;
         _conflictNotifier = conflictNotifier;
         _settingsService = settingsService;
+        _realtimeService = realtimeService;
         _logger = logger;
+
+        _realtimeService.OnTableChanged += HandleRemoteTableChanged;
+        _realtimeService.OnConnected += HandleRemoteConnected;
     }
 
     public void StartSync()
     {
         _logger.LogInformation("Starting ActivityEventSyncService background sync timer.");
-        _timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        _timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+    }
+
+    private void HandleRemoteTableChanged(string table)
+    {
+        if (table == "activity_events")
+        {
+            _logger.LogInformation("activity_events table changed via realtime, triggering sync.");
+            _ = TriggerImmediateSyncAsync();
+        }
+    }
+
+    private void HandleRemoteConnected()
+    {
+        _logger.LogInformation("Supabase Realtime connected, triggering catch-up sync.");
+        _ = TriggerImmediateSyncAsync();
     }
 
     private void OnTimerElapsed(object? state)
@@ -157,6 +178,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     public void Dispose()
     {
+        if (_realtimeService is not null)
+        {
+            _realtimeService.OnTableChanged -= HandleRemoteTableChanged;
+            _realtimeService.OnConnected -= HandleRemoteConnected;
+        }
+
         _timer?.Dispose();
         _syncLock.Dispose();
     }
