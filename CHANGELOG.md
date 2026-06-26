@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
+- **UI Tweaks**: Made the "Total Tracked Time" card on the Statistics page more compact by changing its layout to horizontal.
 - **Core Tracking System**: Refactored the time tracking system to use "activities" instead of "meters".
 - **CSV Optimization**: Optimized CSV export using `CsvHelper`, and updated exports to use Activity ID while omitting extra metadata/duration columns.
 - **Code Health**: Refactored application logging to use ASP.NET Core `ILogger<T>` instead of `Console.WriteLine`.
