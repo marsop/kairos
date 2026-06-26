@@ -29,7 +29,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activities?select=id,name,color,display_order&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
+            BuildUrl($"rest/v1/activities?select=id,name,color,emoji,metadata,display_order&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -43,6 +43,8 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Id = m.Id,
                 Name = m.Name!,
                 Color = Activity.SanitizeColor(m.Color),
+                Emoji = m.Emoji ?? string.Empty,
+                Metadata = m.Metadata ?? string.Empty,
                 DisplayOrder = m.DisplayOrder
             })
             .ToList();
@@ -64,6 +66,8 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 UserId = userId!,
                 Name = m.Name,
                 Color = Activity.SanitizeColor(m.Color),
+                Emoji = m.Emoji ?? string.Empty,
+                Metadata = m.Metadata ?? string.Empty,
                 DisplayOrder = m.DisplayOrder
             })
             .ToList();
@@ -133,6 +137,12 @@ internal sealed class SupabaseActivityRow
     [JsonPropertyName("color")]
     public string? Color { get; set; }
 
+    [JsonPropertyName("emoji")]
+    public string? Emoji { get; set; }
+
+    [JsonPropertyName("metadata")]
+    public string? Metadata { get; set; }
+
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }
 }
@@ -150,6 +160,12 @@ internal sealed class SupabaseActivityWriteRow
 
     [JsonPropertyName("color")]
     public string Color { get; set; } = Activity.DefaultColor;
+
+    [JsonPropertyName("emoji")]
+    public string Emoji { get; set; } = string.Empty;
+
+    [JsonPropertyName("metadata")]
+    public string Metadata { get; set; } = string.Empty;
 
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }

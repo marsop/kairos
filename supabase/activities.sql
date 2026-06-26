@@ -3,6 +3,8 @@ create table if not exists public.activities (
     user_id uuid not null references auth.users(id) on delete cascade,
     name text not null,
     color text not null default '#10B981',
+    emoji text not null default '',
+    metadata text not null default '',
     display_order integer not null default 0,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
@@ -11,6 +13,12 @@ create table if not exists public.activities (
 
 alter table public.activities
     add column if not exists color text not null default '#10B981';
+
+alter table public.activities
+    add column if not exists emoji text not null default '';
+
+alter table public.activities
+    add column if not exists metadata text not null default '';
 
 create index if not exists activities_user_order_idx
     on public.activities (user_id, display_order);
