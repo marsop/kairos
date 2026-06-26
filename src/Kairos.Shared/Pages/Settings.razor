@@ -64,14 +64,16 @@
             <span class="setting-label">@Localizer["TutorialAvatar"]</span>
             <div class="language-dropdown">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
+                    <span class="avatar-icon"><img src="@($"{TutorialService.CurrentAvatar?.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                     <span>@SelectedAvatarName</span>
                 </button>
                 <div class="dropdown-menu @(isAvatarDropdownOpen ? "show" : "")">
                     @foreach (var avatar in TutorialService.AvailableAvatars)
                     {
-                        <div class="dropdown-item @(TutorialService.CurrentAvatar.Id == avatar.Id ? "selected" : "")"
+                        <div class="dropdown-item @(TutorialService.CurrentAvatar?.Id == avatar.Id ? "selected" : "")"
                              @onclick="() => SelectAvatar(avatar.Id)"
                              @onclick:stopPropagation="true">
+                            <span class="avatar-icon"><img src="@($"{avatar.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                             <span>@avatar.Name</span>
                         </div>
                     }
