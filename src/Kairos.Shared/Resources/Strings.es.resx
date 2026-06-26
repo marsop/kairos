@@ -596,18 +596,44 @@
     <value>Cuenta</value>
   </data>
   <data name="SyncConflictTitle" xml:space="preserve">
-    <value>Sync Conflict</value>
+    <value>Conflicto de Sincronización</value>
   </data>
   <data name="SyncConflictMessage1" xml:space="preserve">
-    <value>New activity events were found on the server, but you also have unsynced local changes.</value>
+    <value>Se encontraron nuevos eventos de actividad en el servidor, pero también tienes cambios locales sin sincronizar.</value>
   </data>
   <data name="SyncConflictMessage2" xml:space="preserve">
-    <value>Which data should be kept?</value>
+    <value>¿Qué datos se deben conservar?</value>
   </data>
   <data name="UseServerData" xml:space="preserve">
-    <value>Use Server Data</value>
+    <value>Usar Datos del Servidor</value>
   </data>
   <data name="KeepLocalData" xml:space="preserve">
-    <value>Keep Local Data</value>
+    <value>Mantener Datos Locales</value>
   </data>
-</root>
+<data name="NavStatistics" xml:space="preserve">
+    <value>Estadísticas</value>
+  </data><data name="Emoji" xml:space="preserve">
+    <value>Emoji</value>
+  </data><data name="Metadata" xml:space="preserve">
+    <value>Metadatos</value>
+  </data><data name="Comment" xml:space="preserve">
+    <value>Comentario</value>
+  </data><data name="Start" xml:space="preserve">
+    <value>Iniciar</value>
+  </data><data name="StartActivityCommentTitle" xml:space="preserve">
+    <value>Añadir Comentario</value>
+  </data><data name="StartActivityCommentPrompt" xml:space="preserve">
+    <value>¿Qué estás haciendo?</value>
+  </data><data name="CommentLengthError" xml:space="preserve">
+    <value>El comentario no puede tener más de 200 caracteres.</value>
+  </data><data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data><data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data><data name="ThemeDark" xml:space="preserve">
+    <value>Oscuro</value>
+  </data><data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+    <value>Configurar Avatar e Idioma</value>
+  </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
+    <value>El Client ID está configurado mediante un archivo.</value>
+  </data></root>
