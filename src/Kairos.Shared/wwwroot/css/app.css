@@ -543,6 +543,13 @@ body {
     margin-left: var(--spacing-sm);
 }
 
+.active-comment {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    word-break: break-word;
+}
+
 /* ===== Timeline Page ===== */
 
 .timeline-page {
