@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
 
+### Added
+- **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
+
+
 
 ## [1.3.0] - 2026-06-26
 
