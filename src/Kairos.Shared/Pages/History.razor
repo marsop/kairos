@@ -22,8 +22,8 @@
                        @onchange="OnSelectedDateChanged" />
             </div>
             <div class="history-view-toggle">
-                <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SettingsService.HistoryView = "list")">List</button>
-                <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SettingsService.HistoryView = "calendar")">Calendar</button>
+                <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
+                <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
             </div>
             <button class="history-export-btn"
                     @onclick="ExportSelectedDayCsvAsync"
@@ -53,7 +53,7 @@
     {
         @if (SettingsService.HistoryView == "calendar")
         {
-            <div class="calendar-scroll-area">
+            <div class="calendar-scroll-area" @ref="_calendarScrollArea">
                 <div class="calendar-y-axis">
                     @for (int i = 0; i < 24; i++)
                     {
@@ -215,12 +215,63 @@
 
     private sealed record FileDownloadRequest(string FileName, string Content, string ContentType);
 
+    private ElementReference _calendarScrollArea;
+    private bool _shouldScrollCalendar;
+
     private System.Threading.Timer? _timer;
     private ActivityEvent? _eventToDelete;
     private ActivityEvent? _eventToEdit;
     private DateTime _editStartTime;
     private DateTime _editEndTime;
     private string? _editError;
+
+    private void SetHistoryView(string view)
+    {
+        if (SettingsService.HistoryView != view)
+        {
+            SettingsService.HistoryView = view;
+            if (view == "calendar")
+            {
+                _shouldScrollCalendar = true;
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && SettingsService.HistoryView == "calendar")
+        {
+            _shouldScrollCalendar = true;
+        }
+
+        if (_shouldScrollCalendar && SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
+        {
+            _shouldScrollCalendar = false;
+
+            double scrollPosition = 7.5 * 60; // 07:30 default
+
+            if (FilteredEvents.Any())
+            {
+                var minEvent = FilteredEvents.MinBy(e => e.StartTime);
+                if (minEvent != null)
+                {
+                    var localStart = minEvent.StartTime.ToLocalTime();
+                    // 30 minutes before first event
+                    scrollPosition = (localStart.Hour * 60 + localStart.Minute) - 30;
+                    if (scrollPosition < 0) scrollPosition = 0;
+                }
+            }
+
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("kairosScroll.setTop", _calendarScrollArea, scrollPosition);
+            }
+            catch (Exception)
+            {
+                // Ignored
+            }
+        }
+    }
 
     protected override void OnInitialized()
     {
