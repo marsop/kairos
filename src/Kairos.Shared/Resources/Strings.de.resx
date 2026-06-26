@@ -457,11 +457,11 @@
   <data name="BuyMeACoffee" xml:space="preserve">
     <value>Spendier mir einen Kaffee</value>
   </data>
-  <data name="EditTimes" xml:space="preserve">
-    <value>Zeiten bearbeiten</value>
+  <data name="EditEvent" xml:space="preserve">
+    <value>Ereignis bearbeiten</value>
   </data>
-  <data name="EditTimesTitle" xml:space="preserve">
-    <value>Ereigniszeiten bearbeiten</value>
+  <data name="EditEventTitle" xml:space="preserve">
+    <value>Ereignis bearbeiten</value>
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Startzeit</value>

@@ -460,11 +460,11 @@
   <data name="BuyMeACoffee" xml:space="preserve">
     <value>Spendier mr an Kafi</value>
   </data>
-  <data name="EditTimes" xml:space="preserve">
-    <value>Zita bearbeita</value>
+  <data name="EditEvent" xml:space="preserve">
+    <value>Ereignis bearbeita</value>
   </data>
-  <data name="EditTimesTitle" xml:space="preserve">
-    <value>Ereigniszita bearbeita</value>
+  <data name="EditEventTitle" xml:space="preserve">
+    <value>Ereignis bearbeita</value>
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Startzit</value>

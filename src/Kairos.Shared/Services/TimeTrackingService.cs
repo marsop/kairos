@@ -160,7 +160,7 @@ public class TimeTrackingService : ITimeTrackingService
         }
     }
 
-    public void UpdateEventTimes(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime)
+    public void UpdateEventDetails(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime, string comment)
     {
         var activityEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
         if (activityEvent == null) return;
@@ -182,6 +182,7 @@ public class TimeTrackingService : ITimeTrackingService
 
         activityEvent.StartTime = newStartTime;
         activityEvent.EndTime = newEndTime;
+        activityEvent.Comment = comment;
         SaveAndNotify();
     }
 

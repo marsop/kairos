@@ -457,11 +457,11 @@
   <data name="BuyMeACoffee" xml:space="preserve">
     <value>Invítame a un café</value>
   </data>
-  <data name="EditTimes" xml:space="preserve">
-    <value>Editar horarios</value>
+  <data name="EditEvent" xml:space="preserve">
+    <value>Editar evento</value>
   </data>
-  <data name="EditTimesTitle" xml:space="preserve">
-    <value>Editar horarios del evento</value>
+  <data name="EditEventTitle" xml:space="preserve">
+    <value>Editar evento</value>
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Hora de inicio</value>
