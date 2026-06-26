@@ -83,7 +83,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             var serverEvents = await _eventStore.LoadEventsAsync();
             _timeTrackingService.UpdateEventsFromServer(serverEvents);
             _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
-            _lastSyncedServerEvents = serverEvents;
+            _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             _settingsService.UpdateLastSupabaseSync();
         }
         catch (Exception ex)
@@ -135,13 +135,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 {
                     _timeTrackingService.UpdateEventsFromServer(serverEvents);
                     _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
-                    _lastSyncedServerEvents = serverEvents;
+                    _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
                 }
                 else
                 {
                     await _eventStore.SaveEventsAsync(localEvents);
                     _lastSyncedLocalModification = localModification;
-                    _lastSyncedServerEvents = localEvents.ToList();
+                    _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
                 }
             }
             else if (hasServerChanges)
@@ -149,19 +149,19 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 _logger.LogInformation("Server has changes. Overwriting local data.");
                 _timeTrackingService.UpdateEventsFromServer(serverEvents);
                 _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
-                _lastSyncedServerEvents = serverEvents;
+                _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             }
             else if (hasLocalChanges)
             {
                 _logger.LogInformation("Local has changes. Pushing to server.");
                 await _eventStore.SaveEventsAsync(localEvents);
                 _lastSyncedLocalModification = localModification;
-                _lastSyncedServerEvents = localEvents.ToList();
+                _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
             }
             else
             {
                 // No changes, but we might be on first sync where snapshot is null
-                _lastSyncedServerEvents ??= serverEvents;
+                _lastSyncedServerEvents ??= serverEvents.Select(e => e.Clone()).ToList();
             }
 
             if (hasServerChanges || hasLocalChanges)
