@@ -40,14 +40,13 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         return rows.Select(r => new ActivityEvent
         {
             Id = r.Id,
-            ActivityId = r.ActivityId,
+            ActivityId = r.ActivityId ?? Guid.Empty,
             StartTime = r.StartTime,
             EndTime = r.EndTime,
             ActivityName = r.ActivityName,
             ActivityColor = Activity.SanitizeColor(r.ActivityColor),
             Comment = r.Comment,
-            Metadata = r.Metadata,
-            Factor = 1.0
+            Metadata = r.Metadata
         }).ToList();
     }
 
@@ -64,7 +63,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         {
             Id = e.Id,
             UserId = userId!,
-            ActivityId = e.ActivityId,
+            ActivityId = e.ActivityId == Guid.Empty ? null : e.ActivityId,
             StartTime = e.StartTime,
             EndTime = e.EndTime,
             ActivityName = e.ActivityName,

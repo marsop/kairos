@@ -297,11 +297,17 @@ internal sealed class StubSupabaseTimeAccountStore : ISupabaseTimeAccountStore
 internal sealed class StubSupabaseRealtimeService : ISupabaseRealtimeService
 {
     public event Action<string>? OnTableChanged;
+    public event Action? OnConnected;
 
     public Task InitializeAsync() => Task.CompletedTask;
 
     public void RaiseTableChanged(string table)
     {
         OnTableChanged?.Invoke(table);
+    }
+
+    public void TriggerConnected()
+    {
+        OnConnected?.Invoke();
     }
 }

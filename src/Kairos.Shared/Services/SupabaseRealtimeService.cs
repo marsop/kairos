@@ -13,6 +13,7 @@ public sealed class SupabaseRealtimeService : ISupabaseRealtimeService, IAsyncDi
     private bool _isInitialized;
 
     public event Action<string>? OnTableChanged;
+    public event Action? OnConnected;
 
     public SupabaseRealtimeService(IJSRuntime jsRuntime, ISupabaseAuthService authService, IOptions<SupabaseAuthOptions> options)
     {
@@ -43,6 +44,13 @@ public sealed class SupabaseRealtimeService : ISupabaseRealtimeService, IAsyncDi
             OnTableChanged?.Invoke(table);
         }
 
+        return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public Task NotifyConnected()
+    {
+        OnConnected?.Invoke();
         return Task.CompletedTask;
     }
 
