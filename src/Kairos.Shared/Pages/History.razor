@@ -71,7 +71,7 @@
                 <div class="calendar-events">
                     @foreach (var evt in FilteredEvents)
                     {
-                        <div class="calendar-event-block" style="@GetCalendarEventStyle(evt)">
+                        <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
                             @if (!string.IsNullOrWhiteSpace(evt.Comment))
                             {
                                 <span class="calendar-event-comment">@evt.Comment</span>
