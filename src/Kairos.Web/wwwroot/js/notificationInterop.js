@@ -15,10 +15,14 @@ window.notificationInterop = {
 
     showNotification: function (title, body) {
         if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(title, {
+            const notification = new Notification(title, {
                 body: body,
                 icon: 'appicon.svg'
             });
+            notification.onclick = function() {
+                window.focus();
+                this.close();
+            };
         }
     }
 };
