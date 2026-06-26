@@ -2245,6 +2245,24 @@ html[data-theme="dark"] .edit-input {
     object-fit: cover;
 }
 
+.avatar-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+.avatar-icon img {
+    height: 100%;
+    object-fit: cover;
+}
+
 /* ===== Support/Donation ===== */
 
 .support-btn {
