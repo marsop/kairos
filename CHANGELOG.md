@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.3.0] - 2026-06-26
+
+### Changed
+- **UI Tweaks**: Made the "Display Language", "Theme" and "Tutorial Avatar" settings options more compact.
+
 ### Fixed
 - **Sync Conflict**: Fixed an issue where stopping an activity triggered a false "Sync Conflict" dialog by introducing an in-memory snapshot to correctly identify actual server changes.
 
