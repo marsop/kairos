@@ -1798,6 +1798,25 @@ html[data-theme="dark"] .edit-input {
     align-self: center;
 }
 
+.emoji-button {
+    font-size: var(--font-size-2xl);
+    width: 60px;
+    height: 60px;
+    align-self: center;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.emoji-button:hover {
+    background-color: var(--color-surface-hover);
+}
+
 .activity-name-input:focus,
 .activity-metadata-input:focus {
     outline: none;

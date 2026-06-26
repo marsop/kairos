@@ -44,6 +44,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             StartTime = r.StartTime,
             EndTime = r.EndTime,
             ActivityName = r.ActivityName,
+            ActivityEmoji = r.ActivityEmoji,
             ActivityColor = Activity.SanitizeColor(r.ActivityColor),
             Comment = r.Comment,
             Metadata = r.Metadata
@@ -67,6 +68,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             StartTime = e.StartTime,
             EndTime = e.EndTime,
             ActivityName = e.ActivityName,
+            ActivityEmoji = e.ActivityEmoji,
             ActivityColor = Activity.SanitizeColor(e.ActivityColor),
             Comment = e.Comment,
             Metadata = e.Metadata
@@ -156,6 +158,9 @@ internal sealed class SupabaseActivityEventRow
     [JsonPropertyName("activity_name")]
     public string ActivityName { get; set; } = string.Empty;
 
+    [JsonPropertyName("activity_emoji")]
+    public string ActivityEmoji { get; set; } = string.Empty;
+
     [JsonPropertyName("activity_color")]
     public string ActivityColor { get; set; } = string.Empty;
 
@@ -185,6 +190,9 @@ internal sealed class SupabaseActivityEventWriteRow
 
     [JsonPropertyName("activity_name")]
     public string ActivityName { get; set; } = string.Empty;
+
+    [JsonPropertyName("activity_emoji")]
+    public string ActivityEmoji { get; set; } = string.Empty;
 
     [JsonPropertyName("activity_color")]
     public string ActivityColor { get; set; } = string.Empty;
