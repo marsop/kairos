@@ -180,6 +180,12 @@
                 <span class="label">@Localizer["RunningFor"] (@ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName)</span>
                 <span class="value">@FormatDuration(ActiveEvent.Duration)</span>
             </div>
+            @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
+            {
+                <div class="active-comment">
+                    @ActiveEvent.Comment
+                </div>
+            }
         </div>
     }
 </div>
