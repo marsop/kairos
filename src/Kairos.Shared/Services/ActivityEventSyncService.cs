@@ -189,8 +189,15 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         foreach (var s in server)
         {
             if (!baseDict.TryGetValue(s.Id, out var b)) return true; // new event on server
-            if (s.StartTime != b.StartTime) return true; // event state changed
-            if (s.EndTime != b.EndTime) return true;
+
+            // Supabase/PostgreSQL timestamps might have different sub-millisecond precision,
+            // so we tolerate small differences (e.g., < 1 ms) in StartTime and EndTime
+            if (Math.Abs((s.StartTime - b.StartTime).TotalMilliseconds) >= 1) return true; // event state changed
+
+            if (s.EndTime.HasValue != b.EndTime.HasValue) return true;
+            if (s.EndTime.HasValue && b.EndTime.HasValue &&
+                Math.Abs((s.EndTime.Value - b.EndTime.Value).TotalMilliseconds) >= 1) return true;
+
             if (s.Comment != b.Comment) return true;
             if (s.ActivityName != b.ActivityName) return true;
             if (s.ActivityColor != b.ActivityColor) return true;
