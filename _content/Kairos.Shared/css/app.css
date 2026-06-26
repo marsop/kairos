@@ -574,6 +574,15 @@ body {
     }
 }
 
+@keyframes event-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.65;
+    }
+}
+
 /* ===== History Page ===== */
 
 .history-page {
@@ -687,6 +696,7 @@ body {
 .event-card.active {
     background: var(--color-bg-tertiary);
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    animation: event-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .event-header {
@@ -2608,6 +2618,11 @@ html[data-theme="dark"] .edit-input {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+
+.calendar-event-block.active {
+    z-index: 10;
+    animation: event-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .calendar-event-comment {
