@@ -2822,3 +2822,32 @@ html[data-theme="dark"] .edit-input {
     width: 12px;
     height: 12px;
 }
+
+/* ===== Activity Connection Light ===== */
+
+.activity-connection-light {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: #9ca3af; /* Grey */
+    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.15);
+    flex-shrink: 0;
+}
+
+.activity-connection-light.active {
+    background: #10b981; /* Green */
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.activity-nav-item .activity-connection-light {
+    width: 12px;
+    height: 12px;
+}
+
+.activity-nav-icon {
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

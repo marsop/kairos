@@ -2,6 +2,7 @@
 @using Kairos.Shared.Services
 @inject IPwaService PwaService
 @inject ITimeularService TimeularService
+@inject ITimeTrackingService TimeTrackingService
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -56,6 +57,13 @@
             <span class="nav-label">@Localizer["NavSettings"]</span>
         </NavLink>
 
+        <a href="activities" class="tracker-nav-item activity-nav-item">
+            <span class="nav-icon activity-nav-icon">
+                <span class="activity-connection-light @(TimeTrackingService.GetActiveEvent() != null ? "active" : "")"></span>
+            </span>
+            <span class="nav-label">Activity</span>
+        </a>
+
         @if (TimeularService.HasConnectedBefore)
         {
             <a href="settings#timeular-section" class="tracker-nav-item timeular-nav-item">
@@ -73,6 +81,7 @@
     {
         PwaService.OnStateChanged += StateHasChanged;
         TimeularService.OnStateChanged += StateHasChanged;
+        TimeTrackingService.OnStateChanged += StateHasChanged;
         
         await PwaService.InitializeAsync();
     }
@@ -94,5 +103,6 @@
     {
         PwaService.OnStateChanged -= StateHasChanged;
         TimeularService.OnStateChanged -= StateHasChanged;
+        TimeTrackingService.OnStateChanged -= StateHasChanged;
     }
 }
