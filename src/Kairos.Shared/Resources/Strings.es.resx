@@ -593,4 +593,7 @@
   <data name="SettingsGeneral" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="SettingsAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
 </root>
