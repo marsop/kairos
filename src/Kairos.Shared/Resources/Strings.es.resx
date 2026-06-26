@@ -554,16 +554,16 @@
     <value>Notificaciones bloqueadas por el navegador. Permítelas en la configuración del navegador.</value>
   </data>
   <data name="NotificationActivityStartedTitle" xml:space="preserve">
-    <value>⏱️ Contador Iniciado</value>
+    <value>⏱️ {0} Iniciado</value>
   </data>
   <data name="NotificationActivityStartedBody" xml:space="preserve">
-    <value>Ahora estás registrando '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationActivityStoppedTitle" xml:space="preserve">
-    <value>⏹️ Contador Detenido</value>
+    <value>⏹️ {0} Detenido</value>
   </data>
   <data name="NotificationActivityStoppedBody" xml:space="preserve">
-    <value>Has dejado de registrar '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
     <value>✅ Sesión iniciada</value>

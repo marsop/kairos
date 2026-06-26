@@ -557,16 +557,16 @@
     <value>Benochrichtigonga vom Browser blockiert. Bitte in da Browseriistellonga erlauba.</value>
   </data>
   <data name="NotificationActivityStartedTitle" xml:space="preserve">
-    <value>⏱️ Zähler Gstartet</value>
+    <value>⏱️ {0} Gstartet</value>
   </data>
   <data name="NotificationActivityStartedBody" xml:space="preserve">
-    <value>Du erfassisch jetzt '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationActivityStoppedTitle" xml:space="preserve">
-    <value>⏹️ Zähler Gstoppt</value>
+    <value>⏹️ {0} Gstoppt</value>
   </data>
   <data name="NotificationActivityStoppedBody" xml:space="preserve">
-    <value>Du hesch d'Erfassig vo '{0}' beändet.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
     <value>✅ Aagmulde</value>

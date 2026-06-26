@@ -554,16 +554,16 @@
     <value>Benachrichtigungen vom Browser blockiert. Bitte in den Browsereinstellungen erlauben.</value>
   </data>
   <data name="NotificationActivityStartedTitle" xml:space="preserve">
-    <value>⏱️ Zähler Gestartet</value>
+    <value>⏱️ {0} Gestartet</value>
   </data>
   <data name="NotificationActivityStartedBody" xml:space="preserve">
-    <value>Du erfasst jetzt '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationActivityStoppedTitle" xml:space="preserve">
-    <value>⏹️ Zähler Gestoppt</value>
+    <value>⏹️ {0} Gestoppt</value>
   </data>
   <data name="NotificationActivityStoppedBody" xml:space="preserve">
-    <value>Du hast die Erfassung von '{0}' beendet.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
     <value>✅ Angemeldet</value>

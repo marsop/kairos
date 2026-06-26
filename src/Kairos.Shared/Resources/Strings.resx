@@ -590,16 +590,16 @@
     <value>Notifications blocked by browser. Please allow them in your browser settings.</value>
   </data>
   <data name="NotificationActivityStartedTitle" xml:space="preserve">
-    <value>⏱️ Activity Started</value>
+    <value>⏱️ {0} Started</value>
   </data>
   <data name="NotificationActivityStartedBody" xml:space="preserve">
-    <value>You are now tracking '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationActivityStoppedTitle" xml:space="preserve">
-    <value>⏹️ Activity Stopped</value>
+    <value>⏹️ {0} Stopped</value>
   </data>
   <data name="NotificationActivityStoppedBody" xml:space="preserve">
-    <value>You have stopped tracking '{0}'.</value>
+    <value>{0}</value>
   </data>
   <data name="NotificationSupabaseSignedInTitle" xml:space="preserve">
     <value>✅ Signed In</value>
