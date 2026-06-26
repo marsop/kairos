@@ -55,6 +55,16 @@
             <span class="nav-icon">⚙️</span>
             <span class="nav-label">@Localizer["NavSettings"]</span>
         </NavLink>
+
+        @if (TimeularService.HasConnectedBefore)
+        {
+            <NavLink href="settings#timeular-section" class="nav-item timeular-nav-item">
+                <span class="nav-icon timeular-nav-icon">
+                    <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
+                </span>
+                <span class="nav-label">Tracker</span>
+            </NavLink>
+        }
     </nav>
 </div>
 
@@ -62,6 +72,7 @@
     protected override async Task OnInitializedAsync()
     {
         PwaService.OnStateChanged += StateHasChanged;
+        TimeularService.OnStateChanged += StateHasChanged;
         
         await PwaService.InitializeAsync();
     }
@@ -82,5 +93,6 @@
     public void Dispose()
     {
         PwaService.OnStateChanged -= StateHasChanged;
+        TimeularService.OnStateChanged -= StateHasChanged;
     }
 }
