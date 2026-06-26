@@ -2202,6 +2202,20 @@ html[data-theme="dark"] .edit-input {
     object-fit: cover;
 }
 
+.theme-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.theme-icon svg {
+    height: 100%;
+    object-fit: cover;
+}
+
 /* ===== Support/Donation ===== */
 
 .support-btn {
