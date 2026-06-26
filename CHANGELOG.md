@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-26
+
 ### Added
+- **Supabase Integration**: Implemented Supabase for authentication, settings management, and activity synchronization.
+- **Real-time Sync**: Optimized Supabase sync using real-time subscriptions and dedicated table for activity events.
+- **Versioning**: Integrated NerdBank.GitVersioning to accurately track and display application version.
+- **Statistics Page**: Added a new Statistics page with charts and styling.
+- **History Enhancements**: Added calendar view, date filtering, and CSV export functionality to the history page.
+- **Activity Customization**: Added emoji and color support for activities.
+- **Activity Comments**: Implemented activity start comment prompt and confirmation dialog.
+- **Metadata Support**: Added a metadata field to activities and included it in exports.
+- **UX Improvements**: Added focus-on-click for browser notifications, and display last Supabase sync time in settings.
 - **Language Persistence**: Implemented saving selected language to local storage and export/import functionality.
 - **Language Icons**: Added flags/icons to language selection options.
 - **Website Logo**: Added the Kairos logo to the application.
@@ -16,6 +27,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
+- **Core Tracking System**: Refactored the time tracking system to use "activities" instead of "meters".
+- **CSV Optimization**: Optimized CSV export using `CsvHelper`, and updated exports to use Activity ID while omitting extra metadata/duration columns.
+- **Code Health**: Refactored application logging to use ASP.NET Core `ILogger<T>` instead of `Console.WriteLine`.
+- **UI Tweaks**: Made activity cards and history cards more compact, enhanced activity button styles with animations and hover effects.
+- **Settings Layout**: Renamed "Settings" section to "General" in `Settings.razor`.
+- **Tutorial Enhancement**: Updated tutorial steps for improved guidance, including language and avatar selection.
 - **Factory Reset**: Moved the factory reset functionality from the Sync page to the Settings page.
 - **Localization**: Fixed "Vorarlbergerish" language shortname issue.
 - **Platform Upgrade**: Migrated projects, CI workflow, and docs from .NET 9 to .NET 10.
+
+### Fixed
+- **Security**: Fixed an XSS vulnerability in Statistics chart rendering.
+- **Error Handling**: Logged exceptions in `NotificationService` browser permission handlers.
+- **UI Bugs**: Fixed Timeular Connect/Disconnect button visibility and styling.
+- **Documentation**: Fixed empty summary XML tags in code.
+
+### Removed
+- **Activity Factor**: Removed Activity Factor from models, UI, and event payload.
