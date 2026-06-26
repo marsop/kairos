@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.3.0]
 
+### Added
+- **UI Enhancement**: Added a permanent Tracker status indicator to the bottom navigation bar for quick visibility of the Timeular connection.
+
 ### Changed
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
 
