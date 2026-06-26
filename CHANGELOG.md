@@ -5,13 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0]
+
+### Changed
+- **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
+
+### Added
+- **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
+
 
 
 ## [1.3.0] - 2026-06-26
 
 ### Changed
 - **UI Tweaks**: Made the "Display Language", "Theme" and "Tutorial Avatar" settings options more compact.
+- **UI Tweaks**: Added icons to the "Dark" and "Light" theme options in Settings.
 
 ### Fixed
 - **Sync Conflict**: Fixed an issue where stopping an activity triggered a false "Sync Conflict" dialog by introducing an in-memory snapshot to correctly identify actual server changes.

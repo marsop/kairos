@@ -71,7 +71,7 @@
                 <div class="calendar-events">
                     @foreach (var evt in FilteredEvents)
                     {
-                        <div class="calendar-event-block" style="@GetCalendarEventStyle(evt)">
+                        <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
                             @if (!string.IsNullOrWhiteSpace(evt.Comment))
                             {
                                 <span class="calendar-event-comment">@evt.Comment</span>
@@ -102,7 +102,7 @@
                             }
                             @if (!evt.IsActive)
                             {
-                                <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditTimes"]">
+                                <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -171,7 +171,7 @@
 {
     <div class="modal-overlay" @onclick="CancelEdit">
         <div class="modal-dialog" @onclick:stopPropagation="true">
-            <h3>@Localizer["EditTimesTitle"]</h3>
+            <h3>@Localizer["EditEventTitle"]</h3>
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["StartTime"]</label>
@@ -184,6 +184,10 @@
                     <input type="datetime-local" class="edit-input"
                            value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
                            @onchange="OnEndTimeChanged" />
+                </div>
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["Comment"]</label>
+                    <textarea class="edit-input" @bind="_editComment"></textarea>
                 </div>
                 @if (!string.IsNullOrEmpty(_editError))
                 {
@@ -223,6 +227,7 @@
     private ActivityEvent? _eventToEdit;
     private DateTime _editStartTime;
     private DateTime _editEndTime;
+    private string _editComment = string.Empty;
     private string? _editError;
 
     private void SetHistoryView(string view)
@@ -387,6 +392,7 @@
         _eventToEdit = evt;
         _editStartTime = evt.StartTime.ToLocalTime().DateTime;
         _editEndTime = evt.EndTime!.Value.ToLocalTime().DateTime;
+        _editComment = evt.Comment ?? string.Empty;
         _editError = null;
     }
 
@@ -435,7 +441,7 @@
 
         try
         {
-            TimeService.UpdateEventTimes(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime());
+            TimeService.UpdateEventDetails(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
             _eventToEdit = null;
         }
         catch (Exception ex)

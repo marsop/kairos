@@ -574,6 +574,15 @@ body {
     }
 }
 
+@keyframes event-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.65;
+    }
+}
+
 /* ===== History Page ===== */
 
 .history-page {
@@ -687,6 +696,7 @@ body {
 .event-card.active {
     background: var(--color-bg-tertiary);
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    animation: event-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .event-header {
@@ -1617,28 +1627,6 @@ html[data-theme="dark"] .edit-input {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
 }
 
-.timeular-auto-reconnect-message {
-    margin-bottom: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-}
-
-.timeular-auto-reconnect-message.success {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--color-positive);
-}
-
-.timeular-auto-reconnect-message.error {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--color-negative);
-}
-
-.timeular-auto-reconnect-message.info {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-muted);
-}
-
 .timeular-actions {
     display: flex;
     flex-direction: column;
@@ -2202,6 +2190,20 @@ html[data-theme="dark"] .edit-input {
     object-fit: cover;
 }
 
+.theme-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.theme-icon svg {
+    height: 100%;
+    object-fit: cover;
+}
+
 /* ===== Support/Donation ===== */
 
 .support-btn {
@@ -2608,6 +2610,11 @@ html[data-theme="dark"] .edit-input {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+
+.calendar-event-block.active {
+    z-index: 10;
+    animation: event-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .calendar-event-comment {
