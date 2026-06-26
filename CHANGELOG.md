@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
+- **History View**: The Calendar view now takes up all available vertical space and automatically scrolls to the first activity (or 07:30 by default).
 - **Factory Reset**: Moved the factory reset functionality from the Sync page to the Settings page.
 - **Localization**: Fixed "Vorarlbergerish" language shortname issue.
 - **Platform Upgrade**: Migrated projects, CI workflow, and docs from .NET 9 to .NET 10.
