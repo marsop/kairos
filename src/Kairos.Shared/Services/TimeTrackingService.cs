@@ -411,6 +411,37 @@ public class TimeTrackingService : ITimeTrackingService
         return writer.ToString();
     }
 
+    public string ExportActivitiesAsCsv()
+    {
+        using var writer = new StringWriter();
+        var csvConfig = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            NewLine = Environment.NewLine
+        };
+        using var csv = new CsvWriter(writer, csvConfig);
+
+        csv.WriteField("Id");
+        csv.WriteField("Name");
+        csv.WriteField("Emoji");
+        csv.WriteField("Color");
+        csv.WriteField("Metadata");
+        csv.WriteField("DisplayOrder");
+        csv.NextRecord();
+
+        foreach (var activity in _account.Activities)
+        {
+            csv.WriteField(activity.Id);
+            csv.WriteField(activity.Name);
+            csv.WriteField(activity.Emoji);
+            csv.WriteField(activity.Color);
+            csv.WriteField(activity.Metadata);
+            csv.WriteField(activity.DisplayOrder);
+            csv.NextRecord();
+        }
+
+        return writer.ToString();
+    }
+
     public async Task ImportDataAsync(string json)
     {
         var importData = JsonSerializer.Deserialize<KairosExportData>(json);
