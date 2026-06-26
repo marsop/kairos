@@ -3,8 +3,10 @@
 @using Kairos.Shared.Services
 @using Kairos.Shared.Resources
 @inject ITimeTrackingService TimeService
+@using Microsoft.JSInterop
 @inject IActivityStartPromptService ActivityStartPromptService
 @inject IStringLocalizer<Strings> Localizer
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 
 <div class="activities-page">
@@ -50,11 +52,12 @@
                         </div>
                         <div class="activity-emoji-field">
                             <label class="activity-color-label">@Localizer["Emoji"]</label>
-                            <input type="text"
-                                   class="activity-metadata-input emoji-input"
-                                   placeholder="😃"
-                                   @bind="_editingActivityEmoji"
-                                   maxlength="10" />
+                            <button id="edit-emoji-btn-@activity.Id"
+                                    type="button"
+                                    class="emoji-button"
+                                    @onclick="@(() => ShowEmojiPicker($"edit-emoji-btn-{activity.Id}", true))">
+                                @(string.IsNullOrEmpty(_editingActivityEmoji) ? "😃" : _editingActivityEmoji)
+                            </button>
                         </div>
                         <div class="activity-color-field">
                             <label class="activity-color-label">Color</label>
@@ -123,11 +126,12 @@
                     </div>
                     <div class="activity-emoji-field">
                         <label class="activity-color-label">@Localizer["Emoji"]</label>
-                        <input type="text"
-                               class="activity-metadata-input emoji-input"
-                               placeholder="😃"
-                               @bind="_newActivityEmoji"
-                               maxlength="10" />
+                        <button id="add-emoji-btn"
+                                type="button"
+                                class="emoji-button"
+                                @onclick='@(() => ShowEmojiPicker("add-emoji-btn", false))'>
+                            @(string.IsNullOrEmpty(_newActivityEmoji) ? "😃" : _newActivityEmoji)
+                        </button>
                     </div>
                     <div class="activity-color-field">
                         <label class="activity-color-label">Color</label>
@@ -166,7 +170,7 @@
     {
         <div class="active-info">
             <div class="active-duration">
-                <span class="label">@Localizer["RunningFor"]</span>
+                <span class="label">@Localizer["RunningFor"] (@ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName)</span>
                 <span class="value">@FormatDuration(ActiveEvent.Duration)</span>
             </div>
         </div>
@@ -195,6 +199,8 @@
     // Drag and Drop State
     private Activity? _draggedActivity;
     private Guid? _dragTargetActivityId;
+
+    private DotNetObjectReference<Activities>? _objRef;
 
     protected override void OnInitialized()
     {
@@ -423,6 +429,28 @@
     {
         TimeService.OnStateChanged -= StateHasChanged;
         _timer?.Dispose();
+        _objRef?.Dispose();
+    }
+
+    private async Task ShowEmojiPicker(string buttonId, bool isEditing)
+    {
+        _objRef ??= DotNetObjectReference.Create(this);
+        var methodName = isEditing ? nameof(SetEditingEmoji) : nameof(SetNewEmoji);
+        await JSRuntime.InvokeVoidAsync("window.emojiPickerInterop.showPicker", buttonId, _objRef, methodName);
+    }
+
+    [JSInvokable]
+    public void SetEditingEmoji(string emoji)
+    {
+        _editingActivityEmoji = emoji;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SetNewEmoji(string emoji)
+    {
+        _newActivityEmoji = emoji;
+        StateHasChanged();
     }
 
     private string GetSuggestedColor()

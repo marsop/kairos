@@ -100,6 +100,7 @@ public class TimeTrackingService : ITimeTrackingService
         {
             StartTime = DateTimeOffset.UtcNow,
             ActivityName = activity.Name,
+            ActivityEmoji = activity.Emoji,
             ActivityId = activity.Id,
             ActivityColor = activity.Color,
             Comment = normalizedComment,
@@ -346,6 +347,7 @@ public class TimeTrackingService : ITimeTrackingService
         if (activeEvent != null && activeEvent.ActivityName == oldName)
         {
             activeEvent.ActivityName = activity.Name;
+            activeEvent.ActivityEmoji = activity.Emoji;
             activeEvent.ActivityColor = activity.Color;
         }
 

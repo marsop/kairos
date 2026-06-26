@@ -25,6 +25,11 @@ public class ActivityEvent
     public string ActivityName { get; set; } = string.Empty;
 
     /// <summary>
+    /// Emoji captured from the activity when this event started.
+    /// </summary>
+    public string ActivityEmoji { get; set; } = string.Empty;
+
+    /// <summary>
     /// ID of the activity this event belongs to.
     /// </summary>
     public Guid ActivityId { get; set; } = Guid.Empty;

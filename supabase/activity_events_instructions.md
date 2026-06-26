@@ -12,6 +12,7 @@ create table if not exists public.activity_events (
     start_time timestamptz not null,
     end_time timestamptz null,
     activity_name text not null,
+    activity_emoji text not null default '',
     activity_color text not null default '#10B981',
     comment text not null default '',
     metadata text not null default '',
