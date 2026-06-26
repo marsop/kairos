@@ -11,30 +11,36 @@
 
 .stat-summary-card[b-3cpehur2mf] {
     background: var(--color-bg-secondary);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
-    text-align: center;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
     border: 1px solid var(--color-bg-tertiary);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .stat-label[b-3cpehur2mf] {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: var(--spacing-sm);
+    white-space: nowrap;
 }
 
 .stat-big-value[b-3cpehur2mf] {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-xl);
     font-weight: 700;
     color: var(--color-positive);
     font-variant-numeric: tabular-nums;
     text-shadow: var(--shadow-glow-positive);
+    white-space: nowrap;
 }
 
 .stat-unit[b-3cpehur2mf] {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     color: var(--color-text-secondary);
     font-weight: 400;
 }
@@ -42,7 +48,7 @@
 .stat-period[b-3cpehur2mf] {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
-    margin-top: var(--spacing-xs);
+    white-space: nowrap;
 }
 
 /* ===== Budgets Section ===== */
