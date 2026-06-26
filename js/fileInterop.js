@@ -23,3 +23,11 @@ window.kairosFile = window.kairosFile || {
         }, 0);
     }
 };
+
+window.kairosScroll = window.kairosScroll || {
+    setTop: function (element, scrollTop) {
+        if (element) {
+            element.scrollTop = scrollTop;
+        }
+    }
+};
