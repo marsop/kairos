@@ -58,7 +58,7 @@
 
         @if (TimeularService.HasConnectedBefore)
         {
-            <a href="settings#timeular-section" class="tracker-nav-item timeular-nav-item">
+            <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="tracker-nav-item timeular-nav-item">
                 <span class="nav-icon timeular-nav-icon">
                     <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
                 </span>
@@ -88,6 +88,14 @@
     private async Task InstallApp()
     {
         await PwaService.InstallAppAsync();
+    }
+
+    private async Task HandleTrackerClick()
+    {
+        if (!TimeularService.IsConnected && !TimeularService.IsConnecting)
+        {
+            await TimeularService.ConnectAsync();
+        }
     }
 
     public void Dispose()
