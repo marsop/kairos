@@ -35,6 +35,11 @@
             <div class="history-view-toggle">
                 <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
                 <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
+                @if (SettingsService.HistoryView == "calendar")
+                {
+                    <button @onclick="ZoomIn" title="Zoom In" style="margin-left: 8px;">+</button>
+                    <button @onclick="ZoomOut" title="Zoom Out">-</button>
+                }
             </div>
         </div>
     </div>
@@ -60,21 +65,21 @@
         @if (SettingsService.HistoryView == "calendar")
         {
             <div class="calendar-scroll-area" @ref="_calendarScrollArea">
-                <div class="calendar-y-axis">
+                <div class="calendar-y-axis" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @for (int i = 0; i < 24; i++)
                     {
-                        <div class="calendar-hour-marker" style="top: @(i * 60)px;">
+                        <div class="calendar-hour-marker" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px; height: @(_pixelsPerHour.ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                             @i.ToString("00"):00
                         </div>
                     }
                 </div>
-                <div class="calendar-grid">
+                <div class="calendar-grid" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @for (int i = 0; i < 24; i++)
                     {
-                        <div class="calendar-grid-line" style="top: @(i * 60)px;"></div>
+                        <div class="calendar-grid-line" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;"></div>
                     }
                 </div>
-                <div class="calendar-events">
+                <div class="calendar-events" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @foreach (var evt in FilteredEvents)
                     {
                         <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
@@ -228,6 +233,11 @@
     private ElementReference _calendarScrollArea;
     private bool _shouldScrollCalendar;
 
+    private double _pixelsPerHour = 60;
+    private double _minPixelsPerHour = 60;
+    private double _maxPixelsPerHour = 1000;
+    private DotNetObjectReference<History>? _objRef;
+
     private System.Threading.Timer? _timer;
     private ActivityEvent? _eventToDelete;
     private ActivityEvent? _eventToEdit;
@@ -255,11 +265,33 @@
             _shouldScrollCalendar = true;
         }
 
+        if (SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
+        {
+            if (_objRef == null)
+            {
+                _objRef = DotNetObjectReference.Create(this);
+            }
+            await JSRuntime.InvokeVoidAsync("kairosScroll.initZoom", _calendarScrollArea, _objRef);
+        }
+
         if (_shouldScrollCalendar && SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
         {
             _shouldScrollCalendar = false;
 
-            double scrollPosition = 7.5 * 60; // 07:30 default
+            // Calculate minimum pixels per hour to fit 24h in client height
+            double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+            if (clientHeight > 0)
+            {
+                _minPixelsPerHour = clientHeight / 24.0;
+                if (_pixelsPerHour < _minPixelsPerHour)
+                {
+                    _pixelsPerHour = _minPixelsPerHour;
+                    StateHasChanged();
+                }
+                _maxPixelsPerHour = clientHeight; // Max zoom: 1 hour fits the entire screen height
+            }
+
+            double scrollPosition = 7.5 * _pixelsPerHour; // 07:30 default
 
             if (FilteredEvents.Any())
             {
@@ -268,7 +300,7 @@
                 {
                     var localStart = minEvent.StartTime.ToLocalTime();
                     // 30 minutes before first event
-                    scrollPosition = (localStart.Hour * 60 + localStart.Minute) - 30;
+                    scrollPosition = (localStart.Hour + localStart.Minute / 60.0 - 0.5) * _pixelsPerHour;
                     if (scrollPosition < 0) scrollPosition = 0;
                 }
             }
@@ -487,6 +519,7 @@
         TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
         _timer?.Dispose();
+        _objRef?.Dispose();
     }
 
     private string GetEventColor(ActivityEvent evt)
@@ -525,16 +558,70 @@
     {
         var color = GetEventColor(evt);
         var localStart = evt.StartTime.ToLocalTime();
-        var topPx = localStart.Hour * 60 + localStart.Minute;
+        var topPx = (localStart.Hour + localStart.Minute / 60.0) * _pixelsPerHour;
 
         var localEnd = evt.EndTime?.ToLocalTime() ?? DateTimeOffset.Now.ToLocalTime();
         if (localEnd.Date > localStart.Date)
         {
             localEnd = localStart.Date.AddDays(1).AddTicks(-1);
         }
-        var heightPx = Math.Max(15, (localEnd - localStart).TotalMinutes);
+        var heightPx = Math.Max(15, (localEnd - localStart).TotalHours * _pixelsPerHour);
 
-        return $"top: {topPx}px; height: {heightPx}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
+        return $"top: {topPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {heightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
+    }
+
+    [JSInvokable]
+    public async Task OnWheelZoom(double deltaY, double offsetY, double scrollTop, double clientHeight)
+    {
+        // Update limits just in case
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double oldPixelsPerHour = _pixelsPerHour;
+
+        double zoomFactor = deltaY > 0 ? 0.9 : 1.1; // scroll down = zoom out, scroll up = zoom in
+        _pixelsPerHour = Math.Clamp(_pixelsPerHour * zoomFactor, _minPixelsPerHour, _maxPixelsPerHour);
+
+        if (Math.Abs(_pixelsPerHour - oldPixelsPerHour) > 0.1)
+        {
+            // Center zoom on mouse cursor
+            double cursorTimeHours = (scrollTop + offsetY) / oldPixelsPerHour;
+            double newScrollTop = cursorTimeHours * _pixelsPerHour - offsetY;
+
+            StateHasChanged();
+
+            await Task.Delay(10); // small delay to allow DOM to update
+            await JSRuntime.InvokeVoidAsync("kairosScroll.setTop", _calendarScrollArea, Math.Max(0, newScrollTop));
+        }
+    }
+
+    private async Task ZoomIn()
+    {
+        double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
+        await OnWheelZoom(-100, clientHeight / 2, scrollTop, clientHeight);
+    }
+
+    private async Task ZoomOut()
+    {
+        double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
+        await OnWheelZoom(100, clientHeight / 2, scrollTop, clientHeight);
     }
 
 }
