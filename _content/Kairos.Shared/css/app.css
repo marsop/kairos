@@ -686,31 +686,39 @@ body {
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
-.history-export-btn {
-    height: 2.75rem;
-    padding: 0 1rem;
+.header-action-menu {
+    position: relative;
+}
+
+.header-action-menu .dropdown-menu {
+    left: auto;
+    right: 0;
+    min-width: max-content;
+    white-space: nowrap;
+}
+
+.menu-trigger {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
     border: none;
-    border-radius: var(--radius-md);
-    background: var(--color-accent);
-    color: #fff;
-    font: inherit;
-    font-weight: 600;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
     cursor: pointer;
-    transition: transform var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast);
-    box-shadow: 0 14px 30px rgba(99, 102, 241, 0.18);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
 }
 
-.history-export-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
+.menu-trigger:hover {
+    background-color: var(--color-bg-tertiary);
 }
 
-.history-export-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    box-shadow: none;
+.menu-trigger:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .empty-state {
@@ -880,8 +888,7 @@ body {
         align-items: stretch;
     }
 
-    .history-date-input,
-    .history-export-btn {
+    .history-date-input {
         width: 100%;
     }
 }
@@ -2253,6 +2260,12 @@ html[data-theme="dark"] .edit-input {
 .dropdown-item.selected {
     color: var(--color-accent);
     background: rgba(99, 102, 241, 0.1);
+}
+
+.dropdown-item.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .flag-icon {
