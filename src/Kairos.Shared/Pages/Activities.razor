@@ -12,11 +12,16 @@
 <div class="activities-page">
     <div class="page-header">
         <h2 class="page-title">@Localizer["NavActivities"]</h2>
-        <button class="history-export-btn"
-                @onclick="ExportActivitiesCsvAsync"
-                disabled="@(!TimeService.Account.Activities.Any())">
-            @Localizer["ExportCsv"]
-        </button>
+        <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+            <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+            <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
+                     @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
+                     @onclick:stopPropagation="true">
+                    <span>@Localizer["ExportCsv"]</span>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="activities-grid">
@@ -194,8 +199,18 @@
     private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
     
     private System.Threading.Timer? _timer;
+    private bool _isMenuOpen;
     private Guid? _editingActivityId;
     private string? _editingActivityName;
+
+    private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
+    private async Task CloseMenu()
+    {
+        await Task.Delay(100);
+        _isMenuOpen = false;
+        StateHasChanged();
+    }
+
     private string _editingActivityColor = Activity.DefaultColor;
     private string? _editingActivityEmoji;
     private string? _editingActivityMetadata;
