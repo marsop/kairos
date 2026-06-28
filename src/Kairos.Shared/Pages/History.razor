@@ -13,11 +13,16 @@
     <div class="history-header">
         <div class="page-header">
             <h1 class="page-title">@Localizer["NavHistory"]</h1>
-            <button class="history-export-btn"
-                    @onclick="ExportSelectedDayCsvAsync"
-                    disabled="@(!FilteredEvents.Any())">
-                @Localizer["ExportCsv"]
-            </button>
+            <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                    <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
+                         @onclick="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }"
+                         @onclick:stopPropagation="true">
+                        <span>@Localizer["ExportCsv"]</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="history-toolbar">
             <div class="history-date-filter">
@@ -245,6 +250,16 @@
     private DateTime _editEndTime;
     private string _editComment = string.Empty;
     private string? _editError;
+    private bool _isMenuOpen;
+
+    private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
+
+    private async Task CloseMenu()
+    {
+        await Task.Delay(100);
+        _isMenuOpen = false;
+        StateHasChanged();
+    }
 
     private void SetHistoryView(string view)
     {
