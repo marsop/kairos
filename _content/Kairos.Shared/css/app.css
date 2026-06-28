@@ -2656,7 +2656,6 @@ html[data-theme="dark"] .edit-input {
     left: 0;
     top: 0;
     width: 60px;
-    height: 1440px; /* 24 hours * 60px */
     border-right: 1px solid var(--color-bg-tertiary);
     background: var(--color-bg-primary);
     z-index: 2;
@@ -2666,7 +2665,6 @@ html[data-theme="dark"] .edit-input {
     position: absolute;
     left: 0;
     right: 0;
-    height: 60px;
     padding-right: var(--spacing-sm);
     display: flex;
     align-items: flex-start;
@@ -2681,7 +2679,6 @@ html[data-theme="dark"] .edit-input {
     left: 60px;
     top: 0;
     right: 0;
-    height: 1440px;
     z-index: 1;
 }
 
@@ -2698,7 +2695,6 @@ html[data-theme="dark"] .edit-input {
     left: 65px;
     top: 0;
     right: 10px;
-    height: 1440px;
     z-index: 3;
 }
 
@@ -2744,7 +2740,6 @@ html[data-theme="dark"] .edit-input {
     left: 0;
     top: 0;
     width: 60px;
-    height: 1440px; /* 24 hours * 60px */
     border-right: 1px solid var(--color-bg-tertiary);
     background: var(--color-bg-primary);
     z-index: 2;
@@ -2754,7 +2749,6 @@ html[data-theme="dark"] .edit-input {
     position: absolute;
     left: 0;
     right: 0;
-    height: 60px;
     padding-right: var(--spacing-sm);
     display: flex;
     align-items: flex-start;
@@ -2769,7 +2763,6 @@ html[data-theme="dark"] .edit-input {
     left: 60px;
     top: 0;
     right: 0;
-    height: 1440px;
     z-index: 1;
 }
 
@@ -2786,7 +2779,6 @@ html[data-theme="dark"] .edit-input {
     left: 65px;
     top: 0;
     right: 10px;
-    height: 1440px;
     z-index: 3;
 }
 
