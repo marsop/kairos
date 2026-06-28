@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -45,7 +45,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
         {
             Theme = row.Theme ?? "light",
             Language = row.Language ?? "en",
-            TutorialCompleted = row.TutorialCompleted
+            TutorialCompleted = row.TutorialCompleted,
+            ActivityGroupsEnabled = row.ActivityGroupsEnabled
         };
     }
 
@@ -62,7 +63,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             UserId = userId!,
             Theme = settings.Theme,
             Language = settings.Language,
-            TutorialCompleted = settings.TutorialCompleted
+            TutorialCompleted = settings.TutorialCompleted,
+            ActivityGroupsEnabled = settings.ActivityGroupsEnabled
         };
 
         using var request = new HttpRequestMessage(
@@ -109,6 +111,9 @@ internal sealed class SupabaseSettingsRow
 
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
+
+    [JsonPropertyName("activity_groups_enabled")]
+    public bool ActivityGroupsEnabled { get; set; }
 }
 
 internal sealed class SupabaseSettingsWriteRow
@@ -124,4 +129,7 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
+
+    [JsonPropertyName("activity_groups_enabled")]
+    public bool ActivityGroupsEnabled { get; set; }
 }

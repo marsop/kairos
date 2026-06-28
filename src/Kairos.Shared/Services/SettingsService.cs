@@ -22,6 +22,7 @@ public class SettingsService : ISettingsService
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
+    private bool _activityGroupsEnabled;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
     private DateTimeOffset? _lastSupabaseSync;
@@ -37,6 +38,20 @@ public class SettingsService : ISettingsService
                 _theme = sanitizedTheme;
                 OnSettingsChanged?.Invoke();
                 _ = SaveAsync();
+            }
+        }
+    }
+
+    public bool ActivityGroupsEnabled
+    {
+        get => _activityGroupsEnabled;
+        set
+        {
+            if (_activityGroupsEnabled != value)
+            {
+                _activityGroupsEnabled = value;
+                _ = SaveAsync();
+                OnSettingsChanged?.Invoke();
             }
         }
     }
@@ -153,6 +168,7 @@ public class SettingsService : ISettingsService
                     _language = string.IsNullOrEmpty(data.Language) ? DefaultLanguage : data.Language;
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
+                    _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _historyView = data.HistoryView ?? "list";
                 }
             }
@@ -201,6 +217,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            ActivityGroupsEnabled = _activityGroupsEnabled,
             HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
@@ -291,7 +308,8 @@ public class SettingsService : ISettingsService
         {
             Theme = _theme,
             Language = _language,
-            TutorialCompleted = _tutorialCompleted
+            TutorialCompleted = _tutorialCompleted,
+            ActivityGroupsEnabled = _activityGroupsEnabled
         };
     }
 
@@ -300,6 +318,7 @@ public class SettingsService : ISettingsService
         _theme = SanitizeTheme(settings.Theme);
         _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
         _tutorialCompleted = settings.TutorialCompleted;
+        _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         UpdateCulture(_language);
     }
 
@@ -311,6 +330,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            ActivityGroupsEnabled = _activityGroupsEnabled,
             HistoryView = _historyView
         };
 
@@ -328,6 +348,7 @@ internal class SettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+    public bool ActivityGroupsEnabled { get; set; }
     public string HistoryView { get; set; } = "list";
 }
 
@@ -336,4 +357,5 @@ public class SyncedSettingsData
     public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
+    public bool ActivityGroupsEnabled { get; set; }
 }

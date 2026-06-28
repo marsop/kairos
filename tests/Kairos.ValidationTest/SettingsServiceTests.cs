@@ -21,6 +21,7 @@ public class SettingsServiceTests
         Assert.Equal("en", sut.Language);
         Assert.False(sut.TutorialCompleted);
         Assert.False(sut.BrowserNotificationsEnabled);
+        Assert.False(sut.ActivityGroupsEnabled);
         Assert.Equal(1, events);
     }
 
@@ -73,5 +74,26 @@ public class SettingsServiceTests
         Assert.True(sut.TutorialCompleted);
         Assert.Equal(1, events);
         Assert.True(storage.SetCalls > 0);
+    }
+
+    [Fact]
+    public async Task ActivityGroupsEnabled_WhenChanged_PersistsAndNotifies()
+    {
+        var storage = new InMemoryStorageService();
+        var sut = new SettingsService(storage, NullLogger<SettingsService>.Instance);
+        var events = 0;
+        sut.OnSettingsChanged += () => events++;
+
+        // Setting a new value triggers save synchronously (even though the task is fire-and-forget)
+        sut.ActivityGroupsEnabled = true;
+        // Wait a tiny bit to allow the fire-and-forget SaveAsync to complete execution in tests
+        await Task.Delay(50);
+
+        Assert.True(sut.ActivityGroupsEnabled);
+        Assert.Equal(1, events);
+        var savedJson = await storage.GetItemAsync("Kairos_settings");
+        Assert.NotNull(savedJson);
+        using var doc = JsonDocument.Parse(savedJson!);
+        Assert.True(doc.RootElement.GetProperty("ActivityGroupsEnabled").GetBoolean());
     }
 }
