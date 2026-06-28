@@ -29,5 +29,29 @@ window.kairosScroll = window.kairosScroll || {
         if (element) {
             element.scrollTop = scrollTop;
         }
+    },
+    getTop: function (element) {
+        return element ? element.scrollTop : 0;
+    },
+    getClientHeight: function (element) {
+        return element ? element.clientHeight : 0;
+    },
+    initZoom: function (element, dotNetHelper) {
+        if (!element) return;
+
+        // Prevent multiple listeners
+        if (element._hasZoomListener) return;
+        element._hasZoomListener = true;
+
+        element.addEventListener('wheel', function (e) {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+
+                var rect = element.getBoundingClientRect();
+                var offsetY = e.clientY - rect.top;
+
+                dotNetHelper.invokeMethodAsync('OnWheelZoom', e.deltaY, offsetY, element.scrollTop, element.clientHeight);
+            }
+        }, { passive: false });
     }
 };
