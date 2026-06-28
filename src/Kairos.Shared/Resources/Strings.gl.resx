@@ -553,6 +553,12 @@
   <data name="BrowserNotificationsDesc" xml:space="preserve">
     <value>Mostrar notificacións do sistema cando un medidor se activa ou desactiva</value>
   </data>
+  <data name="ActivityGroups" xml:space="preserve">
+    <value>Grupos de actividades</value>
+  </data>
+  <data name="ActivityGroupsDesc" xml:space="preserve">
+    <value>Permitir agrupar actividades</value>
+  </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Notificacións bloqueadas polo navegador. Permiteas na configuración do navegador.</value>
   </data>

@@ -553,6 +553,12 @@
   <data name="BrowserNotificationsDesc" xml:space="preserve">
     <value>Systemmeldonga azoiga, wenn a Activity aktiviert oder deaktiviert wird</value>
   </data>
+  <data name="ActivityGroups" xml:space="preserve">
+    <value>Aktivitätsgruppa</value>
+  </data>
+  <data name="ActivityGroupsDesc" xml:space="preserve">
+    <value>Gruppiera vo Aktivitäta aktiviara</value>
+  </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Benochrichtigonga vom Browser blockiert. Bitte in da Browseriistellonga erlauba.</value>
   </data>

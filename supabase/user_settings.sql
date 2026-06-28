@@ -3,9 +3,12 @@ create table if not exists public.user_settings (
     theme text not null default 'light',
     language text not null default 'en',
     tutorial_completed boolean not null default false,
+    activity_groups_enabled boolean not null default false,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
+
+alter table public.user_settings add column if not exists activity_groups_enabled boolean not null default false;
 
 create or replace function public.set_updated_at()
 returns trigger

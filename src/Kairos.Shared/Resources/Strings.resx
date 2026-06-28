@@ -586,6 +586,12 @@
   <data name="BrowserNotificationsDesc" xml:space="preserve">
     <value>Show system notifications when a activity is activated or deactivated</value>
   </data>
+  <data name="ActivityGroups" xml:space="preserve">
+    <value>Activity Groups</value>
+  </data>
+  <data name="ActivityGroupsDesc" xml:space="preserve">
+    <value>Enable grouping activities together</value>
+  </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Notifications blocked by browser. Please allow them in your browser settings.</value>
   </data>

@@ -28,6 +28,11 @@ public interface ISettingsService
     bool BrowserNotificationsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets whether activity groups are enabled.
+    /// </summary>
+    bool ActivityGroupsEnabled { get; set; }
+
+    /// <summary>
     /// Gets the last time Supabase was synchronized (in-memory only).
     /// </summary>
     DateTimeOffset? LastSupabaseSync { get; }

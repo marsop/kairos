@@ -550,6 +550,12 @@
   <data name="BrowserNotificationsDesc" xml:space="preserve">
     <value>Systembenachrichtigungen anzeigen, wenn ein Activity aktiviert oder deaktiviert wird</value>
   </data>
+  <data name="ActivityGroups" xml:space="preserve">
+    <value>Aktivitätsgruppen</value>
+  </data>
+  <data name="ActivityGroupsDesc" xml:space="preserve">
+    <value>Gruppieren von Aktivitäten aktivieren</value>
+  </data>
   <data name="BrowserNotificationsDenied" xml:space="preserve">
     <value>Benachrichtigungen vom Browser blockiert. Bitte in den Browsereinstellungen erlauben.</value>
   </data>
