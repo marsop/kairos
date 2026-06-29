@@ -1140,6 +1140,17 @@ html[data-theme="dark"] .edit-input {
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
+.comment-suggestion {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.comment-suggestion:hover {
+    color: var(--color-accent);
+}
+
 /* ===== Sync Page ===== */
 
 .sync-page {
