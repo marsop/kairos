@@ -15,8 +15,9 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private readonly SemaphoreSlim _syncLock = new(1, 1);
     private Timer? _timer;
 
-    // Track the last known state we synced with the server to detect if we have local unpushed changes
-    private DateTimeOffset? _lastSyncedLocalModification;
+    // Track the last known event snapshots to detect local/server divergence.
+    // Using event content instead of LastModified avoids false positives from unrelated local state changes.
+    private IReadOnlyList<ActivityEvent>? _lastSyncedLocalEvents;
     private IReadOnlyList<ActivityEvent>? _lastSyncedServerEvents;
 
     public ActivityEventSyncService(
@@ -82,7 +83,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         {
             var serverEvents = await _eventStore.LoadEventsAsync();
             _timeTrackingService.UpdateEventsFromServer(serverEvents);
-            _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+            _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
             _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             _settingsService.UpdateLastSupabaseSync();
         }
@@ -109,14 +110,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         try
         {
             var localEvents = _timeTrackingService.Account.Events.ToList();
-            var localModification = _timeTrackingService.Account.LastModifiedAtUtc;
-
-            // If localModification is default, it's a fresh install, so we shouldn't consider it a local change
-            // unless they actually have local events. Also detect if the local state genuinely diverged from the last sync.
-            bool hasLocalChanges = _lastSyncedLocalModification != localModification
-                                   && (localModification != default || localEvents.Any());
 
             var serverEvents = await _eventStore.LoadEventsAsync();
+
+            // Detect local event changes against the last known local snapshot if available.
+            // Fallback to server comparison during bootstrap when no local snapshot exists yet.
+            var baseLocalEventsForComparison = _lastSyncedLocalEvents ?? _lastSyncedServerEvents ?? serverEvents;
+            bool hasLocalChanges = DetermineIfServerChanged(baseLocalEventsForComparison, localEvents);
 
             // For a robust sync, we would check if server data is different.
             // Since we don't have a reliable LastModifiedAtUtc on the server side easily accessible here
@@ -134,13 +134,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 if (useServer)
                 {
                     _timeTrackingService.UpdateEventsFromServer(serverEvents);
-                    _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+                    _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                     _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
                 }
                 else
                 {
                     await _eventStore.SaveEventsAsync(localEvents);
-                    _lastSyncedLocalModification = localModification;
+                    _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
                     _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
                 }
             }
@@ -148,7 +148,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             {
                 _logger.LogInformation("Server has changes. Overwriting local data.");
                 _timeTrackingService.UpdateEventsFromServer(serverEvents);
-                _lastSyncedLocalModification = _timeTrackingService.Account.LastModifiedAtUtc;
+                _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             }
             else if (hasLocalChanges)
@@ -163,12 +163,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                     await _eventStore.SaveEventsAsync(localEvents);
                 }
 
-                _lastSyncedLocalModification = localModification;
+                _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
             }
             else
             {
                 // No changes, but we might be on first sync where snapshot is null
+                _lastSyncedLocalEvents ??= localEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents ??= serverEvents.Select(e => e.Clone()).ToList();
             }
 

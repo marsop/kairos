@@ -406,6 +406,108 @@ public class TimeTrackingServiceTests
         Assert.Single(sut.Account.Events);
     }
 
+    [Fact]
+    public async Task RealtimeReload_TimeAccountsRemoteEvents_DoesNotOverwriteLocalEvents()
+    {
+        var storage = new InMemoryStorageService();
+        var config = new StubActivityConfigurationService(new[]
+        {
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 },
+            new Activity { Name = "Break", Color = "#EF4444", DisplayOrder = 1 }
+        });
+        var settings = new StubSettingsService();
+        var notifications = new StubNotificationService();
+        var auth = new StubSupabaseAuthService
+        {
+            IsAuthenticated = true,
+            CurrentUserId = "user-1",
+            CurrentAccessToken = "token"
+        };
+        var activityStore = new StubSupabaseActivityStore();
+        var accountStore = new StubSupabaseTimeAccountStore();
+        var realtime = new StubSupabaseRealtimeService();
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            auth,
+            activityStore,
+            accountStore,
+            realtime);
+
+        await sut.LoadAsync();
+        sut.ActivateActivity(sut.Account.Activities[0].Id, "Local event");
+        var localEventId = sut.Account.Events.Single().Id;
+
+        accountStore.LoadedAccount = new TimeAccount
+        {
+            Events = new List<ActivityEvent>
+            {
+                new ActivityEvent
+                {
+                    Id = Guid.NewGuid(),
+                    ActivityId = Guid.NewGuid(),
+                    ActivityName = "Remote should be ignored",
+                    ActivityColor = "#10B981",
+                    Comment = "Remote event",
+                    StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+                    EndTime = DateTimeOffset.UtcNow.AddHours(-1)
+                }
+            },
+            TimelinePeriod = TimeSpan.FromHours(48),
+            LastModifiedAtUtc = sut.Account.LastModifiedAtUtc.AddSeconds(10)
+        };
+
+        realtime.RaiseTableChanged("time_accounts");
+        await Task.Delay(100);
+
+        Assert.Single(sut.Account.Events);
+        Assert.Equal(localEventId, sut.Account.Events.Single().Id);
+        Assert.Equal("Local event", sut.Account.Events.Single().Comment);
+        Assert.Equal(TimeSpan.FromHours(48), sut.TimelinePeriod);
+    }
+
+    [Fact]
+    public async Task SaveAsync_Authenticated_DoesNotPersistEventsViaTimeAccounts()
+    {
+        var storage = new InMemoryStorageService();
+        var config = new StubActivityConfigurationService(new[]
+        {
+            new Activity { Name = "Work", Color = "#10B981", DisplayOrder = 0 }
+        });
+        var settings = new StubSettingsService();
+        var notifications = new StubNotificationService();
+        var auth = new StubSupabaseAuthService
+        {
+            IsAuthenticated = true,
+            CurrentUserId = "user-1",
+            CurrentAccessToken = "token"
+        };
+        var activityStore = new StubSupabaseActivityStore();
+        var accountStore = new StubSupabaseTimeAccountStore();
+        var sut = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            auth,
+            activityStore,
+            accountStore,
+            null);
+
+        await sut.LoadAsync();
+        sut.ActivateActivity(sut.Account.Activities[0].Id, "Persist locally");
+
+        await Task.Delay(100);
+
+        Assert.NotNull(accountStore.LoadedAccount);
+        Assert.Empty(accountStore.LoadedAccount!.Events);
+        Assert.Equal(sut.TimelinePeriod, accountStore.LoadedAccount.TimelinePeriod);
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
         StubSettingsService? settingsService = null)
     {

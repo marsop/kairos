@@ -3,7 +3,7 @@ using Kairos.Shared.Models;
 namespace Kairos.Shared.Services;
 
 /// <summary>
-/// Persists the event/timeline portion of a user's time account in Supabase.
+/// Persists non-event account metadata (for example timeline settings) in Supabase.
 /// </summary>
 public interface ISupabaseTimeAccountStore
 {

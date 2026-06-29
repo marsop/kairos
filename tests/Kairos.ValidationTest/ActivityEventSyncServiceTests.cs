@@ -75,20 +75,110 @@ public class ActivityEventSyncServiceTests
         // Assert
         Assert.False(_eventStoreStub.LoadEventsCalled);
     }
+
+    [Fact]
+    public async Task TriggerImmediateSync_LastModifiedOnlyChange_DoesNotTreatAsLocalEventChange()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var activityEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddMinutes(-10),
+            EndTime = DateTimeOffset.UtcNow.AddMinutes(-5),
+            ActivityName = "Work",
+            ActivityEmoji = "",
+            ActivityColor = "#10B981",
+            Comment = "Deep work",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { activityEvent.Clone() },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { activityEvent.Clone() };
+
+        // First sync establishes snapshots.
+        await _sut.TriggerImmediateSyncAsync();
+
+        var saveCallsAfterFirstSync = _eventStoreStub.SaveEventsCallCount;
+
+        // Simulate unrelated local state update that only changes account timestamp.
+        account.LastModifiedAtUtc = account.LastModifiedAtUtc.AddSeconds(5);
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        Assert.Equal(saveCallsAfterFirstSync, _eventStoreStub.SaveEventsCallCount);
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_EventContentChange_PushesToServer()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var activityEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddMinutes(-30),
+            EndTime = DateTimeOffset.UtcNow.AddMinutes(-10),
+            ActivityName = "Work",
+            ActivityEmoji = "",
+            ActivityColor = "#10B981",
+            Comment = "Initial",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { activityEvent.Clone() },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { activityEvent.Clone() };
+
+        // First sync establishes snapshots.
+        await _sut.TriggerImmediateSyncAsync();
+        var saveCallsAfterFirstSync = _eventStoreStub.SaveEventsCallCount;
+
+        // Simulate real local event edit.
+        account.Events[0].Comment = "Edited comment";
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        Assert.Equal(saveCallsAfterFirstSync + 1, _eventStoreStub.SaveEventsCallCount);
+        Assert.Equal("Edited comment", _eventStoreStub.ServerEvents.Single().Comment);
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
 }
 
 internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore
 {
     public bool LoadEventsCalled { get; private set; }
+    public int SaveEventsCallCount { get; private set; }
+    public IReadOnlyList<ActivityEvent> ServerEvents { get; set; } = new List<ActivityEvent>();
 
     public Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync()
     {
         LoadEventsCalled = true;
-        return Task.FromResult<IReadOnlyList<ActivityEvent>>(new List<ActivityEvent>());
+        return Task.FromResult(ServerEvents);
     }
 
     public Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events)
     {
+        SaveEventsCallCount++;
+        ServerEvents = events.Select(e => e.Clone()).ToList();
         return Task.CompletedTask;
     }
 }

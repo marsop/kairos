@@ -737,13 +737,7 @@ public class TimeTrackingService : ITimeTrackingService
                 return false;
             }
 
-            _account.Events = remoteAccount.Events ?? new List<ActivityEvent>();
             _account.LastModifiedAtUtc = remoteAccount.LastModifiedAtUtc;
-
-            foreach (var activityEvent in _account.Events)
-            {
-                NormalizePersistedActivityEvent(activityEvent);
-            }
 
             if (remoteAccount.TimelinePeriod != TimeSpan.Zero)
             {
@@ -757,7 +751,7 @@ public class TimeTrackingService : ITimeTrackingService
         {
             await _supabaseTimeAccountStore.SaveAccountAsync(new TimeAccount
             {
-                Events = _account.Events,
+                LastModifiedAtUtc = _account.LastModifiedAtUtc,
                 TimelinePeriod = _account.TimelinePeriod
             });
         }
@@ -778,7 +772,7 @@ public class TimeTrackingService : ITimeTrackingService
             await _supabaseActivityStore.SaveActivitiesAsync(_account.Activities);
             await _supabaseTimeAccountStore.SaveAccountAsync(new TimeAccount
             {
-                Events = _account.Events,
+                LastModifiedAtUtc = _account.LastModifiedAtUtc,
                 TimelinePeriod = _account.TimelinePeriod
             });
             _settingsService.UpdateLastSupabaseSync();
