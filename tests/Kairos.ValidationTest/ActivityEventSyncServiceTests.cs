@@ -37,42 +37,36 @@ public class ActivityEventSyncServiceTests
     }
 
     [Fact]
-    public void RealtimeConnected_TriggersImmediateSync()
+    public async Task RealtimeConnected_TriggersImmediateSync()
     {
         // Act
         _authServiceStub.IsAuthenticated = true;
         _realtimeServiceStub.TriggerConnected();
 
-        // Need a small delay because TriggerImmediateSyncAsync runs in a fire-and-forget task
-        Thread.Sleep(100);
-
         // Assert
-        Assert.True(_eventStoreStub.LoadEventsCalled);
+        Assert.True(await WaitUntilAsync(() => _eventStoreStub.LoadEventsCalled, TimeSpan.FromSeconds(1)));
     }
 
     [Fact]
-    public void RealtimeTableChanged_ActivityEvents_TriggersImmediateSync()
+    public async Task RealtimeTableChanged_ActivityEvents_TriggersImmediateSync()
     {
         // Act
         _authServiceStub.IsAuthenticated = true;
         _realtimeServiceStub.RaiseTableChanged("activity_events");
 
-        Thread.Sleep(100);
-
         // Assert
-        Assert.True(_eventStoreStub.LoadEventsCalled);
+        Assert.True(await WaitUntilAsync(() => _eventStoreStub.LoadEventsCalled, TimeSpan.FromSeconds(1)));
     }
 
     [Fact]
-    public void RealtimeTableChanged_OtherTable_DoesNotTriggerSync()
+    public async Task RealtimeTableChanged_OtherTable_DoesNotTriggerSync()
     {
         // Act
         _authServiceStub.IsAuthenticated = true;
         _realtimeServiceStub.RaiseTableChanged("other_table");
 
-        Thread.Sleep(50);
-
         // Assert
+        Assert.False(await WaitUntilAsync(() => _eventStoreStub.LoadEventsCalled, TimeSpan.FromMilliseconds(250)));
         Assert.False(_eventStoreStub.LoadEventsCalled);
     }
 
@@ -291,9 +285,11 @@ public class ActivityEventSyncServiceTests
 
         // Act: realtime echo arrives immediately after our own push.
         _realtimeServiceStub.RaiseTableChanged("activity_events");
-        Thread.Sleep(120);
 
         // Assert: no extra sync fetch was triggered by the echo.
+        Assert.False(await WaitUntilAsync(
+            () => _eventStoreStub.LoadEventsCallCount > loadCallsAfterLocalPush,
+            TimeSpan.FromMilliseconds(300)));
         Assert.Equal(loadCallsAfterLocalPush, _eventStoreStub.LoadEventsCallCount);
         Assert.True(loadCallsAfterLocalPush > loadCallsAfterBaseline);
     }
@@ -333,14 +329,38 @@ public class ActivityEventSyncServiceTests
         var loadCallsBeforeRealtime = _eventStoreStub.LoadEventsCallCount;
 
         // Wait until suppression window passes.
-        Thread.Sleep(2200);
+        await Task.Delay(2200);
 
         // Act
         _realtimeServiceStub.RaiseTableChanged("activity_events");
-        Thread.Sleep(120);
 
         // Assert
+        Assert.True(await WaitUntilAsync(
+            () => _eventStoreStub.LoadEventsCallCount > loadCallsBeforeRealtime,
+            TimeSpan.FromSeconds(1)));
         Assert.True(_eventStoreStub.LoadEventsCallCount > loadCallsBeforeRealtime);
+    }
+
+    private static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout, TimeSpan? pollInterval = null)
+    {
+        if (condition())
+        {
+            return true;
+        }
+
+        var interval = pollInterval ?? TimeSpan.FromMilliseconds(15);
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        while (stopwatch.Elapsed < timeout)
+        {
+            await Task.Delay(interval);
+            if (condition())
+            {
+                return true;
+            }
+        }
+
+        return condition();
     }
 }
 
