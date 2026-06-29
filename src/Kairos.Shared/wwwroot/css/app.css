@@ -2445,13 +2445,13 @@ html[data-theme="dark"] .edit-input {
 }
 
 .toast-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     line-height: 1;
     flex-shrink: 0;
 }
 
 .toast-body {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     font-weight: 500;
     color: var(--color-text-primary);
     white-space: nowrap;
