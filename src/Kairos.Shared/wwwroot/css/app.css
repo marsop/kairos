@@ -1545,6 +1545,7 @@ html[data-theme="dark"] .edit-input {
     display: inline-block;
     width: 52px;
     height: 28px;
+    flex-shrink: 0;
 }
 
 .toggle-switch input {
