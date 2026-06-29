@@ -28,6 +28,11 @@ public interface ITimeTrackingService
     ActivityEvent? GetActiveEvent();
 
     /// <summary>
+    /// Gets the last comment used for a specific activity.
+    /// </summary>
+    string? GetLastCommentForActivity(Guid activityId);
+
+    /// <summary>
     /// Activates a activity by its ID. Deactivates any currently active activity first.
     /// </summary>
     /// <param name="activityId">The ID of the activity to activate.</param>
