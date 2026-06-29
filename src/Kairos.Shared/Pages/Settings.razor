@@ -354,7 +354,20 @@
 
     private void OnActivityGroupsToggled(ChangeEventArgs e)
     {
-        SettingsService.ActivityGroupsEnabled = (bool)(e.Value ?? false);
+        var enabled = (bool)(e.Value ?? false);
+        SettingsService.ActivityGroupsEnabled = enabled;
+        if (!enabled)
+        {
+            var activeEvent = TimeService.GetActiveEvent();
+            if (activeEvent != null)
+            {
+                var activeActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Name == activeEvent.ActivityName);
+                if (activeActivity != null && activeActivity.ActivityGroupId != 0)
+                {
+                    TimeService.DeactivateActivity();
+                }
+            }
+        }
         StateHasChanged();
     }
 

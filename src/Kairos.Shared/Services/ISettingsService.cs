@@ -33,6 +33,11 @@ public interface ISettingsService
     bool ActivityGroupsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets the currently active activity group (0 or 1).
+    /// </summary>
+    int ActiveActivityGroup { get; set; }
+
+    /// <summary>
     /// Gets the last time Supabase was synchronized (in-memory only).
     /// </summary>
     DateTimeOffset? LastSupabaseSync { get; }

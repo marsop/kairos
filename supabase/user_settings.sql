@@ -9,6 +9,7 @@ create table if not exists public.user_settings (
 );
 
 alter table public.user_settings add column if not exists activity_groups_enabled boolean not null default false;
+alter table public.user_settings add column if not exists active_activity_group integer not null default 0;
 
 create or replace function public.set_updated_at()
 returns trigger

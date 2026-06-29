@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled,active_activity_group&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -46,7 +46,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = row.Theme ?? "light",
             Language = row.Language ?? "en",
             TutorialCompleted = row.TutorialCompleted,
-            ActivityGroupsEnabled = row.ActivityGroupsEnabled
+            ActivityGroupsEnabled = row.ActivityGroupsEnabled,
+            ActiveActivityGroup = row.ActiveActivityGroup
         };
     }
 
@@ -64,7 +65,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = settings.Theme,
             Language = settings.Language,
             TutorialCompleted = settings.TutorialCompleted,
-            ActivityGroupsEnabled = settings.ActivityGroupsEnabled
+            ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
+            ActiveActivityGroup = settings.ActiveActivityGroup
         };
 
         using var request = new HttpRequestMessage(
@@ -114,6 +116,9 @@ internal sealed class SupabaseSettingsRow
 
     [JsonPropertyName("activity_groups_enabled")]
     public bool ActivityGroupsEnabled { get; set; }
+
+    [JsonPropertyName("active_activity_group")]
+    public int ActiveActivityGroup { get; set; }
 }
 
 internal sealed class SupabaseSettingsWriteRow
@@ -132,4 +137,7 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("activity_groups_enabled")]
     public bool ActivityGroupsEnabled { get; set; }
+
+    [JsonPropertyName("active_activity_group")]
+    public int ActiveActivityGroup { get; set; }
 }

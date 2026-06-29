@@ -134,6 +134,11 @@ public interface ITimeTrackingService
     /// <param name="emoji">Optional emoji string.</param>
     /// <param name="metadata">Optional metadata string.</param>
     void AddActivity(string name, string color, string emoji = "", string metadata = "");
+
+    /// <summary>
+    /// Adds a new activity with the specified name and color to a specific group.
+    /// </summary>
+    void AddActivity(string name, string color, string emoji, string metadata, int groupId);
     /// <summary>
     /// Resets all data to initial state (default activities, no history).
     /// </summary>

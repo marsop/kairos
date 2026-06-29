@@ -73,6 +73,7 @@ internal sealed class StubSettingsService : ISettingsService
     public string HistoryView { get; set; } = "list";
     public bool BrowserNotificationsEnabled { get; set; }
     public bool ActivityGroupsEnabled { get; set; }
+    public int ActiveActivityGroup { get; set; } = 0;
     public DateTimeOffset? LastSupabaseSync { get; private set; }
     public event Action? OnSettingsChanged;
 

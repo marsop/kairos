@@ -26,7 +26,8 @@ public class TimeTrackingService : ITimeTrackingService
     private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
-    public const int MaxActivities = 8;
+    public const int MaxActivities = 16;
+    public const int MaxActivitiesPerGroup = 8;
     public const int MinCommentLength = 1;
     public const int MaxCommentLength = 250;
 
@@ -529,6 +530,16 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void AddActivity(string name, string color, string emoji = "", string metadata = "")
     {
+        AddActivity(name, color, emoji, metadata, 0);
+    }
+
+    public void AddActivity(string name, string color, string emoji, string metadata, int groupId)
+    {
+        if (_account.Activities.Count(a => a.ActivityGroupId == groupId) >= MaxActivitiesPerGroup)
+        {
+            throw new InvalidOperationException($"Cannot add more than {MaxActivitiesPerGroup} activities per group.");
+        }
+
         if (_account.Activities.Count >= MaxActivities)
         {
             throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
@@ -545,9 +556,10 @@ public class TimeTrackingService : ITimeTrackingService
         {
             Name = name.Trim(),
             Color = normalizedColor,
-            DisplayOrder = _account.Activities.Count > 0 ? _account.Activities.Max(m => m.DisplayOrder) + 1 : 0,
+            DisplayOrder = _account.Activities.Count(a => a.ActivityGroupId == groupId) > 0 ? _account.Activities.Where(a => a.ActivityGroupId == groupId).Max(m => m.DisplayOrder) + 1 : 0,
             Emoji = emoji ?? string.Empty,
-            Metadata = metadata ?? string.Empty
+            Metadata = metadata ?? string.Empty,
+            ActivityGroupId = groupId
         };
 
         _account.Activities.Add(newActivity);
