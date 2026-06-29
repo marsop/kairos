@@ -161,17 +161,200 @@ public class ActivityEventSyncServiceTests
         Assert.Equal("Edited comment", _eventStoreStub.ServerEvents.Single().Comment);
         _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
     }
+
+    [Fact]
+    public async Task TriggerImmediateSync_FirstSyncDivergence_PrefersServerWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+
+        var localEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddHours(-3),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-2),
+            ActivityName = "Local",
+            ActivityColor = "#10B981",
+            Comment = "Local",
+            Metadata = string.Empty
+        };
+
+        var serverEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddHours(-1),
+            EndTime = DateTimeOffset.UtcNow.AddMinutes(-30),
+            ActivityName = "Server",
+            ActivityColor = "#10B981",
+            Comment = "Server",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { localEvent },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { serverEvent.Clone() };
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        _timeTrackingServiceMock.Verify(
+            m => m.UpdateEventsFromServer(It.Is<IReadOnlyList<ActivityEvent>>(events =>
+                events.Count == 1 &&
+                events[0].Id == serverEvent.Id &&
+                events[0].Comment == serverEvent.Comment)),
+            Times.Once);
+        Assert.Equal(0, _eventStoreStub.SaveEventsCallCount);
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_FirstSyncServerEmpty_SeedsFromLocalWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+
+        var localEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1),
+            ActivityName = "Local",
+            ActivityColor = "#10B981",
+            Comment = "Seed me",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { localEvent.Clone() },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent>();
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        Assert.Equal(1, _eventStoreStub.SaveEventsCallCount);
+        Assert.Single(_eventStoreStub.ServerEvents);
+        Assert.Equal(localEvent.Id, _eventStoreStub.ServerEvents.Single().Id);
+        _timeTrackingServiceMock.Verify(m => m.UpdateEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>()), Times.Never);
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task RealtimeTableChanged_AfterLocalPush_IsSuppressedDuringEchoWindow()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var activityEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddMinutes(-20),
+            EndTime = DateTimeOffset.UtcNow.AddMinutes(-10),
+            ActivityName = "Work",
+            ActivityEmoji = "",
+            ActivityColor = "#10B981",
+            Comment = "Before",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { activityEvent.Clone() },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { activityEvent.Clone() };
+
+        // Establish baseline.
+        await _sut.TriggerImmediateSyncAsync();
+        var loadCallsAfterBaseline = _eventStoreStub.LoadEventsCallCount;
+
+        // Local edit triggers server push and starts realtime suppression window.
+        account.Events[0].Comment = "After";
+        await _sut.TriggerImmediateSyncAsync();
+        var loadCallsAfterLocalPush = _eventStoreStub.LoadEventsCallCount;
+
+        // Act: realtime echo arrives immediately after our own push.
+        _realtimeServiceStub.RaiseTableChanged("activity_events");
+        Thread.Sleep(120);
+
+        // Assert: no extra sync fetch was triggered by the echo.
+        Assert.Equal(loadCallsAfterLocalPush, _eventStoreStub.LoadEventsCallCount);
+        Assert.True(loadCallsAfterLocalPush > loadCallsAfterBaseline);
+    }
+
+    [Fact]
+    public async Task RealtimeTableChanged_AfterSuppressionWindow_TriggersSyncAgain()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var activityEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddMinutes(-20),
+            EndTime = DateTimeOffset.UtcNow.AddMinutes(-10),
+            ActivityName = "Work",
+            ActivityEmoji = "",
+            ActivityColor = "#10B981",
+            Comment = "Before",
+            Metadata = string.Empty
+        };
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { activityEvent.Clone() },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { activityEvent.Clone() };
+
+        // Baseline + local push to start suppression window.
+        await _sut.TriggerImmediateSyncAsync();
+        account.Events[0].Comment = "After";
+        await _sut.TriggerImmediateSyncAsync();
+
+        var loadCallsBeforeRealtime = _eventStoreStub.LoadEventsCallCount;
+
+        // Wait until suppression window passes.
+        Thread.Sleep(2200);
+
+        // Act
+        _realtimeServiceStub.RaiseTableChanged("activity_events");
+        Thread.Sleep(120);
+
+        // Assert
+        Assert.True(_eventStoreStub.LoadEventsCallCount > loadCallsBeforeRealtime);
+    }
 }
 
 internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore
 {
     public bool LoadEventsCalled { get; private set; }
+    public int LoadEventsCallCount { get; private set; }
     public int SaveEventsCallCount { get; private set; }
     public IReadOnlyList<ActivityEvent> ServerEvents { get; set; } = new List<ActivityEvent>();
 
     public Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync()
     {
         LoadEventsCalled = true;
+        LoadEventsCallCount++;
         return Task.FromResult(ServerEvents);
     }
 

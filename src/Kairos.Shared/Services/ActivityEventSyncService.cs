@@ -5,6 +5,8 @@ namespace Kairos.Shared.Services;
 
 public sealed class ActivityEventSyncService : IActivityEventSyncService, IDisposable
 {
+    private static readonly TimeSpan RealtimeEchoSuppressionWindow = TimeSpan.FromSeconds(2);
+
     private readonly ISupabaseActivityEventStore _eventStore;
     private readonly ITimeTrackingService _timeTrackingService;
     private readonly ISupabaseAuthService _authService;
@@ -19,6 +21,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     // Using event content instead of LastModified avoids false positives from unrelated local state changes.
     private IReadOnlyList<ActivityEvent>? _lastSyncedLocalEvents;
     private IReadOnlyList<ActivityEvent>? _lastSyncedServerEvents;
+    private DateTimeOffset? _suppressRealtimeUntilUtc;
 
     public ActivityEventSyncService(
         ISupabaseActivityEventStore eventStore,
@@ -52,6 +55,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     {
         if (table == "activity_events")
         {
+            if (ShouldSuppressRealtimeEcho())
+            {
+                _logger.LogDebug("Ignoring realtime activity_events echo from recent local write.");
+                return;
+            }
+
             _logger.LogInformation("activity_events table changed via realtime, triggering sync.");
             _ = TriggerImmediateSyncAsync();
         }
@@ -113,6 +122,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
             var serverEvents = await _eventStore.LoadEventsAsync();
 
+            // Bootstrap sync state on first run with deterministic rules to avoid noisy conflict prompts.
+            if (_lastSyncedLocalEvents is null || _lastSyncedServerEvents is null)
+            {
+                await HandleBootstrapSyncAsync(localEvents, serverEvents);
+                return;
+            }
+
             // Detect local event changes against the last known local snapshot if available.
             // Fallback to server comparison during bootstrap when no local snapshot exists yet.
             var baseLocalEventsForComparison = _lastSyncedLocalEvents ?? _lastSyncedServerEvents ?? serverEvents;
@@ -140,6 +156,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 else
                 {
                     await _eventStore.SaveEventsAsync(localEvents);
+                    MarkRealtimeEchoSuppression();
                     _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
                     _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
                 }
@@ -153,15 +170,9 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             }
             else if (hasLocalChanges)
             {
-                if (_lastSyncedServerEvents == null)
-                {
-                    _logger.LogInformation("Initial sync: Local and server are identical. Skipping redundant push.");
-                }
-                else
-                {
-                    _logger.LogInformation("Local has changes. Pushing to server.");
-                    await _eventStore.SaveEventsAsync(localEvents);
-                }
+                _logger.LogInformation("Local has changes. Pushing to server.");
+                await _eventStore.SaveEventsAsync(localEvents);
+                MarkRealtimeEchoSuppression();
 
                 _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
@@ -186,6 +197,57 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         {
             _syncLock.Release();
         }
+    }
+
+    private async Task HandleBootstrapSyncAsync(IReadOnlyList<ActivityEvent> localEvents, IReadOnlyList<ActivityEvent> serverEvents)
+    {
+        if (!DetermineIfServerChanged(localEvents, serverEvents))
+        {
+            _logger.LogInformation("Initial sync: local and server are identical. Baseline established.");
+            _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
+            _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+            return;
+        }
+
+        // If the server has no events yet, seed it from local.
+        if (serverEvents.Count == 0 && localEvents.Count > 0)
+        {
+            _logger.LogInformation("Initial sync: server is empty, seeding from local events.");
+            await _eventStore.SaveEventsAsync(localEvents);
+            MarkRealtimeEchoSuppression();
+            _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
+            _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+            _settingsService.UpdateLastSupabaseSync();
+            return;
+        }
+
+        // In all other divergent bootstrap cases, prefer server snapshot to avoid accidental overwrite.
+        _logger.LogInformation("Initial sync: divergent state detected, preferring server snapshot.");
+        _timeTrackingService.UpdateEventsFromServer(serverEvents);
+        _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
+        _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+        _settingsService.UpdateLastSupabaseSync();
+    }
+
+    private void MarkRealtimeEchoSuppression()
+    {
+        _suppressRealtimeUntilUtc = DateTimeOffset.UtcNow.Add(RealtimeEchoSuppressionWindow);
+    }
+
+    private bool ShouldSuppressRealtimeEcho()
+    {
+        if (_suppressRealtimeUntilUtc is not { } suppressUntil)
+        {
+            return false;
+        }
+
+        if (DateTimeOffset.UtcNow <= suppressUntil)
+        {
+            return true;
+        }
+
+        _suppressRealtimeUntilUtc = null;
+        return false;
     }
 
     private bool DetermineIfServerChanged(IReadOnlyList<ActivityEvent> baseState, IReadOnlyList<ActivityEvent> server)
