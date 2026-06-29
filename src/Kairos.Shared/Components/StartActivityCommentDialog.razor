@@ -1,6 +1,7 @@
 @using Kairos.Shared.Resources
 @using Kairos.Shared.Services
 @inject IActivityStartPromptService ActivityStartPromptService
+@inject ITimeTrackingService TimeTrackingService
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -20,6 +21,12 @@
                            maxlength="250"
                            @onkeydown="HandleKeyDown"
                            autofocus />
+                    @if (!string.IsNullOrWhiteSpace(_suggestedComment))
+                    {
+                        <div class="comment-suggestion" @onclick="ApplySuggestion">
+                            @_suggestedComment
+                        </div>
+                    }
                 </div>
                 @if (!string.IsNullOrWhiteSpace(_errorMessage))
                 {
@@ -41,10 +48,15 @@
     private string _comment = string.Empty;
     private string? _errorMessage;
     private Guid? _lastPendingActivityId;
+    private string? _suggestedComment;
 
     protected override void OnInitialized()
     {
         _lastPendingActivityId = ActivityStartPromptService.PendingActivityId;
+        if (_lastPendingActivityId.HasValue)
+        {
+            _suggestedComment = TimeTrackingService.GetLastCommentForActivity(_lastPendingActivityId.Value);
+        }
         ActivityStartPromptService.OnStateChanged += HandlePromptStateChanged;
     }
 
@@ -56,9 +68,20 @@
             _comment = string.Empty;
             _errorMessage = null;
             _lastPendingActivityId = pendingActivityId;
+            _suggestedComment = pendingActivityId.HasValue
+                ? TimeTrackingService.GetLastCommentForActivity(pendingActivityId.Value)
+                : null;
         }
 
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void ApplySuggestion()
+    {
+        if (!string.IsNullOrWhiteSpace(_suggestedComment))
+        {
+            _comment += _suggestedComment;
+        }
     }
 
     private void Cancel()

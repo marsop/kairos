@@ -88,6 +88,15 @@ public class TimeTrackingService : ITimeTrackingService
         return _account.Events.FirstOrDefault(e => e.IsActive);
     }
 
+    public string? GetLastCommentForActivity(Guid activityId)
+    {
+        return _account.Events
+            .Where(e => e.ActivityId == activityId && !string.IsNullOrWhiteSpace(e.Comment))
+            .OrderByDescending(e => e.StartTime)
+            .Select(e => e.Comment)
+            .FirstOrDefault();
+    }
+
     public void ActivateActivity(Guid activityId, string comment)
     {
         // Deactivate any active activity silently (no notification since we're switching)
