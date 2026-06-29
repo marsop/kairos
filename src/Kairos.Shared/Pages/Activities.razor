@@ -127,7 +127,8 @@
             </div>
         }
         
-        @if (TimeService.Account.Activities.Count < Kairos.Shared.Services.TimeTrackingService.MaxActivities)
+        @if (TimeService.Account.Activities.Count < Kairos.Shared.Services.TimeTrackingService.MaxActivities &&
+             TimeService.Account.Activities.Count(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup) < Kairos.Shared.Services.TimeTrackingService.MaxActivitiesPerGroup)
         {
         <div class="activity-container add-activity">
             @if (_isAddingActivity)

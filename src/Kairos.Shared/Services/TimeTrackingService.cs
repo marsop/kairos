@@ -26,8 +26,9 @@ public class TimeTrackingService : ITimeTrackingService
     private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
-    public const int MaxActivities = 16;
+    public const int MaxActivityGroups = 2;
     public const int MaxActivitiesPerGroup = 8;
+    public const int MaxActivities = MaxActivityGroups * MaxActivitiesPerGroup;
     public const int MinCommentLength = 1;
     public const int MaxCommentLength = 250;
 
