@@ -597,7 +597,7 @@
 
         double oldPixelsPerHour = _pixelsPerHour;
 
-        double zoomFactor = deltaY > 0 ? 0.9 : 1.1; // scroll down = zoom out, scroll up = zoom in
+        double zoomFactor = deltaY > 0 ? 0.5 : 2.0; // scroll down = zoom out, scroll up = zoom in
         _pixelsPerHour = Math.Clamp(_pixelsPerHour * zoomFactor, _minPixelsPerHour, _maxPixelsPerHour);
 
         if (Math.Abs(_pixelsPerHour - oldPixelsPerHour) > 0.1)
