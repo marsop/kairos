@@ -6,6 +6,7 @@ create table if not exists public.activities (
     emoji text not null default '',
     metadata text not null default '',
     display_order integer not null default 0,
+    activity_group_id integer not null default 0,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
     primary key (user_id, id)
@@ -19,6 +20,9 @@ alter table public.activities
 
 alter table public.activities
     add column if not exists metadata text not null default '';
+
+alter table public.activities
+    add column if not exists activity_group_id integer not null default 0;
 
 create index if not exists activities_user_order_idx
     on public.activities (user_id, display_order);

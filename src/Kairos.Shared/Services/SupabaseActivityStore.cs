@@ -29,7 +29,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activities?select=id,name,color,emoji,metadata,display_order&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
+            BuildUrl($"rest/v1/activities?select=id,name,color,emoji,metadata,display_order,activity_group_id&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -45,7 +45,8 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Color = Activity.SanitizeColor(m.Color),
                 Emoji = m.Emoji ?? string.Empty,
                 Metadata = m.Metadata ?? string.Empty,
-                DisplayOrder = m.DisplayOrder
+                DisplayOrder = m.DisplayOrder,
+                ActivityGroupId = m.ActivityGroupId
             })
             .ToList();
     }
@@ -68,7 +69,8 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Color = Activity.SanitizeColor(m.Color),
                 Emoji = m.Emoji ?? string.Empty,
                 Metadata = m.Metadata ?? string.Empty,
-                DisplayOrder = m.DisplayOrder
+                DisplayOrder = m.DisplayOrder,
+                ActivityGroupId = m.ActivityGroupId
             })
             .ToList();
 
@@ -145,6 +147,9 @@ internal sealed class SupabaseActivityRow
 
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }
+
+    [JsonPropertyName("activity_group_id")]
+    public int ActivityGroupId { get; set; }
 }
 
 internal sealed class SupabaseActivityWriteRow
@@ -169,4 +174,7 @@ internal sealed class SupabaseActivityWriteRow
 
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }
+
+    [JsonPropertyName("activity_group_id")]
+    public int ActivityGroupId { get; set; }
 }
