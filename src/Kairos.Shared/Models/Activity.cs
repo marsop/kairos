@@ -30,6 +30,11 @@ public class Activity
     public int DisplayOrder { get; set; }
 
     /// <summary>
+    /// The group this activity belongs to (0 or 1).
+    /// </summary>
+    public int ActivityGroupId { get; set; } = 0;
+
+    /// <summary>
     /// Optional metadata string for the activity.
     /// </summary>
     public string Metadata { get; set; } = string.Empty;

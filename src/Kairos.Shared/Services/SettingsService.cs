@@ -23,6 +23,7 @@ public class SettingsService : ISettingsService
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
     private bool _activityGroupsEnabled;
+    private int _activeActivityGroup;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
     private DateTimeOffset? _lastSupabaseSync;
@@ -42,6 +43,20 @@ public class SettingsService : ISettingsService
         }
     }
 
+    public int ActiveActivityGroup
+    {
+        get => _activeActivityGroup;
+        set
+        {
+            if (_activeActivityGroup != value)
+            {
+                _activeActivityGroup = value;
+                _ = SaveAsync();
+                OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
     public bool ActivityGroupsEnabled
     {
         get => _activityGroupsEnabled;
@@ -50,8 +65,15 @@ public class SettingsService : ISettingsService
             if (_activityGroupsEnabled != value)
             {
                 _activityGroupsEnabled = value;
-                _ = SaveAsync();
-                OnSettingsChanged?.Invoke();
+                if (!_activityGroupsEnabled && _activeActivityGroup != 0)
+                {
+                    ActiveActivityGroup = 0; // This will also save and notify
+                }
+                else
+                {
+                    _ = SaveAsync();
+                    OnSettingsChanged?.Invoke();
+                }
             }
         }
     }
@@ -169,6 +191,7 @@ public class SettingsService : ISettingsService
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
+                    _activeActivityGroup = data.ActiveActivityGroup;
                     _historyView = data.HistoryView ?? "list";
                 }
             }
@@ -218,6 +241,7 @@ public class SettingsService : ISettingsService
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
+            ActiveActivityGroup = _activeActivityGroup,
             HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
@@ -309,7 +333,8 @@ public class SettingsService : ISettingsService
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
-            ActivityGroupsEnabled = _activityGroupsEnabled
+            ActivityGroupsEnabled = _activityGroupsEnabled,
+            ActiveActivityGroup = _activeActivityGroup
         };
     }
 
@@ -319,6 +344,7 @@ public class SettingsService : ISettingsService
         _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
         _tutorialCompleted = settings.TutorialCompleted;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
+        _activeActivityGroup = settings.ActiveActivityGroup;
         UpdateCulture(_language);
     }
 
@@ -331,6 +357,7 @@ public class SettingsService : ISettingsService
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
+            ActiveActivityGroup = _activeActivityGroup,
             HistoryView = _historyView
         };
 
@@ -349,6 +376,7 @@ internal class SettingsData
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
     public bool ActivityGroupsEnabled { get; set; }
+    public int ActiveActivityGroup { get; set; }
     public string HistoryView { get; set; } = "list";
 }
 
@@ -358,4 +386,5 @@ public class SyncedSettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool ActivityGroupsEnabled { get; set; }
+    public int ActiveActivityGroup { get; set; }
 }

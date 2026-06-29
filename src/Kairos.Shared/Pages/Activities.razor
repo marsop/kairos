@@ -5,6 +5,7 @@
 @inject ITimeTrackingService TimeService
 @using Microsoft.JSInterop
 @inject IActivityStartPromptService ActivityStartPromptService
+@inject ISettingsService SettingsService
 @inject IStringLocalizer<Strings> Localizer
 @inject IJSRuntime JSRuntime
 @implements IDisposable
@@ -22,11 +23,20 @@
                 </div>
             </div>
         </div>
+        @if (SettingsService.ActivityGroupsEnabled)
+        {
+            <div class="history-view-toggle">
+                <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">Group 0</button>
+                <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">Group 1</button>
+            </div>
+        }
     </div>
     
     <div class="activities-grid">
         @{
-            var orderedActivities = TimeService.Account.Activities.OrderBy(m => m.DisplayOrder).ToList();
+            var orderedActivities = TimeService.Account.Activities
+                .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
+                .OrderBy(m => m.DisplayOrder).ToList();
         }
         @for (var index = 0; index < orderedActivities.Count; index++)
         {
@@ -203,6 +213,23 @@
     private Guid? _editingActivityId;
     private string? _editingActivityName;
 
+    private void SetActiveGroup(int group)
+    {
+        if (SettingsService.ActiveActivityGroup != group)
+        {
+            var activeEvent = TimeService.GetActiveEvent();
+            if (activeEvent != null)
+            {
+                var activeActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Name == activeEvent.ActivityName);
+                if (activeActivity != null && activeActivity.ActivityGroupId != group)
+                {
+                    TimeService.DeactivateActivity();
+                }
+            }
+            SettingsService.ActiveActivityGroup = group;
+        }
+    }
+
     private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
     private async Task CloseMenu()
     {
@@ -237,6 +264,7 @@
     protected override void OnInitialized()
     {
         TimeService.OnStateChanged += StateHasChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
         
         // Update every second to show running duration
         _timer = new System.Threading.Timer(_ =>
@@ -392,7 +420,7 @@
         
         try
         {
-            TimeService.AddActivity(_newActivityName, _newActivityColor, _newActivityEmoji ?? string.Empty, _newActivityMetadata ?? string.Empty);
+            TimeService.AddActivity(_newActivityName, _newActivityColor, _newActivityEmoji ?? string.Empty, _newActivityMetadata ?? string.Empty, SettingsService.ActiveActivityGroup);
             CancelAdd();
         }
         catch (Exception ex)
@@ -468,6 +496,7 @@
     public void Dispose()
     {
         TimeService.OnStateChanged -= StateHasChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
         _timer?.Dispose();
         _objRef?.Dispose();
     }

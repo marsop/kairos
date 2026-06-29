@@ -14,6 +14,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
     private readonly ITimeTrackingService _timeService;
     private readonly IActivityStartPromptService _activityStartPromptService;
     private readonly INotificationService _notificationService;
+    private readonly ISettingsService _settingsService;
     private readonly IStringLocalizer<Strings> _localizer;
     private readonly List<TimeularLogEntry> _changeLog = new();
     private DotNetObjectReference<TimeularService>? _interopRef;
@@ -34,12 +35,14 @@ public sealed class TimeularService : ITimeularService, IDisposable
         ITimeTrackingService timeService,
         IActivityStartPromptService activityStartPromptService,
         INotificationService notificationService,
+        ISettingsService settingsService,
         IStringLocalizer<Strings> localizer)
     {
         _jsRuntime = jsRuntime;
         _timeService = timeService;
         _activityStartPromptService = activityStartPromptService;
         _notificationService = notificationService;
+        _settingsService = settingsService;
         _localizer = localizer;
     }
 
@@ -220,6 +223,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
     private string ApplyTimeularFaceMapping(int? face)
     {
         var orderedActivities = _timeService.Account.Activities
+            .Where(a => a.ActivityGroupId == _settingsService.ActiveActivityGroup)
             .OrderBy(m => m.DisplayOrder)
             .ToList();
 

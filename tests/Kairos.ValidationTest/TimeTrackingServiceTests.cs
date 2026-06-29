@@ -108,7 +108,7 @@ public class TimeTrackingServiceTests
     public async Task AddActivity_AtMaxActivities_Throws()
     {
         var sut = await CreateLoadedServiceAsync();
-        while (sut.Account.Activities.Count < TimeTrackingService.MaxActivities)
+        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) < TimeTrackingService.MaxActivitiesPerGroup)
         {
             sut.AddActivity($"Activity {sut.Account.Activities.Count}");
         }
