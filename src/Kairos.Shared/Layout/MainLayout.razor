@@ -59,22 +59,25 @@
             <span class="nav-label">@Localizer["NavSettings"]</span>
         </NavLink>
 
-        <a href="activities" class="tracker-nav-item activity-nav-item">
-            <span class="nav-icon activity-nav-icon">
-                <span class="activity-connection-light @(TimeTrackingService.GetActiveEvent() != null ? "active" : "")"></span>
-            </span>
-            <span class="nav-label">Activity</span>
-        </a>
+        <div class="nav-item status-nav-item">
+            <div class="status-indicators">
+                <a href="activities" class="status-indicator activity-nav-item" title="Activity">
+                    <span class="nav-icon activity-nav-icon">
+                        <span class="activity-connection-light @(TimeTrackingService.GetActiveEvent() != null ? "active" : "")"></span>
+                    </span>
+                </a>
 
-        @if (TimeularService.HasConnectedBefore)
-        {
-            <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="tracker-nav-item timeular-nav-item">
-                <span class="nav-icon timeular-nav-icon">
-                    <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
-                </span>
-                <span class="nav-label">Tracker</span>
-            </a>
-        }
+                @if (TimeularService.HasConnectedBefore)
+                {
+                    <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="status-indicator timeular-nav-item" title="Tracker">
+                        <span class="nav-icon timeular-nav-icon">
+                            <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
+                        </span>
+                    </a>
+                }
+            </div>
+            <span class="nav-label">Status</span>
+        </div>
     </nav>
 </div>
 
