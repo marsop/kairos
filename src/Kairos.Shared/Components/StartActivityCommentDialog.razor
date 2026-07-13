@@ -14,13 +14,13 @@
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
-                    <input type="text"
-                           class="edit-input @(_errorMessage != null ? "invalid" : "")"
-                           @bind="_comment"
-                           @bind:event="oninput"
-                           maxlength="250"
-                           @onkeydown="HandleKeyDown"
-                           autofocus />
+                    <textarea class="edit-input @(_errorMessage != null ? "invalid" : "")"
+                              @bind="_comment"
+                              @bind:event="oninput"
+                              maxlength="250"
+                              rows="4"
+                              @onkeydown="HandleKeyDown"
+                              autofocus></textarea>
                     @if (!string.IsNullOrWhiteSpace(_suggestedComment))
                     {
                         <div class="comment-suggestion" @onclick="ApplySuggestion">
@@ -103,7 +103,7 @@
 
     private void HandleKeyDown(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key == "Enter" && !e.ShiftKey)
         {
             Confirm();
         }
