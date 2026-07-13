@@ -163,6 +163,15 @@
   <data name="DeleteActivity" xml:space="preserve">
     <value>Delete activity</value>
   </data>
+  <data name="DeleteActivityTitle" xml:space="preserve">
+    <value>Delete Activity?</value>
+  </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete the "{0}" activity?</value>
+  </data>
+  <data name="DeleteActivityWarning" xml:space="preserve">
+    <value>Entries created with this activity will not be deleted.</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>

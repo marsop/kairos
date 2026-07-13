@@ -163,6 +163,15 @@
   <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löschen</value>
   </data>
+  <data name="DeleteActivityTitle" xml:space="preserve">
+    <value>Zähler löschen?</value>
+  </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Bist du sicher, dass du den Zähler "{0}" löschen willst?</value>
+  </data>
+  <data name="DeleteActivityWarning" xml:space="preserve">
+    <value>Einträge, die mit diesem Zähler erstellt wurden, werden nicht gelöscht.</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Speichern</value>
   </data>

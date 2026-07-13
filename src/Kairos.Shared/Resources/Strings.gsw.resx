@@ -166,6 +166,15 @@
   <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löscha</value>
   </data>
+  <data name="DeleteActivityTitle" xml:space="preserve">
+    <value>Zähler löscha?</value>
+  </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Bisch sicher, dass dean Zähler "{0}" löscha witt?</value>
+  </data>
+  <data name="DeleteActivityWarning" xml:space="preserve">
+    <value>Iträg, wo mit deam Zähler gmacht wora sind, werend ned glöscht.</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Speichara</value>
   </data>
