@@ -206,6 +206,21 @@
     }
 </div>
 
+@if (_activityToDelete != null)
+{
+    <div class="modal-overlay" @onclick="CancelDelete">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["DeleteActivityTitle"]</h3>
+            <p>@Localizer["DeleteActivityConfirm", _activityToDelete.Name]</p>
+            <p class="modal-contribution">@Localizer["DeleteActivityWarning"]</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelDelete">@Localizer["Cancel"]</button>
+                <button class="btn-delete" @onclick="ConfirmDeleteActivity">@Localizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
     
@@ -255,6 +270,8 @@
     // Drag and Drop State
     private Activity? _draggedActivity;
     private Guid? _dragTargetActivityId;
+
+    private Activity? _activityToDelete;
 
     private DotNetObjectReference<Activities>? _objRef;
 
@@ -386,7 +403,21 @@
     private void DeleteActivity(Activity activity)
     {
         if (IsActiveActivity(activity.Id)) return;
-        TimeService.DeleteActivity(activity.Id);
+        _activityToDelete = activity;
+    }
+
+    private void CancelDelete()
+    {
+        _activityToDelete = null;
+    }
+
+    private void ConfirmDeleteActivity()
+    {
+        if (_activityToDelete != null)
+        {
+            TimeService.DeleteActivity(_activityToDelete.Id);
+            _activityToDelete = null;
+        }
     }
     
     // Add Activity Logic

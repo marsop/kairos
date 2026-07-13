@@ -166,6 +166,15 @@
   <data name="DeleteActivity" xml:space="preserve">
     <value>Borrar contador</value>
   </data>
+  <data name="DeleteActivityTitle" xml:space="preserve">
+    <value>Borrar contador?</value>
+  </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Estás seguro de que queres borrar o contador "{0}"?</value>
+  </data>
+  <data name="DeleteActivityWarning" xml:space="preserve">
+    <value>As entradas creadas con este contador non se borrarán.</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Gardar</value>
   </data>
