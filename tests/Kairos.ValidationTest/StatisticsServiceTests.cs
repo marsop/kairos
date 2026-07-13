@@ -140,6 +140,42 @@ public class StatisticsServiceTests
     }
 
     [Fact]
+    public async Task SaveBudgetAsync_ShouldThrowInvalidOperationException_WhenOverlappingBudgetExistsInStorage()
+    {
+        // Arrange
+        var activityId = Guid.NewGuid();
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
+        var existingBudget = new ActivityBudget
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = activityId,
+            StartDate = today,
+            EndDate = today.AddDays(7)
+        };
+
+        // Put directly into storage instead of saving via service,
+        // to test the EnsureLoadedAsync overlap validation flow
+        var budgets = new List<ActivityBudget> { existingBudget };
+        await _storage.SetItemAsync(StorageKey, JsonSerializer.Serialize(budgets));
+
+        // Use a new service instance to force load from storage
+        var service = new StatisticsService(_storage);
+
+        var newBudget = new ActivityBudget
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = activityId,
+            StartDate = today.AddDays(2),
+            EndDate = today.AddDays(5)
+        };
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => service.SaveBudgetAsync(newBudget));
+        Assert.Equal("Budgets for the same activity cannot overlap in time.", ex.Message);
+    }
+
+    [Fact]
     public async Task SaveBudgetAsync_ShouldNotThrow_WhenDifferentActivityIdOverlaps()
     {
         // Arrange
