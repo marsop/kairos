@@ -2,7 +2,6 @@ using Kairos.Shared.Models;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Localization;
 using System.Threading;
 using CsvHelper;
 using System.IO;
