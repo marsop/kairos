@@ -48,6 +48,8 @@
 .stat-period[b-3cpehur2mf] {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     white-space: nowrap;
 }
 
