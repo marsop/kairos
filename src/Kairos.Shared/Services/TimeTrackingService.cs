@@ -400,7 +400,6 @@ public class TimeTrackingService : ITimeTrackingService
 
         csv.WriteField("Activity");
         csv.WriteField("Comment");
-        csv.WriteField("Metadata");
         csv.WriteField("Start");
         csv.WriteField("End");
         csv.WriteField("Status");
@@ -413,7 +412,6 @@ public class TimeTrackingService : ITimeTrackingService
 
             csv.WriteField(activityEvent.ActivityName);
             csv.WriteField(activityEvent.Comment);
-            csv.WriteField(activityEvent.Metadata);
             csv.WriteField(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
             csv.WriteField(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty);
             csv.WriteField(activityEvent.IsActive ? "Active" : "Completed");
@@ -436,7 +434,6 @@ public class TimeTrackingService : ITimeTrackingService
         csv.WriteField("Name");
         csv.WriteField("Emoji");
         csv.WriteField("Color");
-        csv.WriteField("Metadata");
         csv.WriteField("DisplayOrder");
         csv.NextRecord();
 
@@ -446,7 +443,6 @@ public class TimeTrackingService : ITimeTrackingService
             csv.WriteField(activity.Name);
             csv.WriteField(activity.Emoji);
             csv.WriteField(activity.Color);
-            csv.WriteField(activity.Metadata);
             csv.WriteField(activity.DisplayOrder);
             csv.NextRecord();
         }
