@@ -561,35 +561,6 @@ body {
     gap: var(--spacing-lg);
 }
 
-.period-selector {
-    display: flex;
-    gap: var(--spacing-sm);
-    justify-content: center;
-}
-
-.period-button {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border: 1px solid var(--color-bg-tertiary);
-    border-radius: var(--radius-full);
-    background: var(--color-bg-secondary);
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: var(--font-size-sm);
-    transition: all var(--transition-fast);
-}
-
-.period-button:hover {
-    border-color: var(--color-text-muted);
-    color: var(--color-text-secondary);
-}
-
-.period-button.selected {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: var(--color-text-primary);
-}
-
 .chart-container {
     background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
@@ -2635,10 +2606,11 @@ html[data-theme="dark"] .edit-input {
     box-shadow: var(--shadow-glow-negative);
 }
 
-/* Calendar View */
-.history-view-toggle {
+/* View Toggle */
+.view-toggle {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 2.75rem;
     background: var(--color-bg-primary);
     border-radius: var(--radius-md);
@@ -2646,7 +2618,7 @@ html[data-theme="dark"] .edit-input {
     box-shadow: 0 0 0 1px var(--color-bg-tertiary);
 }
 
-.history-view-toggle button {
+.view-toggle button {
     height: 100%;
     display: flex;
     align-items: center;
@@ -2661,7 +2633,7 @@ html[data-theme="dark"] .edit-input {
     transition: all 0.2s ease;
 }
 
-.history-view-toggle button.active {
+.view-toggle button.active {
     background: var(--color-accent);
     color: white;
 }
