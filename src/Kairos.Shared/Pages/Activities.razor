@@ -25,7 +25,7 @@
         </div>
         @if (SettingsService.ActivityGroupsEnabled)
         {
-            <div class="history-view-toggle">
+            <div class="view-toggle">
                 <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">Group 0</button>
                 <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">Group 1</button>
             </div>

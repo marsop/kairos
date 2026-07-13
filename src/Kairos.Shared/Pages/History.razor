@@ -37,7 +37,7 @@
                     <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
                 </div>
             </div>
-            <div class="history-view-toggle">
+            <div class="view-toggle">
                 <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
                 <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
                 @if (SettingsService.HistoryView == "calendar")
