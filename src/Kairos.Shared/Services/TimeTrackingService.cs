@@ -17,7 +17,7 @@ public class TimeTrackingService : ITimeTrackingService
     private readonly IActivityConfigurationService _activityConfig;
     private readonly ISettingsService _settingsService;
     private readonly INotificationService _notificationService;
-    private readonly IStringLocalizer<Kairos.Shared.Resources.Strings> _localizer;
+    private readonly Microsoft.Extensions.Localization.IStringLocalizer<Kairos.Shared.Resources.Strings> _localizer;
     private readonly ISupabaseAuthService? _authService;
     private readonly ISupabaseActivityStore? _supabaseActivityStore;
     private readonly ISupabaseTimeAccountStore? _supabaseTimeAccountStore;
@@ -53,7 +53,7 @@ public class TimeTrackingService : ITimeTrackingService
         IActivityConfigurationService activityConfig,
         ISettingsService settingsService,
         INotificationService notificationService,
-        IStringLocalizer<Kairos.Shared.Resources.Strings> localizer,
+        Microsoft.Extensions.Localization.IStringLocalizer<Kairos.Shared.Resources.Strings> localizer,
         ISupabaseAuthService? authService = null,
         ISupabaseActivityStore? supabaseActivityStore = null,
         ISupabaseTimeAccountStore? supabaseTimeAccountStore = null,
