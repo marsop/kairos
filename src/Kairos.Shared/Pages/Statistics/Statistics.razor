@@ -10,9 +10,9 @@
 <div class="statistics-page">
     <h2 class="page-title">@Localizer["NavStatistics"]</h2>
 
-    <div class="period-selector">
-        <button class="period-button @(CurrentView == ViewMode.Week ? "selected" : "")" @onclick="() => SetView(ViewMode.Week)">This Week</button>
-        <button class="period-button @(CurrentView == ViewMode.Month ? "selected" : "")" @onclick="() => SetView(ViewMode.Month)">This Month</button>
+    <div class="view-toggle">
+        <button class="@(CurrentView == ViewMode.Week ? "active" : "")" @onclick="() => SetView(ViewMode.Week)">This Week</button>
+        <button class="@(CurrentView == ViewMode.Month ? "active" : "")" @onclick="() => SetView(ViewMode.Month)">This Month</button>
     </div>
 
     <div class="stat-summary-card">
