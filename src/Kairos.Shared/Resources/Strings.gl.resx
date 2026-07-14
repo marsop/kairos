@@ -657,4 +657,7 @@
     <value>Configurar Avatar e Idioma</value>
   </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>O Client ID está configurado mediante un arquivo.</value>
-  </data></root>
+  </data>  <data name="ActivityId" xml:space="preserve">
+    <value>ID de actividade</value>
+  </data>
+</root>

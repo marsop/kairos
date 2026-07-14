@@ -68,6 +68,13 @@
                         <div class="activity-metadata-field">
                             <input type="text"
                                    class="activity-metadata-input"
+                                   title="@Localizer["ActivityId"]"
+                                   value="@activity.Id"
+                                   readonly />
+                        </div>
+                        <div class="activity-metadata-field">
+                            <input type="text"
+                                   class="activity-metadata-input"
                                    placeholder="@Localizer["Metadata"]"
                                    @bind="_editingActivityMetadata"
                                    maxlength="250" />
