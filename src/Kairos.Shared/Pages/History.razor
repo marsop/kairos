@@ -37,13 +37,17 @@
                     <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
                 </div>
             </div>
-            <div class="view-toggle">
-                <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
-                <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
+            <div style="display: flex; gap: var(--spacing-sm);">
+                <div class="view-toggle">
+                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
+                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
+                </div>
                 @if (SettingsService.HistoryView == "calendar")
                 {
-                    <button @onclick="ZoomIn" title="Zoom In" style="margin-left: 8px;">+</button>
-                    <button @onclick="ZoomOut" title="Zoom Out">-</button>
+                    <div class="view-toggle">
+                        <button @onclick="ZoomIn" title="Zoom In">+</button>
+                        <button @onclick="ZoomOut" title="Zoom Out">-</button>
+                    </div>
                 }
             </div>
         </div>
