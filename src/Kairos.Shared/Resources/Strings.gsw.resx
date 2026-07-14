@@ -697,4 +697,10 @@
   <data name="ShowAdvancedSettings" xml:space="preserve">
     <value>Erwyteroti Yschtelliga aazeiga</value>
   </data>
+  <data name="StickyEventsDuration" xml:space="preserve">
+    <value>Sticky Events Duration (seconds)</value>
+  </data>
+  <data name="StickyEventsDurationDesc" xml:space="preserve">
+    <value>Automatically snap the start time of a new event to the end of the previous one if it ended within this threshold.</value>
+  </data>
 </root>

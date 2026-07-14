@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration, sticky_events_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -70,7 +70,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             AdvancedSettingsEnabled = settings.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
             ActiveActivityGroup = settings.ActiveActivityGroup,
-            AutoDeleteEventDuration = settings.AutoDeleteEventDuration
+            AutoDeleteEventDuration = settings.AutoDeleteEventDuration,
+            StickyEventsDuration = settings.StickyEventsDuration
         };
 
         using var request = new HttpRequestMessage(
@@ -127,7 +128,7 @@ internal sealed class SupabaseSettingsRow
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
 
-    [JsonPropertyName("auto_delete_event_duration")]
+    [JsonPropertyName("auto_delete_event_duration, sticky_events_duration")]
     public int AutoDeleteEventDuration { get; set; }
 }
 
@@ -154,6 +155,9 @@ internal sealed class SupabaseSettingsWriteRow
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
 
-    [JsonPropertyName("auto_delete_event_duration")]
+    [JsonPropertyName("auto_delete_event_duration, sticky_events_duration")]
     public int AutoDeleteEventDuration { get; set; }
+
+    [JsonPropertyName("sticky_events_duration")]
+    public int StickyEventsDuration { get; set; }
 }
