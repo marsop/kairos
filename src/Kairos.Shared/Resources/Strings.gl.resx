@@ -685,4 +685,7 @@
   <data name="ActivityId" xml:space="preserve">
     <value>ID de actividade</value>
   </data>
+  <data name="SettingsAdvanced" xml:space="preserve">
+    <value>Avanzado</value>
+  </data>
 </root>
