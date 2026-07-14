@@ -661,4 +661,7 @@
   <data name="KeepLocalData" xml:space="preserve">
     <value>Keep Local Data</value>
   </data>
+  <data name="ActivityId" xml:space="preserve">
+    <value>Activity ID</value>
+  </data>
 </root>
