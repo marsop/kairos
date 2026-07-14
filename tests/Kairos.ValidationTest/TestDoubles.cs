@@ -75,6 +75,7 @@ internal sealed class StubSettingsService : ISettingsService
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; } = 0;
+    public int AutoDeleteEventDuration { get; set; } = 0;
     public DateTimeOffset? LastSupabaseSync { get; private set; }
     public event Action? OnSettingsChanged;
 

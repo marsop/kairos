@@ -4,12 +4,14 @@ create table if not exists public.user_settings (
     language text not null default 'en',
     tutorial_completed boolean not null default false,
     activity_groups_enabled boolean not null default false,
+    auto_delete_event_duration integer not null default 0,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
 
 alter table public.user_settings add column if not exists activity_groups_enabled boolean not null default false;
 alter table public.user_settings add column if not exists active_activity_group integer not null default 0;
+alter table public.user_settings add column if not exists auto_delete_event_duration integer not null default 0;
 
 create or replace function public.set_updated_at()
 returns trigger

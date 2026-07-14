@@ -158,6 +158,10 @@ public class TimeTrackingService : ITimeTrackingService
         if (activeEvent != null)
         {
             activeEvent.EndTime = DateTimeOffset.UtcNow;
+            if (activeEvent.Duration.TotalSeconds < _settingsService.AutoDeleteEventDuration)
+            {
+                _account.Events.Remove(activeEvent);
+            }
             SaveAndNotify();
         }
     }
@@ -810,12 +814,23 @@ public class TimeTrackingService : ITimeTrackingService
     private void EnsureActiveEventsBelongToExistingActivities()
     {
         var availableActivityNames = _account.Activities.Select(m => m.Name).ToHashSet();
+        var eventsToRemove = new List<ActivityEvent>();
+
         foreach (var activeEvent in _account.Events.Where(e => e.IsActive))
         {
             if (!availableActivityNames.Contains(activeEvent.ActivityName))
             {
                 activeEvent.EndTime = DateTimeOffset.UtcNow;
+                if (activeEvent.Duration.TotalSeconds < _settingsService.AutoDeleteEventDuration)
+                {
+                    eventsToRemove.Add(activeEvent);
+                }
             }
+        }
+
+        foreach (var evt in eventsToRemove)
+        {
+            _account.Events.Remove(evt);
         }
     }
 

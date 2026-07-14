@@ -25,6 +25,7 @@ public class SettingsService : ISettingsService
     private bool _advancedSettingsEnabled = true;
     private bool _activityGroupsEnabled;
     private int _activeActivityGroup;
+    private int _autoDeleteEventDuration;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
     private DateTimeOffset? _lastSupabaseSync;
@@ -44,6 +45,20 @@ public class SettingsService : ISettingsService
         }
     }
 
+    public int AutoDeleteEventDuration
+    {
+        get => _autoDeleteEventDuration;
+        set
+        {
+            if (_autoDeleteEventDuration != value)
+            {
+                _autoDeleteEventDuration = value;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+    
     public bool AdvancedSettingsEnabled
     {
         get => _advancedSettingsEnabled;
@@ -208,6 +223,7 @@ public class SettingsService : ISettingsService
                     _advancedSettingsEnabled = data.AdvancedSettingsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
+                    _autoDeleteEventDuration = data.AutoDeleteEventDuration;
                     _historyView = data.HistoryView ?? "list";
                 }
             }
@@ -259,6 +275,7 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration,
             HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
@@ -352,7 +369,8 @@ public class SettingsService : ISettingsService
             TutorialCompleted = _tutorialCompleted,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
-            ActiveActivityGroup = _activeActivityGroup
+            ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration
         };
     }
 
@@ -364,6 +382,7 @@ public class SettingsService : ISettingsService
         _advancedSettingsEnabled = settings.AdvancedSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
+        _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
         UpdateCulture(_language);
     }
 
@@ -378,6 +397,7 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration,
             HistoryView = _historyView
         };
 
@@ -398,6 +418,7 @@ internal class SettingsData
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
+    public int AutoDeleteEventDuration { get; set; }
     public string HistoryView { get; set; } = "list";
 }
 
@@ -409,4 +430,5 @@ public class SyncedSettingsData
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
+    public int AutoDeleteEventDuration { get; set; }
 }

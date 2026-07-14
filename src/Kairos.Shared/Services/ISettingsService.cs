@@ -43,6 +43,11 @@ public interface ISettingsService
     int ActiveActivityGroup { get; set; }
 
     /// <summary>
+    /// Gets or sets the threshold in seconds below which completed events are automatically deleted.
+    /// </summary>
+    int AutoDeleteEventDuration { get; set; }
+
+    /// <summary>
     /// Gets the last time Supabase was synchronized (in-memory only).
     /// </summary>
     DateTimeOffset? LastSupabaseSync { get; }

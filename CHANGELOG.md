@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Settings**: Added a new Advanced setting to automatically delete events that are shorter than a configured duration (in seconds).
 - **Settings**: Added a 'Show Advanced Settings' toggle in the General section to hide/show the Advanced settings area.
 - **Settings**: Added a link to the project CHANGELOG on GitHub in the About section of Settings.
 - **UI Enhancement**: Added a permanent Tracker status indicator to the bottom navigation bar for quick visibility of the Timeular connection.
