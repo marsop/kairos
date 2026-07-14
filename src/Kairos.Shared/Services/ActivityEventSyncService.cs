@@ -110,11 +110,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     {
         if (!_authService.IsAuthenticated) return;
 
-        // Try to get lock, but don't block forever if a sync is already running
-        if (!await _syncLock.WaitAsync(TimeSpan.FromSeconds(1)))
-        {
-            return;
-        }
+        await _syncLock.WaitAsync();
 
         try
         {
