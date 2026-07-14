@@ -694,4 +694,7 @@
   <data name="AutoDeleteEventDurationDesc" xml:space="preserve">
     <value>Löscht automatisch abgeschlossene Ereignisse, die kürzer als diese Anzahl von Sekunden sind.</value>
   </data>
+  <data name="ShowAdvancedSettings" xml:space="preserve">
+    <value>Erwyteroti Yschtelliga aazeiga</value>
+  </data>
 </root>

@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled,active_activity_group,auto_delete_event_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -46,6 +46,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = row.Theme ?? "light",
             Language = row.Language ?? "en",
             TutorialCompleted = row.TutorialCompleted,
+            AdvancedSettingsEnabled = row.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = row.ActivityGroupsEnabled,
             ActiveActivityGroup = row.ActiveActivityGroup,
             AutoDeleteEventDuration = row.AutoDeleteEventDuration
@@ -66,6 +67,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = settings.Theme,
             Language = settings.Language,
             TutorialCompleted = settings.TutorialCompleted,
+            AdvancedSettingsEnabled = settings.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
             ActiveActivityGroup = settings.ActiveActivityGroup,
             AutoDeleteEventDuration = settings.AutoDeleteEventDuration
@@ -116,6 +118,9 @@ internal sealed class SupabaseSettingsRow
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
 
+    [JsonPropertyName("advanced_settings_enabled")]
+    public bool AdvancedSettingsEnabled { get; set; }
+
     [JsonPropertyName("activity_groups_enabled")]
     public bool ActivityGroupsEnabled { get; set; }
 
@@ -139,6 +144,9 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
+
+    [JsonPropertyName("advanced_settings_enabled")]
+    public bool AdvancedSettingsEnabled { get; set; }
 
     [JsonPropertyName("activity_groups_enabled")]
     public bool ActivityGroupsEnabled { get; set; }

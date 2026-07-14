@@ -688,4 +688,7 @@
   <data name="AutoDeleteEventDurationDesc" xml:space="preserve">
     <value>Automatically delete completed events that are shorter than this amount of seconds.</value>
   </data>
+  <data name="ShowAdvancedSettings" xml:space="preserve">
+    <value>Show Advanced Settings</value>
+  </data>
 </root>
