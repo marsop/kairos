@@ -13,23 +13,25 @@
 <div class="activities-page">
     <div class="page-header">
         <h2 class="page-title">@Localizer["NavActivities"]</h2>
-        <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
-            <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
-            <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
-                <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
-                     @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
-                     @onclick:stopPropagation="true">
-                    <span>@Localizer["ExportActivitiesCsv"]</span>
+        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+            @if (SettingsService.ActivityGroupsEnabled)
+            {
+                <div class="view-toggle">
+                    <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">Group 0</button>
+                    <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">Group 1</button>
+                </div>
+            }
+            <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                    <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
+                         @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
+                         @onclick:stopPropagation="true">
+                        <span>@Localizer["ExportActivitiesCsv"]</span>
+                    </div>
                 </div>
             </div>
         </div>
-        @if (SettingsService.ActivityGroupsEnabled)
-        {
-            <div class="view-toggle">
-                <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">Group 0</button>
-                <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">Group 1</button>
-            </div>
-        }
     </div>
     
     <div class="activities-grid @(ActiveEvent != null ? "has-active" : "")">
