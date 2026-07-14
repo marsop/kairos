@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled,active_activity_group&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,activity_groups_enabled,active_activity_group,auto_delete_event_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -47,7 +47,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Language = row.Language ?? "en",
             TutorialCompleted = row.TutorialCompleted,
             ActivityGroupsEnabled = row.ActivityGroupsEnabled,
-            ActiveActivityGroup = row.ActiveActivityGroup
+            ActiveActivityGroup = row.ActiveActivityGroup,
+            AutoDeleteEventDuration = row.AutoDeleteEventDuration
         };
     }
 
@@ -66,7 +67,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Language = settings.Language,
             TutorialCompleted = settings.TutorialCompleted,
             ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
-            ActiveActivityGroup = settings.ActiveActivityGroup
+            ActiveActivityGroup = settings.ActiveActivityGroup,
+            AutoDeleteEventDuration = settings.AutoDeleteEventDuration
         };
 
         using var request = new HttpRequestMessage(
@@ -119,6 +121,9 @@ internal sealed class SupabaseSettingsRow
 
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
+
+    [JsonPropertyName("auto_delete_event_duration")]
+    public int AutoDeleteEventDuration { get; set; }
 }
 
 internal sealed class SupabaseSettingsWriteRow
@@ -140,4 +145,7 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
+
+    [JsonPropertyName("auto_delete_event_duration")]
+    public int AutoDeleteEventDuration { get; set; }
 }

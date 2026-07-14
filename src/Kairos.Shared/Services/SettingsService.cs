@@ -24,6 +24,7 @@ public class SettingsService : ISettingsService
     private bool _browserNotificationsEnabled;
     private bool _activityGroupsEnabled;
     private int _activeActivityGroup;
+    private int _autoDeleteEventDuration;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
     private DateTimeOffset? _lastSupabaseSync;
@@ -37,6 +38,20 @@ public class SettingsService : ISettingsService
             if (_theme != sanitizedTheme)
             {
                 _theme = sanitizedTheme;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+
+    public int AutoDeleteEventDuration
+    {
+        get => _autoDeleteEventDuration;
+        set
+        {
+            if (_autoDeleteEventDuration != value)
+            {
+                _autoDeleteEventDuration = value;
                 OnSettingsChanged?.Invoke();
                 _ = SaveAsync();
             }
@@ -192,6 +207,7 @@ public class SettingsService : ISettingsService
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
+                    _autoDeleteEventDuration = data.AutoDeleteEventDuration;
                     _historyView = data.HistoryView ?? "list";
                 }
             }
@@ -242,6 +258,7 @@ public class SettingsService : ISettingsService
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration,
             HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
@@ -334,7 +351,8 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             ActivityGroupsEnabled = _activityGroupsEnabled,
-            ActiveActivityGroup = _activeActivityGroup
+            ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration
         };
     }
 
@@ -345,6 +363,7 @@ public class SettingsService : ISettingsService
         _tutorialCompleted = settings.TutorialCompleted;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
+        _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
         UpdateCulture(_language);
     }
 
@@ -358,6 +377,7 @@ public class SettingsService : ISettingsService
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            AutoDeleteEventDuration = _autoDeleteEventDuration,
             HistoryView = _historyView
         };
 
@@ -377,6 +397,7 @@ internal class SettingsData
     public bool BrowserNotificationsEnabled { get; set; }
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
+    public int AutoDeleteEventDuration { get; set; }
     public string HistoryView { get; set; } = "list";
 }
 
@@ -387,4 +408,5 @@ public class SyncedSettingsData
     public bool TutorialCompleted { get; set; }
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
+    public int AutoDeleteEventDuration { get; set; }
 }

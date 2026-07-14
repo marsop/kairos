@@ -688,4 +688,10 @@
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Erweitert</value>
   </data>
+  <data name="AutoDeleteEventDuration" xml:space="preserve">
+    <value>Ereignis automatisch löschen (Sekunden)</value>
+  </data>
+  <data name="AutoDeleteEventDurationDesc" xml:space="preserve">
+    <value>Löscht automatisch abgeschlossene Ereignisse, die kürzer als diese Anzahl von Sekunden sind.</value>
+  </data>
 </root>

@@ -113,6 +113,25 @@
                 <span class="toggle-slider"></span>
             </label>
         </div>
+
+        <div class="setting-item">
+            <div>
+                <span class="setting-label">@Localizer["AutoDeleteEventDuration"]</span>
+                <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["AutoDeleteEventDurationDesc"]</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <input type="number"
+                       class="edit-input @(isAutoDeleteInvalid ? "invalid" : "")"
+                       value="@SettingsService.AutoDeleteEventDuration"
+                       @oninput="OnAutoDeleteEventDurationChanged"
+                       min="0" max="999" step="1"
+                       style="width: 80px; text-align: center;" />
+                @if (isAutoDeleteInvalid)
+                {
+                    <span class="edit-error" style="margin-top: 4px; padding: 2px 4px; font-size: 10px;">0-999</span>
+                }
+            </div>
+        </div>
     </div>
 
     <div class="settings-section" id="timeular-section">
@@ -267,6 +286,7 @@
     private bool showConfirmation1;
     private bool showConfirmation2;
     private bool browserNotificationsDenied;
+    private bool isAutoDeleteInvalid;
 
     private static string ApplicationVersion =>
         typeof(Settings)
@@ -418,6 +438,22 @@
         }
 
         StateHasChanged();
+    }
+
+    private void OnAutoDeleteEventDurationChanged(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString();
+
+        // Ensure input is a valid integer between 0 and 999 and contains no decimals or signs
+        if (int.TryParse(input, out int duration) && duration >= 0 && duration <= 999 && !input!.Contains(".") && !input.Contains(",") && !input.Contains("+") && !input.Contains("-"))
+        {
+            isAutoDeleteInvalid = false;
+            SettingsService.AutoDeleteEventDuration = duration;
+        }
+        else
+        {
+            isAutoDeleteInvalid = true;
+        }
     }
 
     private async Task OpenBuyMeACoffee()
