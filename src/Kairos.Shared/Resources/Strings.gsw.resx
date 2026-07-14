@@ -205,8 +205,11 @@
   <data name="HistoryDate" xml:space="preserve">
     <value>Datum</value>
   </data>
-  <data name="ExportCsv" xml:space="preserve">
-    <value>CSV exportiera</value>
+  <data name="ExportActivitiesCsv" xml:space="preserve">
+    <value>Aktivitäte als CSV exportiera</value>
+  </data>
+  <data name="ExportDayEventsCsv" xml:space="preserve">
+    <value>Tagesereigniss als CSV exportiera</value>
   </data>
   <data name="NoEventsForDate" xml:space="preserve">
     <value>Fir des Datum sind koi Itrag gfunda worda.</value>

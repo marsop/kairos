@@ -24,7 +24,7 @@
                         <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
                              @onclick="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }"
                              @onclick:stopPropagation="true">
-                            <span>@Localizer["ExportCsv"]</span>
+                            <span>@Localizer["ExportDayEventsCsv"]</span>
                         </div>
                     </div>
                 </div>

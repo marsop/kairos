@@ -19,7 +19,7 @@
                 <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
                      @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
                      @onclick:stopPropagation="true">
-                    <span>@Localizer["ExportCsv"]</span>
+                    <span>@Localizer["ExportActivitiesCsv"]</span>
                 </div>
             </div>
         </div>

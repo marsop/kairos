@@ -202,8 +202,11 @@
   <data name="HistoryDate" xml:space="preserve">
     <value>Fecha</value>
   </data>
-  <data name="ExportCsv" xml:space="preserve">
-    <value>Exportar CSV</value>
+  <data name="ExportActivitiesCsv" xml:space="preserve">
+    <value>Exportar actividades como CSV</value>
+  </data>
+  <data name="ExportDayEventsCsv" xml:space="preserve">
+    <value>Exportar eventos del día como CSV</value>
   </data>
   <data name="NoEventsForDate" xml:space="preserve">
     <value>No se encontraron entradas para la fecha seleccionada.</value>
