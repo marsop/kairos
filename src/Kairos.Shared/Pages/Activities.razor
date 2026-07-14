@@ -32,7 +32,7 @@
         }
     </div>
     
-    <div class="activities-grid">
+    <div class="activities-grid @(ActiveEvent != null ? "has-active" : "")">
         @{
             var orderedActivities = TimeService.Account.Activities
                 .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
@@ -47,7 +47,7 @@
             var isDragOver = _dragTargetActivityId.HasValue && _dragTargetActivityId.Value == activity.Id && _draggedActivity?.Id != activity.Id;
 
             <div draggable="@(isEditing ? "false" : "true")"
-                 class="activity-container @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
+                 class="activity-container @(isActive ? "is-active" : "") @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
                  @ondragstart="() => HandleDragStart(activity)"
                  @ondragenter="() => HandleDragEnter(activity)"
                  @ondragover="HandleDragOver"
