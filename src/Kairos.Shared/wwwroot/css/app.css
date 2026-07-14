@@ -2616,6 +2616,7 @@ html[data-theme="dark"] .edit-input {
     border-radius: var(--radius-md);
     padding: 4px;
     box-shadow: 0 0 0 1px var(--color-bg-tertiary);
+    width: fit-content;
 }
 
 .view-toggle button {
