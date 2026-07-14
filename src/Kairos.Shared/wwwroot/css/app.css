@@ -1752,12 +1752,19 @@ html[data-theme="dark"] .edit-input {
 .activity-actions {
     position: absolute;
     top: var(--spacing-sm);
-    right: var(--spacing-sm);
     display: flex;
     gap: var(--spacing-xs);
     z-index: 2;
     opacity: 0;
     transition: opacity var(--transition-fast);
+}
+
+.activity-actions.left {
+    left: var(--spacing-sm);
+}
+
+.activity-actions.right {
+    right: var(--spacing-sm);
 }
 
 .activity-container:hover .activity-actions {
