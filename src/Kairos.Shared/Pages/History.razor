@@ -13,13 +13,19 @@
     <div class="history-header">
         <div class="page-header">
             <h1 class="page-title">@Localizer["NavHistory"]</h1>
-            <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
-                <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
-                <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
-                    <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
-                         @onclick="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }"
-                         @onclick:stopPropagation="true">
-                        <span>@Localizer["ExportCsv"]</span>
+            <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+                <div class="view-toggle">
+                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
+                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
+                </div>
+                <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                    <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                    <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                        <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
+                             @onclick="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer["ExportCsv"]</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -37,19 +43,15 @@
                     <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
                 </div>
             </div>
-            <div style="display: flex; gap: var(--spacing-sm);">
-                <div class="view-toggle">
-                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
-                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
-                </div>
-                @if (SettingsService.HistoryView == "calendar")
-                {
+            @if (SettingsService.HistoryView == "calendar")
+            {
+                <div style="display: flex; gap: var(--spacing-sm);">
                     <div class="view-toggle">
                         <button @onclick="ZoomIn" title="Zoom In">+</button>
                         <button @onclick="ZoomOut" title="Zoom Out">-</button>
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
     </div>
 
