@@ -372,6 +372,17 @@ body {
     gap: var(--spacing-md);
 }
 
+.activities-grid.has-active .activity-container:not(.is-active) {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    transition: opacity var(--transition-normal), filter var(--transition-normal);
+}
+
+.activities-grid.has-active .activity-container:not(.is-active):hover {
+    opacity: 0.85;
+    filter: grayscale(0.2);
+}
+
 .activity-button {
     display: flex;
     flex-direction: column;
@@ -399,8 +410,7 @@ body {
     overflow: hidden;
 }
 
-.activity-button.activity-colored:hover,
-.activity-button.activity-colored.active {
+.activity-button.activity-colored:hover {
     border-color: var(--activity-color, var(--color-positive));
     box-shadow: 0 10px 24px var(--activity-color-glow, rgba(16, 185, 129, 0.18));
 }
@@ -410,83 +420,24 @@ body {
 }
 
 .activity-button.activity-colored.active {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent), color-mix(in srgb, var(--activity-color, #10b981) 10%, var(--color-bg-secondary)));
-    border-color: color-mix(in srgb, var(--activity-color, #10b981) 76%, var(--color-bg-tertiary));
-    animation: active-activity-glow 18s ease-in-out infinite;
+    background: var(--activity-color, var(--color-positive));
+    border-color: var(--activity-color, var(--color-positive));
+    color: white;
+    box-shadow: 0 10px 24px var(--activity-color-glow, rgba(16, 185, 129, 0.4));
+    border-width: 3px;
 }
 
-.activity-button.activity-colored.active>* {
-    position: relative;
-    z-index: 2;
+.activity-button.activity-colored.active .activity-name {
+    color: white;
 }
 
-.activity-button.activity-colored.active::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 1;
-    background:
-        radial-gradient(130% 115% at 50% 20%, color-mix(in srgb, var(--activity-color, #10b981) 22%, transparent) 0%, transparent 62%),
-        linear-gradient(180deg,
-            color-mix(in srgb, var(--activity-color, #10b981) 20%, transparent) 0%,
-            color-mix(in srgb, var(--activity-color, #10b981) 8%, var(--color-bg-secondary)) 100%);
-    opacity: 0.34;
-    transform: scale(1);
-    transform-origin: center;
-    animation: active-color-drift 18s ease-in-out infinite;
-}
-
-.activity-button.activity-colored.active::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    padding: 2px;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 3;
-    background: conic-gradient(from 0deg,
-            transparent 0deg,
-            transparent 286deg,
-            color-mix(in srgb, var(--activity-color, #10b981) 68%, transparent) 314deg,
-            color-mix(in srgb, var(--activity-color, #10b981) 36%, transparent) 342deg,
-            transparent 360deg);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    opacity: 0.5;
+.activity-button.activity-colored.active .activity-index {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .activity-button.active {
     transform: scale(1.02);
-}
-
-@keyframes active-activity-glow {
-
-    0%,
-    100% {
-        box-shadow: 0 10px 24px color-mix(in srgb, var(--activity-color, #10b981) 18%, transparent);
-    }
-
-    50% {
-        box-shadow: 0 16px 38px color-mix(in srgb, var(--activity-color, #10b981) 28%, transparent);
-    }
-}
-
-@keyframes active-color-drift {
-
-    0%,
-    100% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.48;
-        transform: scale(1.035);
-    }
 }
 
 .activity-name {
@@ -518,11 +469,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
     .activity-button.activity-colored.active {
-        animation: none;
-    }
-
-    .activity-button.activity-colored.active::after,
-    .activity-button.activity-colored.active::before {
         animation: none;
     }
 }
