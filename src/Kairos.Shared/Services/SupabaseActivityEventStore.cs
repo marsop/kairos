@@ -29,7 +29,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activity_events?select=*&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.asc"));
+            BuildUrl($"rest/v1/activity_events?select=*&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -48,7 +48,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             ActivityColor = Activity.SanitizeColor(r.ActivityColor),
             Comment = r.Comment,
             Metadata = r.Metadata
-        }).ToList();
+        }).OrderBy(e => e.StartTime).ToList();
     }
 
     public async Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events)
@@ -105,7 +105,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         // Query existing IDs to determine what to delete, avoiding 'URI Too Long' exceptions
         using var fetchIdsRequest = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activity_events?select=id&user_id=eq.{Uri.EscapeDataString(userId!)}"));
+            BuildUrl($"rest/v1/activity_events?select=id&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
         AddHeaders(fetchIdsRequest);
         using var fetchIdsResponse = await _httpClient.SendAsync(fetchIdsRequest);
         fetchIdsResponse.EnsureSuccessStatusCode();

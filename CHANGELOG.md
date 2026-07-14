@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix sync conflict dialog falsely appearing on page refresh.
 - Prevent URI Too Long error in Supabase activity event synchronization.
+- Fix latest entries disappearing on page refresh by fetching the newest 1,000 entries from Supabase instead of the oldest.
 
 ## [1.3.0] - 2026-06-26
 
