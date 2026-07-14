@@ -112,10 +112,12 @@
                         <div class="activity-index">#@(index + 1)</div>
                         <div class="activity-name">@activity.Emoji @activity.Name</div>
                     </button>
-                    <div class="activity-actions">
+                    <div class="activity-actions left">
                         <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
                             ✏️
                         </button>
+                    </div>
+                    <div class="activity-actions right">
                         @if (!isActive)
                         {
                             <button class="activity-action-btn delete" @onclick="() => DeleteActivity(activity)" @onclick:stopPropagation="true" title="@Localizer["DeleteActivity"]">
