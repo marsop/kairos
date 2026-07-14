@@ -669,6 +669,15 @@
   </data>
   <data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>O Client ID está configurado mediante un arquivo.</value>
+  </data>  
+  <data name="ActivityId" xml:space="preserve">
+    <value>ID de actividade</value>
+  </data>  
+  <data name="Changelog" xml:space="preserve">
+    <value>Rexistro de cambios</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Ver en GitHub</value>
   </data>
   <data name="RestartTutorial" xml:space="preserve">
     <value>Executar tutorial de novo</value>

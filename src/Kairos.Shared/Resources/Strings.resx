@@ -664,6 +664,15 @@
   <data name="KeepLocalData" xml:space="preserve">
     <value>Keep Local Data</value>
   </data>
+  <data name="ActivityId" xml:space="preserve">
+    <value>Activity ID</value>
+  </data>
+  <data name="Changelog" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>View on GitHub</value>
+  </data>
   <data name="RestartTutorial" xml:space="preserve">
     <value>Run Tutorial Again</value>
   </data>
