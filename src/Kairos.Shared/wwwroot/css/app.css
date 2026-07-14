@@ -590,9 +590,9 @@ body {
 }
 
 .history-date-input {
-    min-width: 13rem;
+    min-width: 9rem;
     height: 2.75rem;
-    padding: 0 0.95rem;
+    padding: 0 0.5rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-bg-tertiary);
     background: var(--color-bg-secondary);
