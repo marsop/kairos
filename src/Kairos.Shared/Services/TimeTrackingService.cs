@@ -398,6 +398,7 @@ public class TimeTrackingService : ITimeTrackingService
         };
         using var csv = new CsvWriter(writer, csvConfig);
 
+        csv.WriteField("ActivityId");
         csv.WriteField("Activity");
         csv.WriteField("Comment");
         csv.WriteField("Start");
@@ -410,6 +411,7 @@ public class TimeTrackingService : ITimeTrackingService
             var startLocal = activityEvent.StartTime.ToLocalTime();
             var endLocal = activityEvent.EndTime?.ToLocalTime();
 
+            csv.WriteField(activityEvent.ActivityId);
             csv.WriteField(activityEvent.ActivityName);
             csv.WriteField(activityEvent.Comment);
             csv.WriteField(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
