@@ -1769,6 +1769,11 @@ html[data-theme="dark"] .edit-input {
     font-weight: 400;
 }
 
+.activity-metadata-input[readonly] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .activity-emoji-field {
     display: flex;
     flex-direction: column;

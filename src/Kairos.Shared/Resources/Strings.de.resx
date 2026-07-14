@@ -202,8 +202,11 @@
   <data name="HistoryDate" xml:space="preserve">
     <value>Datum</value>
   </data>
-  <data name="ExportCsv" xml:space="preserve">
-    <value>CSV exportieren</value>
+  <data name="ExportActivitiesCsv" xml:space="preserve">
+    <value>Aktivitäten als CSV exportieren</value>
+  </data>
+  <data name="ExportDayEventsCsv" xml:space="preserve">
+    <value>Tagesereignisse als CSV exportieren</value>
   </data>
   <data name="NoEventsForDate" xml:space="preserve">
     <value>Fur das gewahlte Datum wurden keine Eintrage gefunden.</value>
@@ -666,5 +669,8 @@
   </data>
   <data name="RestartTutorial" xml:space="preserve">
     <value>Tutorial erneut starten</value>
+  </data>  
+  <data name="ActivityId" xml:space="preserve">
+    <value>Aktivitäts-ID</value>
   </data>
 </root>
