@@ -61,7 +61,11 @@ public sealed class TimeularService : ITimeularService, IDisposable
         NotifyStateChanged();
     }
 
-    public async Task ConnectAsync()
+    public Task ConnectAsync() => ConnectInternalAsync(autoConnect: false);
+
+    public Task AutoConnectAsync() => ConnectInternalAsync(autoConnect: true);
+
+    private async Task ConnectInternalAsync(bool autoConnect)
     {
         await InitializeAsync();
 
@@ -71,15 +75,43 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
         try
         {
-            var result = await _jsRuntime.InvokeAsync<TimeularConnectResult>("timeularInterop.requestAndConnect");
-            if (result.Success)
+            if (autoConnect)
+            {
+                try
+                {
+                    var result = await _jsRuntime.InvokeAsync<TimeularReconnectResult?>("timeularInterop.reconnectSavedDevice");
+                    if (result != null && result.Success)
+                    {
+                        IsConnected = true;
+                        HasConnectedBefore = true;
+                        DeviceName = result.DeviceName ?? DeviceName;
+                        StatusMessage = $"Reconnected to {DeviceName ?? "Timeular"}.";
+                        StatusClass = "success";
+                        AddTimeularChange($"Reconnected to {DeviceName ?? "Timeular"}");
+
+                        _ = _notificationService.NotifyAsync(
+                            _localizer["NotificationTimeularConnectedTitle"],
+                            _localizer["NotificationTimeularConnectedBody"]);
+
+                        return; // Successfully reconnected, skip the picker
+                    }
+                }
+                catch
+                {
+                    // Ignore auto-reconnect errors and fall back to the picker
+                }
+            }
+
+            // Fallback to picker
+            var pickerResult = await _jsRuntime.InvokeAsync<TimeularConnectResult>("timeularInterop.requestAndConnect");
+            if (pickerResult.Success)
             {
                 IsConnected = true;
                 HasConnectedBefore = true;
-                DeviceName = result.DeviceName;
-                StatusMessage = $"Connected to {result.DeviceName}.";
+                DeviceName = pickerResult.DeviceName;
+                StatusMessage = $"Connected to {pickerResult.DeviceName}.";
                 StatusClass = "success";
-                AddTimeularChange($"Connected to {result.DeviceName ?? "Timeular"}");
+                AddTimeularChange($"Connected to {pickerResult.DeviceName ?? "Timeular"}");
 
                 _ = _notificationService.NotifyAsync(
                     _localizer["NotificationTimeularConnectedTitle"],
@@ -88,7 +120,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
             else
             {
                 IsConnected = false;
-                StatusMessage = result.Message ?? "Could not connect to the Timeular device.";
+                StatusMessage = pickerResult.Message ?? "Could not connect to the Timeular device.";
                 StatusClass = "error";
                 AddTimeularChange(StatusMessage);
             }
