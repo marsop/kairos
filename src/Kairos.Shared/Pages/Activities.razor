@@ -19,7 +19,7 @@
                 <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
                      @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
                      @onclick:stopPropagation="true">
-                    <span>@Localizer["ExportCsv"]</span>
+                    <span>@Localizer["ExportActivitiesCsv"]</span>
                 </div>
             </div>
         </div>
@@ -65,6 +65,13 @@
                                @onkeydown="HandleEditKeyDown"
                                maxlength="40"
                                autofocus />
+                        <div class="activity-metadata-field">
+                            <input type="text"
+                                   class="activity-metadata-input"
+                                   title="@Localizer["ActivityId"]"
+                                   value="@activity.Id"
+                                   readonly />
+                        </div>
                         <div class="activity-metadata-field">
                             <input type="text"
                                    class="activity-metadata-input"

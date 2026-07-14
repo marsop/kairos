@@ -202,8 +202,11 @@
   <data name="HistoryDate" xml:space="preserve">
     <value>Datum</value>
   </data>
-  <data name="ExportCsv" xml:space="preserve">
-    <value>CSV exportieren</value>
+  <data name="ExportActivitiesCsv" xml:space="preserve">
+    <value>Aktivitäten als CSV exportieren</value>
+  </data>
+  <data name="ExportDayEventsCsv" xml:space="preserve">
+    <value>Tagesereignisse als CSV exportieren</value>
   </data>
   <data name="NoEventsForDate" xml:space="preserve">
     <value>Fur das gewahlte Datum wurden keine Eintrage gefunden.</value>
@@ -651,6 +654,8 @@
     <value>Avatar und Sprache einrichten</value>
   </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>Die Client-ID wird über eine Datei konfiguriert.</value>
+  </data>  <data name="ActivityId" xml:space="preserve">
+    <value>Aktivitäts-ID</value>
   </data>  <data name="Changelog" xml:space="preserve">
     <value>Änderungsprotokoll</value>
   </data>
