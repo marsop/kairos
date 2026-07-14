@@ -628,30 +628,46 @@
   <data name="KeepLocalData" xml:space="preserve">
     <value>Lokali Date bhalte</value>
   </data>
-<data name="NavStatistics" xml:space="preserve">
+  <data name="NavStatistics" xml:space="preserve">
     <value>Statischtike</value>
-  </data><data name="Emoji" xml:space="preserve">
+  </data>
+  <data name="Emoji" xml:space="preserve">
     <value>Emoji</value>
-  </data><data name="Metadata" xml:space="preserve">
+  </data>
+  <data name="Metadata" xml:space="preserve">
     <value>Metadate</value>
-  </data><data name="Comment" xml:space="preserve">
+  </data>
+  <data name="Comment" xml:space="preserve">
     <value>Kommentar</value>
-  </data><data name="Start" xml:space="preserve">
+  </data>
+  <data name="Start" xml:space="preserve">
     <value>Starte</value>
-  </data><data name="StartActivityCommentTitle" xml:space="preserve">
+  </data>
+  <data name="StartActivityCommentTitle" xml:space="preserve">
     <value>Kommentar hinzuefüege</value>
-  </data><data name="StartActivityCommentPrompt" xml:space="preserve">
+  </data>
+  <data name="StartActivityCommentPrompt" xml:space="preserve">
     <value>Was machsch grad?</value>
-  </data><data name="CommentLengthError" xml:space="preserve">
+  </data>
+  <data name="CommentLengthError" xml:space="preserve">
     <value>Dr Kommentar dörf nid lenger als 200 Zeiche si.</value>
-  </data><data name="Theme" xml:space="preserve">
+  </data>
+  <data name="Theme" xml:space="preserve">
     <value>Design</value>
-  </data><data name="ThemeLight" xml:space="preserve">
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
     <value>Hell</value>
-  </data><data name="ThemeDark" xml:space="preserve">
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
     <value>Dunkel</value>
-  </data><data name="TutorialSetupAvatarLanguage" xml:space="preserve">
+  </data>
+  <data name="TutorialSetupAvatarLanguage" xml:space="preserve">
     <value>Avatar und Sprach iirichte</value>
-  </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
+  </data>
+  <data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>D Client-ID wird über e Datei konfiguriert.</value>
-  </data></root>
+  </data>
+  <data name="RestartTutorial" xml:space="preserve">
+    <value>Tutorial nomol starta</value>
+  </data>
+</root>
