@@ -130,7 +130,7 @@
     {
         if (!TimeularService.IsConnected && !TimeularService.IsConnecting)
         {
-            await TimeularService.ConnectAsync();
+            await TimeularService.AutoConnectAsync();
         }
     }
 

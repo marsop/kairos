@@ -18,6 +18,7 @@ public interface ITimeularService
 
     Task InitializeAsync();
     Task ConnectAsync();
+    Task AutoConnectAsync();
     Task DisconnectAsync();
 }
 
