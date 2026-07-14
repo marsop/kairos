@@ -414,8 +414,8 @@ public class TimeTrackingService : ITimeTrackingService
             csv.WriteField(activityEvent.ActivityId);
             csv.WriteField(activityEvent.ActivityName);
             csv.WriteField(activityEvent.Comment);
-            csv.WriteField(startLocal.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-            csv.WriteField(endLocal?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty);
+            csv.WriteField(startLocal.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+            csv.WriteField(endLocal?.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty);
             csv.WriteField(activityEvent.IsActive ? "Active" : "Completed");
             csv.NextRecord();
         }

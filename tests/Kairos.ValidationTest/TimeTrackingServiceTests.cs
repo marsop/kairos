@@ -300,8 +300,8 @@ public class TimeTrackingServiceTests
 
         Assert.Equal(3, rows.Length);
         Assert.Equal("ActivityId,Activity,Comment,Start,End,Status", rows[0]);
-        Assert.Equal($"{deepWorkId},Deep Work,Finish roadmap,2026-03-30 09:15:00,2026-03-30 10:45:00,Completed", rows[1]);
-        Assert.Equal($"{breakId},Break,\"Coffee, outside\",2026-03-30 11:00:00,2026-03-30 11:15:00,Completed", rows[2]);
+        Assert.Equal($"{deepWorkId},Deep Work,Finish roadmap,2026-03-30T09:15:00,2026-03-30T10:45:00,Completed", rows[1]);
+        Assert.Equal($"{breakId},Break,\"Coffee, outside\",2026-03-30T11:00:00,2026-03-30T11:15:00,Completed", rows[2]);
     }
 
     [Fact]
@@ -323,7 +323,7 @@ public class TimeTrackingServiceTests
         var row = csv.Trim().Split(Environment.NewLine).Last();
 
         Assert.Contains("\"Discuss \"\"Phase 2\"\"\"", row);
-        Assert.Contains("2026-03-31 14:00:00,", row);
+        Assert.Contains("2026-03-31T14:00:00,", row);
         Assert.EndsWith("Active", row);
     }
 
