@@ -22,6 +22,7 @@ public class SettingsService : ISettingsService
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
+    private bool _advancedSettingsEnabled = true;
     private bool _activityGroupsEnabled;
     private int _activeActivityGroup;
     private string _language = DefaultLanguage;
@@ -37,6 +38,20 @@ public class SettingsService : ISettingsService
             if (_theme != sanitizedTheme)
             {
                 _theme = sanitizedTheme;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+
+    public bool AdvancedSettingsEnabled
+    {
+        get => _advancedSettingsEnabled;
+        set
+        {
+            if (_advancedSettingsEnabled != value)
+            {
+                _advancedSettingsEnabled = value;
                 OnSettingsChanged?.Invoke();
                 _ = SaveAsync();
             }
@@ -190,6 +205,7 @@ public class SettingsService : ISettingsService
                     _language = string.IsNullOrEmpty(data.Language) ? DefaultLanguage : data.Language;
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
+                    _advancedSettingsEnabled = data.AdvancedSettingsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
                     _historyView = data.HistoryView ?? "list";
@@ -240,6 +256,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             HistoryView = _historyView
@@ -333,6 +350,7 @@ public class SettingsService : ISettingsService
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
+            AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup
         };
@@ -343,6 +361,7 @@ public class SettingsService : ISettingsService
         _theme = SanitizeTheme(settings.Theme);
         _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
         _tutorialCompleted = settings.TutorialCompleted;
+        _advancedSettingsEnabled = settings.AdvancedSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
         UpdateCulture(_language);
@@ -356,6 +375,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             HistoryView = _historyView
@@ -375,6 +395,7 @@ internal class SettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+    public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
     public string HistoryView { get; set; } = "list";
@@ -385,6 +406,7 @@ public class SyncedSettingsData
     public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
+    public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
 }

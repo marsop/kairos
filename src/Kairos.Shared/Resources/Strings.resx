@@ -682,4 +682,7 @@
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Advanced</value>
   </data>
+  <data name="ShowAdvancedSettings" xml:space="preserve">
+    <value>Show Advanced Settings</value>
+  </data>
 </root>

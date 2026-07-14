@@ -98,10 +98,22 @@
                 @Localizer["BrowserNotificationsDenied"]
             </div>
         }
+
+        <div class="setting-item">
+            <div>
+                <span class="setting-label">@Localizer["ShowAdvancedSettings"]</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked="@SettingsService.AdvancedSettingsEnabled" @onchange="OnAdvancedSettingsToggled" />
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
     </div>
 
-    <div class="settings-section">
-        <h2 class="section-title">🔐 @Localizer["SettingsAdvanced"]</h2>
+    @if (SettingsService.AdvancedSettingsEnabled)
+    {
+        <div class="settings-section">
+            <h2 class="section-title">🔐 @Localizer["SettingsAdvanced"]</h2>
 
         <div class="setting-item">
             <div>
@@ -113,7 +125,8 @@
                 <span class="toggle-slider"></span>
             </label>
         </div>
-    </div>
+        </div>
+    }
 
     <div class="settings-section" id="timeular-section">
         <h2 class="section-title">🧊 Timeular</h2>
@@ -373,6 +386,13 @@
     private async Task DisconnectTimeularDevice() => await TimeularService.DisconnectAsync();
 
     private void OnTimeularStateChanged() => _ = InvokeAsync(StateHasChanged);
+
+    private void OnAdvancedSettingsToggled(ChangeEventArgs e)
+    {
+        var enabled = (bool)(e.Value ?? false);
+        SettingsService.AdvancedSettingsEnabled = enabled;
+        StateHasChanged();
+    }
 
     private void OnActivityGroupsToggled(ChangeEventArgs e)
     {
