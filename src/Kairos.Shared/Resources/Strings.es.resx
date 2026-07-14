@@ -685,4 +685,7 @@
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Avanzado</value>
   </data>
+  <data name="ShowAdvancedSettings" xml:space="preserve">
+    <value>Mostrar Opciones Avanzadas</value>
+  </data>
 </root>

@@ -28,6 +28,11 @@ public interface ISettingsService
     bool BrowserNotificationsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets whether advanced settings are visible.
+    /// </summary>
+    bool AdvancedSettingsEnabled { get; set; }
+
+    /// <summary>
     /// Gets or sets whether activity groups are enabled.
     /// </summary>
     bool ActivityGroupsEnabled { get; set; }

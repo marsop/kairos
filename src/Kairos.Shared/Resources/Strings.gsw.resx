@@ -688,4 +688,7 @@
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Erweitert</value>
   </data>
+  <data name="ShowAdvancedSettings" xml:space="preserve">
+    <value>Erwyteroti Yschtelliga aazeiga</value>
+  </data>
 </root>
