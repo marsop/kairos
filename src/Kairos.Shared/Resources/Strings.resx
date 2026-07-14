@@ -673,4 +673,10 @@
   <data name="ViewOnGitHub" xml:space="preserve">
     <value>View on GitHub</value>
   </data>
+  <data name="RestartTutorial" xml:space="preserve">
+    <value>Run Tutorial Again</value>
+  </data>
+  <data name="ActivityId" xml:space="preserve">
+    <value>Activity ID</value>
+  </data>
 </root>
