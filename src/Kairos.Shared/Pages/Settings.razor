@@ -92,6 +92,17 @@
             </label>
         </div>
 
+        @if (browserNotificationsDenied)
+        {
+            <div class="status-message error" style="margin-top: var(--spacing-sm);">
+                @Localizer["BrowserNotificationsDenied"]
+            </div>
+        }
+    </div>
+
+    <div class="settings-section">
+        <h2 class="section-title">🔐 @Localizer["SettingsAdvanced"]</h2>
+
         <div class="setting-item">
             <div>
                 <span class="setting-label">@Localizer["ActivityGroups"]</span>
@@ -102,13 +113,6 @@
                 <span class="toggle-slider"></span>
             </label>
         </div>
-
-        @if (browserNotificationsDenied)
-        {
-            <div class="status-message error" style="margin-top: var(--spacing-sm);">
-                @Localizer["BrowserNotificationsDenied"]
-            </div>
-        }
     </div>
 
     <div class="settings-section" id="timeular-section">

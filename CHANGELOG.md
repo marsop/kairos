@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **History Navigation**: Added "Previous Day" and "Next Day" navigation buttons to the History page date picker toolbar.
 
 ### Changed
+- **Settings Layout**: Moved "Activity Groups" toggle from General to a new Advanced section.
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
 
 ### Added
