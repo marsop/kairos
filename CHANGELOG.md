@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Settings**: Added a link to the project CHANGELOG on GitHub in the About section of Settings.
 - **UI Enhancement**: Added a permanent Tracker status indicator to the bottom navigation bar for quick visibility of the Timeular connection.
 - **History Navigation**: Added "Previous Day" and "Next Day" navigation buttons to the History page date picker toolbar.
 

@@ -651,4 +651,10 @@
     <value>Avatar und Sprache einrichten</value>
   </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>Die Client-ID wird über eine Datei konfiguriert.</value>
-  </data></root>
+  </data>  <data name="Changelog" xml:space="preserve">
+    <value>Änderungsprotokoll</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Auf GitHub ansehen</value>
+  </data>
+</root>

@@ -654,4 +654,10 @@
     <value>Avatar und Sprach iirichte</value>
   </data><data name="ClientIdConfiguredViaFile" xml:space="preserve">
     <value>D Client-ID wird über e Datei konfiguriert.</value>
-  </data></root>
+  </data>  <data name="Changelog" xml:space="preserve">
+    <value>Änderigsprotokoll</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Uf GitHub aaluege</value>
+  </data>
+</root>
