@@ -1,0 +1,11 @@
+--- src/Kairos.Shared/Services/SupabaseActivityEventStore.cs
++++ src/Kairos.Shared/Services/SupabaseActivityEventStore.cs
+@@ -25,7 +25,7 @@
+
+         using var request = new HttpRequestMessage(
+             HttpMethod.Get,
+-            BuildUrl($"rest/v1/activity_events?select=*&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
++            BuildUrl($"rest/v1/activity_events?select=id,activity_id,start_time,end_time,activity_name,activity_emoji,activity_color,comment,metadata&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
+
+         AddHeaders(request);
+         using var response = await _httpClient.SendAsync(request);
