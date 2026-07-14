@@ -1595,29 +1595,24 @@ html[data-theme="dark"] .edit-input {
     color: var(--color-text-secondary);
 }
 
-.timeular-connection-light {
-    width: 0.65rem;
-    height: 0.65rem;
-    border-radius: 50%;
-    background: #ef4444;
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
-    flex-shrink: 0;
+.status-svg {
+    width: 16px;
+    height: 16px;
 }
 
-.timeular-connection-light.connected {
-    background: #10b981;
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+.timeular-connected {
+    color: var(--color-positive);
+    filter: drop-shadow(0 0 4px var(--color-positive-glow));
 }
 
-.timeular-connection-light.connecting {
-    background: #f59e0b;
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+.timeular-connecting {
+    color: #f59e0b;
+    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.2));
     animation: pulse 1.2s ease-in-out infinite;
 }
 
-.timeular-connection-light.disconnected {
-    background: #ef4444;
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+.timeular-disconnected {
+    color: var(--color-negative);
 }
 
 .timeular-actions {
@@ -2764,31 +2759,24 @@ html[data-theme="dark"] .edit-input {
     justify-content: center;
 }
 
-.timeular-nav-item .timeular-connection-light {
-    width: 12px;
-    height: 12px;
+.timeular-nav-item .status-svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* ===== Activity Connection Light ===== */
 
-.activity-connection-light {
-    width: 0.65rem;
-    height: 0.65rem;
-    border-radius: 50%;
-    background: #9ca3af; /* Grey */
-    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.15);
-    flex-shrink: 0;
+.activity-inactive {
+    color: var(--color-text-muted);
 }
 
-.activity-connection-light.active {
-    background: #10b981; /* Green */
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+.activity-active {
+    color: var(--color-positive);
+    filter: drop-shadow(0 0 4px var(--color-positive-glow));
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
-.activity-nav-item .activity-connection-light {
-    width: 12px;
-    height: 12px;
-}
+
 
 .activity-nav-icon {
     height: 24px;
