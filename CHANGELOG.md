@@ -7,19 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-07-15
+
 ### Added
 - **Settings**: Added a new Advanced setting to automatically delete events that are shorter than a configured duration (in seconds).
 - **Settings**: Added a 'Show Advanced Settings' toggle in the General section to hide/show the Advanced settings area.
 - **Settings**: Added a link to the project CHANGELOG on GitHub in the About section of Settings.
 - **UI Enhancement**: Added a permanent Tracker status indicator to the bottom navigation bar for quick visibility of the Timeular connection.
 - **History Navigation**: Added "Previous Day" and "Next Day" navigation buttons to the History page date picker toolbar.
+- **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
 
 ### Changed
 - **Settings Layout**: Moved "Activity Groups" toggle from General to a new Advanced section.
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
-
-### Added
-- **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
 
 ### Fixed
 - Fix sync conflict dialog falsely appearing on page refresh.

@@ -676,15 +676,10 @@
   <data name="Changelog" xml:space="preserve">
     <value>Änderigsprotokoll</value>
   </data>
-  <data name="ViewOnGitHub" xml:space="preserve">
-    <value>Uf GitHub aaluege</value>
-  </data>
   <data name="RestartTutorial" xml:space="preserve">
     <value>Tutorial nomol starta</value>
   </data>  
-  <data name="ActivityId" xml:space="preserve">
-    <value>Aktivitäts-ID</value>
-  </data>
+
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Erweitert</value>
   </data>
@@ -702,5 +697,77 @@
   </data>
   <data name="StickyEventsDurationDesc" xml:space="preserve">
     <value>Automatically snap the start time of a new event to the end of the previous one if it ended within this threshold.</value>
+  </data>
+  <data name="NavStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TimeularDescription" xml:space="preserve">
+    <value>Verbinde dis Timeular-Grät. Dr Siiteindex wird em Aktivitätsindex zuegordnet (z.B. Siite 3 aktiviert Aktivität #3).</value>
+  </data>
+  <data name="SelectedDevice" xml:space="preserve">
+    <value>Usgwählts Grät: {0}</value>
+  </data>
+  <data name="TrackerStatus" xml:space="preserve">
+    <value>Tracker-Status:</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Verbinde...</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbunde</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Trennt</value>
+  </data>
+  <data name="ConnectTimeular" xml:space="preserve">
+    <value>Timeular verbinde</value>
+  </data>
+  <data name="ReconnectTimeular" xml:space="preserve">
+    <value>Timeular neu verbinde</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Trenne</value>
+  </data>
+  <data name="RecentDeviceChanges" xml:space="preserve">
+    <value>Letschti Gräteänderige</value>
+  </data>
+  <data name="HistoryList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="HistoryCalendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Gruppe {0}</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Farb</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Deli Wuche</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>Deli Monet</value>
+  </data>
+  <data name="TotalTrackedTime" xml:space="preserve">
+    <value>Erfassti Gsamtzit:</value>
+  </data>
+  <data name="ActivitiesAndBudgets" xml:space="preserve">
+    <value>Aktivitäte &amp; Budgets</value>
+  </data>
+  <data name="SetBudget" xml:space="preserve">
+    <value>Budget feschtelege</value>
+  </data>
+  <data name="BudgetFor" xml:space="preserve">
+    <value>Budget für {0}</value>
+  </data>
+  <data name="HoursForThisWeek" xml:space="preserve">
+    <value>Stunde für deli Wuche</value>
+  </data>
+  <data name="HoursForThisMonth" xml:space="preserve">
+    <value>Stunde für deli Monet</value>
+  </data>
+  <data name="AllocatedHours" xml:space="preserve">
+    <value>Zuegwiseni Stunde</value>
   </data>
 </root>
