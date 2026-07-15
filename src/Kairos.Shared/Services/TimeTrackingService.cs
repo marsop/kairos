@@ -107,9 +107,23 @@ public class TimeTrackingService : ITimeTrackingService
         if (activity == null) return;
         var normalizedComment = NormalizeComment(comment);
 
+                var stickyDuration = _settingsService.StickyEventsDuration;
+        DateTimeOffset startTime = DateTimeOffset.UtcNow;
+        if (stickyDuration > 0)
+        {
+            var recentEvent = _account.Events
+                .Where(e => e.EndTime.HasValue)
+                .OrderByDescending(e => e.EndTime)
+                .FirstOrDefault(e => e.EndTime.HasValue && (DateTimeOffset.UtcNow - e.EndTime.Value).TotalSeconds <= stickyDuration);
+            if (recentEvent != null)
+            {
+                startTime = recentEvent.EndTime ?? DateTimeOffset.UtcNow;
+            }
+        }
+
         var newEvent = new ActivityEvent
         {
-            StartTime = DateTimeOffset.UtcNow,
+            StartTime = startTime,
             ActivityName = activity.Name,
             ActivityEmoji = activity.Emoji,
             ActivityId = activity.Id,

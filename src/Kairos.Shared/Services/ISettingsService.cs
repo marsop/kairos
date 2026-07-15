@@ -46,6 +46,7 @@ public interface ISettingsService
     /// Gets or sets the threshold in seconds below which completed events are automatically deleted.
     /// </summary>
     int AutoDeleteEventDuration { get; set; }
+    int StickyEventsDuration { get; set; }
 
     /// <summary>
     /// Gets the last time Supabase was synchronized (in-memory only).

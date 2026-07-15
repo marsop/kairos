@@ -26,6 +26,7 @@ public class SettingsService : ISettingsService
     private bool _activityGroupsEnabled;
     private int _activeActivityGroup;
     private int _autoDeleteEventDuration;
+    private int _stickyEventsDuration;
     private string _language = DefaultLanguage;
     private string _theme = DefaultTheme;
     private DateTimeOffset? _lastSupabaseSync;
@@ -41,6 +42,20 @@ public class SettingsService : ISettingsService
                 _theme = sanitizedTheme;
                 OnSettingsChanged?.Invoke();
                 _ = SaveAsync();
+            }
+        }
+    }
+
+    public int StickyEventsDuration
+    {
+        get => _stickyEventsDuration;
+        set
+        {
+            if (_stickyEventsDuration != value)
+            {
+                _stickyEventsDuration = value;
+                _ = SaveAsync();
+                OnSettingsChanged?.Invoke();
             }
         }
     }
@@ -276,6 +291,7 @@ public class SettingsService : ISettingsService
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
+            StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
         };
         var json = JsonSerializer.Serialize(data);
@@ -398,6 +414,7 @@ public class SettingsService : ISettingsService
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
+            StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
         };
 
@@ -419,6 +436,7 @@ internal class SettingsData
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }
+    public int StickyEventsDuration { get; set; } = 0;
     public string HistoryView { get; set; } = "list";
 }
 
@@ -431,4 +449,5 @@ public class SyncedSettingsData
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }
+    public int StickyEventsDuration { get; set; } = 0;
 }

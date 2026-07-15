@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration, sticky_events_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -49,7 +49,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             AdvancedSettingsEnabled = row.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = row.ActivityGroupsEnabled,
             ActiveActivityGroup = row.ActiveActivityGroup,
-            AutoDeleteEventDuration = row.AutoDeleteEventDuration
+            AutoDeleteEventDuration = row.AutoDeleteEventDuration,
+            StickyEventsDuration = row.StickyEventsDuration
         };
     }
 
@@ -70,7 +71,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             AdvancedSettingsEnabled = settings.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
             ActiveActivityGroup = settings.ActiveActivityGroup,
-            AutoDeleteEventDuration = settings.AutoDeleteEventDuration
+            AutoDeleteEventDuration = settings.AutoDeleteEventDuration,
+            StickyEventsDuration = settings.StickyEventsDuration
         };
 
         using var request = new HttpRequestMessage(
@@ -129,6 +131,9 @@ internal sealed class SupabaseSettingsRow
 
     [JsonPropertyName("auto_delete_event_duration")]
     public int AutoDeleteEventDuration { get; set; }
+
+    [JsonPropertyName("sticky_events_duration")]
+    public int StickyEventsDuration { get; set; }
 }
 
 internal sealed class SupabaseSettingsWriteRow
@@ -156,4 +161,7 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("auto_delete_event_duration")]
     public int AutoDeleteEventDuration { get; set; }
+
+    [JsonPropertyName("sticky_events_duration")]
+    public int StickyEventsDuration { get; set; }
 }
