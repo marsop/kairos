@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-07-15
+
 ### Added
 - **Settings**: Added a new Advanced setting to automatically delete events that are shorter than a configured duration (in seconds).
 - **Settings**: Added a 'Show Advanced Settings' toggle in the General section to hide/show the Advanced settings area.
