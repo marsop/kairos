@@ -28,7 +28,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration, sticky_events_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration,sticky_events_duration&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);

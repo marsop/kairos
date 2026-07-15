@@ -239,6 +239,7 @@ public class SettingsService : ISettingsService
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
                     _autoDeleteEventDuration = data.AutoDeleteEventDuration;
+                    _stickyEventsDuration = data.StickyEventsDuration;
                     _historyView = data.HistoryView ?? "list";
                 }
             }
@@ -386,7 +387,8 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
-            AutoDeleteEventDuration = _autoDeleteEventDuration
+            AutoDeleteEventDuration = _autoDeleteEventDuration,
+            StickyEventsDuration = _stickyEventsDuration
         };
     }
 
@@ -399,6 +401,7 @@ public class SettingsService : ISettingsService
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
         _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
+        _stickyEventsDuration = settings.StickyEventsDuration;
         UpdateCulture(_language);
     }
 
