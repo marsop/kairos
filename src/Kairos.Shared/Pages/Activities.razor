@@ -17,8 +17,8 @@
             @if (SettingsService.ActivityGroupsEnabled)
             {
                 <div class="view-toggle">
-                    <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">Group 0</button>
-                    <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">Group 1</button>
+                    <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">@string.Format(Localizer["Group"], 0)</button>
+                    <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">@string.Format(Localizer["Group"], 1)</button>
                 </div>
             }
             <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
@@ -91,7 +91,7 @@
                             </button>
                         </div>
                         <div class="activity-color-field">
-                            <label class="activity-color-label">Color</label>
+                            <label class="activity-color-label">@Localizer["Color"]</label>
                             <div class="activity-color-picker-row">
                                 <input type="color"
                                        class="activity-color-input"
@@ -168,7 +168,7 @@
                         </button>
                     </div>
                     <div class="activity-color-field">
-                        <label class="activity-color-label">Color</label>
+                        <label class="activity-color-label">@Localizer["Color"]</label>
                         <div class="activity-color-picker-row">
                             <input type="color"
                                    class="activity-color-input"

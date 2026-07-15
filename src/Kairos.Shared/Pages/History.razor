@@ -15,8 +15,8 @@
             <h1 class="page-title">@Localizer["NavHistory"]</h1>
             <div style="display: flex; gap: var(--spacing-md); align-items: center;">
                 <div class="view-toggle">
-                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">List</button>
-                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">Calendar</button>
+                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">@Localizer["HistoryList"]</button>
+                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">@Localizer["HistoryCalendar"]</button>
                 </div>
                 <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
                     <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>

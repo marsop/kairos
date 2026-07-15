@@ -676,12 +676,7 @@
   <data name="ViewOnGitHub" xml:space="preserve">
     <value>Auf GitHub ansehen</value>
   </data>
-  <data name="RestartTutorial" xml:space="preserve">
-    <value>Tutorial erneut starten</value>
-  </data>  
-  <data name="ActivityId" xml:space="preserve">
-    <value>Aktivitäts-ID</value>
-  </data>
+
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Erweitert</value>
   </data>
@@ -693,5 +688,77 @@
   </data>
   <data name="ShowAdvancedSettings" xml:space="preserve">
     <value>Erweiterte Einstellungen anzeigen</value>
+  </data>
+  <data name="NavStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TimeularDescription" xml:space="preserve">
+    <value>Verbinden Sie Ihr Timeular-Gerät. Der Seitenindex wird dem Aktivitätsindex zugeordnet (z. B. Seite 3 aktiviert Aktivität #3).</value>
+  </data>
+  <data name="SelectedDevice" xml:space="preserve">
+    <value>Ausgewähltes Gerät: {0}</value>
+  </data>
+  <data name="TrackerStatus" xml:space="preserve">
+    <value>Tracker-Status:</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Verbinden...</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbunden</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Getrennt</value>
+  </data>
+  <data name="ConnectTimeular" xml:space="preserve">
+    <value>Timeular verbinden</value>
+  </data>
+  <data name="ReconnectTimeular" xml:space="preserve">
+    <value>Timeular neu verbinden</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Trennen</value>
+  </data>
+  <data name="RecentDeviceChanges" xml:space="preserve">
+    <value>Letzte Geräteänderungen</value>
+  </data>
+  <data name="HistoryList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="HistoryCalendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Gruppe {0}</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Farbe</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Diese Woche</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>Diesen Monat</value>
+  </data>
+  <data name="TotalTrackedTime" xml:space="preserve">
+    <value>Erfasste Gesamtzeit:</value>
+  </data>
+  <data name="ActivitiesAndBudgets" xml:space="preserve">
+    <value>Aktivitäten &amp; Budgets</value>
+  </data>
+  <data name="SetBudget" xml:space="preserve">
+    <value>Budget festlegen</value>
+  </data>
+  <data name="BudgetFor" xml:space="preserve">
+    <value>Budget für {0}</value>
+  </data>
+  <data name="HoursForThisWeek" xml:space="preserve">
+    <value>Stunden für diese Woche</value>
+  </data>
+  <data name="HoursForThisMonth" xml:space="preserve">
+    <value>Stunden für diesen Monat</value>
+  </data>
+  <data name="AllocatedHours" xml:space="preserve">
+    <value>Zugewiesene Stunden</value>
   </data>
 </root>
