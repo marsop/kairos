@@ -697,4 +697,13 @@
   <data name="ShowAdvancedSettings" xml:space="preserve">
     <value>Erwyteroti Yschtelliga aazeiga</value>
   </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>Uf der Verlaufssoita kasch mit de Knöpf "Vorheriger Tag" und "Nächster Tag" eifach zwüsche de Täg wechsle. Aktivi Ereignis pulsiere usserdem, so dass du liicht gsehsch, was grad erfasst wird.</value>
+  </data>
+  <data name="TutorialTrackerIndicator" xml:space="preserve">
+    <value>Am undere Rand vum Bildschirm hesch en Tracker-Statusazeig. So gsehsch schnell, ob dis Timeular-Gerät verbunde isch, ohni d'Istellige ufmache z'müesse.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>Unter Istellige kasch jetzt "Erwiiterti Istellige zeige" ischalte, um Optione wie Aktivitätsgruppe und e neui Funktion zum automatische Löscha vo sehr kurze, us Verseh erfasste Ereignisse z'finde.</value>
+  </data>
 </root>

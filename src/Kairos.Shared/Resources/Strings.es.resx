@@ -694,4 +694,13 @@
   <data name="ShowAdvancedSettings" xml:space="preserve">
     <value>Mostrar Opciones Avanzadas</value>
   </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>En la página de Historial, puedes navegar fácilmente entre días usando los botones "Día anterior" y "Día siguiente". Los eventos activos también parpadean para que puedas ver fácilmente qué se está registrando actualmente.</value>
+  </data>
+  <data name="TutorialTrackerIndicator" xml:space="preserve">
+    <value>En la parte inferior de la pantalla hay un indicador de estado del Tracker. Esto te permite ver rápidamente si tu dispositivo Timeular está conectado sin tener que abrir los ajustes.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>En Ajustes, ahora puedes activar "Mostrar ajustes avanzados" para encontrar opciones como Grupos de actividades y una nueva función para eliminar automáticamente eventos muy cortos y accidentales.</value>
+  </data>
 </root>
