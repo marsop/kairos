@@ -49,7 +49,8 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             AdvancedSettingsEnabled = row.AdvancedSettingsEnabled,
             ActivityGroupsEnabled = row.ActivityGroupsEnabled,
             ActiveActivityGroup = row.ActiveActivityGroup,
-            AutoDeleteEventDuration = row.AutoDeleteEventDuration
+            AutoDeleteEventDuration = row.AutoDeleteEventDuration,
+            StickyEventsDuration = row.StickyEventsDuration
         };
     }
 
@@ -128,8 +129,11 @@ internal sealed class SupabaseSettingsRow
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
 
-    [JsonPropertyName("auto_delete_event_duration, sticky_events_duration")]
+    [JsonPropertyName("auto_delete_event_duration")]
     public int AutoDeleteEventDuration { get; set; }
+
+    [JsonPropertyName("sticky_events_duration")]
+    public int StickyEventsDuration { get; set; }
 }
 
 internal sealed class SupabaseSettingsWriteRow
@@ -155,7 +159,7 @@ internal sealed class SupabaseSettingsWriteRow
     [JsonPropertyName("active_activity_group")]
     public int ActiveActivityGroup { get; set; }
 
-    [JsonPropertyName("auto_delete_event_duration, sticky_events_duration")]
+    [JsonPropertyName("auto_delete_event_duration")]
     public int AutoDeleteEventDuration { get; set; }
 
     [JsonPropertyName("sticky_events_duration")]
