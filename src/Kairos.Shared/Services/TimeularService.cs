@@ -1,6 +1,7 @@
 using Kairos.Shared.Models;
 using Kairos.Shared.Resources;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace Kairos.Shared.Services;
@@ -16,6 +17,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
     private readonly INotificationService _notificationService;
     private readonly ISettingsService _settingsService;
     private readonly IStringLocalizer<Strings> _localizer;
+    private readonly ILogger<TimeularService> _logger;
     private readonly List<TimeularLogEntry> _changeLog = new();
     private DotNetObjectReference<TimeularService>? _interopRef;
 
@@ -36,7 +38,8 @@ public sealed class TimeularService : ITimeularService, IDisposable
         IActivityStartPromptService activityStartPromptService,
         INotificationService notificationService,
         ISettingsService settingsService,
-        IStringLocalizer<Strings> localizer)
+        IStringLocalizer<Strings> localizer,
+        ILogger<TimeularService> logger)
     {
         _jsRuntime = jsRuntime;
         _timeService = timeService;
@@ -44,6 +47,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         _notificationService = notificationService;
         _settingsService = settingsService;
         _localizer = localizer;
+        _logger = logger;
     }
 
     public async Task InitializeAsync()
@@ -79,6 +83,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
             {
                 try
                 {
+                    _logger.LogInformation("Attempting auto-reconnect to Timeular device '{DeviceName}'...", DeviceName ?? "Unknown");
                     var result = await _jsRuntime.InvokeAsync<TimeularReconnectResult?>("timeularInterop.reconnectSavedDevice");
                     if (result != null && result.Success)
                     {
@@ -95,9 +100,15 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
                         return; // Successfully reconnected, skip the picker
                     }
+                    else
+                    {
+                        var failMessage = result?.Message ?? "No result from reconnect.";
+                        _logger.LogWarning("Auto-reconnect to Timeular device '{DeviceName}' failed. Reason: {Message}", DeviceName ?? "Unknown", failMessage);
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Auto-reconnect to Timeular device '{DeviceName}' failed with an exception.", DeviceName ?? "Unknown");
                     // Ignore auto-reconnect errors and fall back to the picker
                 }
             }
@@ -226,9 +237,11 @@ public sealed class TimeularService : ITimeularService, IDisposable
     {
         try
         {
+            _logger.LogInformation("Startup auto-reconnect attempting for Timeular device '{DeviceName}'...", DeviceName ?? "Unknown");
             var result = await _jsRuntime.InvokeAsync<TimeularReconnectResult?>("timeularInterop.reconnectSavedDevice");
             if (result is null)
             {
+                _logger.LogWarning("Startup auto-reconnect failed for Timeular device '{DeviceName}'. No result from reconnect.", DeviceName ?? "Unknown");
                 return;
             }
 
@@ -245,9 +258,15 @@ public sealed class TimeularService : ITimeularService, IDisposable
                     _localizer["NotificationTimeularConnectedTitle"],
                     _localizer["NotificationTimeularConnectedBody"]);
             }
+            else
+            {
+                var failMessage = result.Message ?? "Unknown reason.";
+                _logger.LogWarning("Startup auto-reconnect failed for Timeular device '{DeviceName}'. Reason: {Message}", DeviceName ?? "Unknown", failMessage);
+            }
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogWarning(ex, "Startup auto-reconnect failed for Timeular device '{DeviceName}' with an exception.", DeviceName ?? "Unknown");
             // Ignore unexpected startup errors during auto-reconnect
         }
     }

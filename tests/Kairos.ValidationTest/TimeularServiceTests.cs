@@ -1,5 +1,6 @@
 using Kairos.Shared.Models;
 using Kairos.Shared.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Kairos.ValidationTest;
 
@@ -12,7 +13,14 @@ public class TimeularServiceTests
         var timeTracking = await CreateLoadedTimeTrackingServiceAsync(settings);
         var activityPrompt = new ActivityStartPromptService(timeTracking, new StubStringLocalizer());
         var notifications = new StubNotificationService();
-        var sut = new TimeularService(new TestJsRuntime(), timeTracking, activityPrompt, notifications, settings, new StubStringLocalizer());
+        var sut = new TimeularService(
+            new TestJsRuntime(),
+            timeTracking,
+            activityPrompt,
+            notifications,
+            settings,
+            new StubStringLocalizer(),
+            NullLogger<TimeularService>.Instance);
 
         await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent
         {
@@ -40,7 +48,8 @@ public class TimeularServiceTests
             new ActivityStartPromptService(timeTracking, new StubStringLocalizer()),
             new StubNotificationService(),
             settings,
-            new StubStringLocalizer());
+            new StubStringLocalizer(),
+            NullLogger<TimeularService>.Instance);
 
         await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent
         {
@@ -65,7 +74,8 @@ public class TimeularServiceTests
             new ActivityStartPromptService(timeTracking, new StubStringLocalizer()),
             notifications,
             settings,
-            new StubStringLocalizer());
+            new StubStringLocalizer(),
+            NullLogger<TimeularService>.Instance);
 
         await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent { EventType = "disconnected" });
 
