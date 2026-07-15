@@ -676,9 +676,6 @@
   <data name="RestartTutorial" xml:space="preserve">
     <value>Run Tutorial Again</value>
   </data>
-  <data name="ActivityId" xml:space="preserve">
-    <value>Activity ID</value>
-  </data>
   <data name="SettingsAdvanced" xml:space="preserve">
     <value>Advanced</value>
   </data>
@@ -699,5 +696,77 @@
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Under Settings, you can now toggle "Show Advanced Settings" to find options like Activity Groups and a new feature to automatically delete very short, accidental events.</value>
+  </data>
+  <data name="NavStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TimeularDescription" xml:space="preserve">
+    <value>Connect your Timeular device. Face index maps to activity index (for example, Face 3 activates activity #3).</value>
+  </data>
+  <data name="SelectedDevice" xml:space="preserve">
+    <value>Selected device: {0}</value>
+  </data>
+  <data name="TrackerStatus" xml:space="preserve">
+    <value>Tracker status:</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="ConnectTimeular" xml:space="preserve">
+    <value>Connect Timeular</value>
+  </data>
+  <data name="ReconnectTimeular" xml:space="preserve">
+    <value>Reconnect Timeular</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="RecentDeviceChanges" xml:space="preserve">
+    <value>Recent device changes</value>
+  </data>
+  <data name="HistoryList" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="HistoryCalendar" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group {0}</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>This Week</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>This Month</value>
+  </data>
+  <data name="TotalTrackedTime" xml:space="preserve">
+    <value>Total Tracked Time:</value>
+  </data>
+  <data name="ActivitiesAndBudgets" xml:space="preserve">
+    <value>Activities &amp; Budgets</value>
+  </data>
+  <data name="SetBudget" xml:space="preserve">
+    <value>Set budget</value>
+  </data>
+  <data name="BudgetFor" xml:space="preserve">
+    <value>Budget for {0}</value>
+  </data>
+  <data name="HoursForThisWeek" xml:space="preserve">
+    <value>Hours for this week</value>
+  </data>
+  <data name="HoursForThisMonth" xml:space="preserve">
+    <value>Hours for this month</value>
+  </data>
+  <data name="AllocatedHours" xml:space="preserve">
+    <value>Allocated hours</value>
   </data>
 </root>
