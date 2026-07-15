@@ -65,7 +65,7 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialSetupAvatarLanguage"], "", $"{basePath}/tutorial-avatar-10.png"),
             
             // 2. Intro
-            new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-10.png"),
+            new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-11.png"),
             
             // 3. How Kairos works
             new TutorialStep(_localizer["TutorialHowItWorks"], "", $"{basePath}/tutorial-avatar-2.png"),
