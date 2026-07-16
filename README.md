@@ -41,6 +41,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 
 ### Settings
 - **Multi-Language Support**: Available in English, Deutsch, Español, Galego, and Vorarlbergerisch
+- **Advanced Settings**: Configure sticky events duration and auto-delete events duration
 - **Factory Reset**: Clear all data and start fresh
 
 ### Progressive Web App (PWA)
