@@ -766,4 +766,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Allocated hours</value>
   </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>The bottom navigation bar features a permanent Tracker status indicator. This gives you quick visibility of your hardware connection state from any page.</value>
+  </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>On the History page, you can quickly jump between days using the Previous and Next Day buttons. Also, any currently active event will pulse so it is easy to spot in the list or calendar.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>In Settings, you can toggle Advanced options to access features like automatically deleting events that are too short, keeping your history clean without manual effort.</value>
+  </data>
 </root>

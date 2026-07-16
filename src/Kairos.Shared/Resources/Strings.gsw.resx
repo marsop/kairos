@@ -770,4 +770,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zuegwiseni Stunde</value>
   </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>D'unteri Navigationslischtä hät ä permanänti Tracker-Statusazeig. So häsch vo jedere Sitä us en schnälle Überblick über de Verbindigsstatus vo dinere Hardware.</value>
+  </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>Uf de Verlaufs-Sitä chasch mit de Chnöpf für Vorherigä und Nächschtä Tag schnäll zwüsche de Täg gumpä. Zuesätzli pulsiert jedes aktuell aktivi Ereignis, dass mes i de Lischtä oder im Kalender guet gseht.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>I de Iistellige chasch die erwiiterete Optione umschalte, zum Uf-Funktione wie s'automatischä Lösche vo z'churzä Ereignis zuegriffä. So blibt din Verlauf ohni manuellä Ufwand suuber.</value>
+  </data>
 </root>

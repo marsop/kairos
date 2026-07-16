@@ -770,4 +770,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Horas asignadas</value>
   </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>A barra de navegación inferior conta cun indicador de estado do rastreador permanente. Isto ofrécelle unha visibilidade rápida do estado da conexión do seu hardware dende calquera páxina.</value>
+  </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>Na páxina de Historial, pode saltar rapidamente entre días usando os botóns de Día Anterior e Seguinte. Ademais, calquera evento actualmente activo latexará para que sexa fácil de detectar na lista ou calendario.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>En Axustes, pode alternar as opcións Avanzadas para acceder a funcións como eliminar automaticamente os eventos que son demasiado curtos, mantendo o seu historial limpo sen esforzo manual.</value>
+  </data>
 </root>

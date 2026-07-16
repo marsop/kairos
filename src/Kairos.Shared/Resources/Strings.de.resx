@@ -767,4 +767,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zugewiesene Stunden</value>
   </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>Die untere Navigationsleiste verfügt über eine permanente Tracker-Statusanzeige. Dadurch haben Sie von jeder Seite aus einen schnellen Überblick über den Verbindungsstatus Ihrer Hardware.</value>
+  </data>
+  <data name="TutorialHistoryNavigation" xml:space="preserve">
+    <value>Auf der Verlaufsseite können Sie mit den Schaltflächen Vorheriger und Nächster Tag schnell zwischen den Tagen springen. Außerdem pulsiert jedes aktuell aktive Ereignis, sodass es in der Liste oder im Kalender leicht zu erkennen ist.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>In den Einstellungen können Sie die erweiterten Optionen umschalten, um auf Funktionen wie das automatische Löschen zu kurzer Ereignisse zuzugreifen. So halten Sie Ihren Verlauf ohne manuellen Aufwand sauber.</value>
+  </data>
 </root>
