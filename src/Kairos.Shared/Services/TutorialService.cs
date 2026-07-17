@@ -95,7 +95,7 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialHistoryReview"], "history", $"{basePath}/tutorial-avatar.png"),
             
             // 12. History - edit and delete
-            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-10.png"),
+            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-11.png"),
 
             // 13. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
