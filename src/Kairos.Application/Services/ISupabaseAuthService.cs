@@ -15,6 +15,7 @@ public interface ISupabaseAuthService
     event Action? OnAuthStateChanged;
 
     Task InitializeAsync();
+    Task<bool> EnsureAuthenticatedAsync() => Task.FromResult(IsAuthenticated);
     Task<SupabaseAuthResult> SignInAsync(string email, string password);
     Task<SupabaseAuthResult> SignUpAsync(string email, string password);
     Task SignOutAsync();

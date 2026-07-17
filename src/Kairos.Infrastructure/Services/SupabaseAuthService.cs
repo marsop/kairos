@@ -9,18 +9,20 @@ namespace Kairos.Infrastructure.Services;
 public sealed class SupabaseAuthService : ISupabaseAuthService
 {
     private const string SessionStorageKey = "Kairos_supabase_session";
+    private static readonly TimeSpan ExpirySkew = TimeSpan.FromSeconds(15);
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     private readonly HttpClient _httpClient;
     private readonly IStorageService _storageService;
     private readonly SupabaseAuthOptions _options;
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
 
     private SupabaseSession? _session;
     private bool _isInitialized;
 
     public bool IsInitialized => _isInitialized;
     public bool IsConfigured => !string.IsNullOrWhiteSpace(_options.Url) && !string.IsNullOrWhiteSpace(_options.AnonKey);
-    public bool IsAuthenticated => _session is not null && _session.ExpiresAt > DateTimeOffset.UtcNow;
+    public bool IsAuthenticated => _session is not null && _session.ExpiresAt > DateTimeOffset.UtcNow.Add(ExpirySkew);
     public string? CurrentUserEmail => _session?.User?.Email;
     public string? CurrentUserId => _session?.User?.Id;
     public string? CurrentAccessToken => IsAuthenticated ? _session?.AccessToken : null;
@@ -54,13 +56,81 @@ public sealed class SupabaseAuthService : ISupabaseAuthService
             }
         }
 
-        if (_session is not null && _session.ExpiresAt <= DateTimeOffset.UtcNow)
+        if (_session is not null)
         {
-            await SignOutAsync();
+            var isAuthenticated = await EnsureAuthenticatedAsync();
+            if (!isAuthenticated)
+            {
+                await ClearSessionAsync();
+            }
         }
 
         _isInitialized = true;
         OnAuthStateChanged?.Invoke();
+    }
+
+    public async Task<bool> EnsureAuthenticatedAsync()
+    {
+        if (!IsConfigured || _session is null)
+        {
+            return false;
+        }
+
+        if (_session.ExpiresAt > DateTimeOffset.UtcNow.Add(ExpirySkew))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(_session.RefreshToken))
+        {
+            return false;
+        }
+
+        await _refreshLock.WaitAsync();
+        try
+        {
+            if (_session is null)
+            {
+                return false;
+            }
+
+            if (_session.ExpiresAt > DateTimeOffset.UtcNow.Add(ExpirySkew))
+            {
+                return true;
+            }
+
+            var existingUser = _session.User;
+            var response = await SendAsync("auth/v1/token?grant_type=refresh_token", new SupabaseRefreshTokenRequest
+            {
+                RefreshToken = _session.RefreshToken!
+            });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if ((int)response.StatusCode is 400 or 401 or 403)
+                {
+                    await ClearSessionAsync();
+                    OnAuthStateChanged?.Invoke();
+                }
+
+                return false;
+            }
+
+            var authResponse = await response.Content.ReadFromJsonAsync<SupabaseAuthResponse>(JsonOptions);
+            if (authResponse?.AccessToken is null)
+            {
+                return false;
+            }
+
+            _session = BuildSession(authResponse, existingUser);
+            await PersistSessionAsync();
+            OnAuthStateChanged?.Invoke();
+            return true;
+        }
+        finally
+        {
+            _refreshLock.Release();
+        }
     }
 
     public async Task<SupabaseAuthResult> SignInAsync(string email, string password)
@@ -144,8 +214,7 @@ public sealed class SupabaseAuthService : ISupabaseAuthService
 
     public async Task SignOutAsync()
     {
-        _session = null;
-        await _storageService.RemoveItemAsync(SessionStorageKey);
+        await ClearSessionAsync();
         OnAuthStateChanged?.Invoke();
     }
 
@@ -180,7 +249,13 @@ public sealed class SupabaseAuthService : ISupabaseAuthService
         await _storageService.SetItemAsync(SessionStorageKey, serialized);
     }
 
-    private static SupabaseSession BuildSession(SupabaseAuthResponse response)
+    private async Task ClearSessionAsync()
+    {
+        _session = null;
+        await _storageService.RemoveItemAsync(SessionStorageKey);
+    }
+
+    private static SupabaseSession BuildSession(SupabaseAuthResponse response, SupabaseUser? existingUser = null)
     {
         var expiresAt = response.ExpiresAt > 0
             ? DateTimeOffset.FromUnixTimeSeconds(response.ExpiresAt)
@@ -191,7 +266,7 @@ public sealed class SupabaseAuthService : ISupabaseAuthService
             AccessToken = response.AccessToken ?? string.Empty,
             RefreshToken = response.RefreshToken,
             ExpiresAt = expiresAt,
-            User = response.User
+            User = response.User ?? existingUser
         };
     }
 
@@ -238,6 +313,12 @@ internal sealed class SupabaseCredentialsRequest
 
     [JsonPropertyName("password")]
     public string Password { get; set; } = string.Empty;
+}
+
+internal sealed class SupabaseRefreshTokenRequest
+{
+    [JsonPropertyName("refresh_token")]
+    public string RefreshToken { get; set; } = string.Empty;
 }
 
 internal sealed class SupabaseAuthResponse

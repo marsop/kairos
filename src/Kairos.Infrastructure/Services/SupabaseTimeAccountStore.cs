@@ -22,6 +22,11 @@ public sealed class SupabaseTimeAccountStore : ISupabaseTimeAccountStore
 
     public async Task<TimeAccount?> LoadAccountAsync()
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return null;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {
@@ -48,6 +53,11 @@ public sealed class SupabaseTimeAccountStore : ISupabaseTimeAccountStore
 
     public async Task SaveAccountAsync(TimeAccount account)
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {

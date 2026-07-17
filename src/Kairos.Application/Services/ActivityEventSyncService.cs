@@ -95,7 +95,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     public async Task PullFromServerAsync()
     {
-        if (!_authService.IsAuthenticated) return;
+        if (!await _authService.EnsureAuthenticatedAsync()) return;
 
         await _syncLock.WaitAsync();
         try
@@ -119,7 +119,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     public async Task TriggerImmediateSyncAsync()
     {
-        if (!_authService.IsAuthenticated) return;
+        if (!await _authService.EnsureAuthenticatedAsync()) return;
 
         await _syncLock.WaitAsync();
 

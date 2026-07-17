@@ -85,7 +85,9 @@ public sealed class SupabaseRealtimeService : ISupabaseRealtimeService, IAsyncDi
             return;
         }
 
-        if (!_authService.IsAuthenticated
+        var isAuthenticated = await _authService.EnsureAuthenticatedAsync();
+
+        if (!isAuthenticated
             || string.IsNullOrWhiteSpace(_options.Url)
             || string.IsNullOrWhiteSpace(_options.AnonKey)
             || string.IsNullOrWhiteSpace(_authService.CurrentAccessToken)

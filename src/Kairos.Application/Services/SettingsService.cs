@@ -320,7 +320,7 @@ public class SettingsService : ISettingsService
 
     private async Task PullSettingsFromSupabaseOrSeedAsync(bool seedWhenMissing)
     {
-        if (_authService is null || _supabaseSettingsStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseSettingsStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }
@@ -356,7 +356,7 @@ public class SettingsService : ISettingsService
 
     private async Task PersistSettingsToSupabaseAsync()
     {
-        if (_authService is null || _supabaseSettingsStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseSettingsStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }

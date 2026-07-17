@@ -20,6 +20,11 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
     public async Task<SyncedSettingsData?> LoadSettingsAsync()
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return null;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {
@@ -56,6 +61,11 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
     public async Task SaveSettingsAsync(SyncedSettingsData settings)
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {

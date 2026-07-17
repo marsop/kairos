@@ -21,6 +21,11 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
 
     public async Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync()
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return Array.Empty<ActivityEvent>();
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {
@@ -53,6 +58,11 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
 
     public async Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events)
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {

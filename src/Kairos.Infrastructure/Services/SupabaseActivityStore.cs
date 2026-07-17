@@ -21,6 +21,11 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
     public async Task<IReadOnlyList<Activity>> LoadActivitiesAsync()
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return Array.Empty<Activity>();
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {
@@ -53,6 +58,11 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
     public async Task SaveActivitiesAsync(IReadOnlyList<Activity> activities)
     {
+        if (!await _authService.EnsureAuthenticatedAsync())
+        {
+            return;
+        }
+
         var userId = _authService.CurrentUserId;
         if (!CanSync(userId))
         {

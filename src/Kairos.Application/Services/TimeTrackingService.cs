@@ -654,7 +654,7 @@ public class TimeTrackingService : ITimeTrackingService
 
     private async Task PullFromSupabaseOrSeedAsync()
     {
-        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }
@@ -685,7 +685,7 @@ public class TimeTrackingService : ITimeTrackingService
 
     private async Task ReloadActivitiesFromSupabaseAsync(bool seedWhenMissing)
     {
-        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }
@@ -713,7 +713,7 @@ public class TimeTrackingService : ITimeTrackingService
 
     private async Task ReloadAccountFromSupabaseAsync(bool seedWhenMissing)
     {
-        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }
@@ -799,7 +799,7 @@ public class TimeTrackingService : ITimeTrackingService
 
     private async Task PersistAccountToSupabaseAsync()
     {
-        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !_authService.IsAuthenticated)
+        if (_authService is null || _supabaseActivityStore is null || _supabaseTimeAccountStore is null || !await _authService.EnsureAuthenticatedAsync())
         {
             return;
         }
