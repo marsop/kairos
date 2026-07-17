@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Avatars**: Generated and added new tutorial avatar poses (`tutorial-avatar-11.png`) for both Kawaii and Zarzaparrilla styles to reduce image reuse in the tutorial.
+
 ## [1.4.0] - 2026-07-15
 
 ### Added
