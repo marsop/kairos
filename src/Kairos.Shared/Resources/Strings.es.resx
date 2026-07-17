@@ -767,4 +767,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Horas asignadas</value>
   </data>
+  <data name="TutorialHistoryViews" xml:space="preserve">
+    <value>Navega por tu Historial fácilmente usando los nuevos botones de Día Anterior y Día Siguiente. Además, los eventos activos ahora tienen una animación intermitente tanto en la vista de Calendario como en la de Lista para que siempre puedas ver lo que está en ejecución.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>Activa 'Mostrar ajustes avanzados' en la sección General para revelar más opciones. Puedes organizar elementos con Grupos de Actividades o eliminar automáticamente eventos más cortos que una duración configurada para mantener tu historial limpio.</value>
+  </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>Para el seguimiento por hardware, un indicador de estado permanente del Rastreador se encuentra en la barra de navegación inferior. Proporciona una visibilidad rápida del estado de conexión de tu Timeular sin importar en qué página te encuentres.</value>
+  </data>
 </root>

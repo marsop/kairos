@@ -766,4 +766,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Allocated hours</value>
   </data>
+  <data name="TutorialHistoryViews" xml:space="preserve">
+    <value>Navigate your History easily using the new Previous and Next Day buttons. Additionally, active events now feature a pulsating animation in both Calendar and List views so you can always spot what is running.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize items with Activity Groups or automatically delete events shorter than a configured duration to keep your history clean.</value>
+  </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>For hardware tracking, a permanent Tracker status indicator sits in the bottom navigation bar. It provides quick visibility of your Timeular connection state no matter which page you are on.</value>
+  </data>
 </root>

@@ -97,16 +97,25 @@ public class TutorialService : ITutorialService
             // 12. History - edit and delete
             new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-11.png"),
 
-            // 13. Settings - personalization
+            // 13. History - views
+            new TutorialStep(_localizer["TutorialHistoryViews"], "history", $"{basePath}/tutorial-avatar-3.png"),
+
+            // 14. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
 
-            // 14. Settings - integrations and notifications
+            // 15. Settings - advanced
+            new TutorialStep(_localizer["TutorialSettingsAdvanced"], "settings", $"{basePath}/tutorial-avatar-8.png"),
+
+            // 16. Settings - integrations and notifications
             new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", $"{basePath}/tutorial-avatar-6.png"),
 
-            // 15. Backups and reset safety
+            // 17. Settings - tracker status
+            new TutorialStep(_localizer["TutorialTrackerStatus"], "settings", $"{basePath}/tutorial-avatar-4.png"),
+
+            // 18. Backups and reset safety
             new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-5.png"),
 
-            // 16. Completion
+            // 19. Completion
             new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-7.png")
         };
     }
