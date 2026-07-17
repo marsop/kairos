@@ -1,0 +1,607 @@
+@page "/activities"
+@using Kairos.Core.Models
+@using Kairos.Application.Services
+@using Kairos.Application.Resources
+@inject ITimeTrackingService TimeService
+@using Microsoft.JSInterop
+@inject IActivityStartPromptService ActivityStartPromptService
+@inject ISettingsService SettingsService
+@inject IStringLocalizer<Strings> Localizer
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<div class="activities-page">
+    <div class="page-header">
+        <h2 class="page-title">@Localizer["NavActivities"]</h2>
+        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+            @if (SettingsService.ActivityGroupsEnabled)
+            {
+                <div class="view-toggle">
+                    <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">@string.Format(Localizer["Group"], 0)</button>
+                    <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">@string.Format(Localizer["Group"], 1)</button>
+                </div>
+            }
+            <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                    <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
+                         @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
+                         @onclick:stopPropagation="true">
+                        <span>@Localizer["ExportActivitiesCsv"]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="activities-grid @(ActiveEvent != null ? "has-active" : "")">
+        @{
+            var orderedActivities = TimeService.Account.Activities
+                .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
+                .OrderBy(m => m.DisplayOrder).ToList();
+        }
+        @for (var index = 0; index < orderedActivities.Count; index++)
+        {
+            var activity = orderedActivities[index];
+            var isActive = IsActiveActivity(activity.Id);
+            var isEditing = _editingActivityId == activity.Id;
+            var isDragging = _draggedActivity?.Id == activity.Id;
+            var isDragOver = _dragTargetActivityId.HasValue && _dragTargetActivityId.Value == activity.Id && _draggedActivity?.Id != activity.Id;
+
+            <div draggable="@(isEditing ? "false" : "true")"
+                 class="activity-container @(isActive ? "is-active" : "") @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
+                 @ondragstart="() => HandleDragStart(activity)"
+                 @ondragenter="() => HandleDragEnter(activity)"
+                 @ondragover="HandleDragOver"
+                 @ondragover:preventDefault
+                 @ondrop="() => HandleDrop(activity)"
+                 @ondragend="HandleDragEnd"
+                 @ondragleave="HandleDragLeave">
+                @if (isEditing)
+                {
+                    <div class="activity-edit-form">
+                        <input type="text" 
+                               class="activity-name-input @(_validationError != null ? "invalid" : "")"
+                               @bind="_editingActivityName"
+                               @bind:event="oninput"
+                               @onkeydown="HandleEditKeyDown"
+                               maxlength="40"
+                               autofocus />
+                        <div class="activity-metadata-field">
+                            <input type="text"
+                                   class="activity-metadata-input"
+                                   title="@Localizer["ActivityId"]"
+                                   value="@activity.Id"
+                                   readonly />
+                        </div>
+                        <div class="activity-metadata-field">
+                            <input type="text"
+                                   class="activity-metadata-input"
+                                   placeholder="@Localizer["Metadata"]"
+                                   @bind="_editingActivityMetadata"
+                                   maxlength="250" />
+                        </div>
+                        <div class="activity-emoji-field">
+                            <label class="activity-color-label">@Localizer["Emoji"]</label>
+                            <button id="edit-emoji-btn-@activity.Id"
+                                    type="button"
+                                    class="emoji-button"
+                                    @onclick="@(() => ShowEmojiPicker($"edit-emoji-btn-{activity.Id}", true))">
+                                @(string.IsNullOrEmpty(_editingActivityEmoji) ? "😃" : _editingActivityEmoji)
+                            </button>
+                        </div>
+                        <div class="activity-color-field">
+                            <label class="activity-color-label">@Localizer["Color"]</label>
+                            <div class="activity-color-picker-row">
+                                <input type="color"
+                                       class="activity-color-input"
+                                       @bind="_editingActivityColor"
+                                       @bind:event="oninput" />
+                                <span class="activity-color-value">@_editingActivityColor</span>
+                            </div>
+                        </div>
+                        <div class="edit-actions">
+                            <button class="edit-action-btn save" @onclick="SaveEdit" title="@Localizer["Save"]">✓</button>
+                            <button class="edit-action-btn cancel" @onclick="CancelEdit" @onclick:stopPropagation="true" title="@Localizer["Cancel"]">✕</button>
+                        </div>
+                        @if (_validationError != null)
+                        {
+                            <div class="validation-error">@_validationError</div>
+                        }
+                        <div class="char-count @(_editingActivityName?.Length > 40 ? "over-limit" : "")">
+                            @(_editingActivityName?.Length ?? 0)/40
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <button class="activity-button activity-colored @(isActive ? "active" : "")"
+                            style="@GetActivityStyle(activity.Color, isActive)"
+                            @onclick="() => ToggleActivity(activity.Id)">
+                        <div class="activity-index">#@(index + 1)</div>
+                        <div class="activity-name">@activity.Emoji @activity.Name</div>
+                    </button>
+                    <div class="activity-actions left">
+                        <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
+                            ✏️
+                        </button>
+                    </div>
+                    <div class="activity-actions right">
+                        @if (!isActive)
+                        {
+                            <button class="activity-action-btn delete" @onclick="() => DeleteActivity(activity)" @onclick:stopPropagation="true" title="@Localizer["DeleteActivity"]">
+                                🗑️
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        
+        @if (TimeService.Account.Activities.Count < Kairos.Application.Services.TimeTrackingService.MaxActivities &&
+             TimeService.Account.Activities.Count(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup) < Kairos.Application.Services.TimeTrackingService.MaxActivitiesPerGroup)
+        {
+        <div class="activity-container add-activity">
+            @if (_isAddingActivity)
+            {
+                <div class="activity-edit-form">
+                    <input type="text" 
+                           class="activity-name-input"
+                           placeholder="@Localizer["Name"]"
+                           @bind="_newActivityName"
+                           maxlength="40"
+                           autofocus />
+                    <div class="activity-metadata-field">
+                        <input type="text"
+                               class="activity-metadata-input"
+                               placeholder="@Localizer["Metadata"]"
+                               @bind="_newActivityMetadata"
+                               maxlength="250" />
+                    </div>
+                    <div class="activity-emoji-field">
+                        <label class="activity-color-label">@Localizer["Emoji"]</label>
+                        <button id="add-emoji-btn"
+                                type="button"
+                                class="emoji-button"
+                                @onclick='@(() => ShowEmojiPicker("add-emoji-btn", false))'>
+                            @(string.IsNullOrEmpty(_newActivityEmoji) ? "😃" : _newActivityEmoji)
+                        </button>
+                    </div>
+                    <div class="activity-color-field">
+                        <label class="activity-color-label">@Localizer["Color"]</label>
+                        <div class="activity-color-picker-row">
+                            <input type="color"
+                                   class="activity-color-input"
+                                   @bind="_newActivityColor"
+                                   @bind:event="oninput" />
+                            <span class="activity-color-value">@_newActivityColor</span>
+                        </div>
+                    </div>
+                            
+                    <div class="edit-actions">
+                        <button class="edit-action-btn save" @onclick="SaveNewActivity" title="@Localizer["Add"]">✓</button>
+                        <button class="edit-action-btn cancel" @onclick="CancelAdd" title="@Localizer["Cancel"]">✕</button>
+                    </div>
+                    
+                    @if (_addValidationError != null)
+                    {
+                        <div class="validation-error">@_addValidationError</div>
+                    }
+                </div>
+            }
+            else
+            {
+                <button class="activity-button add-activity-btn" @onclick="StartAdding">
+                    <div class="add-icon">+</div>
+                    <div class="add-text">@Localizer["AddActivity"]</div>
+                </button>
+            }
+        </div>
+        }
+    </div>
+    
+    @if (ActiveEvent != null)
+    {
+        <div class="active-info">
+            <div class="active-duration">
+                <span class="label">@Localizer["RunningFor"] (@ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName)</span>
+                <span class="value">@FormatDuration(ActiveEvent.Duration)</span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
+            {
+                <div class="active-comment">
+                    @ActiveEvent.Comment
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (_activityToDelete != null)
+{
+    <div class="modal-overlay" @onclick="CancelDelete">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["DeleteActivityTitle"]</h3>
+            <p>@Localizer["DeleteActivityConfirm", _activityToDelete.Name]</p>
+            <p class="modal-contribution">@Localizer["DeleteActivityWarning"]</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelDelete">@Localizer["Cancel"]</button>
+                <button class="btn-delete" @onclick="ConfirmDeleteActivity">@Localizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
+    
+    private System.Threading.Timer? _timer;
+    private bool _isMenuOpen;
+    private Guid? _editingActivityId;
+    private string? _editingActivityName;
+
+    private void SetActiveGroup(int group)
+    {
+        if (SettingsService.ActiveActivityGroup != group)
+        {
+            var activeEvent = TimeService.GetActiveEvent();
+            if (activeEvent != null)
+            {
+                var activeActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Name == activeEvent.ActivityName);
+                if (activeActivity != null && activeActivity.ActivityGroupId != group)
+                {
+                    TimeService.DeactivateActivity();
+                }
+            }
+            SettingsService.ActiveActivityGroup = group;
+        }
+    }
+
+    private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
+    private async Task CloseMenu()
+    {
+        await Task.Delay(100);
+        _isMenuOpen = false;
+        StateHasChanged();
+    }
+
+    private string _editingActivityColor = Activity.DefaultColor;
+    private string? _editingActivityEmoji;
+    private string? _editingActivityMetadata;
+    private string? _validationError;
+
+    // Add Activity State
+    private bool _isAddingActivity;
+    private string _newActivityName = string.Empty;
+    private string _newActivityColor = Activity.DefaultColor;
+    private string? _newActivityEmoji;
+    private string? _newActivityMetadata;
+    private string? _addValidationError;
+
+    // Drag and Drop State
+    private Activity? _draggedActivity;
+    private Guid? _dragTargetActivityId;
+
+    private Activity? _activityToDelete;
+
+    private DotNetObjectReference<Activities>? _objRef;
+
+    private string CsvFileName => $"kairos-activities-{DateTime.Now:yyyy-MM-dd}.csv";
+    private const string CsvMimeType = "text/csv;charset=utf-8";
+    private sealed record FileDownloadRequest(string FileName, string Content, string ContentType);
+
+    protected override void OnInitialized()
+    {
+        TimeService.OnStateChanged += StateHasChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
+        
+        // Update every second to show running duration
+        _timer = new System.Threading.Timer(_ =>
+        {
+            InvokeAsync(StateHasChanged);
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private bool IsActiveActivity(Guid activityId)
+    {
+        var activeEvent = ActiveEvent;
+        if (activeEvent == null) return false;
+        
+        var activity = TimeService.Account.Activities.FirstOrDefault(m => m.Id == activityId);
+        return activity != null && activeEvent.ActivityName == activity.Name;
+    }
+
+    private void ToggleActivity(Guid activityId)
+    {
+        if (ActivityStartPromptService.ConsumeRecentConfirmation(activityId, TimeSpan.FromMilliseconds(500)))
+        {
+            return;
+        }
+
+        if (IsActiveActivity(activityId))
+        {
+            TimeService.DeactivateActivity();
+        }
+        else
+        {
+            StartActivityWithComment(activityId);
+        }
+    }
+
+    private void StartActivityWithComment(Guid activityId)
+    {
+        ActivityStartPromptService.RequestStart(activityId);
+        CancelEdit();
+        CancelAdd();
+    }
+
+    private void StartEditing(Activity activity)
+    {
+        _editingActivityId = activity.Id;
+        _editingActivityName = activity.Name;
+        _editingActivityColor = Activity.SanitizeColor(activity.Color);
+        _editingActivityEmoji = activity.Emoji;
+        _editingActivityMetadata = activity.Metadata;
+        _validationError = null;
+        CancelAdd();
+    }
+
+    private void SaveEdit()
+    {
+        if (_editingActivityId == null || _editingActivityName == null)
+        {
+            CancelEdit();
+            return;
+        }
+
+        var trimmedName = _editingActivityName.Trim();
+        
+        if (trimmedName.Length < 1 || trimmedName.Length > 40)
+        {
+            _validationError = Localizer["NameLengthError"];
+            return;
+        }
+
+        try
+        {
+            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor, _editingActivityEmoji ?? string.Empty, _editingActivityMetadata ?? string.Empty);
+            CancelEdit();
+        }
+        catch (ArgumentException ex)
+        {
+            _validationError = ex.Message;
+        }
+    }
+
+    private void CancelEdit()
+    {
+        _editingActivityId = null;
+        _editingActivityName = null;
+        _editingActivityColor = Activity.DefaultColor;
+        _editingActivityEmoji = null;
+        _editingActivityMetadata = null;
+        _validationError = null;
+    }
+
+    private void HandleEditKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SaveEdit();
+        }
+        else if (e.Key == "Escape")
+        {
+            CancelEdit();
+        }
+    }
+
+    private string FormatDuration(TimeSpan duration)
+    {
+        if (duration.TotalHours >= 1)
+        {
+            return Localizer["DurationLong", (int)duration.TotalHours, duration.Minutes];
+        }
+        else if (duration.TotalMinutes >= 1)
+        {
+            return Localizer["DurationShort", (int)duration.TotalMinutes, duration.Seconds];
+        }
+        else
+        {
+            return Localizer["DurationSeconds", (int)duration.TotalSeconds];
+        }
+    }
+
+    private void DeleteActivity(Activity activity)
+    {
+        if (IsActiveActivity(activity.Id)) return;
+        _activityToDelete = activity;
+    }
+
+    private void CancelDelete()
+    {
+        _activityToDelete = null;
+    }
+
+    private void ConfirmDeleteActivity()
+    {
+        if (_activityToDelete != null)
+        {
+            TimeService.DeleteActivity(_activityToDelete.Id);
+            _activityToDelete = null;
+        }
+    }
+    
+    // Add Activity Logic
+    private void StartAdding()
+    {
+        _isAddingActivity = true;
+        _newActivityName = string.Empty;
+        _newActivityColor = GetSuggestedColor();
+        _newActivityEmoji = null;
+        _newActivityMetadata = null;
+        _addValidationError = null;
+        CancelEdit();
+    }
+
+    private void CancelAdd()
+    {
+        _isAddingActivity = false;
+        _newActivityName = string.Empty;
+        _newActivityColor = Activity.DefaultColor;
+        _newActivityEmoji = null;
+        _newActivityMetadata = null;
+        _addValidationError = null;
+    }
+
+    private void SaveNewActivity()
+    {
+        if (string.IsNullOrWhiteSpace(_newActivityName))
+        {
+            _addValidationError = Localizer["NameRequired"];
+            return;
+        }
+        
+        try
+        {
+            TimeService.AddActivity(_newActivityName, _newActivityColor, _newActivityEmoji ?? string.Empty, _newActivityMetadata ?? string.Empty, SettingsService.ActiveActivityGroup);
+            CancelAdd();
+        }
+        catch (Exception ex)
+        {
+            _addValidationError = ex.Message;
+        }
+    }
+
+    // Drag and Drop Handlers
+
+    private void HandleDragStart(Activity activity)
+    {
+        _draggedActivity = activity;
+        _dragTargetActivityId = null;
+    }
+
+    private void HandleDragEnter(Activity activity)
+    {
+        if (_draggedActivity == null || _draggedActivity.Id == activity.Id) return;
+        _dragTargetActivityId = activity.Id;
+    }
+
+    private void HandleDragLeave()
+    {
+        // No-op: we only clear on DragEnd or Drop to avoid flicker from child elements
+    }
+
+    private void HandleDragOver(DragEventArgs e)
+    {
+        e.DataTransfer.DropEffect = "move";
+    }
+
+    private void HandleDragEnd()
+    {
+        _draggedActivity = null;
+        _dragTargetActivityId = null;
+    }
+
+    private void HandleDrop(Activity targetActivity)
+    {
+        if (_draggedActivity == null || _draggedActivity.Id == targetActivity.Id)
+        {
+            _draggedActivity = null;
+            _dragTargetActivityId = null;
+            return;
+        }
+
+        // Compute the reorder: remove dragged from original position, insert at target position
+        var activities = TimeService.Account.Activities.OrderBy(m => m.DisplayOrder).ToList();
+        var draggedIndex = activities.FindIndex(m => m.Id == _draggedActivity.Id);
+        var targetIndex = activities.FindIndex(m => m.Id == targetActivity.Id);
+
+        if (draggedIndex != -1 && targetIndex != -1)
+        {
+            var dragged = activities[draggedIndex];
+            activities.RemoveAt(draggedIndex);
+            activities.Insert(targetIndex, dragged);
+            TimeService.ReorderActivities(activities.Select(m => m.Id).ToList());
+        }
+
+        _draggedActivity = null;
+        _dragTargetActivityId = null;
+    }
+
+    private async Task ExportActivitiesCsvAsync()
+    {
+        var csv = TimeService.ExportActivitiesAsCsv();
+        await JSRuntime.InvokeVoidAsync(
+            "kairosFile.downloadText",
+            new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
+    }
+
+    public void Dispose()
+    {
+        TimeService.OnStateChanged -= StateHasChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
+        _timer?.Dispose();
+        _objRef?.Dispose();
+    }
+
+    private async Task ShowEmojiPicker(string buttonId, bool isEditing)
+    {
+        _objRef ??= DotNetObjectReference.Create(this);
+        var methodName = isEditing ? nameof(SetEditingEmoji) : nameof(SetNewEmoji);
+        await JSRuntime.InvokeVoidAsync("window.emojiPickerInterop.showPicker", buttonId, _objRef, methodName);
+    }
+
+    [JSInvokable]
+    public void SetEditingEmoji(string emoji)
+    {
+        _editingActivityEmoji = emoji;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SetNewEmoji(string emoji)
+    {
+        _newActivityEmoji = emoji;
+        StateHasChanged();
+    }
+
+    private string GetSuggestedColor()
+    {
+        var palette = new[]
+        {
+            "#10B981",
+            "#3B82F6",
+            "#F59E0B",
+            "#EF4444",
+            "#8B5CF6",
+            "#14B8A6",
+            "#EC4899",
+            "#84CC16"
+        };
+
+        var usedColors = TimeService.Account.Activities
+            .Select(m => Activity.SanitizeColor(m.Color))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return palette.FirstOrDefault(color => !usedColors.Contains(color)) ?? Activity.DefaultColor;
+    }
+
+    private static string GetActivityStyle(string color, bool isActive)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var borderAlpha = isActive ? 0.88 : 0.42;
+        var glowAlpha = isActive ? 0.28 : 0.16;
+        var tintAlpha = isActive ? 0.12 : 0.07;
+        var activeTintAlpha = isActive ? 0.24 : 0.14;
+        return $"--activity-color: {normalized}; --activity-color-border: {ToRgba(normalized, borderAlpha)}; --activity-color-glow: {ToRgba(normalized, glowAlpha)}; --activity-color-tint: {ToRgba(normalized, tintAlpha)}; --activity-color-active-tint: {ToRgba(normalized, activeTintAlpha)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
+    }
+}

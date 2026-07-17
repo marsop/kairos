@@ -1,0 +1,143 @@
+@inherits LayoutComponentBase
+@using Kairos.Application.Services
+@inject IPwaService PwaService
+@inject ITimeularService TimeularService
+@inject ITimeTrackingService TimeTrackingService
+@inject IStringLocalizer<Strings> Localizer
+@implements IDisposable
+
+<div class="app-container">
+    <main class="main-content">
+        @if (!PwaService.IsOnline)
+        {
+            <div class="offline-banner">
+                <span class="offline-icon">📡</span>
+                <span>@Localizer["OfflineBanner"]</span>
+            </div>
+        }
+        
+        @if (PwaService.IsInstallable)
+        {
+            <div class="install-prompt">
+                <div class="install-content">
+                    <span class="install-icon">📱</span>
+                    <div class="install-text">
+                        <span class="install-title">@Localizer["InstallKairos"]</span>
+                        <span class="install-desc">@Localizer["InstallDesc"]</span>
+                    </div>
+                </div>
+                <button class="install-btn" @onclick="InstallApp">@Localizer["Install"]</button>
+            </div>
+        }
+
+        @Body
+        
+        <Kairos.App.Components.ToastContainer />
+        <Kairos.App.Components.StartActivityCommentDialog />
+        <Kairos.App.Components.TutorialOverlay />
+        <Kairos.App.Components.SyncConflictDialog />
+    </main>
+    
+    <nav class="bottom-nav">
+        <NavLink href="activities" class="nav-item">
+            <span class="nav-icon">⏱️</span>
+            <span class="nav-label">@Localizer["NavActivities"]</span>
+        </NavLink>
+
+        <NavLink href="history" class="nav-item">
+            <span class="nav-icon">📜</span>
+            <span class="nav-label">@Localizer["NavHistory"]</span>
+        </NavLink>
+
+        <NavLink href="" class="nav-item" Match="NavLinkMatch.All">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">@Localizer["NavStatistics"]</span>
+        </NavLink>
+
+        <NavLink href="settings" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">@Localizer["NavSettings"]</span>
+        </NavLink>
+
+        <div class="nav-item status-nav-item">
+            <div class="status-indicators">
+                <a href="activities" class="status-indicator activity-nav-item" title="Activity">
+                    <span class="nav-icon activity-nav-icon">
+                        @if (TimeTrackingService.GetActiveEvent() != null)
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="status-svg activity-active">
+                                <path d="M5 3l14 9-14 9V3z"/>
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="status-svg activity-inactive">
+                                <path d="M6 6h12v12H6z"/>
+                            </svg>
+                        }
+                    </span>
+                </a>
+
+                @if (TimeularService.HasConnectedBefore)
+                {
+                    <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="status-indicator timeular-nav-item" title="Tracker">
+                        <span class="nav-icon timeular-nav-icon">
+                            @if (TimeularService.IsConnecting)
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-svg timeular-connecting"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                            }
+                            else if (TimeularService.IsConnected)
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-svg timeular-connected"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-svg timeular-disconnected"><path d="m18.84 12.25 1.72-1.71h-.01a5.001 5.001 0 0 0-7.07-7.07l-1.72 1.71"/><path d="m5.17 11.75-1.71 1.71a5.001 5.001 0 0 0 7.07 7.07l1.71-1.71"/><line x1="8" y1="8" x2="16" y2="16"/></svg>
+                            }
+                        </span>
+                    </a>
+                }
+            </div>
+            <span class="nav-label">@Localizer["NavStatus"]</span>
+        </div>
+    </nav>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        PwaService.OnStateChanged += StateHasChanged;
+        TimeularService.OnStateChanged += StateHasChanged;
+        TimeTrackingService.OnStateChanged += StateHasChanged;
+        
+        await PwaService.InitializeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await TimeularService.InitializeAsync();
+        }
+    }
+
+    private async Task InstallApp()
+    {
+        await PwaService.InstallAppAsync();
+    }
+
+    private async Task HandleTrackerClick()
+    {
+        if (!TimeularService.IsConnected && !TimeularService.IsConnecting)
+        {
+            await TimeularService.AutoConnectAsync();
+        }
+    }
+
+    public void Dispose()
+    {
+        PwaService.OnStateChanged -= StateHasChanged;
+        TimeularService.OnStateChanged -= StateHasChanged;
+        TimeTrackingService.OnStateChanged -= StateHasChanged;
+    }
+}

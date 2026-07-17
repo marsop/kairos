@@ -1,5 +1,5 @@
-using Kairos.Shared.Models;
-using Kairos.Shared.Services;
+using Kairos.Core.Models;
+using Kairos.Application.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
@@ -113,7 +113,7 @@ internal sealed class StubNotificationService : INotificationService
     public Task<string> RequestBrowserPermissionAsync() => Task.FromResult("default");
 }
 
-internal sealed class StubStringLocalizer : IStringLocalizer<Kairos.Shared.Resources.Strings>
+internal sealed class StubStringLocalizer : IStringLocalizer<Kairos.Application.Resources.Strings>
 {
     public LocalizedString this[string name] => new LocalizedString(name, name);
 

@@ -8,11 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
-    <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -20,7 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kairos.Shared\Kairos.Shared.csproj" />
+    <ProjectReference Include="..\Kairos.App\Kairos.App.csproj" />
+    <ProjectReference Include="..\Kairos.Infrastructure\Kairos.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

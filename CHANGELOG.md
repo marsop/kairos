@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Localization**: Localized hardcoded UI text in razor components.
 - **Logging**: Added structured logging for Timeular Bluetooth auto-reconnect outcomes.
 - **Supabase Sync**: First-sync divergence now prompts conflict resolution when both local and server activity events contain different data.
+- **Architecture**: Reorganized the solution from the old `Kairos.Shared`/`Kairos.Web` split into `Kairos.Core`, `Kairos.Application`, `Kairos.Infrastructure`, `Kairos.App`, and `Kairos.Web` to establish clearer boundaries between domain, use cases, infrastructure, UI, and host startup.
+- **Namespaces**: Realigned namespaces to match the new project boundaries (`Kairos.Core.*`, `Kairos.Application.*`, `Kairos.Infrastructure.*`, `Kairos.App.*`) and updated all references/usings across source and tests.
+- **Codebase Hygiene**: Removed obsolete project references/paths and cleaned unused `using` directives after the refactor.
 
 ### Fixed
 - **Supabase Sync**: Fixed syncing of user settings to Supabase (malformed API query and missing sticky events duration mapping).

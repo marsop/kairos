@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Kairos.Shared.Services;
+using Kairos.Application.Services;
+using Kairos.Infrastructure.Services;
 using Microsoft.JSInterop;
 
 namespace Kairos.ValidationTest;

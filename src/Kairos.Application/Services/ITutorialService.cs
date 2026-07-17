@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Kairos.Core.Models;
+
+namespace Kairos.Application.Services;
+
+public record TutorialStep(string Message, string? Route = null, string? ImageUrl = null);
+
+public interface ITutorialService
+{
+    bool IsActive { get; }
+    TutorialStep? CurrentStep { get; }
+    bool IsInitialSetupStep { get; }
+    bool CanAdvanceFromCurrentStep { get; }
+
+    bool HasCompletedTutorial { get; }
+
+    IReadOnlyList<AvatarProfile> AvailableAvatars { get; }
+    AvatarProfile CurrentAvatar { get; }
+
+    event Action? OnChange;
+
+    Task InitializeAsync();
+    void StartTutorial();
+    Task NextStepAsync();
+    Task CompleteTutorialAsync();
+    Task ResetTutorialAsync();
+    Task SetAvatarAsync(string avatarId);
+    void MarkInitialSetupAvatarSelected();
+    void MarkInitialSetupLanguageSelected();
+}

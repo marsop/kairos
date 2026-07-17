@@ -1,5 +1,5 @@
-using Kairos.Shared.Models;
-using Kairos.Shared.Services;
+using Kairos.Core.Models;
+using Kairos.Application.Services;
 
 namespace Kairos.ValidationTest;
 

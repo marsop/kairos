@@ -60,16 +60,12 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ```
 Kairos/
 ├── src/
-│   ├── Kairos.Shared/       # Shared components, services, models
-│   │   ├── Components/       # Reusable UI components
-│   │   ├── Layout/           # Application layout
-│   │   ├── Models/           # Data models (Activity, ActivityEvent, TimeAccount)
-│   │   ├── Pages/            # Application pages (Overview, Activities, History, Statistics, etc.)
-│   │   ├── Resources/        # Localization files
-│   │   └── Services/         # Core business logic services
-│   └── Kairos.Web/          # Blazor WebAssembly project
-│       ├── Services/         # Web-specific service implementations
-│       └── wwwroot/          # Static assets, CSS, JS
+│   ├── Kairos.Core/         # Domain models and core entities
+│   ├── Kairos.Application/  # Business logic and service contracts
+│   ├── Kairos.Infrastructure/ # Supabase and browser-specific implementations
+│   ├── Kairos.App/          # Razor UI (pages, components, layout, static assets)
+│   └── Kairos.Web/          # Blazor WebAssembly host/composition root
+│       └── wwwroot/         # Host static assets and bootstrap files
 ├── tests/                    # Test projects
 └── Kairos.sln               # Solution file
 ```

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Kairos.Web;
-using Kairos.Web.Services;
-using Kairos.Shared.Services;
+using Kairos.Application.Services;
+using Kairos.Infrastructure.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

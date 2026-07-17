@@ -1,4 +1,4 @@
-using Kairos.Web.Services;
+using Kairos.Infrastructure.Services;
 
 namespace Kairos.ValidationTest;
 

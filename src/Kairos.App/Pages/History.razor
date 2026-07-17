@@ -1,0 +1,667 @@
+@page "/history"
+@using Kairos.Application.Services
+@using Kairos.Core.Models
+@using Kairos.Application.Resources
+@using Microsoft.JSInterop
+@inject ITimeTrackingService TimeService
+@inject IActivityEventSyncService SyncService
+@inject IStringLocalizer<Strings> Localizer
+@inject IJSRuntime JSRuntime
+@inject ISettingsService SettingsService
+@implements IDisposable
+
+<div class="history-page">
+    <div class="history-header">
+        <div class="page-header">
+            <h1 class="page-title">@Localizer["NavHistory"]</h1>
+            <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+                <div class="view-toggle">
+                    <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">@Localizer["HistoryList"]</button>
+                    <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">@Localizer["HistoryCalendar"]</button>
+                </div>
+                <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                    <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                    <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                        <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
+                             @onclick="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer["ExportDayEventsCsv"]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="history-toolbar">
+            <div class="history-date-filter">
+                <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
+                <div class="history-date-selector">
+                    <button class="history-date-nav-btn" aria-label="Previous Day" @onclick="PreviousDay">&lt;</button>
+                    <input id="history-date"
+                           class="history-date-input"
+                           type="date"
+                           value="@SelectedDateValue"
+                           @onchange="OnSelectedDateChanged" />
+                    <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
+                </div>
+            </div>
+            @if (SettingsService.HistoryView == "calendar")
+            {
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <div class="view-toggle">
+                        <button @onclick="ZoomIn" title="Zoom In">+</button>
+                        <button @onclick="ZoomOut" title="Zoom Out">-</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (!AllEvents.Any())
+    {
+        <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <p>@Localizer["NoEvents"]</p>
+            <p class="empty-hint">@Localizer["StartActivityHint"]</p>
+        </div>
+    }
+    else if (!FilteredEvents.Any())
+    {
+        <div class="empty-state">
+            <span class="empty-icon">🗓️</span>
+            <p>@Localizer["NoEventsForDate"]</p>
+            <p class="empty-hint">@SelectedDate.ToString("D")</p>
+        </div>
+    }
+    else
+    {
+        @if (SettingsService.HistoryView == "calendar")
+        {
+            <div class="calendar-scroll-area" @ref="_calendarScrollArea">
+                <div class="calendar-y-axis" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                    @for (int i = 0; i < 24; i++)
+                    {
+                        <div class="calendar-hour-marker" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px; height: @(_pixelsPerHour.ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                            @i.ToString("00"):00
+                        </div>
+                    }
+                </div>
+                <div class="calendar-grid" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                    @for (int i = 0; i < 24; i++)
+                    {
+                        <div class="calendar-grid-line" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;"></div>
+                    }
+                </div>
+                <div class="calendar-events" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                    @foreach (var evt in FilteredEvents)
+                    {
+                        <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
+                            <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px;">
+                                @evt.ActivityName
+                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
+                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
+                                </span>
+                            </span>
+                            @if (!string.IsNullOrWhiteSpace(evt.Comment))
+                            {
+                                <span class="calendar-event-comment">@evt.Comment</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="events-list">
+                @foreach (var evt in FilteredEvents)
+                {
+                <div class="event-card @(evt.IsActive ? "active" : "")" style="@GetEventStyle(evt)">
+                    <div class="event-header">
+                        <div class="event-activity-heading">
+                            <span class="activity-color-dot" style="@GetColorDotStyle(GetEventColor(evt))"></span>
+                            <span class="event-activity-name">
+                                @evt.ActivityEmoji @evt.ActivityName
+                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
+                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
+                                </span>
+                            </span>
+                        </div>
+                        <div class="event-header-actions">
+                            @if (evt.IsActive)
+                            {
+                                <span class="event-badge active-badge">
+                                    <span class="pulse"></span>
+                                    @Localizer["Active"]
+                                </span>
+                            }
+                            @if (!evt.IsActive)
+                            {
+                                <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </button>
+                                <button class="delete-btn" @onclick="() => ConfirmDelete(evt)" title="@Localizer["DeleteActivity"]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="event-times">
+                        <div class="event-time">
+                            <span class="time-label">@Localizer["Started"]</span>
+                            <span class="time-value">@FormatDateTime(evt.StartTime)</span>
+                        </div>
+                        @if (evt.EndTime.HasValue)
+                        {
+                            <div class="event-time">
+                                <span class="time-label">@Localizer["Ended"]</span>
+                                <span class="time-value">@FormatDateTime(evt.EndTime.Value)</span>
+                            </div>
+                        }
+                        <div class="event-time event-duration">
+                            <span class="time-label">@Localizer["Duration"]</span>
+                            <span class="time-value" style="font-weight: 600; font-variant-numeric: tabular-nums;">@FormatDuration(evt.Duration)</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(evt.Comment))
+                    {
+                        <div class="event-comment">
+                            <span class="comment-label">@Localizer["Comment"]</span>
+                            <p class="comment-value">@evt.Comment</p>
+                        </div>
+                    }
+                </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@if (_eventToDelete != null)
+{
+    <div class="modal-overlay" @onclick="CancelDelete">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["DeleteEntryTitle"]</h3>
+            <p>@Localizer["DeleteEntryConfirm", _eventToDelete.ActivityName]</p>
+            <p class="modal-contribution">@Localizer["DeleteEntryWarning", FormatContribution(_eventToDelete.Duration)]</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelDelete">@Localizer["Cancel"]</button>
+                <button class="btn-delete" @onclick="DeleteEvent">@Localizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_eventToEdit != null)
+{
+    <div class="modal-overlay" @onclick="CancelEdit">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["EditEventTitle"]</h3>
+            <div class="edit-form">
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["StartTime"]</label>
+                    <input type="datetime-local" class="edit-input"
+                           value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
+                           @onchange="OnStartTimeChanged" />
+                </div>
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["EndTime"]</label>
+                    <input type="datetime-local" class="edit-input"
+                           value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
+                           @onchange="OnEndTimeChanged" />
+                </div>
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["Comment"]</label>
+                    <textarea class="edit-input" @bind="_editComment"></textarea>
+                </div>
+                @if (!string.IsNullOrEmpty(_editError))
+                {
+                    <p class="edit-error">@_editError</p>
+                }
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="SaveEditEvent">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private IEnumerable<ActivityEvent> AllEvents => TimeService.Account.Events
+        .OrderByDescending(e => e.StartTime);
+
+    private IEnumerable<ActivityEvent> FilteredEvents => AllEvents
+        .Where(e => DateOnly.FromDateTime(e.StartTime.ToLocalTime().Date) == SelectedDate);
+
+    private DateOnly SelectedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
+    private string SelectedDateValue => SelectedDate.ToString("yyyy-MM-dd");
+
+    private string CsvFileName => $"kairos-entries-{SelectedDate:yyyy-MM-dd}.csv";
+
+    private const string CsvMimeType = "text/csv;charset=utf-8";
+
+    private sealed record FileDownloadRequest(string FileName, string Content, string ContentType);
+
+    private ElementReference _calendarScrollArea;
+    private bool _shouldScrollCalendar;
+
+    private double _pixelsPerHour = 60;
+    private double _minPixelsPerHour = 60;
+    private double _maxPixelsPerHour = 1000;
+    private DotNetObjectReference<History>? _objRef;
+
+    private System.Threading.Timer? _timer;
+    private ActivityEvent? _eventToDelete;
+    private ActivityEvent? _eventToEdit;
+    private DateTime _editStartTime;
+    private DateTime _editEndTime;
+    private string _editComment = string.Empty;
+    private string? _editError;
+    private bool _isMenuOpen;
+
+    private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
+
+    private async Task CloseMenu()
+    {
+        await Task.Delay(100);
+        _isMenuOpen = false;
+        StateHasChanged();
+    }
+
+    private void SetHistoryView(string view)
+    {
+        if (SettingsService.HistoryView != view)
+        {
+            SettingsService.HistoryView = view;
+            if (view == "calendar")
+            {
+                _shouldScrollCalendar = true;
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && SettingsService.HistoryView == "calendar")
+        {
+            _shouldScrollCalendar = true;
+        }
+
+        if (SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
+        {
+            if (_objRef == null)
+            {
+                _objRef = DotNetObjectReference.Create(this);
+            }
+            await JSRuntime.InvokeVoidAsync("kairosScroll.initZoom", _calendarScrollArea, _objRef);
+        }
+
+        if (_shouldScrollCalendar && SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
+        {
+            _shouldScrollCalendar = false;
+
+            // Calculate minimum pixels per hour to fit 24h in client height
+            double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+            if (clientHeight > 0)
+            {
+                _minPixelsPerHour = clientHeight / 24.0;
+                if (_pixelsPerHour < _minPixelsPerHour)
+                {
+                    _pixelsPerHour = _minPixelsPerHour;
+                    StateHasChanged();
+                }
+                _maxPixelsPerHour = clientHeight; // Max zoom: 1 hour fits the entire screen height
+            }
+
+            double scrollPosition = 7.5 * _pixelsPerHour; // 07:30 default
+
+            if (FilteredEvents.Any())
+            {
+                var minEvent = FilteredEvents.MinBy(e => e.StartTime);
+                if (minEvent != null)
+                {
+                    var localStart = minEvent.StartTime.ToLocalTime();
+                    // 30 minutes before first event
+                    scrollPosition = (localStart.Hour + localStart.Minute / 60.0 - 0.5) * _pixelsPerHour;
+                    if (scrollPosition < 0) scrollPosition = 0;
+                }
+            }
+
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("kairosScroll.setTop", _calendarScrollArea, scrollPosition);
+            }
+            catch (Exception)
+            {
+                // Ignored
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        SyncSelectedDateWithHistory();
+        TimeService.OnStateChanged += HandleTimeServiceStateChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
+        SyncService.OnSyncStateChanged += HandleSyncStateChanged;
+
+        _timer = new System.Threading.Timer(_ =>
+        {
+            if (TimeService.GetActiveEvent() != null)
+            {
+                InvokeAsync(StateHasChanged);
+            }
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private void HandleSyncStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleTimeServiceStateChanged()
+    {
+        SyncSelectedDateWithHistory();
+        StateHasChanged();
+    }
+
+    private void SyncSelectedDateWithHistory()
+    {
+        if (!TimeService.Account.Events.Any())
+        {
+            return;
+        }
+
+        var availableDates = TimeService.Account.Events
+            .Select(m => DateOnly.FromDateTime(m.StartTime.ToLocalTime().Date))
+            .Distinct()
+            .ToHashSet();
+
+        if (!availableDates.Contains(SelectedDate))
+        {
+            SelectedDate = availableDates.Max();
+        }
+    }
+
+    private string FormatDateTime(DateTimeOffset dateTime)
+    {
+        var local = dateTime.ToLocalTime();
+        var now = DateTimeOffset.Now;
+
+        if (local.Date == now.Date)
+        {
+            return Localizer["TodayAt", local.ToString("HH:mm")];
+        }
+        else if (local.Date == now.Date.AddDays(-1))
+        {
+            return Localizer["YesterdayAt", local.ToString("HH:mm")];
+        }
+        else
+        {
+            return Localizer["DateTimeAt", local.ToString("MMM d"), local.ToString("HH:mm")];
+        }
+    }
+
+    private string FormatDuration(TimeSpan duration)
+    {
+        if (duration.TotalHours >= 1)
+        {
+            return Localizer["DurationLong", (int)duration.TotalHours, duration.Minutes];
+        }
+        else if (duration.TotalMinutes >= 1)
+        {
+            return Localizer["DurationShort", (int)duration.TotalMinutes, duration.Seconds];
+        }
+        else
+        {
+            return Localizer["DurationSeconds", (int)duration.TotalSeconds];
+        }
+    }
+
+    private string FormatContribution(TimeSpan contribution)
+    {
+        var sign = contribution.TotalHours >= 0 ? "+" : "";
+        var hours = contribution.TotalHours;
+
+        if (Math.Abs(hours) >= 1)
+        {
+            return $"{sign}{hours:F2}h";
+        }
+        else
+        {
+            var minutes = contribution.TotalMinutes;
+            return $"{sign}{minutes:F1}m";
+        }
+    }
+
+    private void ConfirmDelete(ActivityEvent evt)
+    {
+        _eventToDelete = evt;
+    }
+
+    private void CancelDelete()
+    {
+        _eventToDelete = null;
+    }
+
+    private void DeleteEvent()
+    {
+        if (_eventToDelete != null)
+        {
+            TimeService.DeleteEvent(_eventToDelete.Id);
+            _eventToDelete = null;
+        }
+    }
+
+    private void StartEditEvent(ActivityEvent evt)
+    {
+        _eventToEdit = evt;
+        _editStartTime = evt.StartTime.ToLocalTime().DateTime;
+        _editEndTime = evt.EndTime!.Value.ToLocalTime().DateTime;
+        _editComment = evt.Comment ?? string.Empty;
+        _editError = null;
+    }
+
+    private void CancelEdit()
+    {
+        _eventToEdit = null;
+        _editError = null;
+    }
+
+    private void OnStartTimeChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
+        {
+            _editStartTime = dt;
+        }
+    }
+
+    private void OnEndTimeChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
+        {
+            _editEndTime = dt;
+        }
+    }
+
+    private void SaveEditEvent()
+    {
+        if (_eventToEdit == null) return;
+
+        _editError = null;
+
+        var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
+        var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
+
+        if (newStart >= newEnd)
+        {
+            _editError = Localizer["EndBeforeStart"];
+            return;
+        }
+
+        if (newEnd > DateTimeOffset.Now)
+        {
+            _editError = Localizer["FutureEndTime"];
+            return;
+        }
+
+        try
+        {
+            TimeService.UpdateEventDetails(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
+            _eventToEdit = null;
+        }
+        catch (Exception ex)
+        {
+            _editError = ex.Message;
+        }
+    }
+
+    private void OnSelectedDateChanged(ChangeEventArgs args)
+    {
+        if (DateOnly.TryParse(args.Value?.ToString(), out var selectedDate))
+        {
+            SelectedDate = selectedDate;
+        }
+    }
+
+    private void PreviousDay()
+    {
+        SelectedDate = SelectedDate.AddDays(-1);
+    }
+
+    private void NextDay()
+    {
+        SelectedDate = SelectedDate.AddDays(1);
+    }
+
+    private async Task ExportSelectedDayCsvAsync()
+    {
+        var csv = TimeService.ExportDayAsCsv(SelectedDate);
+        await JSRuntime.InvokeVoidAsync(
+            "kairosFile.downloadText",
+            new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
+    }
+
+    public void Dispose()
+    {
+        TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
+        SyncService.OnSyncStateChanged -= HandleSyncStateChanged;
+        _timer?.Dispose();
+        _objRef?.Dispose();
+    }
+
+    private string GetEventColor(ActivityEvent evt)
+    {
+        if (!string.IsNullOrWhiteSpace(evt.ActivityColor))
+        {
+            return Activity.SanitizeColor(evt.ActivityColor);
+        }
+
+        var matchingActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Name == evt.ActivityName);
+        return Activity.SanitizeColor(matchingActivity?.Color);
+    }
+
+    private string GetEventStyle(ActivityEvent evt)
+    {
+        var color = GetEventColor(evt);
+        return $"border-left: 3px solid {color}; box-shadow: inset 0 1px 0 {ToRgba(color, 0.06)};";
+    }
+
+    private static string GetColorDotStyle(string color)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        return $"background: {normalized}; box-shadow: 0 0 0 4px {ToRgba(normalized, 0.16)};";
+    }
+
+    private static string ToRgba(string color, double alpha)
+    {
+        var normalized = Activity.SanitizeColor(color);
+        var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
+        var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
+        var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
+    }
+
+    private string GetCalendarEventStyle(ActivityEvent evt)
+    {
+        var color = GetEventColor(evt);
+        var localStart = evt.StartTime.ToLocalTime();
+        var topPx = (localStart.Hour + localStart.Minute / 60.0) * _pixelsPerHour;
+
+        var localEnd = evt.EndTime?.ToLocalTime() ?? DateTimeOffset.Now.ToLocalTime();
+        if (localEnd.Date > localStart.Date)
+        {
+            localEnd = localStart.Date.AddDays(1).AddTicks(-1);
+        }
+        var heightPx = Math.Max(15, (localEnd - localStart).TotalHours * _pixelsPerHour);
+
+        return $"top: {topPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {heightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
+    }
+
+    [JSInvokable]
+    public async Task OnWheelZoom(double deltaY, double offsetY, double scrollTop, double clientHeight)
+    {
+        // Update limits just in case
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double oldPixelsPerHour = _pixelsPerHour;
+
+        double zoomFactor = deltaY > 0 ? 0.5 : 2.0; // scroll down = zoom out, scroll up = zoom in
+        _pixelsPerHour = Math.Clamp(_pixelsPerHour * zoomFactor, _minPixelsPerHour, _maxPixelsPerHour);
+
+        if (Math.Abs(_pixelsPerHour - oldPixelsPerHour) > 0.1)
+        {
+            // Center zoom on mouse cursor
+            double cursorTimeHours = (scrollTop + offsetY) / oldPixelsPerHour;
+            double newScrollTop = cursorTimeHours * _pixelsPerHour - offsetY;
+
+            StateHasChanged();
+
+            await Task.Delay(10); // small delay to allow DOM to update
+            await JSRuntime.InvokeVoidAsync("kairosScroll.setTop", _calendarScrollArea, Math.Max(0, newScrollTop));
+        }
+    }
+
+    private async Task ZoomIn()
+    {
+        double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
+        await OnWheelZoom(-100, clientHeight / 2, scrollTop, clientHeight);
+    }
+
+    private async Task ZoomOut()
+    {
+        double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+        if (clientHeight > 0)
+        {
+            _minPixelsPerHour = clientHeight / 24.0;
+            _maxPixelsPerHour = clientHeight;
+        }
+
+        double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
+        await OnWheelZoom(100, clientHeight / 2, scrollTop, clientHeight);
+    }
+
+}

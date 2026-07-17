@@ -1,5 +1,5 @@
-@using Kairos.Shared.Layout
-@using Kairos.Shared.Services
+@using Kairos.App.Layout
+@using Kairos.Application.Services
 @using Microsoft.JSInterop
 @using Microsoft.Extensions.Logging
 @inject ISettingsService SettingsService
@@ -14,11 +14,11 @@
 }
 else if (!AuthService.IsAuthenticated)
 {
-    <Kairos.Shared.Pages.Auth />
+    <Kairos.App.Pages.Auth />
 }
 else
 {
-    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.Shared.Pages.Statistics.Statistics).Assembly }">
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Kairos.App.Pages.Statistics.Statistics).Assembly }">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

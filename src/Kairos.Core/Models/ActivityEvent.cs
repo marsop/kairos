@@ -1,0 +1,79 @@
+namespace Kairos.Core.Models;
+
+/// <summary>
+/// Represents a single activity activation event.
+/// When a activity is active, time is added to the account
+/// based on a fixed 1.0 factor.
+/// </summary>
+public class ActivityEvent
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// When the activity was activated.
+    /// </summary>
+    public DateTimeOffset StartTime { get; set; }
+
+    /// <summary>
+    /// When the activity was deactivated. Null if still active.
+    /// </summary>
+    public DateTimeOffset? EndTime { get; set; }
+
+    /// <summary>
+    /// Display name for the activity.
+    /// </summary>
+    public string ActivityName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Emoji captured from the activity when this event started.
+    /// </summary>
+    public string ActivityEmoji { get; set; } = string.Empty;
+
+    /// <summary>
+    /// ID of the activity this event belongs to.
+    /// </summary>
+    public Guid ActivityId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// Hex color captured from the activity when this event started.
+    /// </summary>
+    public string ActivityColor { get; set; } = Activity.DefaultColor;
+
+    /// <summary>
+    /// User comment captured when this activity event started.
+    /// </summary>
+    public string Comment { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Metadata captured from the activity when this event started.
+    /// </summary>
+    public string Metadata { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether this event is currently active (activity still running).
+    /// </summary>
+    public bool IsActive => EndTime == null;
+
+    /// <summary>
+    /// Calculates the duration this activity has been/was active.
+    /// </summary>
+    public TimeSpan Duration => IsActive
+        ? DateTimeOffset.UtcNow - StartTime
+        : (EndTime!.Value - StartTime);
+
+    public ActivityEvent Clone()
+    {
+        return new ActivityEvent
+        {
+            Id = Id,
+            StartTime = StartTime,
+            EndTime = EndTime,
+            ActivityName = ActivityName,
+            ActivityEmoji = ActivityEmoji,
+            ActivityId = ActivityId,
+            ActivityColor = ActivityColor,
+            Comment = Comment,
+            Metadata = Metadata
+        };
+    }
+}

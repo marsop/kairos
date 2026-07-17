@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Kairos.Shared.Services;
+using Kairos.Application.Services;
 using System.Text.Json;
 
 namespace Kairos.ValidationTest;
