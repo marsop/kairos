@@ -700,6 +700,24 @@ body {
     color: var(--color-text-primary);
 }
 
+.event-sync-indicator {
+    margin-left: var(--spacing-xs);
+}
+
+.event-sync-action {
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.event-sync-action:disabled {
+    cursor: progress;
+    opacity: 0.7;
+}
+
 .activity-color-dot {
     width: 0.85rem;
     height: 0.85rem;

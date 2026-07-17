@@ -782,4 +782,7 @@
   <data name="NotSynchronized" xml:space="preserve">
     <value>Nicht synchronisiert</value>
   </data>
+  <data name="RetrySynchronization" xml:space="preserve">
+    <value>Synchronisierung erneut versuchen</value>
+  </data>
 </root>

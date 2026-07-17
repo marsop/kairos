@@ -97,9 +97,20 @@
                         <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
                             <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px;">
                                 @evt.ActivityName
-                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
-                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
-                                </span>
+                                @if (SyncService.IsEventSynchronized(evt))
+                                {
+                                    <span class="event-sync-indicator"
+                                          title="@Localizer["Synchronized"]">🔗</span>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="event-sync-indicator event-sync-action"
+                                            title="@Localizer["RetrySynchronization"]"
+                                            @onclick="async () => await ForceResyncAsync()"
+                                            disabled="@_isForceResyncInProgress"
+                                            @onclick:stopPropagation="true">⛓️‍💥</button>
+                                }
                             </span>
                             @if (!string.IsNullOrWhiteSpace(evt.Comment))
                             {
@@ -121,9 +132,20 @@
                             <span class="activity-color-dot" style="@GetColorDotStyle(GetEventColor(evt))"></span>
                             <span class="event-activity-name">
                                 @evt.ActivityEmoji @evt.ActivityName
-                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
-                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
-                                </span>
+                                @if (SyncService.IsEventSynchronized(evt))
+                                {
+                                    <span class="event-sync-indicator"
+                                          title="@Localizer["Synchronized"]">🔗</span>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="event-sync-indicator event-sync-action"
+                                            title="@Localizer["RetrySynchronization"]"
+                                            @onclick="async () => await ForceResyncAsync()"
+                                            disabled="@_isForceResyncInProgress"
+                                            @onclick:stopPropagation="true">⛓️‍💥</button>
+                                }
                             </span>
                         </div>
                         <div class="event-header-actions">
@@ -269,6 +291,7 @@
     private string _editComment = string.Empty;
     private string? _editError;
     private bool _isMenuOpen;
+    private bool _isForceResyncInProgress;
 
     private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;
 
@@ -551,6 +574,26 @@
         await JSRuntime.InvokeVoidAsync(
             "kairosFile.downloadText",
             new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
+    }
+
+    private async Task ForceResyncAsync()
+    {
+        if (_isForceResyncInProgress)
+        {
+            return;
+        }
+
+        _isForceResyncInProgress = true;
+
+        try
+        {
+            await SyncService.TriggerImmediateSyncAsync();
+        }
+        finally
+        {
+            _isForceResyncInProgress = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     public void Dispose()
