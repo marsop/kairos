@@ -779,4 +779,10 @@
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Fürs Hardware-Tracking gits ide undere Navigationsliischte e permanänti Statusazeig für de Tracker. Sie git der e schnälle Überblick über de Verbindigsstatus vo dim Timeular, egal uf wellere Siite du bisch.</value>
   </data>
+  <data name="Synchronized" xml:space="preserve">
+    <value>Synchronisiert</value>
+  </data>
+  <data name="NotSynchronized" xml:space="preserve">
+    <value>Nöd synchronisiert</value>
+  </data>
 </root>

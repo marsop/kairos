@@ -4,6 +4,7 @@
 @using Kairos.Shared.Resources
 @using Microsoft.JSInterop
 @inject ITimeTrackingService TimeService
+@inject IActivityEventSyncService SyncService
 @inject IStringLocalizer<Strings> Localizer
 @inject IJSRuntime JSRuntime
 @inject ISettingsService SettingsService
@@ -94,6 +95,12 @@
                     @foreach (var evt in FilteredEvents)
                     {
                         <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
+                            <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px;">
+                                @evt.ActivityName
+                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
+                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
+                                </span>
+                            </span>
                             @if (!string.IsNullOrWhiteSpace(evt.Comment))
                             {
                                 <span class="calendar-event-comment">@evt.Comment</span>
@@ -112,7 +119,12 @@
                     <div class="event-header">
                         <div class="event-activity-heading">
                             <span class="activity-color-dot" style="@GetColorDotStyle(GetEventColor(evt))"></span>
-                            <span class="event-activity-name">@evt.ActivityEmoji @evt.ActivityName</span>
+                            <span class="event-activity-name">
+                                @evt.ActivityEmoji @evt.ActivityName
+                                <span title="@(SyncService.IsEventSynchronized(evt) ? Localizer["Synchronized"] : Localizer["NotSynchronized"])">
+                                    @(SyncService.IsEventSynchronized(evt) ? "🔗" : "⛓️‍💥")
+                                </span>
+                            </span>
                         </div>
                         <div class="event-header-actions">
                             @if (evt.IsActive)
@@ -342,6 +354,7 @@
         SyncSelectedDateWithHistory();
         TimeService.OnStateChanged += HandleTimeServiceStateChanged;
         SettingsService.OnSettingsChanged += StateHasChanged;
+        SyncService.OnSyncStateChanged += HandleSyncStateChanged;
 
         _timer = new System.Threading.Timer(_ =>
         {
@@ -350,6 +363,11 @@
                 InvokeAsync(StateHasChanged);
             }
         }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private void HandleSyncStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private void HandleTimeServiceStateChanged()
@@ -539,6 +557,7 @@
     {
         TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
+        SyncService.OnSyncStateChanged -= HandleSyncStateChanged;
         _timer?.Dispose();
         _objRef?.Dispose();
     }

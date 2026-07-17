@@ -24,6 +24,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private DateTimeOffset? _suppressRealtimeUntilUtc;
     private bool _suppressNextLocalStateTriggeredSync;
 
+    public event Action? OnSyncStateChanged;
+
     public ActivityEventSyncService(
         ISupabaseActivityEventStore eventStore,
         ITimeTrackingService timeTrackingService,
@@ -111,6 +113,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         finally
         {
             _syncLock.Release();
+            OnSyncStateChanged?.Invoke();
         }
     }
 
@@ -202,6 +205,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         finally
         {
             _syncLock.Release();
+            OnSyncStateChanged?.Invoke();
         }
     }
 
@@ -305,23 +309,40 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         {
             if (!baseDict.TryGetValue(s.Id, out var b)) return true; // new event on server
 
-            // Supabase/PostgreSQL timestamps might have different sub-millisecond precision,
-            // so we tolerate small differences (e.g., < 1 ms) in StartTime and EndTime
-            if (Math.Abs((s.StartTime - b.StartTime).TotalMilliseconds) >= 1) return true; // event state changed
-
-            if (s.EndTime.HasValue != b.EndTime.HasValue) return true;
-            if (s.EndTime.HasValue && b.EndTime.HasValue &&
-                Math.Abs((s.EndTime.Value - b.EndTime.Value).TotalMilliseconds) >= 1) return true;
-
-            if (s.Comment != b.Comment) return true;
-            if (s.ActivityName != b.ActivityName) return true;
-            if (s.ActivityColor != b.ActivityColor) return true;
-            if (s.ActivityEmoji != b.ActivityEmoji) return true;
-            if (s.ActivityId != b.ActivityId) return true;
-            if (s.Metadata != b.Metadata) return true;
+            if (AreEventsDifferent(b, s)) return true;
         }
 
         return false;
+    }
+
+    private static bool AreEventsDifferent(ActivityEvent a, ActivityEvent b)
+    {
+        // Supabase/PostgreSQL timestamps might have different sub-millisecond precision,
+        // so we tolerate small differences (e.g., < 1 ms) in StartTime and EndTime
+        if (Math.Abs((a.StartTime - b.StartTime).TotalMilliseconds) >= 1) return true;
+
+        if (a.EndTime.HasValue != b.EndTime.HasValue) return true;
+        if (a.EndTime.HasValue && b.EndTime.HasValue &&
+            Math.Abs((a.EndTime.Value - b.EndTime.Value).TotalMilliseconds) >= 1) return true;
+
+        if (a.Comment != b.Comment) return true;
+        if (a.ActivityName != b.ActivityName) return true;
+        if (a.ActivityColor != b.ActivityColor) return true;
+        if (a.ActivityEmoji != b.ActivityEmoji) return true;
+        if (a.ActivityId != b.ActivityId) return true;
+        if (a.Metadata != b.Metadata) return true;
+
+        return false;
+    }
+
+    public bool IsEventSynchronized(ActivityEvent evt)
+    {
+        if (_lastSyncedServerEvents == null) return false;
+
+        var serverEvt = _lastSyncedServerEvents.FirstOrDefault(e => e.Id == evt.Id);
+        if (serverEvt == null) return false;
+
+        return !AreEventsDifferent(evt, serverEvt);
     }
 
     public void Dispose()
