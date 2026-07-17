@@ -770,4 +770,7 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Horas asignadas</value>
   </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Ver en GitHub</value>
+  </data>
 </root>

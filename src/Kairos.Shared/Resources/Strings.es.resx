@@ -767,4 +767,7 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Horas asignadas</value>
   </data>
+  <data name="RestartTutorial" xml:space="preserve">
+    <value>Reiniciar tutorial</value>
+  </data>
 </root>
