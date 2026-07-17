@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Settings**: Added a new Advanced setting for configuring sticky events duration.
+
+### Changed
+- **Localization**: Localized hardcoded UI text in razor components.
+- **Logging**: Added structured logging for Timeular Bluetooth auto-reconnect outcomes.
+
+### Fixed
+- **Supabase Sync**: Fixed syncing of user settings to Supabase (malformed API query and missing sticky events duration mapping).
+
 ## [1.4.0] - 2026-07-15
 
 ### Added
