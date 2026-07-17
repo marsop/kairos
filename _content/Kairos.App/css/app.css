@@ -665,6 +665,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+    padding-bottom: calc(var(--spacing-2xl) + env(safe-area-inset-bottom));
 }
 
 .event-card {
