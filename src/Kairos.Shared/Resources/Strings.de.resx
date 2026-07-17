@@ -767,4 +767,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zugewiesene Stunden</value>
   </data>
+  <data name="TutorialHistoryViews" xml:space="preserve">
+    <value>Navigieren Sie einfach durch Ihren Verlauf mit den neuen Schaltflächen für den vorherigen und nächsten Tag. Außerdem verfügen aktive Ereignisse jetzt über eine pulsierende Animation in der Kalender- und Listenansicht, damit Sie immer erkennen können, was gerade läuft.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>Aktivieren Sie 'Erweiterte Einstellungen anzeigen' im Bereich Allgemein, um weitere Optionen anzuzeigen. Sie können Elemente in Aktivitätsgruppen organisieren oder Ereignisse, die kürzer als eine festgelegte Dauer sind, automatisch löschen, um Ihren Verlauf sauber zu halten.</value>
+  </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>Für das Hardware-Tracking befindet sich in der unteren Navigationsleiste eine permanente Statusanzeige für den Tracker. Sie bietet einen schnellen Überblick über den Verbindungsstatus Ihres Timeulars, unabhängig davon, auf welcher Seite Sie sich befinden.</value>
+  </data>
 </root>

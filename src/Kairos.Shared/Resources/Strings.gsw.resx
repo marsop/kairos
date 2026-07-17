@@ -770,4 +770,13 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zuegwiseni Stunde</value>
   </data>
+  <data name="TutorialHistoryViews" xml:space="preserve">
+    <value>Navigier eifach dur din Verlauf mit de neue Chnöpf für de vorig und nöchscht Tag. Zuedem händ aktivi Ereignis jetzt e pulsierendi Animation i de Kalender- und Lischteaasicht, demit du immer gsehsch, was grad lauft.</value>
+  </data>
+  <data name="TutorialSettingsAdvanced" xml:space="preserve">
+    <value>Aktivier 'Erwiiterti Iistellige aazeige' im Bereich Allgemein, zum meh Optione gseh. Du chasch Element in Aktivitätsgruppe organisiere oder Ereignis, wo chürzer als e festgleiti Duur sind, automatisch lösche, zum din Verlauf suuber z'bhalte.</value>
+  </data>
+  <data name="TutorialTrackerStatus" xml:space="preserve">
+    <value>Fürs Hardware-Tracking gits ide undere Navigationsliischte e permanänti Statusazeig für de Tracker. Sie git der e schnälle Überblick über de Verbindigsstatus vo dim Timeular, egal uf wellere Siite du bisch.</value>
+  </data>
 </root>
