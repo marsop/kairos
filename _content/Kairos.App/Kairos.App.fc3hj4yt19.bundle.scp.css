@@ -1,7 +1,7 @@
-/* _content/Kairos.Shared/Pages/Statistics/Statistics.razor.rz.scp.css */
+/* _content/Kairos.App/Pages/Statistics/Statistics.razor.rz.scp.css */
 /* ===== Statistics Page ===== */
 
-.statistics-page[b-3cpehur2mf] {
+.statistics-page[b-cf5v8cqnw4] {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
@@ -9,7 +9,7 @@
 
 /* ===== Summary Card ===== */
 
-.stat-summary-card[b-3cpehur2mf] {
+.stat-summary-card[b-cf5v8cqnw4] {
     background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-md) var(--spacing-lg);
@@ -22,7 +22,7 @@
     flex-wrap: wrap;
 }
 
-.stat-label[b-3cpehur2mf] {
+.stat-label[b-cf5v8cqnw4] {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     text-transform: uppercase;
@@ -30,7 +30,7 @@
     white-space: nowrap;
 }
 
-.stat-big-value[b-3cpehur2mf] {
+.stat-big-value[b-cf5v8cqnw4] {
     font-size: var(--font-size-xl);
     font-weight: 700;
     color: var(--color-positive);
@@ -39,13 +39,13 @@
     white-space: nowrap;
 }
 
-.stat-unit[b-3cpehur2mf] {
+.stat-unit[b-cf5v8cqnw4] {
     font-size: var(--font-size-md);
     color: var(--color-text-secondary);
     font-weight: 400;
 }
 
-.stat-period[b-3cpehur2mf] {
+.stat-period[b-cf5v8cqnw4] {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     text-transform: uppercase;
@@ -55,13 +55,13 @@
 
 /* ===== Budgets Section ===== */
 
-.budgets-section[b-3cpehur2mf] {
+.budgets-section[b-cf5v8cqnw4] {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
 }
 
-.section-title[b-3cpehur2mf] {
+.section-title[b-cf5v8cqnw4] {
     font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--color-text-secondary);
@@ -69,7 +69,7 @@
     letter-spacing: 0.05em;
 }
 
-.budgets-list[b-3cpehur2mf] {
+.budgets-list[b-cf5v8cqnw4] {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -77,7 +77,7 @@
 
 /* ===== Budget Item ===== */
 
-.budget-item[b-3cpehur2mf] {
+.budget-item[b-cf5v8cqnw4] {
     background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-md) var(--spacing-lg);
@@ -88,17 +88,17 @@
     transition: border-color var(--transition-fast);
 }
 
-.budget-item:hover[b-3cpehur2mf] {
+.budget-item:hover[b-cf5v8cqnw4] {
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
-.budget-item-header[b-3cpehur2mf] {
+.budget-item-header[b-cf5v8cqnw4] {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
 }
 
-.budget-activity-name[b-3cpehur2mf] {
+.budget-activity-name[b-cf5v8cqnw4] {
     display: inline-flex;
     align-items: baseline;
     gap: var(--spacing-sm);
@@ -107,45 +107,45 @@
     color: var(--color-text-primary);
 }
 
-.budget-time[b-3cpehur2mf] {
+.budget-time[b-cf5v8cqnw4] {
     font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--color-text-secondary);
     font-variant-numeric: tabular-nums;
 }
 
-.budget-time.over[b-3cpehur2mf] {
+.budget-time.over[b-cf5v8cqnw4] {
     color: var(--color-negative);
 }
 
-.budget-of[b-3cpehur2mf] {
+.budget-of[b-cf5v8cqnw4] {
     font-weight: 400;
     color: var(--color-text-muted);
 }
 
 /* ===== Budget Progress Bar ===== */
 
-.budget-progress-track[b-3cpehur2mf] {
+.budget-progress-track[b-cf5v8cqnw4] {
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-full);
     height: 6px;
     overflow: hidden;
 }
 
-.budget-progress-fill[b-3cpehur2mf] {
+.budget-progress-fill[b-cf5v8cqnw4] {
     background: var(--color-positive);
     height: 100%;
     border-radius: var(--radius-full);
     transition: width var(--transition-normal), background var(--transition-fast);
 }
 
-.budget-progress-fill.over[b-3cpehur2mf] {
+.budget-progress-fill.over[b-cf5v8cqnw4] {
     background: var(--color-negative);
 }
 
 /* ===== Budget Edit Button ===== */
 
-.budget-edit-btn[b-3cpehur2mf] {
+.budget-edit-btn[b-cf5v8cqnw4] {
     align-self: flex-start;
     background: none;
     border: 1px solid var(--color-bg-tertiary);
@@ -158,31 +158,31 @@
     transition: all var(--transition-fast);
 }
 
-.budget-edit-btn:hover[b-3cpehur2mf] {
+.budget-edit-btn:hover[b-cf5v8cqnw4] {
     border-color: var(--color-accent);
     color: var(--color-accent);
 }
 
 /* ===== Edit Form (in modal) ===== */
 
-.edit-form[b-3cpehur2mf] {
+.edit-form[b-cf5v8cqnw4] {
     margin: var(--spacing-md) 0;
 }
 
-.edit-field[b-3cpehur2mf] {
+.edit-field[b-cf5v8cqnw4] {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
 }
 
-.edit-label[b-3cpehur2mf] {
+.edit-label[b-cf5v8cqnw4] {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.edit-input[b-3cpehur2mf] {
+.edit-input[b-cf5v8cqnw4] {
     background: var(--color-bg-tertiary);
     border: 1px solid var(--color-bg-tertiary);
     border-radius: var(--radius-md);
@@ -194,21 +194,21 @@
     transition: border-color var(--transition-fast);
 }
 
-.edit-input:focus[b-3cpehur2mf] {
+.edit-input:focus[b-cf5v8cqnw4] {
     outline: none;
     border-color: var(--color-accent);
 }
 
 /* ===== Modal Actions ===== */
 
-.modal-actions[b-3cpehur2mf] {
+.modal-actions[b-cf5v8cqnw4] {
     display: flex;
     gap: var(--spacing-sm);
     justify-content: flex-end;
     margin-top: var(--spacing-lg);
 }
 
-.btn-cancel[b-3cpehur2mf] {
+.btn-cancel[b-cf5v8cqnw4] {
     padding: var(--spacing-sm) var(--spacing-lg);
     border: 1px solid var(--color-bg-tertiary);
     border-radius: var(--radius-full);
@@ -220,11 +220,11 @@
     transition: all var(--transition-fast);
 }
 
-.btn-cancel:hover[b-3cpehur2mf] {
+.btn-cancel:hover[b-cf5v8cqnw4] {
     background: var(--color-bg-tertiary);
 }
 
-.btn-save[b-3cpehur2mf] {
+.btn-save[b-cf5v8cqnw4] {
     padding: var(--spacing-sm) var(--spacing-lg);
     border: 1px solid var(--color-accent);
     border-radius: var(--radius-full);
@@ -237,6 +237,6 @@
     transition: all var(--transition-fast);
 }
 
-.btn-save:hover[b-3cpehur2mf] {
+.btn-save:hover[b-cf5v8cqnw4] {
     background: var(--color-accent-hover);
 }
