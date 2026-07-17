@@ -4,6 +4,8 @@ public sealed class SyncConflictNotifier : ISyncConflictNotifier
 {
     public event Action<Action<bool>>? OnConflictDetected;
 
+    public bool HasListeners => OnConflictDetected is not null;
+
     public Task<bool> ResolveConflictAsync()
     {
         var tcs = new TaskCompletionSource<bool>();

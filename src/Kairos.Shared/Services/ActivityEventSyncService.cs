@@ -22,6 +22,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private IReadOnlyList<ActivityEvent>? _lastSyncedLocalEvents;
     private IReadOnlyList<ActivityEvent>? _lastSyncedServerEvents;
     private DateTimeOffset? _suppressRealtimeUntilUtc;
+    private bool _suppressNextLocalStateTriggeredSync;
 
     public ActivityEventSyncService(
         ISupabaseActivityEventStore eventStore,
@@ -74,6 +75,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     private void HandleLocalStateChanged()
     {
+        if (_suppressNextLocalStateTriggeredSync)
+        {
+            _suppressNextLocalStateTriggeredSync = false;
+            _logger.LogDebug("Ignoring local state change triggered by server-applied sync update.");
+            return;
+        }
+
         _logger.LogInformation("Local state changed, triggering sync.");
         _ = TriggerImmediateSyncAsync();
     }
@@ -141,10 +149,11 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             {
                 _logger.LogWarning("Conflict detected. Local and server both have changes.");
                 // We have a conflict. Ask the user.
-                bool useServer = await _conflictNotifier.ResolveConflictAsync();
+                bool useServer = await ResolveConflictSafelyAsync();
 
                 if (useServer)
                 {
+                    _suppressNextLocalStateTriggeredSync = true;
                     _timeTrackingService.UpdateEventsFromServer(serverEvents);
                     _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                     _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
@@ -160,6 +169,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             else if (hasServerChanges)
             {
                 _logger.LogInformation("Server has changes. Overwriting local data.");
+                _suppressNextLocalStateTriggeredSync = true;
                 _timeTrackingService.UpdateEventsFromServer(serverEvents);
                 _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
@@ -217,12 +227,50 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             return;
         }
 
+        // If both sides already have divergent data on first sync, ask the user instead of
+        // silently preferring one side and risking unexpected data loss.
+        if (localEvents.Count > 0 && serverEvents.Count > 0)
+        {
+            _logger.LogWarning("Initial sync: divergent local/server data detected, prompting conflict resolution.");
+            bool useServer = await ResolveConflictSafelyAsync();
+
+            if (useServer)
+            {
+                _suppressNextLocalStateTriggeredSync = true;
+                _timeTrackingService.UpdateEventsFromServer(serverEvents);
+                _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+            }
+            else
+            {
+                await _eventStore.SaveEventsAsync(localEvents);
+                MarkRealtimeEchoSuppression();
+                _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+            }
+
+            _settingsService.UpdateLastSupabaseSync();
+            return;
+        }
+
         // In all other divergent bootstrap cases, prefer server snapshot to avoid accidental overwrite.
         _logger.LogInformation("Initial sync: divergent state detected, preferring server snapshot.");
+        _suppressNextLocalStateTriggeredSync = true;
         _timeTrackingService.UpdateEventsFromServer(serverEvents);
         _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
         _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
         _settingsService.UpdateLastSupabaseSync();
+    }
+
+    private async Task<bool> ResolveConflictSafelyAsync()
+    {
+        if (_conflictNotifier is SyncConflictNotifier concreteNotifier && !concreteNotifier.HasListeners)
+        {
+            _logger.LogWarning("Conflict detected without any UI listener. Keeping local data to avoid silent overwrite.");
+            return false;
+        }
+
+        return await _conflictNotifier.ResolveConflictAsync();
     }
 
     private void MarkRealtimeEchoSuppression()

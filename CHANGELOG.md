@@ -14,9 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Localization**: Localized hardcoded UI text in razor components.
 - **Logging**: Added structured logging for Timeular Bluetooth auto-reconnect outcomes.
+- **Supabase Sync**: First-sync divergence now prompts conflict resolution when both local and server activity events contain different data.
 
 ### Fixed
 - **Supabase Sync**: Fixed syncing of user settings to Supabase (malformed API query and missing sticky events duration mapping).
+- **Supabase Sync**: Prevented silent server overwrite when conflict UI listeners are unavailable by safely keeping local activity events.
+- **Supabase Sync**: Prevented redundant immediate re-sync loops triggered by local state notifications after applying server event updates.
+- **Tests**: Added and updated synchronization tests to lock in conflict-handling and realtime re-sync behavior.
 
 ## [1.4.0] - 2026-07-15
 
