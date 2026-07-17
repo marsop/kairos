@@ -1,3 +1,5 @@
+using Kairos.Shared.Models;
+
 namespace Kairos.Shared.Services;
 
 /// <summary>
@@ -20,4 +22,14 @@ public interface IActivityEventSyncService
     /// Triggers an immediate pull from the server, discarding local changes if requested.
     /// </summary>
     Task PullFromServerAsync();
+
+    /// <summary>
+    /// Event fired when the synchronization state changes.
+    /// </summary>
+    event Action? OnSyncStateChanged;
+
+    /// <summary>
+    /// Determines whether the given event is synchronized with the server.
+    /// </summary>
+    bool IsEventSynchronized(ActivityEvent evt);
 }

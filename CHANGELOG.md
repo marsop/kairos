@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **History UI**: Added sync status indicators (🔗/⛓️‍💥) for activity events in the History views.
 - **Avatars**: Generated and added new tutorial avatar poses (`tutorial-avatar-11.png`) for both Kawaii and Zarzaparrilla styles to reduce image reuse in the tutorial.
 - **Settings**: Added a new Advanced setting for configuring sticky events duration.
 
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2026-07-15
 
 ### Added
+- **History UI**: Added sync status indicators (🔗/⛓️‍💥) for activity events in the History views.
 - **Settings**: Added a new Advanced setting to automatically delete events that are shorter than a configured duration (in seconds).
 - **Settings**: Added a 'Show Advanced Settings' toggle in the General section to hide/show the Advanced settings area.
 - **Settings**: Added a link to the project CHANGELOG on GitHub in the About section of Settings.
@@ -49,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2026-06-26
 
 ### Added
+- **History UI**: Added sync status indicators (🔗/⛓️‍💥) for activity events in the History views.
 - **Supabase Integration**: Implemented Supabase for authentication, settings management, and activity synchronization.
 - **Real-time Sync**: Optimized Supabase sync using real-time subscriptions and dedicated table for activity events.
 - **Versioning**: Integrated NerdBank.GitVersioning to accurately track and display application version.

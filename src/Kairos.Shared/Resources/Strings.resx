@@ -775,4 +775,10 @@
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>For hardware tracking, a permanent Tracker status indicator sits in the bottom navigation bar. It provides quick visibility of your Timeular connection state no matter which page you are on.</value>
   </data>
+  <data name="Synchronized" xml:space="preserve">
+    <value>Synchronized</value>
+  </data>
+  <data name="NotSynchronized" xml:space="preserve">
+    <value>Not synchronized</value>
+  </data>
 </root>

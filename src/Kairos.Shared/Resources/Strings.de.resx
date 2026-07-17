@@ -776,4 +776,10 @@
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Für das Hardware-Tracking befindet sich in der unteren Navigationsleiste eine permanente Statusanzeige für den Tracker. Sie bietet einen schnellen Überblick über den Verbindungsstatus Ihres Timeulars, unabhängig davon, auf welcher Seite Sie sich befinden.</value>
   </data>
+  <data name="Synchronized" xml:space="preserve">
+    <value>Synchronisiert</value>
+  </data>
+  <data name="NotSynchronized" xml:space="preserve">
+    <value>Nicht synchronisiert</value>
+  </data>
 </root>

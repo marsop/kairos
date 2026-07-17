@@ -776,4 +776,10 @@
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Para el seguimiento por hardware, un indicador de estado permanente del Rastreador se encuentra en la barra de navegación inferior. Proporciona una visibilidad rápida del estado de conexión de tu Timeular sin importar en qué página te encuentres.</value>
   </data>
+  <data name="Synchronized" xml:space="preserve">
+    <value>Sincronizado</value>
+  </data>
+  <data name="NotSynchronized" xml:space="preserve">
+    <value>No sincronizado</value>
+  </data>
 </root>
