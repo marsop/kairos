@@ -113,7 +113,7 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialTrackerStatus"], "settings", $"{basePath}/tutorial-avatar-4.png"),
 
             // 18. Backups and reset safety
-            new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-12.png"),
 
             // 19. Completion
             new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-7.png")
