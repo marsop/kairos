@@ -216,6 +216,15 @@ public class TimeTrackingService : ITimeTrackingService
         SaveAndNotify();
     }
 
+    public void UpdateEventComment(Guid eventId, string comment)
+    {
+        var activityEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
+        if (activityEvent == null) return;
+
+        activityEvent.Comment = comment;
+        SaveAndNotify();
+    }
+
     public List<TimelineDataPoint> GetTimelineData(TimeSpan period)
     {
         var points = new List<TimelineDataPoint>();

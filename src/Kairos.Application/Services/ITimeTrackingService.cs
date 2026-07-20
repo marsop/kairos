@@ -65,6 +65,13 @@ public interface ITimeTrackingService
     void UpdateEventDetails(Guid eventId, DateTimeOffset newStartTime, DateTimeOffset newEndTime, string comment);
 
     /// <summary>
+    /// Updates the comment of an event.
+    /// </summary>
+    /// <param name="eventId">The ID of the event to update.</param>
+    /// <param name="comment">The new comment.</param>
+    void UpdateEventComment(Guid eventId, string comment);
+
+    /// <summary>
     /// Saves the current state to persistent storage.
     /// </summary>
     Task SaveAsync();

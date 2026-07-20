@@ -156,14 +156,14 @@
                                     @Localizer["Active"]
                                 </span>
                             }
+                            <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
                             @if (!evt.IsActive)
                             {
-                                <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                </button>
                                 <button class="delete-btn" @onclick="() => ConfirmDelete(evt)" title="@Localizer["DeleteActivity"]">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -229,18 +229,21 @@
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@Localizer["EditEventTitle"]</h3>
             <div class="edit-form">
-                <div class="edit-field">
-                    <label class="edit-label">@Localizer["StartTime"]</label>
-                    <input type="datetime-local" class="edit-input"
-                           value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
-                           @onchange="OnStartTimeChanged" />
-                </div>
-                <div class="edit-field">
-                    <label class="edit-label">@Localizer["EndTime"]</label>
-                    <input type="datetime-local" class="edit-input"
-                           value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
-                           @onchange="OnEndTimeChanged" />
-                </div>
+                @if (_eventToEdit != null && !_eventToEdit.IsActive)
+                {
+                    <div class="edit-field">
+                        <label class="edit-label">@Localizer["StartTime"]</label>
+                        <input type="datetime-local" class="edit-input"
+                               value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
+                               @onchange="OnStartTimeChanged" />
+                    </div>
+                    <div class="edit-field">
+                        <label class="edit-label">@Localizer["EndTime"]</label>
+                        <input type="datetime-local" class="edit-input"
+                               value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
+                               @onchange="OnEndTimeChanged" />
+                    </div>
+                }
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
                     <textarea class="edit-input" @bind="_editComment"></textarea>
@@ -491,7 +494,7 @@
     {
         _eventToEdit = evt;
         _editStartTime = evt.StartTime.ToLocalTime().DateTime;
-        _editEndTime = evt.EndTime!.Value.ToLocalTime().DateTime;
+        _editEndTime = evt.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
         _editComment = evt.Comment ?? string.Empty;
         _editError = null;
     }
@@ -524,29 +527,44 @@
 
         _editError = null;
 
-        var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
-        var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
-
-        if (newStart >= newEnd)
+        if (_eventToEdit.IsActive)
         {
-            _editError = Localizer["EndBeforeStart"];
-            return;
+            try
+            {
+                TimeService.UpdateEventComment(_eventToEdit.Id, _editComment);
+                _eventToEdit = null;
+            }
+            catch (Exception ex)
+            {
+                _editError = ex.Message;
+            }
         }
+        else
+        {
+            var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
+            var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
 
-        if (newEnd > DateTimeOffset.Now)
-        {
-            _editError = Localizer["FutureEndTime"];
-            return;
-        }
+            if (newStart >= newEnd)
+            {
+                _editError = Localizer["EndBeforeStart"];
+                return;
+            }
 
-        try
-        {
-            TimeService.UpdateEventDetails(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
-            _eventToEdit = null;
-        }
-        catch (Exception ex)
-        {
-            _editError = ex.Message;
+            if (newEnd > DateTimeOffset.Now)
+            {
+                _editError = Localizer["FutureEndTime"];
+                return;
+            }
+
+            try
+            {
+                TimeService.UpdateEventDetails(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
+                _eventToEdit = null;
+            }
+            catch (Exception ex)
+            {
+                _editError = ex.Message;
+            }
         }
     }
 
