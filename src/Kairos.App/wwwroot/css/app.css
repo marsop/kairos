@@ -2791,6 +2791,53 @@ html[data-theme="dark"] .edit-input {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    user-select: none; /* prevent text selection while dragging */
+}
+
+.calendar-event-block.selected-event {
+    z-index: 15;
+    font-family: monospace;
+    font-weight: 700;
+    box-shadow: var(--shadow-md);
+    border-right: 2px solid currentColor;
+    border-top: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    cursor: move;
+    transform: scale(1.01);
+    transition: transform 0.1s ease;
+}
+
+.resize-handle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.4);
+    z-index: 20;
+}
+
+.resize-handle.top {
+    top: 0;
+    cursor: ns-resize;
+}
+
+.resize-handle.bottom {
+    bottom: 0;
+    cursor: ns-resize;
+}
+
+.drag-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    cursor: move;
+}
+
+.drag-overlay.ns-resize {
+    cursor: ns-resize;
 }
 
 .calendar-event-comment {
