@@ -94,7 +94,7 @@
                 <div class="calendar-events" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @foreach (var evt in FilteredEvents)
                     {
-                        <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)">
+                        <div class="calendar-event-block @(evt.IsActive ? "active" : "")" style="@GetCalendarEventStyle(evt)" @onclick="() => OnCalendarEventClicked(evt)">
                             <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px;">
                                 @evt.ActivityName
                                 @if (SyncService.IsEventSynchronized(evt))
@@ -347,7 +347,7 @@
                     _pixelsPerHour = _minPixelsPerHour;
                     StateHasChanged();
                 }
-                _maxPixelsPerHour = clientHeight; // Max zoom: 1 hour fits the entire screen height
+                _maxPixelsPerHour = clientHeight * 6; // Max zoom: 10 minutes fits the entire screen height
             }
 
             double scrollPosition = 7.5 * _pixelsPerHour; // 07:30 default
@@ -678,7 +678,7 @@
         if (clientHeight > 0)
         {
             _minPixelsPerHour = clientHeight / 24.0;
-            _maxPixelsPerHour = clientHeight;
+            _maxPixelsPerHour = clientHeight * 6;
         }
 
         double oldPixelsPerHour = _pixelsPerHour;
@@ -705,7 +705,7 @@
         if (clientHeight > 0)
         {
             _minPixelsPerHour = clientHeight / 24.0;
-            _maxPixelsPerHour = clientHeight;
+            _maxPixelsPerHour = clientHeight * 6;
         }
 
         double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
@@ -718,11 +718,53 @@
         if (clientHeight > 0)
         {
             _minPixelsPerHour = clientHeight / 24.0;
-            _maxPixelsPerHour = clientHeight;
+            _maxPixelsPerHour = clientHeight * 6;
         }
 
         double scrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
         await OnWheelZoom(100, clientHeight / 2, scrollTop, clientHeight);
     }
 
+    private async Task OnCalendarEventClicked(ActivityEvent evt)
+    {
+        double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
+        if (clientHeight <= 0) return;
+
+        // Update limits
+        _minPixelsPerHour = clientHeight / 24.0;
+        _maxPixelsPerHour = clientHeight * 6;
+
+        var localStart = evt.StartTime.ToLocalTime();
+        var localEnd = evt.EndTime?.ToLocalTime() ?? DateTimeOffset.Now.ToLocalTime();
+
+        if (localEnd.Date > localStart.Date)
+        {
+            localEnd = localStart.Date.AddDays(1).AddTicks(-1);
+        }
+
+        var durationHours = (localEnd - localStart).TotalHours;
+
+        // Clamp duration for zoom calculation
+        if (durationHours < 5.0 / 60.0) // min 5 minutes
+        {
+            durationHours = 5.0 / 60.0;
+        }
+
+        // We want the event to take 50% of the screen height.
+        // So 2 * durationHours should take clientHeight.
+        double targetPixelsPerHour = clientHeight / (2 * durationHours);
+
+        // Clamp to min/max limits
+        _pixelsPerHour = Math.Clamp(targetPixelsPerHour, _minPixelsPerHour, _maxPixelsPerHour);
+
+        // We want to center the event on the screen.
+        double eventCenterHours = localStart.Hour + localStart.Minute / 60.0 + localStart.Second / 3600.0 + durationHours / 2.0;
+        double newScrollTop = eventCenterHours * _pixelsPerHour - clientHeight / 2.0;
+
+        StateHasChanged();
+
+        await Task.Delay(10); // Small delay to allow DOM to update height
+
+        await JSRuntime.InvokeVoidAsync("kairosScroll.setTop", _calendarScrollArea, Math.Max(0, newScrollTop));
+    }
 }
