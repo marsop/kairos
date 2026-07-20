@@ -785,4 +785,7 @@
   <data name="RetrySynchronization" xml:space="preserve">
     <value>Reintentar sincronización</value>
   </data>
+  <data name="TutorialHistorySync" xml:space="preserve">
+    <value>Tu historial ahora muestra un indicador de estado de sincronización para cada evento. Si un evento no se sincroniza con el servidor, puedes reintentar la sincronización manualmente desde la vista de historial.</value>
+  </data>
 </root>

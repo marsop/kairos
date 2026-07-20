@@ -788,4 +788,7 @@
   <data name="RetrySynchronization" xml:space="preserve">
     <value>Synchronisierig nomol versueche</value>
   </data>
+  <data name="TutorialHistorySync" xml:space="preserve">
+    <value>Dini Gschicht zeigt jetzt für jedes Ereignis e Synchronisierungsstatus a. Wenn es Ereignis nit mit em Server synchronisiert werde cha, chasch d'Synchronisierig diräkt us dr Gschicht-Aasicht manuell widerhole.</value>
+  </data>
 </root>

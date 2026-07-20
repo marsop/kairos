@@ -785,4 +785,7 @@
   <data name="RetrySynchronization" xml:space="preserve">
     <value>Synchronisierung erneut versuchen</value>
   </data>
+  <data name="TutorialHistorySync" xml:space="preserve">
+    <value>Ihr Verlauf zeigt nun für jedes Ereignis einen Synchronisierungsstatus an. Wenn ein Ereignis nicht mit dem Server synchronisiert werden kann, können Sie die Synchronisierung direkt aus der Verlaufsansicht manuell wiederholen.</value>
+  </data>
 </root>
