@@ -30,7 +30,7 @@ public interface ITimeTrackingService
     /// <summary>
     /// Gets the last comment used for a specific activity.
     /// </summary>
-    string? GetLastCommentForActivity(Guid activityId);
+    List<string> GetLastCommentsForActivity(Guid activityId, int count = 3);
 
     /// <summary>
     /// Activates a activity by its ID. Deactivates any currently active activity first.

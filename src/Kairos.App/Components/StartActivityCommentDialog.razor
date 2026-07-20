@@ -21,10 +21,15 @@
                               rows="4"
                               @onkeydown="HandleKeyDown"
                               autofocus></textarea>
-                    @if (!string.IsNullOrWhiteSpace(_suggestedComment))
+                    @if (_suggestedComments != null && _suggestedComments.Any())
                     {
-                        <div class="comment-suggestion" @onclick="ApplySuggestion">
-                            @_suggestedComment
+                        <div class="comment-suggestions">
+                            @foreach (var suggestion in _suggestedComments)
+                            {
+                                <div class="comment-suggestion" @onclick="() => ApplySuggestion(suggestion)">
+                                    @suggestion
+                                </div>
+                            }
                         </div>
                     }
                 </div>
@@ -48,14 +53,14 @@
     private string _comment = string.Empty;
     private string? _errorMessage;
     private Guid? _lastPendingActivityId;
-    private string? _suggestedComment;
+    private List<string>? _suggestedComments;
 
     protected override void OnInitialized()
     {
         _lastPendingActivityId = ActivityStartPromptService.PendingActivityId;
         if (_lastPendingActivityId.HasValue)
         {
-            _suggestedComment = TimeTrackingService.GetLastCommentForActivity(_lastPendingActivityId.Value);
+            _suggestedComments = TimeTrackingService.GetLastCommentsForActivity(_lastPendingActivityId.Value);
         }
         ActivityStartPromptService.OnStateChanged += HandlePromptStateChanged;
     }
@@ -68,19 +73,19 @@
             _comment = string.Empty;
             _errorMessage = null;
             _lastPendingActivityId = pendingActivityId;
-            _suggestedComment = pendingActivityId.HasValue
-                ? TimeTrackingService.GetLastCommentForActivity(pendingActivityId.Value)
+            _suggestedComments = pendingActivityId.HasValue
+                ? TimeTrackingService.GetLastCommentsForActivity(pendingActivityId.Value)
                 : null;
         }
 
         _ = InvokeAsync(StateHasChanged);
     }
 
-    private void ApplySuggestion()
+    private void ApplySuggestion(string suggestion)
     {
-        if (!string.IsNullOrWhiteSpace(_suggestedComment))
+        if (!string.IsNullOrWhiteSpace(suggestion))
         {
-            _comment += _suggestedComment;
+            _comment += suggestion;
         }
     }
 

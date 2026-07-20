@@ -89,13 +89,15 @@ public class TimeTrackingService : ITimeTrackingService
         return _account.Events.FirstOrDefault(e => e.IsActive);
     }
 
-    public string? GetLastCommentForActivity(Guid activityId)
+    public List<string> GetLastCommentsForActivity(Guid activityId, int count = 3)
     {
         return _account.Events
             .Where(e => e.ActivityId == activityId && !string.IsNullOrWhiteSpace(e.Comment))
             .OrderByDescending(e => e.StartTime)
-            .Select(e => e.Comment)
-            .FirstOrDefault();
+            .Select(e => e.Comment!)
+            .Distinct()
+            .Take(count)
+            .ToList();
     }
 
     public void ActivateActivity(Guid activityId, string comment)
