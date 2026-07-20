@@ -100,6 +100,9 @@ public class TutorialService : ITutorialService
             // 13. History - views
             new TutorialStep(_localizer["TutorialHistoryViews"], "history", $"{basePath}/tutorial-avatar-3.png"),
 
+            // 13b. History - sync status
+            new TutorialStep(_localizer["TutorialHistorySync"], "history", $"{basePath}/tutorial-avatar-5.png"),
+
             // 14. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
 

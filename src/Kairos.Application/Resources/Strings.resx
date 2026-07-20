@@ -784,4 +784,7 @@
   <data name="RetrySynchronization" xml:space="preserve">
     <value>Retry synchronization</value>
   </data>
+  <data name="TutorialHistorySync" xml:space="preserve">
+    <value>Your history now shows a sync status indicator for each event. If an event fails to sync with the server, you can manually retry the synchronization directly from the history view.</value>
+  </data>
 </root>
