@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Settings**: Added a new Advanced setting for configuring sticky events duration.
 
 ### Changed
+- **History UI**: Improved visual accuracy of event blocks in the Calendar view by accounting for seconds in their start and end calculations to prevent short false visual overlaps.
 - **Localization**: Localized hardcoded UI text in razor components.
 - **Logging**: Added structured logging for Timeular Bluetooth auto-reconnect outcomes.
 - **Supabase Sync**: First-sync divergence now prompts conflict resolution when both local and server activity events contain different data.

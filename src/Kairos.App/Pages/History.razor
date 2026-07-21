@@ -715,13 +715,17 @@
         var localStart = start.ToLocalTime();
         var localEnd = end.ToLocalTime();
 
-        var topPx = (localStart.Hour + localStart.Minute / 60.0) * _pixelsPerHour;
-
         if (localEnd.Date > localStart.Date)
         {
             localEnd = localStart.Date.AddDays(1).AddTicks(-1);
         }
-        var heightPx = Math.Max(15, (localEnd - localStart).TotalHours * _pixelsPerHour);
+
+        var startSeconds = Math.Ceiling(localStart.TimeOfDay.TotalSeconds);
+        var endSeconds = Math.Floor(localEnd.TimeOfDay.TotalSeconds);
+
+        var topPx = (startSeconds / 3600.0) * _pixelsPerHour;
+        var durationHours = Math.Max(0, (endSeconds - startSeconds) / 3600.0);
+        var heightPx = Math.Max(15, durationHours * _pixelsPerHour);
 
         return $"top: {topPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {heightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
     }
