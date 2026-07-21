@@ -53,5 +53,59 @@ window.kairosScroll = window.kairosScroll || {
                 dotNetHelper.invokeMethodAsync('OnWheelZoom', e.deltaY, offsetY, element.scrollTop, element.clientHeight);
             }
         }, { passive: false });
+    },
+    animateCalendarZoom: function (element, startZoom, targetZoom, startScrollTop, targetScrollTop, durationMs, sequential, dotNetHelper) {
+        if (!element) return;
+
+        if (element._currentAnimation) {
+            cancelAnimationFrame(element._currentAnimation);
+        }
+
+        var startTime = null;
+
+        function easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = timestamp - startTime;
+            var t = Math.min(progress / durationMs, 1);
+
+            if (sequential) {
+                // Sequential: Scroll first, then Zoom
+                var scrollProgress = Math.min(progress / (durationMs * 0.5), 1);
+                var zoomProgress = Math.max(0, Math.min((progress - durationMs * 0.5) / (durationMs * 0.5), 1));
+
+                var easedScroll = easeInOutQuad(scrollProgress);
+                var easedZoom = easeInOutQuad(zoomProgress);
+
+                var currentScroll = startScrollTop + (targetScrollTop - startScrollTop) * easedScroll;
+                var currentZoom = startZoom + (targetZoom - startZoom) * easedZoom;
+
+                element.scrollTop = currentScroll;
+                element.style.setProperty('--pixels-per-hour', currentZoom);
+            } else {
+                // Concurrent: Scroll and Zoom together
+                var easedT = easeInOutQuad(t);
+
+                var currentScroll = startScrollTop + (targetScrollTop - startScrollTop) * easedT;
+                var currentZoom = startZoom + (targetZoom - startZoom) * easedT;
+
+                element.style.setProperty('--pixels-per-hour', currentZoom);
+                element.scrollTop = currentScroll;
+            }
+
+            if (progress < durationMs) {
+                element._currentAnimation = requestAnimationFrame(step);
+            } else {
+                element._currentAnimation = null;
+                if (dotNetHelper) {
+                    dotNetHelper.invokeMethodAsync('OnAnimationComplete', targetZoom);
+                }
+            }
+        }
+
+        element._currentAnimation = requestAnimationFrame(step);
     }
 };
