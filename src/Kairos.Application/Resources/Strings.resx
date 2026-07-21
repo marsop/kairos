@@ -787,4 +787,22 @@
   <data name="TutorialHistorySync" xml:space="preserve">
     <value>Your history now shows a sync status indicator for each event. If an event fails to sync with the server, you can manually retry the synchronization directly from the history view.</value>
   </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Not found</value>
+  </data>
+  <data name="NotFoundMessage" xml:space="preserve">
+    <value>Sorry, there's nothing at this address.</value>
+  </data>
+  <data name="SettingsTimeular" xml:space="preserve">
+    <value>Timeular</value>
+  </data>
+  <data name="PreviousDay" xml:space="preserve">
+    <value>Previous Day</value>
+  </data>
+  <data name="NextDay" xml:space="preserve">
+    <value>Next Day</value>
+  </data>
 </root>

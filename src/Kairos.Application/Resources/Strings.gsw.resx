@@ -791,4 +791,22 @@
   <data name="TutorialHistorySync" xml:space="preserve">
     <value>Dini Gschicht zeigt jetzt für jedes Ereignis e Synchronisierungsstatus a. Wenn es Ereignis nit mit em Server synchronisiert werde cha, chasch d'Synchronisierig diräkt us dr Gschicht-Aasicht manuell widerhole.</value>
   </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Ladet...</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Nöd gfunde</value>
+  </data>
+  <data name="NotFoundMessage" xml:space="preserve">
+    <value>Sorry, da gits nüt a dere Adrässe.</value>
+  </data>
+  <data name="SettingsTimeular" xml:space="preserve">
+    <value>Timeular</value>
+  </data>
+  <data name="PreviousDay" xml:space="preserve">
+    <value>Vorherig Tag</value>
+  </data>
+  <data name="NextDay" xml:space="preserve">
+    <value>Nächscht Tag</value>
+  </data>
 </root>
