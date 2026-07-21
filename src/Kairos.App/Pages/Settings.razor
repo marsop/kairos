@@ -178,17 +178,6 @@
             </div>
         }
 
-        @if (TimeularService.HasConnectedBefore)
-        {
-            <div class="timeular-connection-indicator">
-                <span class="timeular-connection-light @(TimeularService.IsConnecting ? "connecting" : (TimeularService.IsConnected ? "connected" : "disconnected"))"></span>
-                <span>
-                    @Localizer["TrackerStatus"]
-                    @(TimeularService.IsConnecting ? Localizer["Connecting"].Value : (TimeularService.IsConnected ? Localizer["Connected"].Value : Localizer["Disconnected"].Value))
-                </span>
-            </div>
-        }
-
         <div class="timeular-actions">
             @if (!TimeularService.IsConnected)
             {
@@ -215,8 +204,8 @@
 
         @if (TimeularService.ChangeLog.Count > 0)
         {
-            <div class="timeular-log">
-                <div class="timeular-log-title">@Localizer["RecentDeviceChanges"]</div>
+            <details class="timeular-log">
+                <summary class="timeular-log-title">@Localizer["RecentDeviceChanges"]</summary>
                 <ul class="timeular-log-list">
                     @foreach (var entry in TimeularService.ChangeLog)
                     {
@@ -226,7 +215,7 @@
                         </li>
                     }
                 </ul>
-            </div>
+            </details>
         }
     </div>
 

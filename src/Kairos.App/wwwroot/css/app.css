@@ -1674,6 +1674,16 @@ html[data-theme="dark"] .edit-input {
     color: var(--color-text-secondary);
     font-weight: 600;
     margin-bottom: var(--spacing-sm);
+    cursor: pointer;
+    user-select: none;
+}
+
+.timeular-log-title:hover {
+    color: var(--color-text-primary);
+}
+
+.timeular-log[open] .timeular-log-title {
+    margin-bottom: var(--spacing-md);
 }
 
 .timeular-log-list {
