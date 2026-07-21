@@ -26,6 +26,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
     public bool IsConnected { get; private set; }
     public bool HasConnectedBefore { get; private set; }
     public string? DeviceName { get; private set; }
+    public int? BatteryLevel { get; private set; }
     public string? StatusMessage { get; private set; }
     public string StatusClass { get; private set; } = string.Empty;
     public IReadOnlyList<TimeularLogEntry> ChangeLog => _changeLog;
@@ -120,6 +121,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 IsConnected = true;
                 HasConnectedBefore = true;
                 DeviceName = pickerResult.DeviceName;
+                BatteryLevel = pickerResult.BatteryLevel;
                 StatusMessage = $"Connected to {pickerResult.DeviceName}.";
                 StatusClass = "success";
                 AddTimeularChange($"Connected to {pickerResult.DeviceName ?? "Timeular"}");
@@ -158,6 +160,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         {
             await _jsRuntime.InvokeVoidAsync("timeularInterop.disconnect");
             IsConnected = false;
+            BatteryLevel = null;
             StatusMessage = "Timeular disconnected.";
             StatusClass = "success";
             AddTimeularChange("Disconnected from Timeular");
@@ -182,6 +185,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         if (change.EventType == "disconnected")
         {
             IsConnected = false;
+            BatteryLevel = null;
             StatusMessage = "Timeular disconnected.";
             StatusClass = "error";
             AddTimeularChange("Device disconnected");
@@ -196,6 +200,13 @@ public sealed class TimeularService : ITimeularService, IDisposable
             var rawLabel = string.IsNullOrWhiteSpace(change.RawHex) ? string.Empty : $" ({change.RawHex})";
             var mappingAction = ApplyTimeularFaceMapping(change.Face);
             AddTimeularChange($"{faceLabel}{rawLabel}{mappingAction}", change.TimestampUtc);
+        }
+        else if (change.EventType == "battery")
+        {
+            if (change.BatteryLevel.HasValue)
+            {
+                BatteryLevel = change.BatteryLevel.Value;
+            }
         }
         else
         {
@@ -250,6 +261,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
                 IsConnected = true;
                 HasConnectedBefore = true;
                 DeviceName = result.DeviceName ?? DeviceName;
+                BatteryLevel = result.BatteryLevel;
                 StatusMessage = $"Reconnected to {DeviceName ?? "Timeular"}.";
                 StatusClass = "success";
                 AddTimeularChange($"Reconnected to {DeviceName ?? "Timeular"}");
@@ -341,6 +353,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         public bool Success { get; set; }
         public string? DeviceName { get; set; }
         public string? DeviceId { get; set; }
+        public int? BatteryLevel { get; set; }
         public string? Message { get; set; }
     }
 
@@ -350,6 +363,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         public bool Success { get; set; }
         public string? DeviceName { get; set; }
         public string? DeviceId { get; set; }
+        public int? BatteryLevel { get; set; }
         public string? Message { get; set; }
     }
 
@@ -358,6 +372,7 @@ public sealed class TimeularService : ITimeularService, IDisposable
         public string? EventType { get; set; }
         public int? Face { get; set; }
         public string? RawHex { get; set; }
+        public int? BatteryLevel { get; set; }
         public string? TimestampUtc { get; set; }
     }
 }

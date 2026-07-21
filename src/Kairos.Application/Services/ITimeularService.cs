@@ -10,6 +10,7 @@ public interface ITimeularService
     bool IsConnected { get; }
     bool HasConnectedBefore { get; }
     string? DeviceName { get; }
+    int? BatteryLevel { get; }
     string? StatusMessage { get; }
     string StatusClass { get; }
     IReadOnlyList<TimeularLogEntry> ChangeLog { get; }
