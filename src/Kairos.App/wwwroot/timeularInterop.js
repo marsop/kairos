@@ -2,11 +2,15 @@
 window.timeularInterop = {
     ORIENTATION_SERVICE_UUID: "c7e70010-c847-11e6-8175-8c89a55d403c",
     ORIENTATION_CHARACTERISTIC_UUID: "c7e70012-c847-11e6-8175-8c89a55d403c",
+    BATTERY_SERVICE_UUID: "battery_service",
+    BATTERY_CHARACTERISTIC_UUID: "battery_level",
 
     _device: null,
     _server: null,
     _orientationCharacteristic: null,
     _orientationHandler: null,
+    _batteryCharacteristic: null,
+    _batteryHandler: null,
     _dotNetRef: null,
     STORAGE_KEY: "Kairos_timeular_state",
 
@@ -51,6 +55,7 @@ window.timeularInterop = {
             const deviceId = device.id || null;
 
             await this._subscribeToOrientationChanges();
+            let batteryLevel = await this._subscribeToBatteryChanges();
             this._attachDisconnectHandler();
 
             this.saveState(deviceName, deviceId);
@@ -58,7 +63,8 @@ window.timeularInterop = {
             return {
                 success: true,
                 deviceName: deviceName,
-                deviceId: deviceId
+                deviceId: deviceId,
+                batteryLevel: batteryLevel
             };
         } catch (error) {
             if (error && error.name === "NotFoundError") {
@@ -116,6 +122,7 @@ window.timeularInterop = {
             const deviceId = matched.id || saved.deviceId || null;
 
             await this._subscribeToOrientationChanges();
+            let batteryLevel = await this._subscribeToBatteryChanges();
             this._attachDisconnectHandler();
             this.saveState(deviceName, deviceId);
 
@@ -123,7 +130,8 @@ window.timeularInterop = {
                 attempted: true,
                 success: true,
                 deviceName: deviceName,
-                deviceId: deviceId
+                deviceId: deviceId,
+                batteryLevel: batteryLevel
             };
         } catch (error) {
             return {
@@ -168,6 +176,54 @@ window.timeularInterop = {
         characteristic.addEventListener("characteristicvaluechanged", this._orientationHandler);
     },
 
+    _subscribeToBatteryChanges: async function () {
+        if (!this._server) {
+            return null;
+        }
+
+        try {
+            const service = await this._server.getPrimaryService(this.BATTERY_SERVICE_UUID);
+            const characteristic = await service.getCharacteristic(this.BATTERY_CHARACTERISTIC_UUID);
+
+            this._batteryCharacteristic = characteristic;
+
+            // Read initial value
+            let initialBatteryLevel = null;
+            try {
+                const value = await characteristic.readValue();
+                initialBatteryLevel = value.getUint8(0);
+            } catch (err) {
+                console.warn("Could not read initial battery level", err);
+            }
+
+            await characteristic.startNotifications();
+
+            this._batteryHandler = (event) => {
+                const value = event?.target?.value;
+                if (!value) {
+                    return;
+                }
+
+                const batteryLevel = value.getUint8(0);
+
+                if (this._dotNetRef) {
+                    this._dotNetRef.invokeMethodAsync("OnTimeularChange", {
+                        eventType: "battery",
+                        batteryLevel: batteryLevel,
+                        timestampUtc: new Date().toISOString()
+                    });
+                }
+            };
+
+            characteristic.addEventListener("characteristicvaluechanged", this._batteryHandler);
+
+            return initialBatteryLevel;
+        } catch (error) {
+            console.warn("Battery service not available or failed to connect", error);
+            return null;
+        }
+    },
+
     _attachDisconnectHandler: function () {
         if (!this._device) {
             return;
@@ -188,12 +244,18 @@ window.timeularInterop = {
             this._orientationCharacteristic.removeEventListener("characteristicvaluechanged", this._orientationHandler);
         }
 
+        if (this._batteryCharacteristic && this._batteryHandler) {
+            this._batteryCharacteristic.removeEventListener("characteristicvaluechanged", this._batteryHandler);
+        }
+
         if (this._device && this._device.gatt && this._device.gatt.connected) {
             this._device.gatt.disconnect();
         }
 
         this._orientationCharacteristic = null;
         this._orientationHandler = null;
+        this._batteryCharacteristic = null;
+        this._batteryHandler = null;
         this._server = null;
     },
 

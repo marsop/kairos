@@ -185,6 +185,14 @@
                 <span>
                     @Localizer["TrackerStatus"]
                     @(TimeularService.IsConnecting ? Localizer["Connecting"].Value : (TimeularService.IsConnected ? Localizer["Connected"].Value : Localizer["Disconnected"].Value))
+                    @if (TimeularService.IsConnected && !string.IsNullOrWhiteSpace(TimeularService.DeviceName))
+                    {
+                        <text> to @TimeularService.DeviceName</text>
+                    }
+                    @if (TimeularService.IsConnected && TimeularService.BatteryLevel.HasValue)
+                    {
+                        <text> (@(TimeularService.BatteryLevel.Value)%)</text>
+                    }
                 </span>
             </div>
         }
