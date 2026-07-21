@@ -1,4 +1,9 @@
 <Project>
+  <PropertyGroup>
+    <!-- Work around a dotnet watch project graph collision with NBGV's caching helper project. -->
+    <NBGV_CacheMode Condition="'$(DotNetWatchBuild)' == 'true'">None</NBGV_CacheMode>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
       <PrivateAssets>all</PrivateAssets>

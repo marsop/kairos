@@ -105,6 +105,8 @@
                         var isSelected = _selectedCalendarEventId == evt.Id;
                         <div class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "")"
                              style="@GetCalendarEventStyle(evt)"
+                             data-start-seconds="@GetCalendarEventStartSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                             data-end-seconds="@GetCalendarEventEndSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
                              @onclick="() => OnCalendarEventClicked(evt)"
                              @onclick:stopPropagation="true"
                              @onpointerdown="(e) => StartDrag(e, evt, DragAction.Move)">
@@ -702,7 +704,17 @@
     private string GetCalendarEventStyle(ActivityEvent evt)
     {
         var color = GetEventColor(evt);
+        var startSeconds = GetCalendarEventStartSeconds(evt);
+        var endSeconds = GetCalendarEventEndSeconds(evt);
+        var topPx = (startSeconds / 3600.0) * _pixelsPerHour;
+        var durationHours = Math.Max(0, (endSeconds - startSeconds) / 3600.0);
+        var heightPx = Math.Max(15, durationHours * _pixelsPerHour);
 
+        return $"top: {topPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {heightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
+    }
+
+    private (double StartSeconds, double EndSeconds) GetCalendarEventBoundsSeconds(ActivityEvent evt)
+    {
         var start = evt.StartTime;
         var end = evt.EndTime ?? DateTimeOffset.Now;
 
@@ -723,11 +735,17 @@
         var startSeconds = Math.Ceiling(localStart.TimeOfDay.TotalSeconds);
         var endSeconds = Math.Floor(localEnd.TimeOfDay.TotalSeconds);
 
-        var topPx = (startSeconds / 3600.0) * _pixelsPerHour;
-        var durationHours = Math.Max(0, (endSeconds - startSeconds) / 3600.0);
-        var heightPx = Math.Max(15, durationHours * _pixelsPerHour);
+        return (startSeconds, endSeconds);
+    }
 
-        return $"top: {topPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {heightPx.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; background-color: {ToRgba(color, 0.85)}; border-left: 4px solid {color};";
+    private double GetCalendarEventStartSeconds(ActivityEvent evt)
+    {
+        return GetCalendarEventBoundsSeconds(evt).StartSeconds;
+    }
+
+    private double GetCalendarEventEndSeconds(ActivityEvent evt)
+    {
+        return GetCalendarEventBoundsSeconds(evt).EndSeconds;
     }
 
     private double? _targetPixelsPerHour;
@@ -740,24 +758,22 @@
         StateHasChanged();
     }
 
-    private async Task AnimateZoomAsync(double targetZoom, double zoomCenterHours, double offsetY, int durationMs = 250, bool sequential = false, double? sequentialStartScrollTopTarget = null)
+    private async Task AnimateZoomAsync(double targetZoom, double zoomAnchorHours, double anchorOffsetY, int durationMs = 280, double prePanRatio = 0)
     {
         targetZoom = Math.Clamp(targetZoom, _minPixelsPerHour, _maxPixelsPerHour);
-        _targetPixelsPerHour = targetZoom;
 
-        double startZoom = _pixelsPerHour;
+        double renderedZoom = await JSRuntime.InvokeAsync<double>("kairosScroll.getCurrentZoom", _calendarScrollArea);
+        double startZoom = renderedZoom > 0 ? renderedZoom : (_targetPixelsPerHour ?? _pixelsPerHour);
         double startScrollTop = await JSRuntime.InvokeAsync<double>("kairosScroll.getTop", _calendarScrollArea);
 
-        double targetScrollTopBeforeZoom = startScrollTop;
-        if (sequential && sequentialStartScrollTopTarget.HasValue)
+        _targetPixelsPerHour = targetZoom;
+
+        if (_objRef == null)
         {
-            targetScrollTopBeforeZoom = sequentialStartScrollTopTarget.Value;
+            _objRef = DotNetObjectReference.Create(this);
         }
 
-        double finalScrollTop = Math.Max(0, zoomCenterHours * targetZoom - offsetY);
-
-        var dotNetHelper = DotNetObjectReference.Create(this);
-        await JSRuntime.InvokeVoidAsync("kairosScroll.animateCalendarZoom", _calendarScrollArea, startZoom, targetZoom, startScrollTop, sequential ? targetScrollTopBeforeZoom : finalScrollTop, durationMs, sequential, dotNetHelper);
+        await JSRuntime.InvokeVoidAsync("kairosScroll.animateCalendarZoom", _calendarScrollArea, startZoom, targetZoom, startScrollTop, durationMs, zoomAnchorHours, anchorOffsetY, prePanRatio, _objRef);
     }
 
     [JSInvokable]
@@ -769,13 +785,14 @@
             _maxPixelsPerHour = clientHeight * 6;
         }
 
-        double currentPixelsPerHour = _targetPixelsPerHour ?? _pixelsPerHour;
+        double renderedZoom = await JSRuntime.InvokeAsync<double>("kairosScroll.getCurrentZoom", _calendarScrollArea);
+        double currentPixelsPerHour = renderedZoom > 0 ? renderedZoom : (_targetPixelsPerHour ?? _pixelsPerHour);
         double zoomFactor = deltaY > 0 ? 0.5 : 2.0; // scroll down = zoom out, scroll up = zoom in
         double targetPixelsPerHour = Math.Clamp(currentPixelsPerHour * zoomFactor, _minPixelsPerHour, _maxPixelsPerHour);
 
-        double cursorTimeHours = (scrollTop + offsetY) / _pixelsPerHour;
+        double cursorTimeHours = (scrollTop + offsetY) / currentPixelsPerHour;
 
-        _ = AnimateZoomAsync(targetPixelsPerHour, cursorTimeHours, offsetY, 200);
+        _ = AnimateZoomAsync(targetPixelsPerHour, cursorTimeHours, offsetY, 220, prePanRatio: 0);
     }
 
     private async Task ZoomIn()
@@ -894,15 +911,8 @@
         _minPixelsPerHour = clientHeight / 24.0;
         _maxPixelsPerHour = clientHeight * 6;
 
-        var localStart = evt.StartTime.ToLocalTime();
-        var localEnd = evt.EndTime?.ToLocalTime() ?? DateTimeOffset.Now.ToLocalTime();
-
-        if (localEnd.Date > localStart.Date)
-        {
-            localEnd = localStart.Date.AddDays(1).AddTicks(-1);
-        }
-
-        var durationHours = (localEnd - localStart).TotalHours;
+        var (startSeconds, endSeconds) = GetCalendarEventBoundsSeconds(evt);
+        var durationHours = Math.Max(0, (endSeconds - startSeconds) / 3600.0);
 
         // Clamp duration for zoom calculation
         if (durationHours < 5.0 / 60.0) // min 5 minutes
@@ -915,12 +925,9 @@
         double targetPixelsPerHour = clientHeight / (2 * durationHours);
         targetPixelsPerHour = Math.Clamp(targetPixelsPerHour, _minPixelsPerHour, _maxPixelsPerHour);
 
-        // We want to center the event on the screen.
-        double eventCenterHours = localStart.Hour + localStart.Minute / 60.0 + localStart.Second / 3600.0 + durationHours / 2.0;
+        // Keep the event center anchored at viewport center throughout the transition.
+        double eventCenterHours = (startSeconds + endSeconds) / 7200.0;
 
-        double currentEventCenterY = eventCenterHours * _pixelsPerHour;
-        double targetScrollTopBeforeZoom = Math.Max(0, currentEventCenterY - clientHeight / 2.0);
-
-        _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 250, sequential: true, sequentialStartScrollTopTarget: targetScrollTopBeforeZoom);
+        _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
     }
 }
