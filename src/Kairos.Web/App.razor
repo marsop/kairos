@@ -6,11 +6,14 @@
 @inject IJSRuntime JSRuntime
 @inject ISupabaseAuthService AuthService
 @inject ILogger<App> Logger
+@using Microsoft.Extensions.Localization
+@using Kairos.Application.Resources
+@inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
 @if (!AuthService.IsInitialized)
 {
-    <div class="auth-loading">Loading...</div>
+    <div class="auth-loading">@Localizer["Loading"]</div>
 }
 else if (!AuthService.IsAuthenticated)
 {
@@ -24,9 +27,9 @@ else
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>@Localizer["NotFoundTitle"]</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <p role="alert">@Localizer["NotFoundMessage"]</p>
             </LayoutView>
         </NotFound>
     </Router>

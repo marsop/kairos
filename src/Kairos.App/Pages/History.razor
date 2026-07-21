@@ -35,13 +35,13 @@
             <div class="history-date-filter">
                 <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
                 <div class="history-date-selector">
-                    <button class="history-date-nav-btn" aria-label="Previous Day" @onclick="PreviousDay">&lt;</button>
+                    <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="PreviousDay">&lt;</button>
                     <input id="history-date"
                            class="history-date-input"
                            type="date"
                            value="@SelectedDateValue"
                            @onchange="OnSelectedDateChanged" />
-                    <button class="history-date-nav-btn" aria-label="Next Day" @onclick="NextDay">&gt;</button>
+                    <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="NextDay">&gt;</button>
                 </div>
             </div>
             @if (SettingsService.HistoryView == "calendar")
