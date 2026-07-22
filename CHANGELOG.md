@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-07-22
+
 ### Added
 - Feature: Clicking an event in the Calendar History view now adapts the zoom level and scroll position to center it and take exactly 50% of the visible space.
 - **History**: Allow editing the comment of an active time-tracking event in the List view.
