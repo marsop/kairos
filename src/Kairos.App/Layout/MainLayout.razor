@@ -80,7 +80,7 @@
 
                 @if (TimeularService.HasConnectedBefore)
                 {
-                    <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="status-indicator timeular-nav-item" title="Tracker">
+                    <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="status-indicator timeular-nav-item" title="@GetTrackerTitle()">
                         <span class="nav-icon timeular-nav-icon">
                             @if (TimeularService.IsConnecting)
                             {
@@ -146,6 +146,23 @@
         {
             await TimeularService.AutoConnectAsync();
         }
+    }
+
+    private string GetTrackerTitle()
+    {
+        var title = Localizer["Tracker"].Value;
+        if (TimeularService.IsConnected)
+        {
+            if (TimeularService.BatteryLevel.HasValue)
+            {
+                title = $"{title} ({TimeularService.BatteryLevel.Value}%)";
+            }
+            else
+            {
+                title = $"{title} ({Localizer["UnknownBatteryStatus"]})";
+            }
+        }
+        return title;
     }
 
     public void Dispose()
