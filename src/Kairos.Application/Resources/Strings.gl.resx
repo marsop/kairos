@@ -809,4 +809,10 @@
   <data name="NextDay" xml:space="preserve">
     <value>Día seguinte</value>
   </data>
+  <data name="Tracker" xml:space="preserve">
+    <value>Rastreador</value>
+  </data>
+  <data name="UnknownBatteryStatus" xml:space="preserve">
+    <value>estado de batería descoñecido</value>
+  </data>
 </root>

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.0] - 2026-07-22
 
 ### Added
+- **UI**: The Timeular tracker icon tooltip now displays its battery percentage dynamically.
 - Feature: Clicking an event in the Calendar History view now adapts the zoom level and scroll position to center it and take exactly 50% of the visible space.
 - **History**: Allow editing the comment of an active time-tracking event in the List view.
 - **History UI**: Added sync status indicators (🔗/⛓️‍💥) for activity events in the History views.
