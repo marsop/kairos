@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Activities UI**: Formatted the lower banner to display the active activity name and comment inline on the same line, removing the standalone comment block.
 - **Settings UI**: Display only major, minor, and patch version (plus pre-release tags) in the About section, removing the Git commit hash.
 
 ## [1.5.0] - 2026-07-22
