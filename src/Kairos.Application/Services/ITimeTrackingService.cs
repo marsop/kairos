@@ -45,9 +45,9 @@ public interface ITimeTrackingService
     void DeactivateActivity();
 
     /// <summary>
-    /// Gets timeline data points for the specified period.
+    /// Gets timeline segments for the specified period.
     /// </summary>
-    List<TimelineDataPoint> GetTimelineData(TimeSpan period);
+    List<TimelineSegment> GetTimelineData(TimeSpan period);
 
     /// <summary>
     /// Deletes an event by its ID. Updates balance and triggers state change.
@@ -175,4 +175,16 @@ public class TimelineDataPoint
 {
     public DateTimeOffset Timestamp { get; set; }
     public double BalanceHours { get; set; }
+}
+
+/// <summary>
+/// Represents a segment on the timeline graph.
+/// </summary>
+public class TimelineSegment
+{
+    public DateTimeOffset StartTime { get; set; }
+    public DateTimeOffset EndTime { get; set; }
+    public double StartBalance { get; set; }
+    public double EndBalance { get; set; }
+    public string Color { get; set; } = "#ffffff";
 }

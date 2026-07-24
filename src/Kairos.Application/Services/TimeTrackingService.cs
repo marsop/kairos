@@ -227,9 +227,9 @@ public class TimeTrackingService : ITimeTrackingService
         SaveAndNotify();
     }
 
-    public List<TimelineDataPoint> GetTimelineData(TimeSpan period)
+    public List<TimelineSegment> GetTimelineData(TimeSpan period)
     {
-        var points = new List<TimelineDataPoint>();
+        var segments = new List<TimelineSegment>();
         var endTime = DateTimeOffset.UtcNow;
         var startTime = endTime - period;
 
@@ -253,45 +253,73 @@ public class TimeTrackingService : ITimeTrackingService
             runningBalance += duration.TotalHours;
         }
 
-        // Always add start point
-        points.Add(new TimelineDataPoint { Timestamp = startTime, BalanceHours = runningBalance });
+        DateTimeOffset currentSegmentStart = startTime;
 
-        // Add points for each event transition in the period
         foreach (var evt in relevantEvents)
         {
-            // Point at start of event (before contribution)
-            if (evt.StartTime >= startTime)
-            {
-                points.Add(new TimelineDataPoint
-                {
-                    Timestamp = evt.StartTime,
-                    BalanceHours = runningBalance
-                });
-            }
-
-            // Calculate contribution up to end or now
             var effectiveStart = evt.StartTime < startTime ? startTime : evt.StartTime;
             var effectiveEnd = evt.EndTime ?? endTime;
             if (effectiveEnd > endTime) effectiveEnd = endTime;
 
-            var contribution = (effectiveEnd - effectiveStart).TotalHours;
-            runningBalance += contribution;
-
-            // Point at end of event (or now)
-            if (evt.EndTime.HasValue && evt.EndTime.Value <= endTime)
+            // Gap before this event
+            if (effectiveStart > currentSegmentStart)
             {
-                points.Add(new TimelineDataPoint
+                segments.Add(new TimelineSegment
                 {
-                    Timestamp = evt.EndTime.Value,
-                    BalanceHours = runningBalance
+                    StartTime = currentSegmentStart,
+                    EndTime = effectiveStart,
+                    StartBalance = runningBalance,
+                    EndBalance = runningBalance,
+                    Color = "#ffffff" // White for flat periods
                 });
             }
+
+            // The event segment itself
+            if (effectiveEnd > effectiveStart)
+            {
+                var contribution = (effectiveEnd - effectiveStart).TotalHours;
+                segments.Add(new TimelineSegment
+                {
+                    StartTime = effectiveStart,
+                    EndTime = effectiveEnd,
+                    StartBalance = runningBalance,
+                    EndBalance = runningBalance + contribution,
+                    Color = evt.ActivityColor
+                });
+                runningBalance += contribution;
+            }
+
+            currentSegmentStart = effectiveEnd;
         }
 
-        // Always add current point
-        points.Add(new TimelineDataPoint { Timestamp = endTime, BalanceHours = runningBalance });
+        // Gap after the last event (if any, up to endTime)
+        if (currentSegmentStart < endTime)
+        {
+            segments.Add(new TimelineSegment
+            {
+                StartTime = currentSegmentStart,
+                EndTime = endTime,
+                StartBalance = runningBalance,
+                EndBalance = runningBalance,
+                Color = "#ffffff"
+            });
+        }
 
-        return points.OrderBy(p => p.Timestamp).ToList();
+        // Ensure we always have at least one segment if period > 0,
+        // so the graph can render even with zero events in history
+        if (segments.Count == 0)
+        {
+            segments.Add(new TimelineSegment
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                StartBalance = runningBalance,
+                EndBalance = runningBalance,
+                Color = "#ffffff"
+            });
+        }
+
+        return segments;
     }
 
     public async Task SaveAsync()

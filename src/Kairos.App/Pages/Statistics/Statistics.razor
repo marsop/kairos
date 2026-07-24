@@ -74,38 +74,58 @@
 
             <!-- Gradient definitions -->
             <defs>
-                <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stop-color="@GradientColor" stop-opacity="0.4" />
-                    <stop offset="100%" stop-color="@GradientColor" stop-opacity="0" />
-                </linearGradient>
-                <linearGradient id="lineGradient" x1="0" x2="1" y1="0" y2="0">
-                    <stop offset="0%" stop-color="@GradientColor" />
-                    <stop offset="100%" stop-color="@GradientColor" />
-                </linearGradient>
+                @foreach (var color in Segments.Select(s => s.Color).Distinct())
+                {
+                    var colorId = color.Replace("#", "");
+                    <linearGradient id="areaGradient_@colorId" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="@color" stop-opacity="0.4" />
+                        <stop offset="100%" stop-color="@color" stop-opacity="0" />
+                    </linearGradient>
+                }
             </defs>
 
             <!-- Data visualization -->
-            @if (DataPoints.Count > 1)
+            @if (Segments.Count > 0)
             {
-                <!-- Area fill -->
-                <path d="@AreaPath" fill="url(#areaGradient)" opacity="0.3" />
+                @foreach (var segment in Segments)
+                {
+                    var firstX = GetXFromTimestamp(segment.StartTime);
+                    var lastX = GetXFromTimestamp(segment.EndTime);
+                    var firstY = GetY(segment.StartBalance);
+                    var lastY = GetY(segment.EndBalance);
 
-                <!-- Line -->
-                <path d="@LinePath" fill="none" stroke="url(#lineGradient)" stroke-width="3" />
+                    var colorId = segment.Color.Replace("#", "");
+
+                    if (lastX > firstX) // Only draw if the segment has a width
+                    {
+                        <!-- Area fill -->
+                        var areaPath = $"M {firstX.ToString(CultureInfo.InvariantCulture)} {GetY(0).ToString(CultureInfo.InvariantCulture)} " +
+                                       $"L {firstX.ToString(CultureInfo.InvariantCulture)} {firstY.ToString(CultureInfo.InvariantCulture)} " +
+                                       $"L {lastX.ToString(CultureInfo.InvariantCulture)} {lastY.ToString(CultureInfo.InvariantCulture)} " +
+                                       $"L {lastX.ToString(CultureInfo.InvariantCulture)} {GetY(0).ToString(CultureInfo.InvariantCulture)} Z";
+
+                        <path d="@areaPath" fill="url(#areaGradient_@colorId)" opacity="0.3" />
+
+                        <!-- Line -->
+                        var linePath = $"M {firstX.ToString(CultureInfo.InvariantCulture)} {firstY.ToString(CultureInfo.InvariantCulture)} " +
+                                       $"L {lastX.ToString(CultureInfo.InvariantCulture)} {lastY.ToString(CultureInfo.InvariantCulture)}";
+
+                        <path d="@linePath" fill="none" stroke="@segment.Color" stroke-width="3" />
+                    }
+                }
 
                 <!-- Current value indicator -->
-                @if (DataPoints.Count > 0)
-                {
-                    var lastPoint = DataPoints.Last();
-                    var x = GetXFromTimestamp(lastPoint.Timestamp);
-                    var y = GetY(lastPoint.BalanceHours);
-                    var valueText = lastPoint.BalanceHours >= 0
-                        ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
-                        : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
+                var lastSegment = Segments.Last();
+                var endX = GetXFromTimestamp(lastSegment.EndTime);
+                var endY = GetY(lastSegment.EndBalance);
+                var pulseColor = TimeService.GetActiveEvent() != null ? lastSegment.Color : "#ffffff";
+                var textColor = TimeService.GetActiveEvent() != null ? lastSegment.Color : "#888888";
+                var valueText = lastSegment.EndBalance >= 0
+                    ? $"+{lastSegment.EndBalance.ToString("F2", CultureInfo.InvariantCulture)}h"
+                    : $"{lastSegment.EndBalance.ToString("F2", CultureInfo.InvariantCulture)}h";
 
-                    <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@GradientColor" class="pulse-circle" />
-                    @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(GradientColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
-                }
+                <circle cx="@endX.ToString(CultureInfo.InvariantCulture)" cy="@endY.ToString(CultureInfo.InvariantCulture)" r="6" fill="@pulseColor" stroke="#333" stroke-width="2" class="pulse-circle" />
+                @((MarkupString)$@"<text x=""{endX.ToString(CultureInfo.InvariantCulture)}"" y=""{(endY - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(textColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
             }
             else
             {
@@ -345,17 +365,16 @@
     }
 
     // --- Timeline Chart Logic ---
-    private List<TimelineDataPoint> DataPoints { get; set; } = new();
+    private List<TimelineSegment> Segments { get; set; } = new();
     
-    private double MinY => DataPoints.Count > 0 ? Math.Min(0, DataPoints.Min(p => p.BalanceHours)) : 0;
-    private double MaxY => DataPoints.Count > 0 ? Math.Max(0, DataPoints.Max(p => p.BalanceHours)) : 1;
-    private string GradientColor => DataPoints.LastOrDefault()?.BalanceHours >= 0 ? "#10b981" : "#ef4444";
+    private double MinY => Segments.Count > 0 ? Math.Min(0, Math.Min(Segments.Min(s => s.StartBalance), Segments.Min(s => s.EndBalance))) : 0;
+    private double MaxY => Segments.Count > 0 ? Math.Max(0, Math.Max(Segments.Max(s => s.StartBalance), Segments.Max(s => s.EndBalance))) : 1;
     private System.Threading.Timer? _timer;
 
     private void RefreshTimelineData()
     {
         var period = EndDate - StartDate;
-        DataPoints = TimeService.GetTimelineData(period);
+        Segments = TimeService.GetTimelineData(period);
     }
 
     private double GetXFromTimestamp(DateTimeOffset timestamp)
@@ -381,40 +400,6 @@
         return 50 + normalized * 300;
     }
 
-    private string LinePath
-    {
-        get
-        {
-            if (DataPoints.Count < 2) return "";
-            var sb = new System.Text.StringBuilder();
-            sb.Append(FormattableString.Invariant($"M {GetXFromTimestamp(DataPoints[0].Timestamp)} {GetY(DataPoints[0].BalanceHours)}"));
-            for (int i = 1; i < DataPoints.Count; i++)
-            {
-                sb.Append(FormattableString.Invariant($" L {GetXFromTimestamp(DataPoints[i].Timestamp)} {GetY(DataPoints[i].BalanceHours)}"));
-            }
-            return sb.ToString();
-        }
-    }
-
-    private string AreaPath
-    {
-        get
-        {
-            if (DataPoints.Count < 2) return "";
-            var sb = new System.Text.StringBuilder();
-            var firstX = GetXFromTimestamp(DataPoints[0].Timestamp);
-            var lastX = GetXFromTimestamp(DataPoints[^1].Timestamp);
-            sb.Append(FormattableString.Invariant($"M {firstX} {GetY(0)}"));
-            sb.Append(FormattableString.Invariant($" L {firstX} {GetY(DataPoints[0].BalanceHours)}"));
-            for (int i = 1; i < DataPoints.Count; i++)
-            {
-                sb.Append(FormattableString.Invariant($" L {GetXFromTimestamp(DataPoints[i].Timestamp)} {GetY(DataPoints[i].BalanceHours)}"));
-            }
-            sb.Append(FormattableString.Invariant($" L {lastX} {GetY(0)}"));
-            sb.Append(" Z");
-            return sb.ToString();
-        }
-    }
 
 
     private string FormatTimeLabel(DateTime time)
