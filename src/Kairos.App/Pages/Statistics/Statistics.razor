@@ -23,46 +23,6 @@
         <div class="stat-period">(@PeriodLabel)</div>
     </div>
 
-    <!-- Budgets List -->
-    <div class="budgets-section">
-        <h3 class="section-title">@Localizer["ActivitiesAndBudgets"]</h3>
-        <div class="budgets-list">
-            @foreach (var activity in TimeService.Account.Activities.OrderBy(a => a.DisplayOrder))
-            {
-                var tracked = GetTrackedTimeForActivity(activity.Name);
-                var budget = GetBudgetForActivity(activity.Id);
-                var hasBudget = budget != null && budget.AllocatedTimeSpan.TotalSeconds > 0;
-                var progress = hasBudget
-                    ? Math.Min(100, (tracked.TotalHours / budget!.AllocatedTimeSpan.TotalHours) * 100)
-                    : 0;
-                var isOver = progress >= 100;
-
-                <div class="budget-item" style="@GetBudgetItemStyle(activity.Color)">
-                    <div class="budget-item-header">
-                        <span class="budget-activity-name">
-                            <span class="activity-color-dot small" style="@GetColorDotStyle(activity.Color)"></span>
-                            @activity.Emoji @activity.Name
-                        </span>
-                        <span class="budget-time @(isOver ? "over" : "")">
-                            @tracked.TotalHours.ToString("F1")h
-                            @if (hasBudget)
-                            {
-                                <span class="budget-of"> / @budget!.AllocatedTimeSpan.TotalHours.ToString("F0")h</span>
-                            }
-                        </span>
-                    </div>
-                    @if (hasBudget)
-                    {
-                        <div class="budget-progress-track">
-                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
-                        </div>
-                    }
-                    <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">@Localizer["SetBudget"]</button>
-                </div>
-            }
-        </div>
-    </div>
-
     <!-- Timeline Chart -->
     <div class="chart-container">
         <svg viewBox="0 0 800 400" class="timeline-chart" preserveAspectRatio="xMidYMid meet">
@@ -152,6 +112,46 @@
                 @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
             }
         </svg>
+    </div>
+
+    <!-- Budgets List -->
+    <div class="budgets-section">
+        <h3 class="section-title">@Localizer["ActivitiesAndBudgets"]</h3>
+        <div class="budgets-list">
+            @foreach (var activity in TimeService.Account.Activities.OrderBy(a => a.DisplayOrder))
+            {
+                var tracked = GetTrackedTimeForActivity(activity.Name);
+                var budget = GetBudgetForActivity(activity.Id);
+                var hasBudget = budget != null && budget.AllocatedTimeSpan.TotalSeconds > 0;
+                var progress = hasBudget
+                    ? Math.Min(100, (tracked.TotalHours / budget!.AllocatedTimeSpan.TotalHours) * 100)
+                    : 0;
+                var isOver = progress >= 100;
+
+                <div class="budget-item" style="@GetBudgetItemStyle(activity.Color)">
+                    <div class="budget-item-header">
+                        <span class="budget-activity-name">
+                            <span class="activity-color-dot small" style="@GetColorDotStyle(activity.Color)"></span>
+                            @activity.Emoji @activity.Name
+                        </span>
+                        <span class="budget-time @(isOver ? "over" : "")">
+                            @tracked.TotalHours.ToString("F1")h
+                            @if (hasBudget)
+                            {
+                                <span class="budget-of"> / @budget!.AllocatedTimeSpan.TotalHours.ToString("F0")h</span>
+                            }
+                        </span>
+                    </div>
+                    @if (hasBudget)
+                    {
+                        <div class="budget-progress-track">
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
+                        </div>
+                    }
+                    <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">@Localizer["SetBudget"]</button>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
