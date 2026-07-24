@@ -23,6 +23,7 @@ public class SettingsService : ISettingsService
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
     private bool _advancedSettingsEnabled = true;
+    private bool _timeularSettingsEnabled;
     private bool _activityGroupsEnabled;
     private int _activeActivityGroup;
     private int _autoDeleteEventDuration;
@@ -98,6 +99,19 @@ public class SettingsService : ISettingsService
                 _activeActivityGroup = value;
                 _ = SaveAsync();
                 OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
+    public bool TimeularSettingsEnabled
+    {
+        get => _timeularSettingsEnabled;
+        set
+        {
+            if (_timeularSettingsEnabled != value)
+            {
+                _timeularSettingsEnabled = value;
+                _ = SaveAsync();
             }
         }
     }
@@ -236,6 +250,7 @@ public class SettingsService : ISettingsService
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
                     _advancedSettingsEnabled = data.AdvancedSettingsEnabled;
+                    _timeularSettingsEnabled = data.TimeularSettingsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
                     _autoDeleteEventDuration = data.AutoDeleteEventDuration;
@@ -289,6 +304,7 @@ public class SettingsService : ISettingsService
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
+            TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
@@ -385,6 +401,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
+            TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
@@ -398,6 +415,7 @@ public class SettingsService : ISettingsService
         _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
         _tutorialCompleted = settings.TutorialCompleted;
         _advancedSettingsEnabled = settings.AdvancedSettingsEnabled;
+        _timeularSettingsEnabled = settings.TimeularSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
         _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
@@ -414,6 +432,7 @@ public class SettingsService : ISettingsService
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
+            TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
@@ -436,6 +455,7 @@ internal class SettingsData
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
     public bool AdvancedSettingsEnabled { get; set; } = true;
+    public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }
@@ -449,6 +469,7 @@ public class SyncedSettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool AdvancedSettingsEnabled { get; set; } = true;
+    public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }

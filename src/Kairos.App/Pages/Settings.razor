@@ -117,6 +117,17 @@
 
         <div class="setting-item">
             <div>
+                <span class="setting-label">@Localizer["ShowTimeularSettings"]</span>
+                <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["ShowTimeularSettingsDesc"]</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked="@SettingsService.TimeularSettingsEnabled" @onchange="OnTimeularSettingsToggled" />
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div>
                 <span class="setting-label">@Localizer["ActivityGroups"]</span>
                 <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["ActivityGroupsDesc"]</span>
             </div>
@@ -166,62 +177,65 @@
     </div>
     }
 
-    <div class="settings-section" id="timeular-section">
-        <h2 class="section-title">🧊 @Localizer["SettingsTimeular"]</h2>
-        <p class="setting-description">@Localizer["TimeularDescription"]</p>
+    @if (SettingsService.TimeularSettingsEnabled)
+    {
+        <div class="settings-section" id="timeular-section">
+            <h2 class="section-title">🧊 @Localizer["SettingsTimeular"]</h2>
+            <p class="setting-description">@Localizer["TimeularDescription"]</p>
 
-        @if (!string.IsNullOrWhiteSpace(TimeularService.DeviceName))
-        {
-            <div class="timeular-device-info">
-                <span class="info-icon">📶</span>
-                <span>@string.Format(Localizer["SelectedDevice"], TimeularService.DeviceName)</span>
-            </div>
-        }
-
-        <div class="timeular-actions">
-            @if (!TimeularService.IsConnected)
+            @if (!string.IsNullOrWhiteSpace(TimeularService.DeviceName))
             {
-                <button class="sync-button timeular-connect-btn" @onclick="ConnectTimeularDevice" disabled="@TimeularService.IsConnecting">
-                    <span class="btn-icon">🔗</span>
-                    <span>@(TimeularService.IsConnecting ? Localizer["Connecting"].Value : (TimeularService.HasConnectedBefore ? Localizer["ReconnectTimeular"].Value : Localizer["ConnectTimeular"].Value))</span>
-                </button>
+                <div class="timeular-device-info">
+                    <span class="info-icon">📶</span>
+                    <span>@string.Format(Localizer["SelectedDevice"], TimeularService.DeviceName)</span>
+                </div>
             }
-            else
-            {
-                <button class="sync-button timeular-connect-btn" @onclick="DisconnectTimeularDevice">
-                    <span class="btn-icon">🔌</span>
-                    <span>@Localizer["Disconnect"]</span>
-                </button>
-            }
-        </div>
 
-        @if (!string.IsNullOrWhiteSpace(TimeularService.StatusMessage))
-        {
-            <div class="status-message @TimeularService.StatusClass">
-                @TimeularService.StatusMessage
-                @if (TimeularService.IsConnected && TimeularService.BatteryLevel.HasValue)
+            <div class="timeular-actions">
+                @if (!TimeularService.IsConnected)
                 {
-                    <text> (@(TimeularService.BatteryLevel.Value)%)</text>
+                    <button class="sync-button timeular-connect-btn" @onclick="ConnectTimeularDevice" disabled="@TimeularService.IsConnecting">
+                        <span class="btn-icon">🔗</span>
+                        <span>@(TimeularService.IsConnecting ? Localizer["Connecting"].Value : (TimeularService.HasConnectedBefore ? Localizer["ReconnectTimeular"].Value : Localizer["ConnectTimeular"].Value))</span>
+                    </button>
+                }
+                else
+                {
+                    <button class="sync-button timeular-connect-btn" @onclick="DisconnectTimeularDevice">
+                        <span class="btn-icon">🔌</span>
+                        <span>@Localizer["Disconnect"]</span>
+                    </button>
                 }
             </div>
-        }
 
-        @if (TimeularService.ChangeLog.Count > 0)
-        {
-            <details class="timeular-log">
-                <summary class="timeular-log-title">@Localizer["RecentDeviceChanges"]</summary>
-                <ul class="timeular-log-list">
-                    @foreach (var entry in TimeularService.ChangeLog)
+            @if (!string.IsNullOrWhiteSpace(TimeularService.StatusMessage))
+            {
+                <div class="status-message @TimeularService.StatusClass">
+                    @TimeularService.StatusMessage
+                    @if (TimeularService.IsConnected && TimeularService.BatteryLevel.HasValue)
                     {
-                        <li class="timeular-log-item">
-                            <span class="timeular-log-time">@entry.At.ToLocalTime().ToString("HH:mm:ss")</span>
-                            <span class="timeular-log-text">@entry.Message</span>
-                        </li>
+                        <text> (@(TimeularService.BatteryLevel.Value)%)</text>
                     }
-                </ul>
-            </details>
-        }
-    </div>
+                </div>
+            }
+
+            @if (TimeularService.ChangeLog.Count > 0)
+            {
+                <details class="timeular-log">
+                    <summary class="timeular-log-title">@Localizer["RecentDeviceChanges"]</summary>
+                    <ul class="timeular-log-list">
+                        @foreach (var entry in TimeularService.ChangeLog)
+                        {
+                            <li class="timeular-log-item">
+                                <span class="timeular-log-time">@entry.At.ToLocalTime().ToString("HH:mm:ss")</span>
+                                <span class="timeular-log-text">@entry.Message</span>
+                            </li>
+                        }
+                    </ul>
+                </details>
+            }
+        </div>
+    }
 
     <div class="settings-section">
         <h2 class="section-title">👤 @Localizer["SettingsAccount"]</h2>
@@ -432,6 +446,19 @@
     {
         var enabled = (bool)(e.Value ?? false);
         SettingsService.AdvancedSettingsEnabled = enabled;
+        StateHasChanged();
+    }
+
+    private async Task OnTimeularSettingsToggled(ChangeEventArgs e)
+    {
+        var enabled = (bool)(e.Value ?? false);
+        SettingsService.TimeularSettingsEnabled = enabled;
+
+        if (!enabled && TimeularService.IsConnected)
+        {
+            await TimeularService.DisconnectAsync();
+        }
+
         StateHasChanged();
     }
 
