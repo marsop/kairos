@@ -12,6 +12,7 @@
         <h2 class="page-title">@Localizer["NavStatistics"]</h2>
 
         <div class="view-toggle">
+            <button class="@(CurrentView == ViewMode.Day ? "active" : "")" @onclick="() => SetView(ViewMode.Day)">@Localizer["Today"]</button>
             <button class="@(CurrentView == ViewMode.Week ? "active" : "")" @onclick="() => SetView(ViewMode.Week)">@Localizer["ThisWeek"]</button>
             <button class="@(CurrentView == ViewMode.Month ? "active" : "")" @onclick="() => SetView(ViewMode.Month)">@Localizer["ThisMonth"]</button>
         </div>
@@ -160,7 +161,7 @@
     <div class="modal-overlay" @onclick="CancelEdit">
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@string.Format(Localizer["BudgetFor"], EditingActivityName)</h3>
-            <p>@(CurrentView == ViewMode.Week ? Localizer["HoursForThisWeek"].Value : Localizer["HoursForThisMonth"].Value)</p>
+            <p>@(CurrentView == ViewMode.Day ? Localizer["HoursForToday"].Value : CurrentView == ViewMode.Week ? Localizer["HoursForThisWeek"].Value : Localizer["HoursForThisMonth"].Value)</p>
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["AllocatedHours"]</label>
@@ -177,8 +178,8 @@
 
 
 @code {
-    private enum ViewMode { Week, Month }
-    private ViewMode CurrentView = ViewMode.Month;
+    private enum ViewMode { Day, Week, Month }
+    private ViewMode CurrentView = ViewMode.Day;
     private List<ActivityBudget> _currentBudgets = new();
     private bool IsEditingBudget = false;
     private Guid EditingActivityId;
@@ -222,15 +223,26 @@
         RefreshTimelineData();
     }
 
-    private DateTimeOffset StartDate => CurrentView == ViewMode.Week 
-        ? DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date // Monday of this week
-        : new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero);
+    private DateTimeOffset StartDate => CurrentView switch
+    {
+        ViewMode.Day => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
+        ViewMode.Week => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date, // Monday of this week
+        _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
+    };
         
-    private DateTimeOffset EndDate => CurrentView == ViewMode.Week
-        ? StartDate.AddDays(7)
-        : StartDate.AddMonths(1);
+    private DateTimeOffset EndDate => CurrentView switch
+    {
+        ViewMode.Day => StartDate.AddDays(1),
+        ViewMode.Week => StartDate.AddDays(7),
+        _ => StartDate.AddMonths(1)
+    };
 
-    private string PeriodLabel => CurrentView == ViewMode.Week ? "This Week" : "This Month";
+    private string PeriodLabel => CurrentView switch
+    {
+        ViewMode.Day => Localizer["Today"].Value,
+        ViewMode.Week => Localizer["ThisWeek"].Value,
+        _ => Localizer["ThisMonth"].Value
+    };
 
     private TimeSpan TotalTime
     {
@@ -308,7 +320,12 @@
         };
         
         budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
-        budget.Type = CurrentView == ViewMode.Week ? BudgetType.Weekly : BudgetType.Monthly;
+        budget.Type = CurrentView switch
+        {
+            ViewMode.Day => BudgetType.Daily,
+            ViewMode.Week => BudgetType.Weekly,
+            _ => BudgetType.Monthly
+        };
 
         await StatisticsService.SaveBudgetAsync(budget);
         
