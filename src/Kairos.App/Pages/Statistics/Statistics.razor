@@ -355,8 +355,7 @@
 
     private void RefreshTimelineData()
     {
-        var period = EndDate - StartDate;
-        DataPoints = TimeService.GetTimelineData(period);
+        DataPoints = TimeService.GetTimelineData(StartDate, EndDate);
     }
 
     private double GetXFromTimestamp(DateTimeOffset timestamp)

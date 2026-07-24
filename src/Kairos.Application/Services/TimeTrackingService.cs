@@ -227,40 +227,27 @@ public class TimeTrackingService : ITimeTrackingService
         SaveAndNotify();
     }
 
-    public List<TimelineDataPoint> GetTimelineData(TimeSpan period)
+    public List<TimelineDataPoint> GetTimelineData(DateTimeOffset start, DateTimeOffset end)
     {
         var points = new List<TimelineDataPoint>();
-        var endTime = DateTimeOffset.UtcNow;
-        var startTime = endTime - period;
+        var limit = end < DateTimeOffset.UtcNow ? end : DateTimeOffset.UtcNow;
 
-        // Get all events that overlap with the period
+        // Get all events that overlap with the period up to the limit
         var relevantEvents = _account.Events
-            .Where(e => e.StartTime <= endTime && (e.EndTime ?? endTime) >= startTime)
+            .Where(e => e.StartTime <= limit && (e.EndTime ?? DateTimeOffset.UtcNow) >= start)
             .OrderBy(e => e.StartTime)
             .ToList();
 
-        // Calculate balance before the period starts
         double runningBalance = 0;
-        var eventsBefore = _account.Events
-            .Where(e => e.StartTime < startTime)
-            .ToList();
-
-        foreach (var evt in eventsBefore)
-        {
-            var effectiveEnd = evt.EndTime ?? startTime;
-            if (effectiveEnd > startTime) effectiveEnd = startTime;
-            var duration = effectiveEnd - evt.StartTime;
-            runningBalance += duration.TotalHours;
-        }
 
         // Always add start point
-        points.Add(new TimelineDataPoint { Timestamp = startTime, BalanceHours = runningBalance });
+        points.Add(new TimelineDataPoint { Timestamp = start, BalanceHours = runningBalance });
 
         // Add points for each event transition in the period
         foreach (var evt in relevantEvents)
         {
             // Point at start of event (before contribution)
-            if (evt.StartTime >= startTime)
+            if (evt.StartTime > start)
             {
                 points.Add(new TimelineDataPoint
                 {
@@ -270,15 +257,15 @@ public class TimeTrackingService : ITimeTrackingService
             }
 
             // Calculate contribution up to end or now
-            var effectiveStart = evt.StartTime < startTime ? startTime : evt.StartTime;
-            var effectiveEnd = evt.EndTime ?? endTime;
-            if (effectiveEnd > endTime) effectiveEnd = endTime;
+            var effectiveStart = evt.StartTime < start ? start : evt.StartTime;
+            var effectiveEnd = evt.EndTime ?? limit;
+            if (effectiveEnd > limit) effectiveEnd = limit;
 
             var contribution = (effectiveEnd - effectiveStart).TotalHours;
             runningBalance += contribution;
 
             // Point at end of event (or now)
-            if (evt.EndTime.HasValue && evt.EndTime.Value <= endTime)
+            if (evt.EndTime.HasValue && evt.EndTime.Value <= limit)
             {
                 points.Add(new TimelineDataPoint
                 {
@@ -288,8 +275,17 @@ public class TimeTrackingService : ITimeTrackingService
             }
         }
 
-        // Always add current point
-        points.Add(new TimelineDataPoint { Timestamp = endTime, BalanceHours = runningBalance });
+        // Always add current point at the limit if not already there
+        if (!points.Any(p => p.Timestamp == limit))
+        {
+            points.Add(new TimelineDataPoint { Timestamp = limit, BalanceHours = runningBalance });
+        }
+
+        // If the end is strictly in the future relative to the limit, we extend a flat line to 'end'
+        if (limit < end)
+        {
+            points.Add(new TimelineDataPoint { Timestamp = end, BalanceHours = runningBalance });
+        }
 
         return points.OrderBy(p => p.Timestamp).ToList();
     }
