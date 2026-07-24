@@ -181,9 +181,6 @@
   <data name="AddActivity" xml:space="preserve">
     <value>Engadir contador</value>
   </data>
-  <data name="RunningFor" xml:space="preserve">
-    <value>En execución durante:</value>
-  </data>
   <data name="NameRequired" xml:space="preserve">
     <value>O nome é obrigatorio</value>
   </data>
