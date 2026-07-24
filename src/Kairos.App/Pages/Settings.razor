@@ -314,13 +314,21 @@
     private bool isAutoDeleteInvalid;
     private bool isStickyEventsInvalid;
 
-    private static string ApplicationVersion =>
-        typeof(Settings)
-            .Assembly
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            ?.InformationalVersion
-        ?? typeof(Settings).Assembly.GetName().Version?.ToString()
-        ?? "unknown";
+    private static string ApplicationVersion
+    {
+        get
+        {
+            var version = typeof(Settings)
+                .Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion
+            ?? typeof(Settings).Assembly.GetName().Version?.ToString()
+            ?? "unknown";
+
+            var plusIndex = version.IndexOf('+');
+            return plusIndex >= 0 ? version[..plusIndex] : version;
+        }
+    }
 
     private string SelectedLanguage => SettingsService.Language;
     private string SelectedTheme => SettingsService.Theme;
