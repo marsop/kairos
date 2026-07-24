@@ -3,6 +3,7 @@
 @inject IPwaService PwaService
 @inject ITimeularService TimeularService
 @inject ITimeTrackingService TimeTrackingService
+@inject ISettingsService SettingsService
 @inject IStringLocalizer<Strings> Localizer
 @implements IDisposable
 
@@ -78,7 +79,7 @@
                     </span>
                 </a>
 
-                @if (TimeularService.HasConnectedBefore)
+                @if (SettingsService.TimeularSettingsEnabled && TimeularService.HasConnectedBefore)
                 {
                     <a style="cursor: pointer;" @onclick="HandleTrackerClick" class="status-indicator timeular-nav-item" title="@GetTrackerTitle()">
                         <span class="nav-icon timeular-nav-icon">
@@ -123,6 +124,7 @@
         PwaService.OnStateChanged += StateHasChanged;
         TimeularService.OnStateChanged += StateHasChanged;
         TimeTrackingService.OnStateChanged += StateHasChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
         
         await PwaService.InitializeAsync();
     }
@@ -170,5 +172,6 @@
         PwaService.OnStateChanged -= StateHasChanged;
         TimeularService.OnStateChanged -= StateHasChanged;
         TimeTrackingService.OnStateChanged -= StateHasChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
     }
 }
