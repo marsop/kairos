@@ -205,13 +205,17 @@
 
     private async Task LoadBudgetsAsync()
     {
-        var dStart = DateOnly.FromDateTime(StartDate.DateTime);
-        var dEnd = DateOnly.FromDateTime(EndDate.AddDays(-1).DateTime);
+        var currentType = CurrentView switch
+        {
+            ViewMode.Day => BudgetType.Daily,
+            ViewMode.Week => BudgetType.Weekly,
+            _ => BudgetType.Monthly
+        };
         
         _currentBudgets.Clear();
         foreach (var act in TimeService.Account.Activities)
         {
-            var b = await StatisticsService.GetBudgetForPeriodAsync(act.Id, dStart, dEnd);
+            var b = await StatisticsService.GetBudgetAsync(act.Id, currentType);
             if (b != null) _currentBudgets.Add(b);
         }
     }
@@ -309,23 +313,20 @@
 
     private async Task SaveBudget()
     {
-        var dStart = DateOnly.FromDateTime(StartDate.DateTime);
-        var dEnd = DateOnly.FromDateTime(EndDate.AddDays(-1).DateTime);
-        
-        var budget = GetBudgetForActivity(EditingActivityId) ?? new ActivityBudget 
-        { 
-            ActivityId = EditingActivityId,
-            StartDate = dStart,
-            EndDate = dEnd
-        };
-        
-        budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
-        budget.Type = CurrentView switch
+        var currentType = CurrentView switch
         {
             ViewMode.Day => BudgetType.Daily,
             ViewMode.Week => BudgetType.Weekly,
             _ => BudgetType.Monthly
         };
+
+        var budget = GetBudgetForActivity(EditingActivityId) ?? new ActivityBudget 
+        { 
+            ActivityId = EditingActivityId,
+            Type = currentType
+        };
+        
+        budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
 
         await StatisticsService.SaveBudgetAsync(budget);
         
