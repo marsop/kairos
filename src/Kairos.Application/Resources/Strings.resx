@@ -187,9 +187,6 @@
   <data name="Emoji" xml:space="preserve">
     <value>Emoji</value>
   </data>
-  <data name="Metadata" xml:space="preserve">
-    <value>Metadata</value>
-  </data>
   <data name="NameLengthError" xml:space="preserve">
     <value>Name must be 1-40 characters</value>
   </data>
