@@ -175,4 +175,5 @@ public class TimelineDataPoint
 {
     public DateTimeOffset Timestamp { get; set; }
     public double BalanceHours { get; set; }
+    public string Color { get; set; } = "#ffffff";
 }
