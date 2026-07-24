@@ -815,4 +815,10 @@
   <data name="UnknownBatteryStatus" xml:space="preserve">
     <value>estado de batería descoñecido</value>
   </data>
+  <data name="HoursForToday" xml:space="preserve">
+    <value>Horas para hoxe</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Hoxe</value>
+  </data>
 </root>
