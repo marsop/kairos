@@ -308,6 +308,8 @@
         };
         
         budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
+        budget.Type = CurrentView == ViewMode.Week ? BudgetType.Weekly : BudgetType.Monthly;
+
         await StatisticsService.SaveBudgetAsync(budget);
         
         IsEditingBudget = false;
