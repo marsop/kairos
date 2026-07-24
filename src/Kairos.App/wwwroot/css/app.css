@@ -593,6 +593,7 @@ body {
 
 .header-action-menu {
     position: relative;
+    z-index: 100;
 }
 
 .header-action-menu .dropdown-menu {
@@ -2219,6 +2220,7 @@ html[data-theme="dark"] .edit-input {
 
 .dropdown-item {
     display: flex;
+    position: relative;
     align-items: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
