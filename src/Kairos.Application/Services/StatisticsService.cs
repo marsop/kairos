@@ -45,16 +45,11 @@ public class StatisticsService : IStatisticsService
     {
         await EnsureLoadedAsync();
 
-        // Validation: Check for overlap with existing budgets for the same activity
-        var overlapping = _budgets.Any(b =>
-            b.Id != budget.Id &&
-            b.ActivityId == budget.ActivityId &&
-            b.StartDate <= budget.EndDate &&
-            budget.StartDate <= b.EndDate);
-
-        if (overlapping)
+        // Remove any existing budget for the same activity and type
+        var existingByType = _budgets.FirstOrDefault(b => b.ActivityId == budget.ActivityId && b.Type == budget.Type);
+        if (existingByType != null && existingByType.Id != budget.Id)
         {
-            throw new InvalidOperationException("Budgets for the same activity cannot overlap in time.");
+            _budgets.Remove(existingByType);
         }
 
         var existing = _budgets.FirstOrDefault(b => b.Id == budget.Id);
@@ -78,12 +73,11 @@ public class StatisticsService : IStatisticsService
         }
     }
 
-    public async Task<ActivityBudget?> GetBudgetForPeriodAsync(Guid activityId, DateOnly startDate, DateOnly endDate)
+    public async Task<ActivityBudget?> GetBudgetAsync(Guid activityId, BudgetType type)
     {
         await EnsureLoadedAsync();
         return _budgets.FirstOrDefault(b =>
             b.ActivityId == activityId &&
-            b.StartDate <= endDate &&
-            startDate <= b.EndDate);
+            b.Type == type);
     }
 }

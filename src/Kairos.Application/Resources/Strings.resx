@@ -811,12 +811,16 @@
   <data name="UnknownBatteryStatus" xml:space="preserve">
     <value>unknown battery status</value>
   </data>
-
   <data name="ShowTimeularSettings" xml:space="preserve">
     <value>Show Timeular Settings</value>
   </data>
-
   <data name="ShowTimeularSettingsDesc" xml:space="preserve">
     <value>Toggle to show or hide the Timeular integration settings.</value>
+  </data>
+  <data name="HoursForToday" xml:space="preserve">
+    <value>Hours for today</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
   </data>
 </root>

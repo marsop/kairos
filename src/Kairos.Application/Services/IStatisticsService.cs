@@ -9,8 +9,8 @@ public interface IStatisticsService
     Task DeleteBudgetAsync(Guid budgetId);
 
     /// <summary>
-    /// Gets the active budget for a specific activity that intersects with the given date range.
-    /// Assumes max 1 active budget per activity at a time.
+    /// Gets the budget for a specific activity and type.
+    /// Assumes max 1 budget per activity and type.
     /// </summary>
-    Task<ActivityBudget?> GetBudgetForPeriodAsync(Guid activityId, DateOnly startDate, DateOnly endDate);
+    Task<ActivityBudget?> GetBudgetAsync(Guid activityId, BudgetType type);
 }

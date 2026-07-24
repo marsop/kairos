@@ -815,12 +815,16 @@
   <data name="UnknownBatteryStatus" xml:space="preserve">
     <value>estado de batería descoñecido</value>
   </data>
-
   <data name="ShowTimeularSettings" xml:space="preserve">
     <value>Mostrar axustes de Timeular</value>
   </data>
-
   <data name="ShowTimeularSettingsDesc" xml:space="preserve">
     <value>Activar para mostrar ou ocultar a configuración de integración de Timeular.</value>
+  </data>
+  <data name="HoursForToday" xml:space="preserve">
+    <value>Horas para hoxe</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Hoxe</value>
   </data>
 </root>

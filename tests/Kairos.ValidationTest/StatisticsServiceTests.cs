@@ -33,7 +33,7 @@ public class StatisticsServiceTests
         // Arrange
         var budgets = new List<ActivityBudget>
         {
-            new() { Id = Guid.NewGuid(), ActivityId = Guid.NewGuid(), StartDate = DateOnly.FromDateTime(DateTime.Today), EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)) }
+            new() { Id = Guid.NewGuid(), ActivityId = Guid.NewGuid(), Type = BudgetType.Daily, AllocatedTimeSpan = TimeSpan.FromHours(2) }
         };
         await _storage.SetItemAsync(StorageKey, JsonSerializer.Serialize(budgets));
 
@@ -56,8 +56,8 @@ public class StatisticsServiceTests
         {
             Id = Guid.NewGuid(),
             ActivityId = Guid.NewGuid(),
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7))
+            Type = BudgetType.Weekly,
+            AllocatedTimeSpan = TimeSpan.FromHours(10)
         };
 
         // Act
@@ -70,137 +70,68 @@ public class StatisticsServiceTests
     }
 
     [Fact]
-    public async Task SaveBudgetAsync_ShouldUpdateExistingBudget()
+    public async Task SaveBudgetAsync_ShouldUpdateExistingBudgetByReplacingIt()
     {
         // Arrange
-        var budgetId = Guid.NewGuid();
         var activityId = Guid.NewGuid();
-        var budget = new ActivityBudget
+        var budget1 = new ActivityBudget
         {
-            Id = budgetId,
+            Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            Type = BudgetType.Monthly,
             AllocatedTimeSpan = TimeSpan.FromHours(10)
         };
 
-        await _service.SaveBudgetAsync(budget);
+        await _service.SaveBudgetAsync(budget1);
 
-        var updatedBudget = new ActivityBudget
+        var budget2 = new ActivityBudget
         {
-            Id = budgetId,
+            Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            Type = BudgetType.Monthly,
             AllocatedTimeSpan = TimeSpan.FromHours(20)
         };
 
         // Act
-        await _service.SaveBudgetAsync(updatedBudget);
+        await _service.SaveBudgetAsync(budget2);
 
         // Assert
         var budgets = await _service.GetBudgetsAsync();
         Assert.Single(budgets);
+        Assert.Equal(budget2.Id, budgets[0].Id);
         Assert.Equal(TimeSpan.FromHours(20), budgets[0].AllocatedTimeSpan);
     }
 
-    [Theory]
-    [InlineData(0, 10, 5, 15)] // New budget starts inside existing, ends after
-    [InlineData(5, 15, 0, 10)] // New budget starts before existing, ends inside
-    [InlineData(0, 10, 2, 8)]  // New budget entirely inside existing
-    [InlineData(2, 8, 0, 10)]  // Existing budget entirely inside new
-    [InlineData(0, 10, 0, 10)] // Exact match
-    public async Task SaveBudgetAsync_ShouldThrowInvalidOperationException_WhenOverlappingBudget(
-        int existingStartOffset, int existingEndOffset,
-        int newStartOffset, int newEndOffset)
+    [Fact]
+    public async Task SaveBudgetAsync_ShouldAllowDifferentTypesForSameActivity()
     {
         // Arrange
         var activityId = Guid.NewGuid();
-        var today = DateOnly.FromDateTime(DateTime.Today);
-
-        var existingBudget = new ActivityBudget
+        var dailyBudget = new ActivityBudget
         {
             Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = today.AddDays(existingStartOffset),
-            EndDate = today.AddDays(existingEndOffset)
+            Type = BudgetType.Daily,
+            AllocatedTimeSpan = TimeSpan.FromHours(2)
         };
-        await _service.SaveBudgetAsync(existingBudget);
+        await _service.SaveBudgetAsync(dailyBudget);
 
-        var newBudget = new ActivityBudget
+        var weeklyBudget = new ActivityBudget
         {
             Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = today.AddDays(newStartOffset),
-            EndDate = today.AddDays(newEndOffset)
+            Type = BudgetType.Weekly,
+            AllocatedTimeSpan = TimeSpan.FromHours(10)
         };
 
-        // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _service.SaveBudgetAsync(newBudget));
-    }
+        // Act
+        await _service.SaveBudgetAsync(weeklyBudget);
 
-    [Fact]
-    public async Task SaveBudgetAsync_ShouldThrowInvalidOperationException_WhenOverlappingBudgetExistsInStorage()
-    {
-        // Arrange
-        var activityId = Guid.NewGuid();
-        var today = DateOnly.FromDateTime(DateTime.Today);
-
-        var existingBudget = new ActivityBudget
-        {
-            Id = Guid.NewGuid(),
-            ActivityId = activityId,
-            StartDate = today,
-            EndDate = today.AddDays(7)
-        };
-
-        // Put directly into storage instead of saving via service,
-        // to test the EnsureLoadedAsync overlap validation flow
-        var budgets = new List<ActivityBudget> { existingBudget };
-        await _storage.SetItemAsync(StorageKey, JsonSerializer.Serialize(budgets));
-
-        // Use a new service instance to force load from storage
-        var service = new StatisticsService(_storage);
-
-        var newBudget = new ActivityBudget
-        {
-            Id = Guid.NewGuid(),
-            ActivityId = activityId,
-            StartDate = today.AddDays(2),
-            EndDate = today.AddDays(5)
-        };
-
-        // Act & Assert
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => service.SaveBudgetAsync(newBudget));
-        Assert.Equal("Budgets for the same activity cannot overlap in time.", ex.Message);
-    }
-
-    [Fact]
-    public async Task SaveBudgetAsync_ShouldNotThrow_WhenDifferentActivityIdOverlaps()
-    {
-        // Arrange
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        var existingBudget = new ActivityBudget
-        {
-            Id = Guid.NewGuid(),
-            ActivityId = Guid.NewGuid(),
-            StartDate = today,
-            EndDate = today.AddDays(7)
-        };
-        await _service.SaveBudgetAsync(existingBudget);
-
-        var newBudget = new ActivityBudget
-        {
-            Id = Guid.NewGuid(),
-            ActivityId = Guid.NewGuid(),
-            StartDate = today,
-            EndDate = today.AddDays(7)
-        };
-
-        // Act & Assert
-        await _service.SaveBudgetAsync(newBudget);
+        // Assert
         var budgets = await _service.GetBudgetsAsync();
         Assert.Equal(2, budgets.Count);
+        Assert.Contains(budgets, b => b.Type == BudgetType.Daily);
+        Assert.Contains(budgets, b => b.Type == BudgetType.Weekly);
     }
 
     [Fact]
@@ -211,8 +142,7 @@ public class StatisticsServiceTests
         {
             Id = Guid.NewGuid(),
             ActivityId = Guid.NewGuid(),
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7))
+            Type = BudgetType.Daily
         };
         await _service.SaveBudgetAsync(budget);
 
@@ -232,8 +162,7 @@ public class StatisticsServiceTests
         {
             Id = Guid.NewGuid(),
             ActivityId = Guid.NewGuid(),
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7))
+            Type = BudgetType.Weekly
         };
         await _service.SaveBudgetAsync(budget);
 
@@ -246,22 +175,20 @@ public class StatisticsServiceTests
     }
 
     [Fact]
-    public async Task GetBudgetForPeriodAsync_ShouldReturnBudget_WhenPeriodOverlaps()
+    public async Task GetBudgetAsync_ShouldReturnBudget_WhenBudgetExistsForType()
     {
         // Arrange
         var activityId = Guid.NewGuid();
-        var today = DateOnly.FromDateTime(DateTime.Today);
         var budget = new ActivityBudget
         {
             Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = today,
-            EndDate = today.AddDays(7)
+            Type = BudgetType.Monthly
         };
         await _service.SaveBudgetAsync(budget);
 
-        // Act - check a period that overlaps
-        var result = await _service.GetBudgetForPeriodAsync(activityId, today.AddDays(2), today.AddDays(5));
+        // Act
+        var result = await _service.GetBudgetAsync(activityId, BudgetType.Monthly);
 
         // Assert
         Assert.NotNull(result);
@@ -269,22 +196,20 @@ public class StatisticsServiceTests
     }
 
     [Fact]
-    public async Task GetBudgetForPeriodAsync_ShouldReturnNull_WhenNoBudgetOverlaps()
+    public async Task GetBudgetAsync_ShouldReturnNull_WhenNoBudgetExistsForType()
     {
         // Arrange
         var activityId = Guid.NewGuid();
-        var today = DateOnly.FromDateTime(DateTime.Today);
         var budget = new ActivityBudget
         {
             Id = Guid.NewGuid(),
             ActivityId = activityId,
-            StartDate = today,
-            EndDate = today.AddDays(7)
+            Type = BudgetType.Weekly
         };
         await _service.SaveBudgetAsync(budget);
 
-        // Act - check a period completely after
-        var result = await _service.GetBudgetForPeriodAsync(activityId, today.AddDays(8), today.AddDays(14));
+        // Act
+        var result = await _service.GetBudgetAsync(activityId, BudgetType.Monthly);
 
         // Assert
         Assert.Null(result);
