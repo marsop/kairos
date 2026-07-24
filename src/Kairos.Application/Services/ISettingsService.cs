@@ -33,6 +33,11 @@ public interface ISettingsService
     bool AdvancedSettingsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets whether Timeular settings are enabled.
+    /// </summary>
+    bool TimeularSettingsEnabled { get; set; }
+
+    /// <summary>
     /// Gets or sets whether activity groups are enabled.
     /// </summary>
     bool ActivityGroupsEnabled { get; set; }

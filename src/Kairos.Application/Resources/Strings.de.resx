@@ -812,4 +812,12 @@
   <data name="UnknownBatteryStatus" xml:space="preserve">
     <value>unbekannter Batteriestatus</value>
   </data>
+
+  <data name="ShowTimeularSettings" xml:space="preserve">
+    <value>Timeular-Einstellungen anzeigen</value>
+  </data>
+
+  <data name="ShowTimeularSettingsDesc" xml:space="preserve">
+    <value>Umschalten, um die Timeular-Integrationseinstellungen ein- oder auszublenden.</value>
+  </data>
 </root>

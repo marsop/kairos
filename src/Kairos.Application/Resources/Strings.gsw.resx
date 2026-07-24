@@ -815,4 +815,12 @@
   <data name="UnknownBatteryStatus" xml:space="preserve">
     <value>unbekannte Batteriestatus</value>
   </data>
+
+  <data name="ShowTimeularSettings" xml:space="preserve">
+    <value>Timeular Istellige aazeige</value>
+  </data>
+
+  <data name="ShowTimeularSettingsDesc" xml:space="preserve">
+    <value>Umschalde, um d'Timeular-Integration i- oder uszblende.</value>
+  </data>
 </root>
