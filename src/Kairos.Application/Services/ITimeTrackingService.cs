@@ -47,7 +47,7 @@ public interface ITimeTrackingService
     /// <summary>
     /// Gets timeline data points for the specified period.
     /// </summary>
-    List<TimelineDataPoint> GetTimelineData(TimeSpan period);
+    List<TimelineDataPoint> GetTimelineData(DateTimeOffset start, DateTimeOffset end);
 
     /// <summary>
     /// Deletes an event by its ID. Updates balance and triggers state change.
