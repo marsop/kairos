@@ -34,7 +34,7 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activities?select=id,name,color,emoji,metadata,display_order,activity_group_id&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
+            BuildUrl($"rest/v1/activities?select=id,name,color,emoji,display_order,activity_group_id&user_id=eq.{Uri.EscapeDataString(userId!)}&order=display_order.asc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -49,7 +49,6 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Name = m.Name!,
                 Color = Activity.SanitizeColor(m.Color),
                 Emoji = m.Emoji ?? string.Empty,
-                Metadata = m.Metadata ?? string.Empty,
                 DisplayOrder = m.DisplayOrder,
                 ActivityGroupId = m.ActivityGroupId
             })
@@ -78,7 +77,6 @@ public sealed class SupabaseActivityStore : ISupabaseActivityStore
                 Name = m.Name,
                 Color = Activity.SanitizeColor(m.Color),
                 Emoji = m.Emoji ?? string.Empty,
-                Metadata = m.Metadata ?? string.Empty,
                 DisplayOrder = m.DisplayOrder,
                 ActivityGroupId = m.ActivityGroupId
             })
@@ -152,9 +150,6 @@ internal sealed class SupabaseActivityRow
     [JsonPropertyName("emoji")]
     public string? Emoji { get; set; }
 
-    [JsonPropertyName("metadata")]
-    public string? Metadata { get; set; }
-
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }
 
@@ -178,9 +173,6 @@ internal sealed class SupabaseActivityWriteRow
 
     [JsonPropertyName("emoji")]
     public string Emoji { get; set; } = string.Empty;
-
-    [JsonPropertyName("metadata")]
-    public string Metadata { get; set; } = string.Empty;
 
     [JsonPropertyName("display_order")]
     public int DisplayOrder { get; set; }

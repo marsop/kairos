@@ -4,7 +4,6 @@ create table if not exists public.activities (
     name text not null,
     color text not null default '#10B981',
     emoji text not null default '',
-    metadata text not null default '',
     display_order integer not null default 0,
     activity_group_id integer not null default 0,
     created_at timestamptz not null default now(),
@@ -19,7 +18,7 @@ alter table public.activities
     add column if not exists emoji text not null default '';
 
 alter table public.activities
-    add column if not exists metadata text not null default '';
+    drop column if exists metadata;
 
 alter table public.activities
     add column if not exists activity_group_id integer not null default 0;
