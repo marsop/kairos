@@ -117,8 +117,8 @@
                 {
                     <button class="activity-button activity-colored @(isActive ? "active" : "")"
                             style="@GetActivityStyle(activity.Color, isActive)"
+                            title="#@(index + 1) @activity.Emoji @activity.Name"
                             @onclick="() => ToggleActivity(activity.Id)">
-                        <div class="activity-index">#@(index + 1)</div>
                         <div class="activity-name">@activity.Emoji @activity.Name</div>
                     </button>
                     <div class="activity-actions left">
