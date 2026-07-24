@@ -74,37 +74,53 @@
 
             <!-- Gradient definitions -->
             <defs>
-                <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stop-color="@GradientColor" stop-opacity="0.4" />
-                    <stop offset="100%" stop-color="@GradientColor" stop-opacity="0" />
-                </linearGradient>
-                <linearGradient id="lineGradient" x1="0" x2="1" y1="0" y2="0">
-                    <stop offset="0%" stop-color="@GradientColor" />
-                    <stop offset="100%" stop-color="@GradientColor" />
-                </linearGradient>
+                @foreach (var color in DataPoints.Select(p => p.Color).Distinct())
+                {
+                    var idSafe = color.Replace("#", "");
+                    <linearGradient id="areaGradient_@idSafe" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="@color" stop-opacity="0.4" />
+                        <stop offset="100%" stop-color="@color" stop-opacity="0" />
+                    </linearGradient>
+                }
             </defs>
 
             <!-- Data visualization -->
             @if (DataPoints.Count > 1)
             {
-                <!-- Area fill -->
-                <path d="@AreaPath" fill="url(#areaGradient)" opacity="0.3" />
+                <!-- Area fills & Lines -->
+                @for (int i = 1; i < DataPoints.Count; i++)
+                {
+                    var prev = DataPoints[i - 1];
+                    var curr = DataPoints[i];
+                    var color = curr.Color;
+                    var idSafe = color.Replace("#", "");
 
-                <!-- Line -->
-                <path d="@LinePath" fill="none" stroke="url(#lineGradient)" stroke-width="3" />
+                    var x1 = GetXFromTimestamp(prev.Timestamp);
+                    var y1 = GetY(prev.BalanceHours);
+                    var x2 = GetXFromTimestamp(curr.Timestamp);
+                    var y2 = GetY(curr.BalanceHours);
+
+                    var yZero = GetY(0);
+
+                    var areaPath = FormattableString.Invariant($"M {x1} {yZero} L {x1} {y1} L {x2} {y2} L {x2} {yZero} Z");
+
+                    <path d="@areaPath" fill="url(#areaGradient_@idSafe)" opacity="0.3" />
+                    <line x1="@x1.ToString(CultureInfo.InvariantCulture)" y1="@y1.ToString(CultureInfo.InvariantCulture)" x2="@x2.ToString(CultureInfo.InvariantCulture)" y2="@y2.ToString(CultureInfo.InvariantCulture)" stroke="@color" stroke-width="3" />
+                }
 
                 <!-- Current value indicator -->
                 @if (DataPoints.Count > 0)
                 {
                     var lastPoint = DataPoints.Last();
+                    var indicatorColor = lastPoint.Color;
                     var x = GetXFromTimestamp(lastPoint.Timestamp);
                     var y = GetY(lastPoint.BalanceHours);
                     var valueText = lastPoint.BalanceHours >= 0
                         ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
                         : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
 
-                    <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@GradientColor" class="pulse-circle" />
-                    @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(GradientColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
+                    <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@indicatorColor" class="pulse-circle" />
+                    @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(indicatorColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
                 }
             }
             else
@@ -350,7 +366,6 @@
     
     private double MinY => DataPoints.Count > 0 ? Math.Min(0, DataPoints.Min(p => p.BalanceHours)) : 0;
     private double MaxY => DataPoints.Count > 0 ? Math.Max(0, DataPoints.Max(p => p.BalanceHours)) : 1;
-    private string GradientColor => DataPoints.LastOrDefault()?.BalanceHours >= 0 ? "#10b981" : "#ef4444";
     private System.Threading.Timer? _timer;
 
     private void RefreshTimelineData()
@@ -379,41 +394,6 @@
         if (range == 0) range = 1;
         var normalized = (MaxY - value) / range;
         return 50 + normalized * 300;
-    }
-
-    private string LinePath
-    {
-        get
-        {
-            if (DataPoints.Count < 2) return "";
-            var sb = new System.Text.StringBuilder();
-            sb.Append(FormattableString.Invariant($"M {GetXFromTimestamp(DataPoints[0].Timestamp)} {GetY(DataPoints[0].BalanceHours)}"));
-            for (int i = 1; i < DataPoints.Count; i++)
-            {
-                sb.Append(FormattableString.Invariant($" L {GetXFromTimestamp(DataPoints[i].Timestamp)} {GetY(DataPoints[i].BalanceHours)}"));
-            }
-            return sb.ToString();
-        }
-    }
-
-    private string AreaPath
-    {
-        get
-        {
-            if (DataPoints.Count < 2) return "";
-            var sb = new System.Text.StringBuilder();
-            var firstX = GetXFromTimestamp(DataPoints[0].Timestamp);
-            var lastX = GetXFromTimestamp(DataPoints[^1].Timestamp);
-            sb.Append(FormattableString.Invariant($"M {firstX} {GetY(0)}"));
-            sb.Append(FormattableString.Invariant($" L {firstX} {GetY(DataPoints[0].BalanceHours)}"));
-            for (int i = 1; i < DataPoints.Count; i++)
-            {
-                sb.Append(FormattableString.Invariant($" L {GetXFromTimestamp(DataPoints[i].Timestamp)} {GetY(DataPoints[i].BalanceHours)}"));
-            }
-            sb.Append(FormattableString.Invariant($" L {lastX} {GetY(0)}"));
-            sb.Append(" Z");
-            return sb.ToString();
-        }
     }
 
 

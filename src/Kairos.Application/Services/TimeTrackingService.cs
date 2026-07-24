@@ -241,7 +241,7 @@ public class TimeTrackingService : ITimeTrackingService
         double runningBalance = 0;
 
         // Always add start point
-        points.Add(new TimelineDataPoint { Timestamp = start, BalanceHours = runningBalance });
+        points.Add(new TimelineDataPoint { Timestamp = start, BalanceHours = runningBalance, Color = "#ffffff" });
 
         // Add points for each event transition in the period
         foreach (var evt in relevantEvents)
@@ -252,7 +252,8 @@ public class TimeTrackingService : ITimeTrackingService
                 points.Add(new TimelineDataPoint
                 {
                     Timestamp = evt.StartTime,
-                    BalanceHours = runningBalance
+                    BalanceHours = runningBalance,
+                    Color = "#ffffff" // Preceding period was inactive/flat
                 });
             }
 
@@ -270,7 +271,8 @@ public class TimeTrackingService : ITimeTrackingService
                 points.Add(new TimelineDataPoint
                 {
                     Timestamp = evt.EndTime.Value,
-                    BalanceHours = runningBalance
+                    BalanceHours = runningBalance,
+                    Color = evt.ActivityColor
                 });
             }
         }
@@ -278,13 +280,8 @@ public class TimeTrackingService : ITimeTrackingService
         // Always add current point at the limit if not already there
         if (!points.Any(p => p.Timestamp == limit))
         {
-            points.Add(new TimelineDataPoint { Timestamp = limit, BalanceHours = runningBalance });
-        }
-
-        // If the end is strictly in the future relative to the limit, we extend a flat line to 'end'
-        if (limit < end)
-        {
-            points.Add(new TimelineDataPoint { Timestamp = end, BalanceHours = runningBalance });
+            var activeEvent = relevantEvents.FirstOrDefault(e => e.StartTime <= limit && (e.EndTime == null || e.EndTime > limit));
+            points.Add(new TimelineDataPoint { Timestamp = limit, BalanceHours = runningBalance, Color = activeEvent?.ActivityColor ?? "#ffffff" });
         }
 
         return points.OrderBy(p => p.Timestamp).ToList();
