@@ -9,10 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Statistics**: Added a new 'Today' view to the Statistics page alongside Week and Month views.
+- **Avatars**: Added new images for the kawaii avatar style.
+- **Settings**: Added a toggle for Timeular settings under Advanced settings.
+- **Budgets**: Added a new rolling budget feature for activities.
 
 ### Changed
 - **Activities UI**: Formatted the lower banner to display the active activity name and comment inline on the same line, removing the standalone comment block.
 - **Settings UI**: Display only major, minor, and patch version (plus pre-release tags) in the About section, removing the Git commit hash.
+- **Statistics UI**: Moved the timeline chart in the Statistics tab above the budgets section.
+- **Activities UI**: Hide activity index from card UI and display it via tooltip.
+- **Timeular UI**: Hide Timeular status indicator when settings are disabled.
+
+### Fixed
+- **Statistics**: Fix timeline graph calculation to start count from 0 for the selected period.
+- **Statistics**: Fix color timeline chart segments by active activity.
+- **UI**: Fix CSS stacking issue causing dropdown clicks to be intercepted by calendar.
+- **CSV**: Fix CSV export button not clicking in Calendar mode.
 
 ## [1.5.0] - 2026-07-22
 

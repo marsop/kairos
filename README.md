@@ -20,6 +20,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 
 ### Statistics
 - **Data Visualization**: Understand your time distribution with charts and visual styling
+- **Budgets**: Set rolling budgets (daily, weekly, monthly) for individual activities
 
 ### Hardware Integration
 - **Timeular Tracker**: Connect via Bluetooth to automatically start/stop activities by flipping your device
@@ -41,7 +42,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 
 ### Settings
 - **Multi-Language Support**: Available in English, Deutsch, Español, Galego, and Vorarlbergerisch
-- **Advanced Options**: Configure activity groups, sticky events duration, and auto-deletion of short events
+- **Advanced Options**: Configure activity groups, sticky events duration, auto-deletion of short events, and toggle Timeular integration
 - **Factory Reset**: Clear all data and start fresh
 
 ### Progressive Web App (PWA)
