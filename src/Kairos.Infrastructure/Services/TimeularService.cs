@@ -285,6 +285,13 @@ public sealed class TimeularService : ITimeularService, IDisposable
 
     private string ApplyTimeularFaceMapping(int? face)
     {
+        var mappedToMinusOne = false;
+        if (face.HasValue && face.Value > 8)
+        {
+            face = -1;
+            mappedToMinusOne = true;
+        }
+
         var orderedActivities = _timeService.Account.Activities
             .Where(a => a.ActivityGroupId == _settingsService.ActiveActivityGroup)
             .OrderBy(m => m.DisplayOrder)
@@ -302,10 +309,10 @@ public sealed class TimeularService : ITimeularService, IDisposable
             if (activeEvent is not null)
             {
                 _timeService.DeactivateActivity();
-                return " -> deactivated";
+                return mappedToMinusOne ? " -> mapped to -1 and deactivated" : " -> deactivated";
             }
 
-            return string.Empty;
+            return mappedToMinusOne ? " -> mapped to -1" : string.Empty;
         }
 
         var isTargetAlreadyActive = activeEvent is not null
