@@ -146,7 +146,7 @@
                     : 0;
                 var isOver = progress >= 100 && SettingsService.BudgetsEnabled;
 
-                <div class="budget-item" style="@GetBudgetItemStyle(activity.Color)">
+                <div class="budget-item">
                     <div class="budget-item-header">
                         <span class="budget-activity-name">
                             <span class="activity-color-dot small" style="@GetColorDotStyle(activity.Color)"></span>
@@ -163,7 +163,7 @@
                     @if (hasBudget)
                     {
                         <div class="budget-progress-track">
-                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(progress)"></div>
                         </div>
                     }
 
@@ -417,16 +417,9 @@
         }
     }
 
-    private static string GetBudgetItemStyle(string color)
+    private static string GetBudgetProgressStyle(double progress)
     {
-        var normalized = Activity.SanitizeColor(color);
-        return $"border-color: {ToRgba(normalized, 0.24)};";
-    }
-
-    private static string GetBudgetProgressStyle(string color, double progress, bool isOver)
-    {
-        var normalized = isOver ? "#EF4444" : Activity.SanitizeColor(color);
-        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {normalized};";
+        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%;";
     }
 
     private static string GetColorDotStyle(string color)
