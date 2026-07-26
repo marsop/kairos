@@ -14,7 +14,8 @@
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
-                    <textarea class="edit-input @(_errorMessage != null ? "invalid" : "")"
+                    <textarea @ref="_textAreaRef"
+                              class="edit-input @(_errorMessage != null ? "invalid" : "")"
                               @bind="_comment"
                               @bind:event="oninput"
                               maxlength="250"
@@ -54,6 +55,8 @@
     private string? _errorMessage;
     private Guid? _lastPendingActivityId;
     private List<string>? _suggestedComments;
+    private ElementReference _textAreaRef;
+    private bool _focusRequested;
 
     protected override void OnInitialized()
     {
@@ -61,8 +64,25 @@
         if (_lastPendingActivityId.HasValue)
         {
             _suggestedComments = TimeTrackingService.GetLastCommentsForActivity(_lastPendingActivityId.Value);
+            _focusRequested = true;
         }
         ActivityStartPromptService.OnStateChanged += HandlePromptStateChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_focusRequested && ActivityStartPromptService.PendingActivityId.HasValue)
+        {
+            _focusRequested = false;
+            try
+            {
+                await _textAreaRef.FocusAsync();
+            }
+            catch
+            {
+                // Ignore focus errors (e.g., element not visible yet)
+            }
+        }
     }
 
     private void HandlePromptStateChanged()
@@ -76,6 +96,11 @@
             _suggestedComments = pendingActivityId.HasValue
                 ? TimeTrackingService.GetLastCommentsForActivity(pendingActivityId.Value)
                 : null;
+
+            if (pendingActivityId.HasValue)
+            {
+                _focusRequested = true;
+            }
         }
 
         _ = InvokeAsync(StateHasChanged);
