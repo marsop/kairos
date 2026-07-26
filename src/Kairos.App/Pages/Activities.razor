@@ -194,9 +194,10 @@
                     @ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName
                     @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
                     {
-                        <text> - @ActiveEvent.Comment</text>
+                        var comment = ActiveEvent.Comment;
+                        var displayComment = comment.Length > 40 ? comment.Substring(0, 40) + "..." : comment;
+                        <text> / @displayComment</text>
                     }
-                    :
                 </span>
                 <span class="value">@FormatDuration(ActiveEvent.Duration)</span>
             </div>

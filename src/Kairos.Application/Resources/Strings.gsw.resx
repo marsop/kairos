@@ -181,9 +181,6 @@
   <data name="AddActivity" xml:space="preserve">
     <value>Zähler dazuatua</value>
   </data>
-  <data name="RunningFor" xml:space="preserve">
-    <value>Lofft sit:</value>
-  </data>
   <data name="NameRequired" xml:space="preserve">
     <value>An Nama bruuchts</value>
   </data>

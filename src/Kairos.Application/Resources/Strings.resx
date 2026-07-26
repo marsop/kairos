@@ -178,9 +178,6 @@
   <data name="AddActivity" xml:space="preserve">
     <value>Add Activity</value>
   </data>
-  <data name="RunningFor" xml:space="preserve">
-    <value>Running for:</value>
-  </data>
   <data name="NameRequired" xml:space="preserve">
     <value>Name is required</value>
   </data>

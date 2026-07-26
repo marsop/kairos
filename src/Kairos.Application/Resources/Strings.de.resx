@@ -178,9 +178,6 @@
   <data name="AddActivity" xml:space="preserve">
     <value>Zähler hinzufügen</value>
   </data>
-  <data name="RunningFor" xml:space="preserve">
-    <value>Läuft seit:</value>
-  </data>
   <data name="NameRequired" xml:space="preserve">
     <value>Name ist erforderlich</value>
   </data>
