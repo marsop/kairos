@@ -817,4 +817,13 @@
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
+  <data name="EnableBudgets" xml:space="preserve">
+    <value>Enable Budgets</value>
+  </data>
+  <data name="EnableBudgetsDesc" xml:space="preserve">
+    <value>Show and manage budgets for activities.</value>
+  </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Activities</value>
+  </data>
 </root>

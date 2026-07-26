@@ -139,6 +139,17 @@
 
         <div class="setting-item">
             <div>
+                <span class="setting-label">@Localizer["EnableBudgets"]</span>
+                <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["EnableBudgetsDesc"]</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked="@SettingsService.BudgetsEnabled" @onchange="OnBudgetsToggled" />
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div>
                 <span class="setting-label">@Localizer["AutoDeleteEventDuration"]</span>
                 <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["AutoDeleteEventDurationDesc"]</span>
             </div>
@@ -459,6 +470,13 @@
             await TimeularService.DisconnectAsync();
         }
 
+        StateHasChanged();
+    }
+
+    private void OnBudgetsToggled(ChangeEventArgs e)
+    {
+        var enabled = (bool)(e.Value ?? false);
+        SettingsService.BudgetsEnabled = enabled;
         StateHasChanged();
     }
 

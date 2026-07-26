@@ -43,6 +43,11 @@ public interface ISettingsService
     bool ActivityGroupsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets whether budgets are enabled.
+    /// </summary>
+    bool BudgetsEnabled { get; set; }
+
+    /// <summary>
     /// Gets or sets the currently active activity group (0 or 1).
     /// </summary>
     int ActiveActivityGroup { get; set; }
