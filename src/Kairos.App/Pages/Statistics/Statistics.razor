@@ -5,6 +5,7 @@
 @using System.Globalization
 @inject ITimeTrackingService TimeService
 @inject IStatisticsService StatisticsService
+@inject ISettingsService SettingsService
 @inject IStringLocalizer<Strings> Localizer
 
 <div class="statistics-page">
@@ -133,17 +134,17 @@
 
     <!-- Budgets List -->
     <div class="budgets-section">
-        <h3 class="section-title">@Localizer["ActivitiesAndBudgets"]</h3>
+        <h3 class="section-title">@(SettingsService.BudgetsEnabled ? Localizer["ActivitiesAndBudgets"] : Localizer["Activities"])</h3>
         <div class="budgets-list">
             @foreach (var activity in TimeService.Account.Activities.OrderBy(a => a.DisplayOrder))
             {
                 var tracked = GetTrackedTimeForActivity(activity.Name);
                 var budget = GetBudgetForActivity(activity.Id);
-                var hasBudget = budget != null && budget.AllocatedTimeSpan.TotalSeconds > 0;
+                var hasBudget = budget != null && budget.AllocatedTimeSpan.TotalSeconds > 0 && SettingsService.BudgetsEnabled;
                 var progress = hasBudget
                     ? Math.Min(100, (tracked.TotalHours / budget!.AllocatedTimeSpan.TotalHours) * 100)
                     : 0;
-                var isOver = progress >= 100;
+                var isOver = progress >= 100 && SettingsService.BudgetsEnabled;
 
                 <div class="budget-item" style="@GetBudgetItemStyle(activity.Color)">
                     <div class="budget-item-header">
@@ -165,7 +166,11 @@
                             <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
                         </div>
                     }
-                    <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">@Localizer["SetBudget"]</button>
+
+                    @if (SettingsService.BudgetsEnabled)
+                    {
+                        <button class="budget-edit-btn" @onclick="() => EditBudget(activity.Id)">@Localizer["SetBudget"]</button>
+                    }
                 </div>
             }
         </div>
@@ -205,6 +210,7 @@
     protected override async Task OnInitializedAsync()
     {
         TimeService.OnStateChanged += StateHasChanged;
+        SettingsService.OnSettingsChanged += StateHasChanged;
         RefreshTimelineData();
         await LoadBudgetsAsync();
         
@@ -358,6 +364,7 @@
     public void Dispose()
     {
         TimeService.OnStateChanged -= StateHasChanged;
+        SettingsService.OnSettingsChanged -= StateHasChanged;
         _timer?.Dispose();
     }
 

@@ -26,6 +26,7 @@ public class SettingsService : ISettingsService
     private bool _advancedSettingsEnabled = true;
     private bool _timeularSettingsEnabled;
     private bool _activityGroupsEnabled;
+    private bool _budgetsEnabled = true;
     private int _activeActivityGroup;
     private int _autoDeleteEventDuration;
     private int _stickyEventsDuration;
@@ -43,6 +44,19 @@ public class SettingsService : ISettingsService
             {
                 _theme = sanitizedTheme;
                 OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+
+    public bool BudgetsEnabled
+    {
+        get => _budgetsEnabled;
+        set
+        {
+            if (_budgetsEnabled != value)
+            {
+                _budgetsEnabled = value;
                 _ = SaveAsync();
             }
         }
@@ -268,6 +282,7 @@ public class SettingsService : ISettingsService
                     _advancedSettingsEnabled = data.AdvancedSettingsEnabled;
                     _timeularSettingsEnabled = data.TimeularSettingsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
+                    _budgetsEnabled = data.BudgetsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
                     _autoDeleteEventDuration = data.AutoDeleteEventDuration;
                     _stickyEventsDuration = data.StickyEventsDuration;
@@ -324,6 +339,7 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
+            BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
@@ -422,6 +438,7 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
+            BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = _stickyEventsDuration
@@ -437,6 +454,7 @@ public class SettingsService : ISettingsService
         _advancedSettingsEnabled = settings.AdvancedSettingsEnabled;
         _timeularSettingsEnabled = settings.TimeularSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
+        _budgetsEnabled = settings.BudgetsEnabled;
         _activeActivityGroup = settings.ActiveActivityGroup;
         _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
         _stickyEventsDuration = settings.StickyEventsDuration;
@@ -455,6 +473,7 @@ public class SettingsService : ISettingsService
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
+            BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
@@ -479,6 +498,7 @@ internal class SettingsData
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }
+    public bool BudgetsEnabled { get; set; } = true;
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
@@ -494,6 +514,7 @@ public class SyncedSettingsData
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }
+    public bool BudgetsEnabled { get; set; } = true;
     public int ActiveActivityGroup { get; set; }
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
