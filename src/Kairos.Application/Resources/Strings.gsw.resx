@@ -821,4 +821,11 @@
   <data name="Today" xml:space="preserve">
     <value>Hüt</value>
   </data>
+
+  <data name="Sounds" xml:space="preserve">
+    <value>Tön</value>
+  </data>
+  <data name="SoundsDesc" xml:space="preserve">
+    <value>Tön bi Benutzerinteraktione abspiele</value>
+  </data>
 </root>

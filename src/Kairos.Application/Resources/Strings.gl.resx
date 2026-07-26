@@ -821,4 +821,11 @@
   <data name="Today" xml:space="preserve">
     <value>Hoxe</value>
   </data>
+
+  <data name="Sounds" xml:space="preserve">
+    <value>Sons</value>
+  </data>
+  <data name="SoundsDesc" xml:space="preserve">
+    <value>Reproducir sons en interaccións de usuario</value>
+  </data>
 </root>

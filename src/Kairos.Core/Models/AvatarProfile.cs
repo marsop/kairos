@@ -1,4 +1,4 @@
 
 namespace Kairos.Core.Models;
 
-public record AvatarProfile(string Id, string Name, string BasePath);
+public record AvatarProfile(string Id, string Name, string BasePath, int ImageCount);

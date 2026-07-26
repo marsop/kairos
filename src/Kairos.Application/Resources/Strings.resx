@@ -826,4 +826,10 @@
   <data name="Activities" xml:space="preserve">
     <value>Activities</value>
   </data>
+  <data name="Sounds" xml:space="preserve">
+    <value>Sounds</value>
+  </data>
+  <data name="SoundsDesc" xml:space="preserve">
+    <value>Play sounds on user interactions</value>
+  </data>
 </root>

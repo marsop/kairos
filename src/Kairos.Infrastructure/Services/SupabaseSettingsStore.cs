@@ -33,7 +33,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,advanced_settings_enabled,timeular_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration,sticky_events_duration,budgets_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+            BuildUrl($"rest/v1/user_settings?select=theme,language,tutorial_completed,sounds_enabled,advanced_settings_enabled,timeular_settings_enabled,activity_groups_enabled,active_activity_group,auto_delete_event_duration,sticky_events_duration,budgets_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -51,6 +51,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = row.Theme ?? "light",
             Language = row.Language ?? "en",
             TutorialCompleted = row.TutorialCompleted,
+            SoundsEnabled = row.SoundsEnabled,
             AdvancedSettingsEnabled = row.AdvancedSettingsEnabled,
             TimeularSettingsEnabled = row.TimeularSettingsEnabled,
             ActivityGroupsEnabled = row.ActivityGroupsEnabled,
@@ -80,6 +81,7 @@ public sealed class SupabaseSettingsStore : ISupabaseSettingsStore
             Theme = settings.Theme,
             Language = settings.Language,
             TutorialCompleted = settings.TutorialCompleted,
+            SoundsEnabled = settings.SoundsEnabled,
             AdvancedSettingsEnabled = settings.AdvancedSettingsEnabled,
             TimeularSettingsEnabled = settings.TimeularSettingsEnabled,
             ActivityGroupsEnabled = settings.ActivityGroupsEnabled,
@@ -134,6 +136,9 @@ internal sealed class SupabaseSettingsRow
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
 
+    [JsonPropertyName("sounds_enabled")]
+    public bool SoundsEnabled { get; set; }
+
     [JsonPropertyName("advanced_settings_enabled")]
     public bool AdvancedSettingsEnabled { get; set; }
 
@@ -169,6 +174,9 @@ internal sealed class SupabaseSettingsWriteRow
 
     [JsonPropertyName("tutorial_completed")]
     public bool TutorialCompleted { get; set; }
+
+    [JsonPropertyName("sounds_enabled")]
+    public bool SoundsEnabled { get; set; }
 
     [JsonPropertyName("advanced_settings_enabled")]
     public bool AdvancedSettingsEnabled { get; set; }

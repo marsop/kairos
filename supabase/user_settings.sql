@@ -73,3 +73,4 @@ $$;
 alter table public.user_settings add column if not exists advanced_settings_enabled boolean not null default true;
 alter table public.user_settings add column if not exists timeular_settings_enabled boolean not null default false;
 alter table public.user_settings add column if not exists budgets_enabled boolean not null default true;
+alter table public.user_settings add column if not exists sounds_enabled boolean not null default false;
