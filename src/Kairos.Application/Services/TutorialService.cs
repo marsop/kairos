@@ -34,8 +34,8 @@ public class TutorialService : ITutorialService
 
     public IReadOnlyList<AvatarProfile> AvailableAvatars { get; } = new List<AvatarProfile>
     {
-        new AvatarProfile("kawaii", "Kawaii", "img/avatars/kawaii"),
-        new AvatarProfile("zarzaparrilla", "Zarzaparrilla", "img/avatars/zarzaparrilla")
+        new AvatarProfile("kawaii", "Kawaii", "img/avatars/kawaii", 11),
+        new AvatarProfile("zarzaparrilla", "Zarzaparrilla", "img/avatars/zarzaparrilla", 11)
     };
 
     public AvatarProfile CurrentAvatar { get; private set; }
@@ -62,65 +62,71 @@ public class TutorialService : ITutorialService
         _steps = new List<TutorialStep>
         {
             // 1. Initial setup
-            new TutorialStep(_localizer["TutorialSetupAvatarLanguage"], "", $"{basePath}/tutorial-avatar-10.png"),
+            new TutorialStep(_localizer["TutorialSetupAvatarLanguage"], "", ""),
             
             // 2. Intro
-            new TutorialStep(_localizer["TutorialIntro"], "", $"{basePath}/tutorial-avatar-10.png"),
+            new TutorialStep(_localizer["TutorialIntro"], "", ""),
             
             // 3. How Kairos works
-            new TutorialStep(_localizer["TutorialHowItWorks"], "", $"{basePath}/tutorial-avatar-2.png"),
+            new TutorialStep(_localizer["TutorialHowItWorks"], "", ""),
 
             // 4. Activities - basics
-            new TutorialStep(_localizer["TutorialActivitiesBasics"], "activities", $"{basePath}/tutorial-avatar-3.png"),
+            new TutorialStep(_localizer["TutorialActivitiesBasics"], "activities", ""),
 
             // 5. Activities - comments and switching
-            new TutorialStep(_localizer["TutorialActivitiesComment"], "activities", $"{basePath}/tutorial-avatar-7.png"),
+            new TutorialStep(_localizer["TutorialActivitiesComment"], "activities", ""),
 
             // 6. Activities - organizing list
-            new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", $"{basePath}/tutorial-avatar-9.png"),
+            new TutorialStep(_localizer["TutorialActivitiesManage"], "activities", ""),
             
             // 7. History - review entries
-            new TutorialStep(_localizer["TutorialHistoryReview"], "history", $"{basePath}/tutorial-avatar.png"),
+            new TutorialStep(_localizer["TutorialHistoryReview"], "history", ""),
             
             // 8. History - edit and delete
-            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", $"{basePath}/tutorial-avatar-11.png"),
+            new TutorialStep(_localizer["TutorialHistoryEdit"], "history", ""),
 
             // 9. History - views
-            new TutorialStep(_localizer["TutorialHistoryViews"], "history", $"{basePath}/tutorial-avatar-3.png"),
+            new TutorialStep(_localizer["TutorialHistoryViews"], "history", ""),
 
             // 10. History - sync status
-            new TutorialStep(_localizer["TutorialHistorySync"], "history", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialHistorySync"], "history", ""),
 
             // 11. Statistics - period summary
-            new TutorialStep(_localizer["TutorialOverviewBalance"], "", $"{basePath}/tutorial-avatar-6.png"),
+            new TutorialStep(_localizer["TutorialOverviewBalance"], "", ""),
 
             // 12. Statistics - budgets and chart
-            new TutorialStep(_localizer["TutorialOverviewActive"], "", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialOverviewActive"], "", ""),
 
             // 13. Statistics - period controls
-            new TutorialStep(_localizer["TutorialTimelinePeriods"], "", $"{basePath}/tutorial-avatar-4.png"),
+            new TutorialStep(_localizer["TutorialTimelinePeriods"], "", ""),
 
             // 14. Statistics - reading the chart
-            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "", $"{basePath}/tutorial-avatar-8.png"),
+            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "", ""),
 
             // 15. Settings - personalization
-            new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", $"{basePath}/tutorial-avatar-2.png"),
+            new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", ""),
 
             // 16. Settings - advanced
-            new TutorialStep(_localizer["TutorialSettingsAdvanced"], "settings", $"{basePath}/tutorial-avatar-8.png"),
+            new TutorialStep(_localizer["TutorialSettingsAdvanced"], "settings", ""),
 
             // 17. Settings - integrations and notifications
-            new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", $"{basePath}/tutorial-avatar-6.png"),
+            new TutorialStep(_localizer["TutorialSettingsIntegrations"], "settings", ""),
 
             // 18. Settings - tracker status
-            new TutorialStep(_localizer["TutorialTrackerStatus"], "settings", $"{basePath}/tutorial-avatar-4.png"),
+            new TutorialStep(_localizer["TutorialTrackerStatus"], "settings", ""),
 
             // 19. Backups and reset safety
-            new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", $"{basePath}/tutorial-avatar-5.png"),
+            new TutorialStep(_localizer["TutorialBackupAndSafety"], "settings", ""),
 
             // 20. Completion
-            new TutorialStep(_localizer["TutorialCompletion"], "", $"{basePath}/tutorial-avatar-7.png")
+            new TutorialStep(_localizer["TutorialCompletion"], "", "")
         };
+
+        for (var i = 0; i < _steps.Count; i++)
+        {
+            var imageNumber = (i % CurrentAvatar.ImageCount) + 1;
+            _steps[i] = _steps[i] with { ImageUrl = $"{basePath}/tutorial-avatar-{imageNumber}.png" };
+        }
     }
 
     public async Task InitializeAsync()
