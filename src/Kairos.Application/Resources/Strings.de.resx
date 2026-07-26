@@ -825,4 +825,40 @@
   <data name="SoundsDesc" xml:space="preserve">
     <value>Töne bei Benutzerinteraktionen abspielen</value>
   </data>
+  <data name="SettingsBudgets" xml:space="preserve">
+    <value>Budgets</value>
+  </data>
+  <data name="BudgetSettingsMinEnabled" xml:space="preserve">
+    <value>Minimum enabled</value>
+  </data>
+  <data name="BudgetSettingsThreshold" xml:space="preserve">
+    <value>Threshold</value>
+  </data>
+  <data name="BudgetSettingsBudgetType" xml:space="preserve">
+    <value>Budget Type</value>
+  </data>
+  <data name="BudgetSettingsBudgetTypeMonthly" xml:space="preserve">
+    <value>Monthly</value>
+  </data>
+  <data name="BudgetSettingsBudgetTypeWeekly" xml:space="preserve">
+    <value>Weekly</value>
+  </data>
+  <data name="BudgetSettingsBudgetTypeDaily" xml:space="preserve">
+    <value>Daily</value>
+  </data>
+  <data name="BudgetSettingsNotificationsEnabled" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="BudgetSettingsColorMinNotReached" xml:space="preserve">
+    <value>Color for minimum not reached</value>
+  </data>
+  <data name="BudgetSettingsColorMinReachedMaxNotReached" xml:space="preserve">
+    <value>Color for minimum reached but max not reached</value>
+  </data>
+  <data name="BudgetSettingsColorBetweenThresholdMax" xml:space="preserve">
+    <value>Color for budget between threshold and max</value>
+  </data>
+  <data name="BudgetSettingsColorOverMax" xml:space="preserve">
+    <value>Color for budget over max</value>
+  </data>
 </root>

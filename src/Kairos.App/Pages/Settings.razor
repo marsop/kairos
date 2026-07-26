@@ -8,10 +8,12 @@
 @inject ITutorialService TutorialService
 @inject IJSRuntime JSRuntime
 @inject ITimeularService TimeularService
+@inject IBudgetSettingsService BudgetSettingsService
 @inject INotificationService NotificationService
 @inject ISupabaseAuthService AuthService
 @implements IDisposable
 @using System.Reflection
+@using Kairos.Core.Models
 
 <div class="settings-page">
     <h1 class="page-title">@Localizer["NavSettings"]</h1>
@@ -259,6 +261,63 @@
         </div>
     }
 
+    @if (SettingsService.BudgetsEnabled)
+    {
+        <div class="settings-section">
+            <h2 class="section-title">💰 @Localizer["SettingsBudgets"]</h2>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsMinEnabled"]</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked="@BudgetSettingsService.MinimumEnabled" @onchange="OnBudgetMinEnabledToggled" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsThreshold"]</span>
+                <input type="number" min="75" max="99" value="@BudgetSettingsService.Threshold" @onchange="OnBudgetThresholdChanged" class="settings-input" style="width: 80px;" />
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsBudgetType"]</span>
+                <select value="@((int)BudgetSettingsService.BudgetType)" @onchange="OnBudgetTypeChanged" class="settings-input">
+                    <option value="0">@Localizer["BudgetSettingsBudgetTypeMonthly"]</option>
+                    <option value="1">@Localizer["BudgetSettingsBudgetTypeWeekly"]</option>
+                    <option value="2">@Localizer["BudgetSettingsBudgetTypeDaily"]</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsNotificationsEnabled"]</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked="@BudgetSettingsService.NotificationsEnabled" @onchange="OnBudgetNotificationsEnabledToggled" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsColorMinNotReached"]</span>
+                <input type="color" value="@BudgetSettingsService.ColorMinimumNotReached" @onchange="OnBudgetColorMinNotReachedChanged" />
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsColorMinReachedMaxNotReached"]</span>
+                <input type="color" value="@BudgetSettingsService.ColorMinimumReachedMaxNotReached" @onchange="OnBudgetColorMinReachedMaxNotReachedChanged" />
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsColorBetweenThresholdMax"]</span>
+                <input type="color" value="@BudgetSettingsService.ColorBetweenThresholdMax" @onchange="OnBudgetColorBetweenThresholdMaxChanged" />
+            </div>
+
+            <div class="setting-item">
+                <span class="setting-label">@Localizer["BudgetSettingsColorOverMax"]</span>
+                <input type="color" value="@BudgetSettingsService.ColorOverMax" @onchange="OnBudgetColorOverMaxChanged" />
+            </div>
+        </div>
+    }
+
     <div class="settings-section">
         <h2 class="section-title">👤 @Localizer["SettingsAccount"]</h2>
         @if (AuthService.IsAuthenticated)
@@ -488,7 +547,57 @@
     {
         var enabled = (bool)(e.Value ?? false);
         SettingsService.BudgetsEnabled = enabled;
+        if (enabled)
+        {
+            _ = BudgetSettingsService.InitializeDefaultsIfEmptyAsync();
+        }
         StateHasChanged();
+    }
+
+    private void OnBudgetMinEnabledToggled(ChangeEventArgs e)
+    {
+        BudgetSettingsService.MinimumEnabled = (bool)(e.Value ?? false);
+    }
+
+    private void OnBudgetThresholdChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int threshold))
+        {
+            BudgetSettingsService.Threshold = threshold;
+        }
+    }
+
+    private void OnBudgetTypeChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int typeVal))
+        {
+            BudgetSettingsService.BudgetType = (BudgetType)typeVal;
+        }
+    }
+
+    private void OnBudgetNotificationsEnabledToggled(ChangeEventArgs e)
+    {
+        BudgetSettingsService.NotificationsEnabled = (bool)(e.Value ?? false);
+    }
+
+    private void OnBudgetColorMinNotReachedChanged(ChangeEventArgs e)
+    {
+        BudgetSettingsService.ColorMinimumNotReached = e.Value?.ToString() ?? "#0000ff";
+    }
+
+    private void OnBudgetColorMinReachedMaxNotReachedChanged(ChangeEventArgs e)
+    {
+        BudgetSettingsService.ColorMinimumReachedMaxNotReached = e.Value?.ToString() ?? "#00ff00";
+    }
+
+    private void OnBudgetColorBetweenThresholdMaxChanged(ChangeEventArgs e)
+    {
+        BudgetSettingsService.ColorBetweenThresholdMax = e.Value?.ToString() ?? "#ffff00";
+    }
+
+    private void OnBudgetColorOverMaxChanged(ChangeEventArgs e)
+    {
+        BudgetSettingsService.ColorOverMax = e.Value?.ToString() ?? "#ff0000";
     }
 
     private void OnActivityGroupsToggled(ChangeEventArgs e)

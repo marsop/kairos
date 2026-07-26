@@ -30,6 +30,8 @@ builder.Services.AddScoped<ISupabaseActivityStore, SupabaseActivityStore>();
 builder.Services.AddScoped<ISupabaseActivityEventStore, SupabaseActivityEventStore>();
 builder.Services.AddScoped<ISupabaseTimeAccountStore, SupabaseTimeAccountStore>();
 builder.Services.AddScoped<ISupabaseSettingsStore, SupabaseSettingsStore>();
+builder.Services.AddScoped<ISupabaseBudgetSettingsStore, SupabaseBudgetSettingsStore>();
+builder.Services.AddScoped<IBudgetSettingsService, BudgetSettingsService>();
 builder.Services.AddScoped<ISupabaseRealtimeService, SupabaseRealtimeService>();
 builder.Services.AddScoped<IActivityEventSyncService, ActivityEventSyncService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
@@ -41,6 +43,9 @@ var host = builder.Build();
 // Load saved data on startup
 var settingsService = host.Services.GetRequiredService<ISettingsService>();
 await settingsService.LoadAsync();
+
+var budgetSettingsService = host.Services.GetRequiredService<IBudgetSettingsService>();
+await budgetSettingsService.LoadAsync();
 
 var authService = host.Services.GetRequiredService<ISupabaseAuthService>();
 await authService.InitializeAsync();
