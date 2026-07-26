@@ -28,6 +28,11 @@ public interface ISettingsService
     bool BrowserNotificationsEnabled { get; set; }
 
     /// <summary>
+    /// Gets or sets whether sounds are enabled.
+    /// </summary>
+    bool SoundsEnabled { get; set; }
+
+    /// <summary>
     /// Gets or sets whether advanced settings are visible.
     /// </summary>
     bool AdvancedSettingsEnabled { get; set; }

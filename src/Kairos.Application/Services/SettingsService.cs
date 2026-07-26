@@ -22,6 +22,7 @@ public class SettingsService : ISettingsService
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
+    private bool _soundsEnabled;
     private bool _advancedSettingsEnabled = true;
     private bool _timeularSettingsEnabled;
     private bool _activityGroupsEnabled;
@@ -71,6 +72,20 @@ public class SettingsService : ISettingsService
                 _autoDeleteEventDuration = value;
                 OnSettingsChanged?.Invoke();
                 _ = SaveAsync();
+            }
+        }
+    }
+
+    public bool SoundsEnabled
+    {
+        get => _soundsEnabled;
+        set
+        {
+            if (_soundsEnabled != value)
+            {
+                _soundsEnabled = value;
+                _ = SaveAsync();
+                OnSettingsChanged?.Invoke();
             }
         }
     }
@@ -249,6 +264,7 @@ public class SettingsService : ISettingsService
                     _language = string.IsNullOrEmpty(data.Language) ? DefaultLanguage : data.Language;
                     _tutorialCompleted = data.TutorialCompleted;
                     _browserNotificationsEnabled = data.BrowserNotificationsEnabled;
+                    _soundsEnabled = data.SoundsEnabled;
                     _advancedSettingsEnabled = data.AdvancedSettingsEnabled;
                     _timeularSettingsEnabled = data.TimeularSettingsEnabled;
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
@@ -265,6 +281,7 @@ public class SettingsService : ISettingsService
                 _language = DefaultLanguage;
                 _tutorialCompleted = false;
                 _browserNotificationsEnabled = false;
+                _soundsEnabled = false;
             }
         }
 
@@ -303,6 +320,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            SoundsEnabled = _soundsEnabled,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
@@ -400,6 +418,7 @@ public class SettingsService : ISettingsService
             Theme = _theme,
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
+            SoundsEnabled = _soundsEnabled,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
@@ -414,6 +433,7 @@ public class SettingsService : ISettingsService
         _theme = SanitizeTheme(settings.Theme);
         _language = string.IsNullOrWhiteSpace(settings.Language) ? DefaultLanguage : settings.Language;
         _tutorialCompleted = settings.TutorialCompleted;
+        _soundsEnabled = settings.SoundsEnabled;
         _advancedSettingsEnabled = settings.AdvancedSettingsEnabled;
         _timeularSettingsEnabled = settings.TimeularSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
@@ -431,6 +451,7 @@ public class SettingsService : ISettingsService
             Language = _language,
             TutorialCompleted = _tutorialCompleted,
             BrowserNotificationsEnabled = _browserNotificationsEnabled,
+            SoundsEnabled = _soundsEnabled,
             AdvancedSettingsEnabled = _advancedSettingsEnabled,
             TimeularSettingsEnabled = _timeularSettingsEnabled,
             ActivityGroupsEnabled = _activityGroupsEnabled,
@@ -454,6 +475,7 @@ internal class SettingsData
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public bool BrowserNotificationsEnabled { get; set; }
+    public bool SoundsEnabled { get; set; }
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }
@@ -468,6 +490,7 @@ public class SyncedSettingsData
     public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
+    public bool SoundsEnabled { get; set; }
     public bool AdvancedSettingsEnabled { get; set; } = true;
     public bool TimeularSettingsEnabled { get; set; } = false;
     public bool ActivityGroupsEnabled { get; set; }

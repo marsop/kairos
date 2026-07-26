@@ -817,4 +817,11 @@
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
+
+  <data name="Sounds" xml:space="preserve">
+    <value>Sounds</value>
+  </data>
+  <data name="SoundsDesc" xml:space="preserve">
+    <value>Play sounds on user interactions</value>
+  </data>
 </root>
