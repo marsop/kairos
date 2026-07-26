@@ -634,9 +634,6 @@
   <data name="Emoji" xml:space="preserve">
     <value>Emoji</value>
   </data>
-  <data name="Metadata" xml:space="preserve">
-    <value>Metadaten</value>
-  </data>
   <data name="Comment" xml:space="preserve">
     <value>Kommentar</value>
   </data>

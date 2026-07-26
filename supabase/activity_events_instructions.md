@@ -15,7 +15,6 @@ create table if not exists public.activity_events (
     activity_emoji text not null default '',
     activity_color text not null default '#10B981',
     comment text not null default '',
-    metadata text not null default '',
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
     primary key (user_id, id)

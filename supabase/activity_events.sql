@@ -8,7 +8,6 @@ create table if not exists public.activity_events (
     activity_emoji text not null default '',
     activity_color text not null default '#10B981',
     comment text not null default '',
-    metadata text not null default '',
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
     primary key (user_id, id)
@@ -24,7 +23,7 @@ alter table public.activity_events
     add column if not exists comment text not null default '';
 
 alter table public.activity_events
-    add column if not exists metadata text not null default '';
+    drop column if exists metadata;
 
 create or replace function public.set_updated_at()
 returns trigger

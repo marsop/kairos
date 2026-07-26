@@ -85,7 +85,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "Deep work",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -128,7 +127,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "Initial",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -171,7 +169,6 @@ public class ActivityEventSyncServiceTests
             ActivityName = "Local",
             ActivityColor = "#10B981",
             Comment = "Local",
-            Metadata = string.Empty
         };
 
         var serverEvent = new ActivityEvent
@@ -183,7 +180,6 @@ public class ActivityEventSyncServiceTests
             ActivityName = "Server",
             ActivityColor = "#10B981",
             Comment = "Server",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -225,7 +221,6 @@ public class ActivityEventSyncServiceTests
             ActivityName = "Local",
             ActivityColor = "#10B981",
             Comment = "Seed me",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -263,7 +258,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "Before",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -310,7 +304,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "Before",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -362,7 +355,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "baseline",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -454,7 +446,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "from-server",
-            Metadata = string.Empty
         };
 
         eventStore.ServerEvents = new List<ActivityEvent> { serverEvent };
@@ -492,7 +483,6 @@ public class ActivityEventSyncServiceTests
             ActivityName = "Local",
             ActivityColor = "#10B981",
             Comment = "Local",
-            Metadata = string.Empty
         };
 
         var serverEvent = new ActivityEvent
@@ -504,7 +494,6 @@ public class ActivityEventSyncServiceTests
             ActivityName = "Server",
             ActivityColor = "#10B981",
             Comment = "Server",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -544,7 +533,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "baseline",
-            Metadata = string.Empty
         };
 
         var account = new TimeAccount
@@ -635,7 +623,6 @@ public class ActivityEventSyncServiceTests
             ActivityEmoji = "",
             ActivityColor = "#10B981",
             Comment = "from-server",
-            Metadata = string.Empty
         };
 
         eventStore.ServerEvents = new List<ActivityEvent> { serverEvent };

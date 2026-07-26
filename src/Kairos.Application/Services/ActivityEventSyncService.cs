@@ -330,7 +330,6 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         if (a.ActivityColor != b.ActivityColor) return true;
         if (a.ActivityEmoji != b.ActivityEmoji) return true;
         if (a.ActivityId != b.ActivityId) return true;
-        if (a.Metadata != b.Metadata) return true;
 
         return false;
     }

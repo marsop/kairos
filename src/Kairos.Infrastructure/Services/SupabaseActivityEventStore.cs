@@ -34,7 +34,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
 
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activity_events?select=id,activity_id,start_time,end_time,activity_name,activity_emoji,activity_color,comment,metadata&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
+            BuildUrl($"rest/v1/activity_events?select=id,activity_id,start_time,end_time,activity_name,activity_emoji,activity_color,comment&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -51,8 +51,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             ActivityName = r.ActivityName,
             ActivityEmoji = r.ActivityEmoji,
             ActivityColor = Activity.SanitizeColor(r.ActivityColor),
-            Comment = r.Comment,
-            Metadata = r.Metadata
+            Comment = r.Comment
         }).OrderBy(e => e.StartTime).ToList();
     }
 
@@ -80,8 +79,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             ActivityName = e.ActivityName,
             ActivityEmoji = e.ActivityEmoji,
             ActivityColor = Activity.SanitizeColor(e.ActivityColor),
-            Comment = e.Comment,
-            Metadata = e.Metadata
+            Comment = e.Comment
         }).ToList();
 
         // Send in batches to avoid huge payloads, or send all if small.
@@ -187,9 +185,6 @@ internal sealed class SupabaseActivityEventRow
 
     [JsonPropertyName("comment")]
     public string Comment { get; set; } = string.Empty;
-
-    [JsonPropertyName("metadata")]
-    public string Metadata { get; set; } = string.Empty;
 }
 
 internal sealed class SupabaseActivityEventWriteRow
@@ -220,7 +215,4 @@ internal sealed class SupabaseActivityEventWriteRow
 
     [JsonPropertyName("comment")]
     public string Comment { get; set; } = string.Empty;
-
-    [JsonPropertyName("metadata")]
-    public string Metadata { get; set; } = string.Empty;
 }

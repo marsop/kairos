@@ -130,8 +130,7 @@ public class TimeTrackingService : ITimeTrackingService
             ActivityEmoji = activity.Emoji,
             ActivityId = activity.Id,
             ActivityColor = activity.Color,
-            Comment = normalizedComment,
-            Metadata = activity.Metadata ?? string.Empty
+            Comment = normalizedComment
         };
 
         _account.Events.Add(newEvent);
@@ -359,7 +358,7 @@ public class TimeTrackingService : ITimeTrackingService
         UpdateActivity(activityId, newName, existingColor);
     }
 
-    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", string metadata = "")
+    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "")
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
@@ -375,7 +374,6 @@ public class TimeTrackingService : ITimeTrackingService
         activity.Name = newName.Trim();
         activity.Color = normalizedColor;
         activity.Emoji = emoji ?? string.Empty;
-        activity.Metadata = metadata ?? string.Empty;
 
         // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();
@@ -558,12 +556,12 @@ public class TimeTrackingService : ITimeTrackingService
         AddActivity(name, Activity.DefaultColor);
     }
 
-    public void AddActivity(string name, string color, string emoji = "", string metadata = "")
+    public void AddActivity(string name, string color, string emoji = "")
     {
-        AddActivity(name, color, emoji, metadata, 0);
+        AddActivity(name, color, emoji, 0);
     }
 
-    public void AddActivity(string name, string color, string emoji, string metadata, int groupId)
+    public void AddActivity(string name, string color, string emoji, int groupId)
     {
         if (_account.Activities.Count(a => a.ActivityGroupId == groupId) >= MaxActivitiesPerGroup)
         {
@@ -588,7 +586,6 @@ public class TimeTrackingService : ITimeTrackingService
             Color = normalizedColor,
             DisplayOrder = _account.Activities.Count(a => a.ActivityGroupId == groupId) > 0 ? _account.Activities.Where(a => a.ActivityGroupId == groupId).Max(m => m.DisplayOrder) + 1 : 0,
             Emoji = emoji ?? string.Empty,
-            Metadata = metadata ?? string.Empty,
             ActivityGroupId = groupId
         };
 
