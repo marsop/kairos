@@ -276,12 +276,12 @@
 
             <div class="setting-item">
                 <span class="setting-label">@Localizer["BudgetSettingsThreshold"]</span>
-                <input type="number" min="75" max="99" value="@BudgetSettingsService.Threshold" @onchange="OnBudgetThresholdChanged" class="settings-input" style="width: 80px;" />
+                <input type="number" min="75" max="99" value="@BudgetSettingsService.Threshold" @onchange="OnBudgetThresholdChanged" class="edit-input" style="width: 80px; text-align: center;" />
             </div>
 
             <div class="setting-item">
                 <span class="setting-label">@Localizer["BudgetSettingsBudgetType"]</span>
-                <select value="@((int)BudgetSettingsService.BudgetType)" @onchange="OnBudgetTypeChanged" class="settings-input">
+                <select value="@((int)BudgetSettingsService.BudgetType)" @onchange="OnBudgetTypeChanged" class="edit-input">
                     <option value="0">@Localizer["BudgetSettingsBudgetTypeMonthly"]</option>
                     <option value="1">@Localizer["BudgetSettingsBudgetTypeWeekly"]</option>
                     <option value="2">@Localizer["BudgetSettingsBudgetTypeDaily"]</option>
