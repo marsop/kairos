@@ -410,7 +410,7 @@
     <value>Des isch d'Statistik-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über dia Wucha oder dr Monet.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Under dr Zämmefassig bricht Kairos dini Zit noch Aktivitäta uf. Du kasch erfassti Zit vergliicha, eifachi Budgets setza und im Diagramm luega, ob dr Ziitrum uffa, gliich oder abe goht.</value>
+    <value>Under dr Zämmefassig bricht Kairos dini Zit noch Aktivitäta uf. Du kasch erfassti Zit vergliicha, eifachi Budgets inklusive ere rollierende Budgetfunktion setza und im Diagramm luega, ob dr Ziitrum uffa, gliich oder abe goht.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
@@ -422,7 +422,7 @@
     <value>Du kasch Aktivitäta umbenenna, inaktivi löscha, neue hinzufüega und per Drag-and-Drop umsortiera. Halt d'Lista sauber und stabil, damit s'tägliche Erfassa schnell und konsistent blibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>S'Diagramm isch uf dr Statistik-Soita. Mit Diese Wucha und Dieser Monet wechslisch dr Ziitrum und berechnisch Summä und Aktivitäts-Budgets für genau den Bereich neu.</value>
+    <value>S'Diagramm isch uf dr Statistik-Soita. Mit Hüt, Diese Wucha und Dieser Monet wechslisch dr Ziitrum und berechnisch Summä und Aktivitäts-Budgets für genau den Bereich neu.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lies s'Diagramm vo links nach rechts: stiigendi Abschnitt bedütat bessers Guthaba, flachi Abschnitt kei Änderig und Abfäll zeigat an sinkenda Saldo. So erkennsch ungliichmäßigi Phase früah.</value>
@@ -768,7 +768,7 @@
     <value>Navigier eifach dur din Verlauf mit de neue Chnöpf für de vorig und nöchscht Tag. Zuedem händ aktivi Ereignis jetzt e pulsierendi Animation i de Kalender- und Lischteaasicht, demit du immer gsehsch, was grad lauft.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Aktivier 'Erwiiterti Iistellige aazeige' im Bereich Allgemein, zum meh Optione gseh. Du chasch Element in Aktivitätsgruppe organisiere oder Ereignis, wo chürzer als e festgleiti Duur sind, automatisch lösche, zum din Verlauf suuber z'bhalte.</value>
+    <value>Aktivier 'Erwiiterti Iistellige aazeige' im Bereich Allgemein, zum meh Optione gseh. Du chasch Element in Aktivitätsgruppe organisiere, Ereignis, wo chürzer als e festgleiti Duur sind, automatisch lösche, zum din Verlauf suuber z'bhalte, oder Timeular-Iistellige umschalte.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Fürs Hardware-Tracking gits ide undere Navigationsliischte e permanänti Statusazeig für de Tracker. Sie git der e schnälle Überblick über de Verbindigsstatus vo dim Timeular, egal uf wellere Siite du bisch.</value>
