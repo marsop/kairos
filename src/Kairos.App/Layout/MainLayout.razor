@@ -142,7 +142,7 @@
             await TimeularService.InitializeAsync();
 
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("navigationInterop.init", _dotNetRef);
+            await JSRuntime.InvokeVoidAsync("navigationInterop.initialize", _dotNetRef);
         }
     }
 
