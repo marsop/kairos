@@ -437,7 +437,7 @@
     <value>This is the Statistics screen. The large summary card shows how much time you tracked in the currently selected period. Use it as your quick read for this week or this month before you dig into the details.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Below the summary, Kairos breaks time down by activity. You can compare tracked time, set simple budgets, and use the chart to see whether the period is trending up, flat, or down.</value>
+    <value>Below the summary, Kairos breaks time down by activity. You can compare tracked time, set simple budgets including a rolling budget feature, and use the chart to see whether the period is trending up, flat, or down.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>On Activities, each tile is one trackable activity. Tap a tile to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
@@ -449,7 +449,7 @@
     <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>The chart lives on the Statistics screen. Use the This Week and This Month buttons to switch the period and recalculate both the totals and the activity budgets for that range.</value>
+    <value>The chart lives on the Statistics screen. Use the Today, This Week and This Month buttons to switch the period and recalculate both the totals and the activity budgets for that range.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>
@@ -764,7 +764,7 @@
     <value>Navigate your History easily using the new Previous and Next Day buttons. Additionally, active events now feature a pulsating animation in both Calendar and List views so you can always spot what is running.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize items with Activity Groups or automatically delete events shorter than a configured duration to keep your history clean.</value>
+    <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize items with Activity Groups, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>For hardware tracking, a permanent Tracker status indicator sits in the bottom navigation bar. It provides quick visibility of your Timeular connection state no matter which page you are on.</value>

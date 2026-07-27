@@ -410,7 +410,7 @@
     <value>Esta é a pantalla de Estatísticas. A tarxeta principal amosa canto tempo rexistraches no período seleccionado. Úsaa como lectura rápida desta semana ou deste mes antes de entrar no detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Debaixo do resumo, Kairos desagrega o tempo por actividade. Podes comparar o tempo rexistrado, definir orzamentos sinxelos e usar a gráfica para ver se o período sobe, queda plano ou baixa.</value>
+    <value>Debaixo do resumo, Kairos desagrega o tempo por actividade. Podes comparar o tempo rexistrado, definir orzamentos sinxelos incluíndo unha función de orzamento móbil e usar a gráfica para ver se o período sobe, queda plano ou baixa.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
@@ -422,7 +422,7 @@
     <value>Podes renomear actividades, borrar as inactivas, engadir novas e reordenalas arrastrando. Mantén a lista limpa e estable para que o rexistro diario sexa rápido e consistente.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>A gráfica está dentro da pantalla de Estatísticas. Usa os botóns Esta semana e Este mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
+    <value>A gráfica está dentro da pantalla de Estatísticas. Usa os botóns Hoxe, Esta semana e Este mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Le a gráfica de esquerda a dereita: os tramos ascendentes significan que o saldo mellora, os tramos planos que non hai cambios e as baixadas mostran que o saldo cae. É a forma máis rápida de detectar ritmos irregulares no período escollido.</value>
@@ -768,7 +768,7 @@
     <value>Navega polo teu Historial facilmente usando os novos botóns de Día Anterior e Día Seguinte. Ademais, os eventos activos agora teñen unha animación intermitente tanto na vista de Calendario como na de Lista para que sempre poidas ver o que está en execución.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Activa 'Mostrar axustes avanzados' na sección Xeral para revelar máis opcións. Podes organizar elementos con Grupos de Actividades ou eliminar automaticamente eventos máis curtos ca unha duración configurada para manter o teu historial limpo.</value>
+    <value>Activa 'Mostrar axustes avanzados' na sección Xeral para revelar máis opcións. Podes organizar elementos con Grupos de Actividades, eliminar automaticamente eventos máis curtos ca unha duración configurada para manter o teu historial limpo, ou alternar os axustes de Timeular.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Para o seguimento por hardware, un indicador de estado permanente do Rastrexador atópase na barra de navegación inferior. Proporciona unha visibilidade rápida do estado de conexión do teu Timeular sen importar en que páxina te atopes.</value>
