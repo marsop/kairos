@@ -331,7 +331,9 @@ public class StubBudgetSettingsService : IBudgetSettingsService
     public BudgetType BudgetType { get; set; } = BudgetType.Monthly;
     public bool NotificationsEnabled { get; set; } = true;
 
+#pragma warning disable CS0067
     public event Action? OnSettingsChanged;
+#pragma warning restore CS0067
     public Task LoadAsync() => Task.CompletedTask;
     public Task SaveAsync() => Task.CompletedTask;
     public Task InitializeDefaultsIfEmptyAsync() => Task.CompletedTask;

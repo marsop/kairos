@@ -204,12 +204,24 @@
         NavigationManager.NavigateTo(_tabs[nextIndex]);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         PwaService.OnStateChanged -= StateHasChanged;
         TimeularService.OnStateChanged -= StateHasChanged;
         TimeTrackingService.OnStateChanged -= StateHasChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
-        _dotNetRef?.Dispose();
+
+        if (_dotNetRef != null)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("navigationInterop.dispose");
+            }
+            catch
+            {
+                // Ignore JS disconnected errors on disposal
+            }
+            _dotNetRef.Dispose();
+        }
     }
 }
