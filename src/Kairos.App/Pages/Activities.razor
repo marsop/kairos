@@ -9,6 +9,7 @@
 @inject IStringLocalizer<Strings> Localizer
 @inject IJSRuntime JSRuntime
 @implements IDisposable
+@implements IAsyncDisposable
 
 <div class="activities-page">
     <div class="page-header">
@@ -288,6 +289,31 @@
         }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _objRef ??= DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("window.activitiesKeyboardInterop.register", _objRef);
+        }
+    }
+
+    [JSInvokable]
+    public void OnNumpadKeyPress(int number)
+    {
+        var orderedActivities = TimeService.Account.Activities
+            .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
+            .OrderBy(m => m.DisplayOrder).ToList();
+
+        int index = number - 1;
+        if (index >= 0 && index < orderedActivities.Count)
+        {
+            var activity = orderedActivities[index];
+            ToggleActivity(activity.Id);
+            StateHasChanged();
+        }
+    }
+
     private bool IsActiveActivity(Guid activityId)
     {
         var activeEvent = ActiveEvent;
@@ -523,7 +549,22 @@
         TimeService.OnStateChanged -= StateHasChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
         _timer?.Dispose();
-        _objRef?.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("window.activitiesKeyboardInterop.unregister");
+        }
+        catch (Exception)
+        {
+            // Ignore JS disconnected exceptions during prerendering/disposal
+        }
+        finally
+        {
+            _objRef?.Dispose();
+        }
     }
 
     private async Task ShowEmojiPicker(string buttonId, bool isEditing)
