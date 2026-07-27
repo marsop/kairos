@@ -4,8 +4,11 @@
 @inject ITimeularService TimeularService
 @inject ITimeTrackingService TimeTrackingService
 @inject ISettingsService SettingsService
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 @inject IStringLocalizer<Strings> Localizer
-@implements IDisposable
+@implements IAsyncDisposable
 
 <div class="app-container">
     <main class="main-content">
@@ -119,6 +122,9 @@
 </div>
 
 @code {
+    private DotNetObjectReference<MainLayout>? _dotNetRef;
+    private readonly string[] _tabs = { "activities", "history", "", "settings" };
+
     protected override async Task OnInitializedAsync()
     {
         PwaService.OnStateChanged += StateHasChanged;
@@ -134,6 +140,9 @@
         if (firstRender)
         {
             await TimeularService.InitializeAsync();
+
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("navigationInterop.init", _dotNetRef);
         }
     }
 
@@ -167,11 +176,40 @@
         return title;
     }
 
+    [JSInvokable]
+    public void NavigateNext()
+    {
+        Navigate(1);
+    }
+
+    [JSInvokable]
+    public void NavigatePrevious()
+    {
+        Navigate(-1);
+    }
+
+    private void Navigate(int direction)
+    {
+        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        var currentTab = relativePath.Split('?')[0].TrimEnd('/');
+
+        var currentIndex = Array.IndexOf(_tabs, currentTab);
+        if (currentIndex == -1)
+        {
+            // If we're on an unknown page, don't do anything or go to first tab
+            return;
+        }
+
+        var nextIndex = (currentIndex + direction + _tabs.Length) % _tabs.Length;
+        NavigationManager.NavigateTo(_tabs[nextIndex]);
+    }
+
     public void Dispose()
     {
         PwaService.OnStateChanged -= StateHasChanged;
         TimeularService.OnStateChanged -= StateHasChanged;
         TimeTrackingService.OnStateChanged -= StateHasChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
+        _dotNetRef?.Dispose();
     }
 }
