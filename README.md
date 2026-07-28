@@ -1,10 +1,10 @@
 # Kairos
 
-Personal Time Budgeting and Accounting
+Personal Time Tracking and Time Budgeting
 
 ## Live Version
 
-Available at https://albertogregorio.com/kairos/
+Available live at https://albertogregorio.com/kairos/
 
 ## Overview
 
@@ -13,39 +13,47 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ## Features
 
 ### Time Tracking with Activities
+
 - **Customizable Activities**: Create multiple time trackers with custom names, metadata, emojis, and colors
 - **Activity Comments**: Add an optional descriptive comment when starting an activity
 - **One-Touch Activation**: Tap an activity to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
 
 ### Statistics
+
 - **Data Visualization**: Understand your time distribution with charts and visual styling
 - **Budgets**: Set rolling budgets (daily, weekly, monthly) for individual activities
 
 ### Hardware Integration
+
 - **Timeular Tracker**: Connect via Bluetooth to automatically start/stop activities by flipping your device
 
 ### Overview Dashboard
+
 - **Current Balance**: At-a-glance view of your total time balance in hours
 - **Active Indicator**: Shows which activity is currently running
 
 ### History
+
 - **Event History**: View all recorded time events chronologically and filter by date
 - **Daily Breakdown**: See how time was spent each day
 - **Detailed Events**: View start times, durations, and associated activities
 - **Calendar View**: Visualize daily events in a vertical calendar format
 
 ### Sync & Backup
+
 - **Local Export/Import**: Download your data as JSON or export days as CSV files (includes Activity ID, metadata, and comments)
 - **Supabase Integration**: Backup and restore data to/from a Supabase cloud database
 - **Auto-Sync**: Enable automatic synchronization when signed in to Supabase
 
 ### Settings
+
 - **Multi-Language Support**: Available in English, Deutsch, Español, Galego, and Vorarlbergerisch
 - **Advanced Options**: Configure activity groups, sticky events duration, auto-deletion of short events, and toggle Timeular integration
 - **Factory Reset**: Clear all data and start fresh
 
 ### Progressive Web App (PWA)
+
 - **Installable**: Add to home screen on mobile devices or desktop
 - **Offline Support**: Works offline once installed
 - **Service Worker**: Background sync and caching
@@ -58,7 +66,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 
 ## Project Structure
 
-```
+```sh
 Kairos/
 ├── src/
 │   ├── Kairos.Core/         # Domain models and core entities
@@ -110,17 +118,20 @@ This repository uses `Nerdbank.GitVersioning` (NBGV) for automatic assembly and 
 **Configuration**: [Directory.Build.props](Directory.Build.props) applies NBGV solution-wide, so individual project files should not manually set `Version`, `AssemblyVersion`, `FileVersion`, or `InformationalVersion`.
 
 **Automatic Versioning**:
+
 - Builds from `master` use the stable release line from [version.json](version.json)
 - Builds from other branches remain unique and traceable through git-derived prerelease metadata
 - The app's Settings page displays the generated build version
 
 **Bumping the Version**: When starting a new release line, update the `version` field in [version.json](version.json):
+
 - `1.1` for the next minor release
 - `2.0` for the next major release
 
 Commit this change before producing release builds so version height is calculated from the correct point in history.
 
 **Release Workflow**:
+
 1. Merge intended changes
 2. Update [version.json](version.json) if moving to a new release line
 3. Build from `master`
