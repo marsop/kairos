@@ -861,4 +861,16 @@
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
     <value>Color for budget over max</value>
   </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Aktivitäten</value>
+  </data>
+  <data name="EnableBudgets" xml:space="preserve">
+    <value>Budgets aktivieren</value>
+  </data>
+  <data name="EnableBudgetsDesc" xml:space="preserve">
+    <value>Budgets für Aktivitäten anzeigen und verwalten.</value>
+  </data>
+  <data name="RestartTutorial" xml:space="preserve">
+    <value>Tutorial neu starten</value>
+  </data>
 </root>
