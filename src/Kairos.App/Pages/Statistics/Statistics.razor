@@ -186,7 +186,7 @@
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["AllocatedHours"]</label>
-                    <input type="number" class="edit-input" @bind="EditingBudgetHours" min="0" step="1" />
+                    <input type="number" class="edit-input" @ref="_budgetInputRef" @bind="EditingBudgetHours" min="0" step="1" />
                 </div>
             </div>
             <div class="modal-actions">
@@ -206,6 +206,24 @@
     private Guid EditingActivityId;
     private string EditingActivityName = "";
     private double EditingBudgetHours = 0;
+    private ElementReference _budgetInputRef;
+    private bool _budgetFocusRequested;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_budgetFocusRequested && IsEditingBudget)
+        {
+            _budgetFocusRequested = false;
+            try
+            {
+                await _budgetInputRef.FocusAsync();
+            }
+            catch
+            {
+                // Ignore focus errors (e.g., element not visible yet)
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -331,6 +349,7 @@
         var budget = GetBudgetForActivity(activityId);
         EditingBudgetHours = budget?.AllocatedTimeSpan.TotalHours ?? 0;
         IsEditingBudget = true;
+        _budgetFocusRequested = true;
     }
 
     private async Task SaveBudget()

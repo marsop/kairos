@@ -264,6 +264,7 @@
                     <div class="edit-field">
                         <label class="edit-label">@Localizer["StartTime"]</label>
                         <input type="datetime-local" class="edit-input"
+                               @ref="_editStartTimeRef"
                                value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
                                @onchange="OnStartTimeChanged" />
                     </div>
@@ -276,7 +277,7 @@
                 }
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
-                    <textarea class="edit-input" @bind="_editComment"></textarea>
+                    <textarea class="edit-input" @ref="_editCommentRef" @bind="_editComment"></textarea>
                 </div>
                 @if (!string.IsNullOrEmpty(_editError))
                 {
@@ -310,6 +311,9 @@
 
     private ElementReference _calendarScrollArea;
     private bool _shouldScrollCalendar;
+    private ElementReference _editStartTimeRef;
+    private ElementReference _editCommentRef;
+    private bool _editFocusRequested;
 
     private double _pixelsPerHour = 60;
     private double _minPixelsPerHour = 60;
@@ -365,6 +369,22 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (_editFocusRequested && _eventToEdit != null)
+        {
+            _editFocusRequested = false;
+            try
+            {
+                if (!_eventToEdit.IsActive)
+                    await _editStartTimeRef.FocusAsync();
+                else
+                    await _editCommentRef.FocusAsync();
+            }
+            catch
+            {
+                // Ignore focus errors (e.g., element not visible yet)
+            }
+        }
+
         if (firstRender && SettingsService.HistoryView == "calendar")
         {
             _shouldScrollCalendar = true;
@@ -543,6 +563,7 @@
         _editEndTime = evt.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
         _editComment = evt.Comment ?? string.Empty;
         _editError = null;
+        _editFocusRequested = true;
     }
 
     private void CancelEdit()
