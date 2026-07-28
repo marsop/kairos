@@ -864,4 +864,16 @@
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
     <value>Color for budget over max</value>
   </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Actividades</value>
+  </data>
+  <data name="EnableBudgets" xml:space="preserve">
+    <value>Activar orzamentos</value>
+  </data>
+  <data name="EnableBudgetsDesc" xml:space="preserve">
+    <value>Mostra e xestiona os orzamentos para as actividades.</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Ver en GitHub</value>
+  </data>
 </root>
