@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - **Statistics**: Added a new 'Today' view to the Statistics page alongside Week and Month views.
 - **Avatars**: Added new images for the kawaii avatar style.
 - **Settings**: Added a toggle for Timeular settings under Advanced settings.
 - **Budgets**: Added a new rolling budget feature for activities.
 
 ### Changed
+
 - **Activities UI**: Formatted the lower banner to display the active activity name and comment inline on the same line, removing the standalone comment block.
 - **Settings UI**: Display only major, minor, and patch version (plus pre-release tags) in the About section, removing the Git commit hash.
 - **Statistics UI**: Moved the timeline chart in the Statistics tab above the budgets section.
@@ -21,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Timeular UI**: Hide Timeular status indicator when settings are disabled.
 
 ### Fixed
+
 - **Statistics**: Fix timeline graph calculation to start count from 0 for the selected period.
 - **Statistics**: Fix color timeline chart segments by active activity.
 - **UI**: Fix CSS stacking issue causing dropdown clicks to be intercepted by calendar.
@@ -29,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.0] - 2026-07-22
 
 ### Added
+
 - **UI**: The Timeular tracker icon tooltip now displays its battery percentage dynamically.
 - Feature: Clicking an event in the Calendar History view now adapts the zoom level and scroll position to center it and take exactly 50% of the visible space.
 - **History**: Allow editing the comment of an active time-tracking event in the List view.
@@ -37,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Settings**: Added a new Advanced setting for configuring sticky events duration.
 
 ### Changed
+
 - **History UI**: Improved visual accuracy of event blocks in the Calendar view by accounting for seconds in their start and end calculations to prevent short false visual overlaps.
 - **Localization**: Localized hardcoded UI text in razor components.
 - **Logging**: Added structured logging for Timeular Bluetooth auto-reconnect outcomes.
@@ -46,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Codebase Hygiene**: Removed obsolete project references/paths and cleaned unused `using` directives after the refactor.
 
 ### Fixed
+
 - **Supabase Sync**: Fixed syncing of user settings to Supabase (malformed API query and missing sticky events duration mapping).
 - **Supabase Sync**: Prevented silent server overwrite when conflict UI listeners are unavailable by safely keeping local activity events.
 - **Supabase Sync**: Prevented redundant immediate re-sync loops triggered by local state notifications after applying server event updates.
@@ -54,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2026-07-15
 
 ### Added
+
 - **Settings**: Added a new Advanced setting to automatically delete events that are shorter than a configured duration (in seconds).
 - **Settings**: Added a 'Show Advanced Settings' toggle in the General section to hide/show the Advanced settings area.
 - **Settings**: Added a link to the project CHANGELOG on GitHub in the About section of Settings.
@@ -62,10 +69,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
 
 ### Changed
+
 - **Settings Layout**: Moved "Activity Groups" toggle from General to a new Advanced section.
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
 
 ### Fixed
+
 - Fix sync conflict dialog falsely appearing on page refresh.
 - Prevent URI Too Long error in Supabase activity event synchronization.
 - Fix latest entries disappearing on page refresh by fetching the newest 1,000 entries from Supabase instead of the oldest.
@@ -73,15 +82,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2026-06-26
 
 ### Changed
+
 - **UI Tweaks**: Made the "Display Language", "Theme" and "Tutorial Avatar" settings options more compact.
 - **UI Tweaks**: Added icons to the "Dark" and "Light" theme options in Settings.
 
 ### Fixed
+
 - **Sync Conflict**: Fixed an issue where stopping an activity triggered a false "Sync Conflict" dialog by introducing an in-memory snapshot to correctly identify actual server changes.
 
 ## [1.2.0] - 2026-06-26
 
 ### Added
+
 - **Supabase Integration**: Implemented Supabase for authentication, settings management, and activity synchronization.
 - **Real-time Sync**: Optimized Supabase sync using real-time subscriptions and dedicated table for activity events.
 - **Versioning**: Integrated NerdBank.GitVersioning to accurately track and display application version.
@@ -99,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
+
 - **UI Tweaks**: Made the "Total Tracked Time" card on the Statistics page more compact by changing its layout to horizontal.
 - **Core Tracking System**: Refactored the time tracking system to use "activities" instead of "meters".
 - **CSV Optimization**: Optimized CSV export using `CsvHelper`, and updated exports to use Activity ID while omitting extra metadata/duration columns.
@@ -112,10 +125,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Platform Upgrade**: Migrated projects, CI workflow, and docs from .NET 9 to .NET 10.
 
 ### Fixed
+
 - **Security**: Fixed an XSS vulnerability in Statistics chart rendering.
 - **Error Handling**: Logged exceptions in `NotificationService` browser permission handlers.
 - **UI Bugs**: Fixed Timeular Connect/Disconnect button visibility and styling.
 - **Documentation**: Fixed empty summary XML tags in code.
 
 ### Removed
+
 - **Activity Factor**: Removed Activity Factor from models, UI, and event payload.
