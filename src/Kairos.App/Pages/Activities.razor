@@ -299,7 +299,7 @@
     }
 
     [JSInvokable]
-    public void OnNumpadKeyPress(int number)
+    public async Task OnNumpadKeyPress(int number)
     {
         var orderedActivities = TimeService.Account.Activities
             .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
@@ -309,7 +309,7 @@
         if (index >= 0 && index < orderedActivities.Count)
         {
             var activity = orderedActivities[index];
-            ToggleActivity(activity.Id);
+            await ToggleActivity(activity.Id);
             StateHasChanged();
         }
     }
@@ -323,7 +323,7 @@
         return activity != null && activeEvent.ActivityName == activity.Name;
     }
 
-    private void ToggleActivity(Guid activityId)
+    private async Task ToggleActivity(Guid activityId)
     {
         if (ActivityStartPromptService.ConsumeRecentConfirmation(activityId, TimeSpan.FromMilliseconds(500)))
         {
@@ -333,10 +333,24 @@
         if (IsActiveActivity(activityId))
         {
             TimeService.DeactivateActivity();
+            await PlaySoundAsync("window.kairosSound.playActivityStop");
         }
         else
         {
             StartActivityWithComment(activityId);
+        }
+    }
+
+    private async Task PlaySoundAsync(string soundFunction)
+    {
+        if (!SettingsService.SoundsEnabled) return;
+        try
+        {
+            await JSRuntime.InvokeVoidAsync(soundFunction);
+        }
+        catch
+        {
+            // Ignore sound errors (unsupported browser, blocked audio context, etc.)
         }
     }
 

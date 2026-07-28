@@ -1,8 +1,11 @@
 @using Kairos.Application.Resources
 @using Kairos.Application.Services
+@using Microsoft.JSInterop
 @inject IActivityStartPromptService ActivityStartPromptService
 @inject ITimeTrackingService TimeTrackingService
+@inject ISettingsService SettingsService
 @inject IStringLocalizer<Strings> Localizer
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 
 @if (ActivityStartPromptService.PendingActivityId.HasValue)
@@ -119,23 +122,37 @@
         ActivityStartPromptService.Cancel();
     }
 
-    private void Confirm()
+    private async Task Confirm()
     {
         if (ActivityStartPromptService.TryConfirm(_comment, out var errorMessage))
         {
             _comment = string.Empty;
             _errorMessage = null;
+            await PlaySoundAsync("window.kairosSound.playActivityStart");
             return;
         }
 
         _errorMessage = errorMessage;
     }
 
-    private void HandleKeyDown(KeyboardEventArgs e)
+    private async Task PlaySoundAsync(string soundFunction)
+    {
+        if (!SettingsService.SoundsEnabled) return;
+        try
+        {
+            await JSRuntime.InvokeVoidAsync(soundFunction);
+        }
+        catch
+        {
+            // Ignore sound errors (unsupported browser, blocked audio context, etc.)
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" && !e.ShiftKey)
         {
-            Confirm();
+            await Confirm();
         }
         else if (e.Key == "Escape")
         {
