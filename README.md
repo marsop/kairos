@@ -130,6 +130,8 @@ Commit this change before producing release builds so version height is calculat
 
 To enable Supabase synchronization, you need a Supabase project.
 
+Apply the SQL migrations in the `supabase/` folder (including `activity_events.sql`) using the Supabase SQL Editor before enabling sync.
+
 1. Go to your Supabase project dashboard
 2. Navigate to Project Settings -> API
 3. Copy the Project URL and the `anon` `public` key
