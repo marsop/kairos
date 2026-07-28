@@ -18,7 +18,10 @@
                 <div class="view-toggle">
                     <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">@Localizer["HistoryList"]</button>
                     <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">@Localizer["HistoryCalendar"]</button>
+                    <button class="@(SettingsService.HistoryView == "stats" ? "active" : "")" @onclick="@(() => SetHistoryView("stats"))">@Localizer["HistoryStats"]</button>
                 </div>
+                @if (SettingsService.HistoryView != "stats")
+                {
                 <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
                     <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
                     <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
@@ -29,8 +32,11 @@
                         </div>
                     </div>
                 </div>
+                }
             </div>
         </div>
+        @if (SettingsService.HistoryView != "stats")
+        {
         <div class="history-toolbar">
             <div class="history-date-filter">
                 <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
@@ -54,9 +60,14 @@
                 </div>
             }
         </div>
+        }
     </div>
 
-    @if (!AllEvents.Any())
+    @if (SettingsService.HistoryView == "stats")
+    {
+        <StatsPanel />
+    }
+    else if (!AllEvents.Any())
     {
         <div class="empty-state">
             <span class="empty-icon">📭</span>

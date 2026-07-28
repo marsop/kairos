@@ -727,6 +727,9 @@
   <data name="HistoryCalendar" xml:space="preserve">
     <value>Calendar</value>
   </data>
+  <data name="HistoryStats" xml:space="preserve">
+    <value>Stats</value>
+  </data>
   <data name="Group" xml:space="preserve">
     <value>Group {0}</value>
   </data>

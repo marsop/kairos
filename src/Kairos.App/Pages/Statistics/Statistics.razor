@@ -2,7 +2,6 @@
 @page "/statistics"
 @using Kairos.Application.Services
 @using Kairos.Application.Resources
-@using System.Globalization
 @inject ITimeTrackingService TimeService
 @inject IStatisticsService StatisticsService
 @inject ISettingsService SettingsService
@@ -11,126 +10,9 @@
 <div class="statistics-page">
     <div class="page-header">
         <h2 class="page-title">@Localizer["NavStatistics"]</h2>
-
-        <div class="view-toggle">
-            <button class="@(CurrentView == ViewMode.Day ? "active" : "")" @onclick="() => SetView(ViewMode.Day)">@Localizer["Today"]</button>
-            <button class="@(CurrentView == ViewMode.Week ? "active" : "")" @onclick="() => SetView(ViewMode.Week)">@Localizer["ThisWeek"]</button>
-            <button class="@(CurrentView == ViewMode.Month ? "active" : "")" @onclick="() => SetView(ViewMode.Month)">@Localizer["ThisMonth"]</button>
-        </div>
     </div>
 
-    <div class="stat-summary-card">
-        <div class="stat-label">@Localizer["TotalTrackedTime"]</div>
-        <div class="stat-big-value">@((int)TotalTime.TotalHours)<span class="stat-unit">h</span> @(TotalTime.Minutes)<span class="stat-unit">m</span></div>
-        <div class="stat-period">(@PeriodLabel)</div>
-    </div>
-
-    <!-- Timeline Chart -->
-    <div class="chart-container">
-        <svg viewBox="0 0 800 400" class="timeline-chart" preserveAspectRatio="xMidYMid meet">
-            <!-- Grid lines -->
-            <g class="grid-lines">
-                @for (int i = 0; i <= 4; i++)
-                {
-                    var y = 50 + i * 75;
-                    <line x1="50" y1="@y" x2="750" y2="@y" stroke="#333" stroke-dasharray="4,4" />
-                }
-                <!-- Vertical grid lines -->
-                @for (int i = 0; i <= 4; i++)
-                {
-                    var x = 50 + i * 175;
-                    <line x1="@x" y1="50" x2="@x" y2="350" stroke="#333" stroke-dasharray="4,4" />
-                }
-            </g>
-
-            <!-- Y-axis labels -->
-            <g class="y-labels">
-                @{
-                    var range = MaxY - MinY;
-                    if (range == 0) range = 1;
-                }
-                @for (int i = 0; i <= 4; i++)
-                {
-                    var value = MaxY - (i * range / 4);
-                    var y = 50 + i * 75;
-                    @((MarkupString)$@"<text x=""45"" y=""{y + 5}"" text-anchor=""end"" fill=""#888"" font-size=""12"">{value.ToString("F1", CultureInfo.InvariantCulture)}h</text>")
-                }
-            </g>
-
-            <!-- X-axis time labels -->
-            <g class="x-labels">
-                @{
-                    var chartEndTime = EndDate.DateTime;
-                    var chartStartTime = StartDate.DateTime;
-                    var chartPeriod = chartEndTime - chartStartTime;
-                }
-                @for (int i = 0; i <= 4; i++)
-                {
-                    var x = 50 + i * 175; // 700 / 4 = 175
-                    var time = chartStartTime + TimeSpan.FromTicks((long)(chartPeriod.Ticks * i / 4.0));
-                    var timeLabel = FormatTimeLabel(time);
-                    @((MarkupString)$@"<text x=""{x}"" y=""370"" text-anchor=""middle"" fill=""#888"" font-size=""11"">{System.Net.WebUtility.HtmlEncode(timeLabel)}</text>")
-                }
-            </g>
-
-            <!-- Gradient definitions -->
-            <defs>
-                @foreach (var color in DataPoints.Select(p => p.Color).Distinct())
-                {
-                    var idSafe = color.Replace("#", "");
-                    <linearGradient id="areaGradient_@idSafe" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stop-color="@color" stop-opacity="0.4" />
-                        <stop offset="100%" stop-color="@color" stop-opacity="0" />
-                    </linearGradient>
-                }
-            </defs>
-
-            <!-- Data visualization -->
-            @if (DataPoints.Count > 1)
-            {
-                <!-- Area fills & Lines -->
-                @for (int i = 1; i < DataPoints.Count; i++)
-                {
-                    var prev = DataPoints[i - 1];
-                    var curr = DataPoints[i];
-                    var color = curr.Color;
-                    var idSafe = color.Replace("#", "");
-
-                    var x1 = GetXFromTimestamp(prev.Timestamp);
-                    var y1 = GetY(prev.BalanceHours);
-                    var x2 = GetXFromTimestamp(curr.Timestamp);
-                    var y2 = GetY(curr.BalanceHours);
-
-                    var yZero = GetY(0);
-
-                    var areaPath = FormattableString.Invariant($"M {x1} {yZero} L {x1} {y1} L {x2} {y2} L {x2} {yZero} Z");
-
-                    <path d="@areaPath" fill="url(#areaGradient_@idSafe)" opacity="0.3" />
-                    <line x1="@x1.ToString(CultureInfo.InvariantCulture)" y1="@y1.ToString(CultureInfo.InvariantCulture)" x2="@x2.ToString(CultureInfo.InvariantCulture)" y2="@y2.ToString(CultureInfo.InvariantCulture)" stroke="@color" stroke-width="3" />
-                }
-
-                <!-- Current value indicator -->
-                @if (DataPoints.Count > 0)
-                {
-                    var lastPoint = DataPoints.Last();
-                    var indicatorColor = lastPoint.Color;
-                    var x = GetXFromTimestamp(lastPoint.Timestamp);
-                    var y = GetY(lastPoint.BalanceHours);
-                    var valueText = lastPoint.BalanceHours >= 0
-                        ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
-                        : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
-
-                    <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@indicatorColor" class="pulse-circle" />
-                    @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(indicatorColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
-                }
-            }
-            else
-            {
-                <!-- Show "no data" message but keep the grid -->
-                @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
-            }
-        </svg>
-    </div>
+    <StatsPanel OnViewChanged="HandleViewChanged" />
 
     <!-- Budgets List -->
     <div class="budgets-section">
@@ -182,7 +64,7 @@
     <div class="modal-overlay" @onclick="CancelEdit">
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@string.Format(Localizer["BudgetFor"], EditingActivityName)</h3>
-            <p>@(CurrentView == ViewMode.Day ? Localizer["HoursForToday"].Value : CurrentView == ViewMode.Week ? Localizer["HoursForThisWeek"].Value : Localizer["HoursForThisMonth"].Value)</p>
+            <p>@(_budgetType == BudgetType.Daily ? Localizer["HoursForToday"].Value : _budgetType == BudgetType.Weekly ? Localizer["HoursForThisWeek"].Value : Localizer["HoursForThisMonth"].Value)</p>
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["AllocatedHours"]</label>
@@ -199,8 +81,7 @@
 
 
 @code {
-    private enum ViewMode { Day, Week, Month }
-    private ViewMode CurrentView = ViewMode.Day;
+    private BudgetType _budgetType = BudgetType.Daily;
     private List<ActivityBudget> _currentBudgets = new();
     private bool IsEditingBudget = false;
     private Guid EditingActivityId;
@@ -229,94 +110,44 @@
     {
         TimeService.OnStateChanged += StateHasChanged;
         SettingsService.OnSettingsChanged += StateHasChanged;
-        RefreshTimelineData();
         await LoadBudgetsAsync();
-        
-        // Refresh every 5 seconds
-        _timer = new System.Threading.Timer(_ =>
-        {
-            InvokeAsync(() =>
-            {
-                RefreshTimelineData();
-                StateHasChanged();
-            });
-        }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+    }
+
+    private async Task HandleViewChanged(BudgetType budgetType)
+    {
+        _budgetType = budgetType;
+        await LoadBudgetsAsync();
     }
 
     private async Task LoadBudgetsAsync()
     {
-        var currentType = CurrentView switch
-        {
-            ViewMode.Day => BudgetType.Daily,
-            ViewMode.Week => BudgetType.Weekly,
-            _ => BudgetType.Monthly
-        };
-        
         _currentBudgets.Clear();
         foreach (var act in TimeService.Account.Activities)
         {
-            var b = await StatisticsService.GetBudgetAsync(act.Id, currentType);
+            var b = await StatisticsService.GetBudgetAsync(act.Id, _budgetType);
             if (b != null) _currentBudgets.Add(b);
         }
     }
-    
-    private void SetView(ViewMode mode)
-    {
-        CurrentView = mode;
-        _ = LoadBudgetsAsync();
-        RefreshTimelineData();
-    }
 
-    private DateTimeOffset StartDate => CurrentView switch
+    private DateTimeOffset StartDate => _budgetType switch
     {
-        ViewMode.Day => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
-        ViewMode.Week => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date, // Monday of this week
+        BudgetType.Daily => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
+        BudgetType.Weekly => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date,
         _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
     };
-        
-    private DateTimeOffset EndDate => CurrentView switch
+
+    private DateTimeOffset EndDate => _budgetType switch
     {
-        ViewMode.Day => StartDate.AddDays(1),
-        ViewMode.Week => StartDate.AddDays(7),
+        BudgetType.Daily => StartDate.AddDays(1),
+        BudgetType.Weekly => StartDate.AddDays(7),
         _ => StartDate.AddMonths(1)
     };
-
-    private string PeriodLabel => CurrentView switch
-    {
-        ViewMode.Day => Localizer["Today"].Value,
-        ViewMode.Week => Localizer["ThisWeek"].Value,
-        _ => Localizer["ThisMonth"].Value
-    };
-
-    private TimeSpan TotalTime
-    {
-        get
-        {
-            var events = TimeService.Account.Events
-                .Where(e => (e.StartTime >= StartDate && e.StartTime < EndDate) || 
-                            (e.EndTime.HasValue && e.EndTime >= StartDate && e.EndTime < EndDate) ||
-                            (e.StartTime < StartDate && (!e.EndTime.HasValue || e.EndTime > EndDate)))
-                .ToList();
-
-            double totalHours = 0;
-            foreach (var e in events)
-            {
-                var start = e.StartTime > StartDate ? e.StartTime : StartDate;
-                var end = (e.EndTime ?? DateTimeOffset.UtcNow) < EndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : EndDate;
-                if (end > start)
-                {
-                    totalHours += (end - start).TotalHours;
-                }
-            }
-            return TimeSpan.FromHours(totalHours);
-        }
-    }
 
     private TimeSpan GetTrackedTimeForActivity(string activityName)
     {
         var events = TimeService.Account.Events
             .Where(e => e.ActivityName == activityName &&
-                        ((e.StartTime >= StartDate && e.StartTime < EndDate) || 
+                        ((e.StartTime >= StartDate && e.StartTime < EndDate) ||
                         (e.EndTime.HasValue && e.EndTime >= StartDate && e.EndTime < EndDate) ||
                         (e.StartTime < StartDate && (!e.EndTime.HasValue || e.EndTime > EndDate))))
             .ToList();
@@ -327,9 +158,7 @@
             var start = e.StartTime > StartDate ? e.StartTime : StartDate;
             var end = (e.EndTime ?? DateTimeOffset.UtcNow) < EndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : EndDate;
             if (end > start)
-            {
                 totalHours += (end - start).TotalHours;
-            }
         }
         return TimeSpan.FromHours(totalHours);
     }
@@ -343,7 +172,7 @@
     {
         var activity = TimeService.Account.Activities.FirstOrDefault(a => a.Id == activityId);
         if (activity == null) return;
-        
+
         EditingActivityId = activityId;
         EditingActivityName = activity.Name;
         var budget = GetBudgetForActivity(activityId);
@@ -354,23 +183,16 @@
 
     private async Task SaveBudget()
     {
-        var currentType = CurrentView switch
+        var budget = GetBudgetForActivity(EditingActivityId) ?? new ActivityBudget
         {
-            ViewMode.Day => BudgetType.Daily,
-            ViewMode.Week => BudgetType.Weekly,
-            _ => BudgetType.Monthly
+            ActivityId = EditingActivityId,
+            Type = _budgetType
         };
 
-        var budget = GetBudgetForActivity(EditingActivityId) ?? new ActivityBudget 
-        { 
-            ActivityId = EditingActivityId,
-            Type = currentType
-        };
-        
         budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
 
         await StatisticsService.SaveBudgetAsync(budget);
-        
+
         IsEditingBudget = false;
         await LoadBudgetsAsync();
     }
@@ -384,56 +206,6 @@
     {
         TimeService.OnStateChanged -= StateHasChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
-        _timer?.Dispose();
-    }
-
-    // --- Timeline Chart Logic ---
-    private List<TimelineDataPoint> DataPoints { get; set; } = new();
-    
-    private double MinY => DataPoints.Count > 0 ? Math.Min(0, DataPoints.Min(p => p.BalanceHours)) : 0;
-    private double MaxY => DataPoints.Count > 0 ? Math.Max(0, DataPoints.Max(p => p.BalanceHours)) : 1;
-    private System.Threading.Timer? _timer;
-
-    private void RefreshTimelineData()
-    {
-        DataPoints = TimeService.GetTimelineData(StartDate, EndDate);
-    }
-
-    private double GetXFromTimestamp(DateTimeOffset timestamp)
-    {
-        var totalTicks = (EndDate - StartDate).Ticks;
-        if (totalTicks == 0) return 400;
-        
-        var positionTicks = (timestamp - StartDate).Ticks;
-        var ratio = (double)positionTicks / totalTicks;
-        
-        // Clamp to chart bounds [0, 1]
-        ratio = Math.Clamp(ratio, 0.0, 1.0);
-        
-        // Map to chart X coordinates (50 to 750)
-        return 50 + ratio * 700;
-    }
-
-    private double GetY(double value)
-    {
-        var range = MaxY - MinY;
-        if (range == 0) range = 1;
-        var normalized = (MaxY - value) / range;
-        return 50 + normalized * 300;
-    }
-
-
-    private string FormatTimeLabel(DateTime time)
-    {
-        var period = EndDate - StartDate;
-        if (period.TotalHours <= 24)
-        {
-            return time.ToString("HH:mm");
-        }
-        else
-        {
-            return time.ToString("dd MMM");
-        }
     }
 
     private static string GetBudgetItemStyle(string color)
@@ -445,7 +217,7 @@
     private static string GetBudgetProgressStyle(string color, double progress, bool isOver)
     {
         var normalized = isOver ? "#EF4444" : Activity.SanitizeColor(color);
-        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {normalized};";
+        return $"width: {progress.ToString(System.Globalization.CultureInfo.InvariantCulture)}%; background: {normalized};";
     }
 
     private static string GetColorDotStyle(string color)
@@ -460,6 +232,6 @@
         var red = Convert.ToInt32(normalized.Substring(1, 2), 16);
         var green = Convert.ToInt32(normalized.Substring(3, 2), 16);
         var blue = Convert.ToInt32(normalized.Substring(5, 2), 16);
-        return $"rgba({red}, {green}, {blue}, {alpha.ToString(CultureInfo.InvariantCulture)})";
+        return $"rgba({red}, {green}, {blue}, {alpha.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
     }
 }
