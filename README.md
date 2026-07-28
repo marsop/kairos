@@ -99,13 +99,32 @@ dotnet publish -c Release
 
 ## Versioning
 
-This repository uses `Nerdbank.GitVersioning` for assembly and build version metadata.
+This repository uses `Nerdbank.GitVersioning` (NBGV) for automatic assembly and build version metadata derived from git history.
 
-- The version source of truth is [version.json](version.json).
-- The package is applied solution-wide through [Directory.Build.props](Directory.Build.props).
-- The app's Settings page shows the generated build version.
+**Version Source of Truth**: [version.json](version.json) at the repository root
 
-The developer and release workflow is documented in [docs/versioning.md](docs/versioning.md).
+- The `version` field defines the next release line.
+- Builds from `master` are treated as public-release branches.
+- Tags matching `v1.2.3` are also treated as public releases.
+
+**Configuration**: [Directory.Build.props](Directory.Build.props) applies NBGV solution-wide, so individual project files should not manually set `Version`, `AssemblyVersion`, `FileVersion`, or `InformationalVersion`.
+
+**Automatic Versioning**:
+- Builds from `master` use the stable release line from [version.json](version.json)
+- Builds from other branches remain unique and traceable through git-derived prerelease metadata
+- The app's Settings page displays the generated build version
+
+**Bumping the Version**: When starting a new release line, update the `version` field in [version.json](version.json):
+- `1.1` for the next minor release
+- `2.0` for the next major release
+
+Commit this change before producing release builds so version height is calculated from the correct point in history.
+
+**Release Workflow**:
+1. Merge intended changes
+2. Update [version.json](version.json) if moving to a new release line
+3. Build from `master`
+4. Optionally create a matching git tag (e.g., `v1.0.0`)
 
 ## Supabase Sync Setup
 
