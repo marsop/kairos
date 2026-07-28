@@ -864,4 +864,16 @@
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
     <value>Color for budget over max</value>
   </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Aktivitäte</value>
+  </data>
+  <data name="EnableBudgets" xml:space="preserve">
+    <value>Büdschee aktiviere</value>
+  </data>
+  <data name="EnableBudgetsDesc" xml:space="preserve">
+    <value>Zeig und verwalte s Büdschee für Aktivitäte.</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>Uf GitHub aaluege</value>
+  </data>
 </root>
