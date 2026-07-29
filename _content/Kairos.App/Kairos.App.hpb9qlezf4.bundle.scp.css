@@ -257,7 +257,8 @@
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-full);
     height: 6px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
 }
 
 .budget-progress-fill[b-cf5v8cqnw4] {
@@ -265,10 +266,22 @@
     height: 100%;
     border-radius: var(--radius-full);
     transition: width var(--transition-normal), background var(--transition-fast);
+    max-width: 100%;
 }
 
 .budget-progress-fill.over[b-cf5v8cqnw4] {
     background: var(--color-negative);
+}
+
+.budget-minimum-marker[b-cf5v8cqnw4] {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 10px;
+    background: var(--color-text-muted);
+    border-radius: 1px;
+    transform: translateX(-50%);
+    opacity: 0.7;
 }
 
 /* ===== Budget Edit Button ===== */
