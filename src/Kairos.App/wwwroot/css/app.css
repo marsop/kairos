@@ -2127,6 +2127,90 @@ html[data-theme="dark"] .edit-input {
     color: var(--color-text-secondary);
 }
 
+.setting-item.budget-color-setting {
+    display: block;
+}
+
+.budget-color-title {
+    display: block;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.budget-color-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+}
+
+.budget-color-card {
+    display: grid;
+    grid-template-rows: minmax(2.5rem, auto) auto;
+    align-content: start;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.budget-color-label {
+    display: block;
+    line-height: 1.25;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.budget-color-picker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.budget-color-input {
+    inline-size: 54px;
+    block-size: 34px;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    background: var(--color-bg-secondary);
+    cursor: pointer;
+}
+
+.budget-color-input:hover {
+    border-color: var(--color-accent);
+}
+
+.budget-color-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.budget-color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.budget-color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: calc(var(--radius-sm) - 1px);
+}
+
+.budget-color-value {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+}
+
+@media (min-width: 768px) {
+    .budget-color-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .setting-value {
     font-size: var(--font-size-md);
     color: var(--color-text-muted);

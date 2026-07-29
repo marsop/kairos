@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Activities UI**: Formatted the lower banner to display the active activity name and comment inline on the same line, removing the standalone comment block.
 - **Settings UI**: Display only major, minor, and patch version (plus pre-release tags) in the About section, removing the Git commit hash.
+- **Settings UI**: Redesigned the Budgets color configuration controls into a clearer card/grid layout with improved color picker presentation.
 - **Statistics UI**: Moved the timeline chart in the Statistics tab above the budgets section.
 - **Activities UI**: Hide activity index from card UI and display it via tooltip.
 - **Timeular UI**: Hide Timeular status indicator when settings are disabled.

@@ -296,15 +296,42 @@
                 </label>
             </div>
 
-            <div class="setting-item">
-                <span class="setting-label">@Localizer["BudgetSettingsColorMinNotReached"]</span>
-                <input type="color" value="@BudgetSettingsService.ColorMinimumNotReached" @onchange="OnBudgetColorMinNotReachedChanged" />
-                <span class="setting-label">@Localizer["BudgetSettingsColorMinReachedMaxNotReached"]</span>
-                <input type="color" value="@BudgetSettingsService.ColorMinimumReachedMaxNotReached" @onchange="OnBudgetColorMinReachedMaxNotReachedChanged" />
-                <span class="setting-label">@Localizer["BudgetSettingsColorBetweenThresholdMax"]</span>
-                <input type="color" value="@BudgetSettingsService.ColorBetweenThresholdMax" @onchange="OnBudgetColorBetweenThresholdMaxChanged" />
-                <span class="setting-label">@Localizer["BudgetSettingsColorOverMax"]</span>
-                <input type="color" value="@BudgetSettingsService.ColorOverMax" @onchange="OnBudgetColorOverMaxChanged" />
+            <div class="setting-item budget-color-setting">
+                <span class="setting-label budget-color-title">@Localizer["Color"]</span>
+
+                <div class="budget-color-grid">
+                    <div class="budget-color-card">
+                        <span class="budget-color-label">@Localizer["BudgetSettingsColorMinNotReached"]</span>
+                        <div class="budget-color-picker-row">
+                            <input class="budget-color-input" type="color" value="@BudgetSettingsService.ColorMinimumNotReached" @onchange="OnBudgetColorMinNotReachedChanged" />
+                            <span class="budget-color-value">@DisplayColor(BudgetSettingsService.ColorMinimumNotReached)</span>
+                        </div>
+                    </div>
+
+                    <div class="budget-color-card">
+                        <span class="budget-color-label">@Localizer["BudgetSettingsColorMinReachedMaxNotReached"]</span>
+                        <div class="budget-color-picker-row">
+                            <input class="budget-color-input" type="color" value="@BudgetSettingsService.ColorMinimumReachedMaxNotReached" @onchange="OnBudgetColorMinReachedMaxNotReachedChanged" />
+                            <span class="budget-color-value">@DisplayColor(BudgetSettingsService.ColorMinimumReachedMaxNotReached)</span>
+                        </div>
+                    </div>
+
+                    <div class="budget-color-card">
+                        <span class="budget-color-label">@Localizer["BudgetSettingsColorBetweenThresholdMax"]</span>
+                        <div class="budget-color-picker-row">
+                            <input class="budget-color-input" type="color" value="@BudgetSettingsService.ColorBetweenThresholdMax" @onchange="OnBudgetColorBetweenThresholdMaxChanged" />
+                            <span class="budget-color-value">@DisplayColor(BudgetSettingsService.ColorBetweenThresholdMax)</span>
+                        </div>
+                    </div>
+
+                    <div class="budget-color-card">
+                        <span class="budget-color-label">@Localizer["BudgetSettingsColorOverMax"]</span>
+                        <div class="budget-color-picker-row">
+                            <input class="budget-color-input" type="color" value="@BudgetSettingsService.ColorOverMax" @onchange="OnBudgetColorOverMaxChanged" />
+                            <span class="budget-color-value">@DisplayColor(BudgetSettingsService.ColorOverMax)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     }
@@ -589,6 +616,11 @@
     private void OnBudgetColorOverMaxChanged(ChangeEventArgs e)
     {
         BudgetSettingsService.ColorOverMax = e.Value?.ToString() ?? "#ff0000";
+    }
+
+    private static string DisplayColor(string? color)
+    {
+        return string.IsNullOrWhiteSpace(color) ? "#000000" : color.ToUpperInvariant();
     }
 
     private void OnActivityGroupsToggled(ChangeEventArgs e)
