@@ -763,6 +763,9 @@
   <data name="AllocatedHours" xml:space="preserve">
     <value>Allocated hours</value>
   </data>
+  <data name="MinimumHours" xml:space="preserve">
+    <value>Minimum hours</value>
+  </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
     <value>Navigate your History easily using the new Previous and Next Day buttons. Additionally, active events now feature a pulsating animation in both Calendar and List views so you can always spot what is running.</value>
   </data>

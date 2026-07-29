@@ -12,5 +12,6 @@ public class ActivityBudget
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid ActivityId { get; set; }
     public TimeSpan AllocatedTimeSpan { get; set; }
+    public TimeSpan MinimumTimeSpan { get; set; }
     public BudgetType Type { get; set; } = BudgetType.Monthly;
 }

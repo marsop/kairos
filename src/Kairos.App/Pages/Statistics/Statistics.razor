@@ -43,8 +43,16 @@
                     </div>
                     @if (hasBudget)
                     {
+                        var minimumHours = budget!.MinimumTimeSpan.TotalHours;
+                        var minimumProgress = (minimumHours > 0 && budget!.AllocatedTimeSpan.TotalHours > 0)
+                            ? Math.Min(100, minimumHours / budget!.AllocatedTimeSpan.TotalHours * 100)
+                            : 0.0;
                         <div class="budget-progress-track">
-                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(progress, isOver)"></div>
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(progress, isOver, tracked.TotalHours, minimumHours)"></div>
+                            @if (BudgetSettingsService.MinimumEnabled && minimumProgress > 0)
+                            {
+                                <div class="budget-minimum-marker" style="left: @(minimumProgress.ToString("F2", CultureInfo.InvariantCulture))%"></div>
+                            }
                         </div>
                     }
 
@@ -69,6 +77,13 @@
                     <label class="edit-label">@Localizer["AllocatedHours"]</label>
                     <input type="number" class="edit-input" @ref="_budgetInputRef" @bind="EditingBudgetHours" min="0" step="1" />
                 </div>
+                @if (BudgetSettingsService.MinimumEnabled)
+                {
+                    <div class="edit-field">
+                        <label class="edit-label">@Localizer["MinimumHours"]</label>
+                        <input type="number" class="edit-input" @bind="EditingMinimumHours" min="0" step="1" />
+                    </div>
+                }
             </div>
             <div class="modal-actions">
                 <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
@@ -85,6 +100,7 @@
     private Guid EditingActivityId;
     private string EditingActivityName = "";
     private double EditingBudgetHours = 0;
+    private double EditingMinimumHours = 0;
     private ElementReference _budgetInputRef;
     private bool _budgetFocusRequested;
 
@@ -226,6 +242,7 @@
         EditingActivityName = activity.Name;
         var budget = GetBudgetForActivity(activityId);
         EditingBudgetHours = budget?.AllocatedTimeSpan.TotalHours ?? 0;
+        EditingMinimumHours = budget?.MinimumTimeSpan.TotalHours ?? 0;
         IsEditingBudget = true;
         _budgetFocusRequested = true;
     }
@@ -241,6 +258,7 @@
         };
         
         budget.AllocatedTimeSpan = TimeSpan.FromHours(EditingBudgetHours);
+        budget.MinimumTimeSpan = TimeSpan.FromHours(EditingMinimumHours);
 
         await StatisticsService.SaveBudgetAsync(budget);
         
@@ -326,13 +344,15 @@
         return $"border-color: {ToRgba(normalized, 0.24)};";
     }
 
-    private string GetBudgetProgressStyle(double progress, bool isOver)
+    private string GetBudgetProgressStyle(double progress, bool isOver, double trackedHours, double minimumHours)
     {
         string color;
         if (isOver)
             color = Activity.SanitizeColor(BudgetSettingsService.ColorOverMax);
         else if (progress >= BudgetSettingsService.Threshold)
             color = Activity.SanitizeColor(BudgetSettingsService.ColorBetweenThresholdMax);
+        else if (BudgetSettingsService.MinimumEnabled && minimumHours > 0 && trackedHours < minimumHours)
+            color = Activity.SanitizeColor(BudgetSettingsService.ColorMinimumNotReached);
         else
             color = Activity.SanitizeColor(BudgetSettingsService.ColorMinimumReachedMaxNotReached);
         return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {color};";
