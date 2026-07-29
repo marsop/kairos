@@ -1,3 +1,90 @@
+/* _content/Kairos.App/Pages/History.razor.rz.scp.css */
+/* ===== Summary Card ===== */
+
+.stat-summary-card[b-kmut9yq2nw] {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.stat-label[b-kmut9yq2nw] {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+.stat-big-value[b-kmut9yq2nw] {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-positive);
+    font-variant-numeric: tabular-nums;
+    text-shadow: var(--shadow-glow-positive);
+    white-space: nowrap;
+}
+
+.stat-unit[b-kmut9yq2nw] {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.stat-period[b-kmut9yq2nw] {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+/* ===== Chart ===== */
+
+.chart-container[b-kmut9yq2nw] {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    width: 100%;
+    height: auto;
+}
+
+.timeline-chart[b-kmut9yq2nw] {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    color: var(--color-text-primary);
+}
+
+.timeline-chart .grid-lines line[b-kmut9yq2nw] {
+    stroke: var(--color-bg-tertiary);
+}
+
+.timeline-chart .y-labels text[b-kmut9yq2nw],
+.timeline-chart .x-labels text[b-kmut9yq2nw] {
+    fill: var(--color-text-muted);
+    font-family: inherit;
+}
+
+.timeline-chart .pulse-circle[b-kmut9yq2nw] {
+    animation: pulse-b-kmut9yq2nw 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-b-kmut9yq2nw {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
 /* _content/Kairos.App/Pages/Statistics/Statistics.razor.rz.scp.css */
 /* ===== Statistics Page ===== */
 
@@ -51,6 +138,47 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     white-space: nowrap;
+}
+
+/* ===== Chart ===== */
+
+.chart-container[b-cf5v8cqnw4] {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    width: 100%;
+    height: auto;
+}
+
+.timeline-chart[b-cf5v8cqnw4] {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    color: var(--color-text-primary);
+}
+
+.timeline-chart .grid-lines line[b-cf5v8cqnw4] {
+    stroke: var(--color-bg-tertiary);
+}
+
+.timeline-chart .y-labels text[b-cf5v8cqnw4],
+.timeline-chart .x-labels text[b-cf5v8cqnw4] {
+    fill: var(--color-text-muted);
+    font-family: inherit;
+}
+
+.timeline-chart .pulse-circle[b-cf5v8cqnw4] {
+    animation: pulse-b-cf5v8cqnw4 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-b-cf5v8cqnw4 {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 
 /* ===== Budgets Section ===== */
