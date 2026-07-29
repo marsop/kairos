@@ -44,7 +44,7 @@
                     @if (hasBudget)
                     {
                         <div class="budget-progress-track">
-                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(activity.Color, progress, isOver)"></div>
+                            <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(progress, isOver)"></div>
                         </div>
                     }
 
@@ -326,10 +326,16 @@
         return $"border-color: {ToRgba(normalized, 0.24)};";
     }
 
-    private static string GetBudgetProgressStyle(string color, double progress, bool isOver)
+    private string GetBudgetProgressStyle(double progress, bool isOver)
     {
-        var normalized = isOver ? "#EF4444" : Activity.SanitizeColor(color);
-        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {normalized};";
+        string color;
+        if (isOver)
+            color = Activity.SanitizeColor(BudgetSettingsService.ColorOverMax);
+        else if (progress >= BudgetSettingsService.Threshold)
+            color = Activity.SanitizeColor(BudgetSettingsService.ColorBetweenThresholdMax);
+        else
+            color = Activity.SanitizeColor(BudgetSettingsService.ColorMinimumReachedMaxNotReached);
+        return $"width: {progress.ToString(CultureInfo.InvariantCulture)}%; background: {color};";
     }
 
     private static string GetColorDotStyle(string color)
