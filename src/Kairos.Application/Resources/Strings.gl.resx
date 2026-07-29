@@ -628,8 +628,8 @@
   <data name="KeepLocalData" xml:space="preserve">
     <value>Manter Datos Locais</value>
   </data>
-  <data name="NavStatistics" xml:space="preserve">
-    <value>Estatísticas</value>
+  <data name="NavBudgets" xml:space="preserve">
+    <value>Presupuestos</value>
   </data>
   <data name="Emoji" xml:space="preserve">
     <value>Emoji</value>

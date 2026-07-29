@@ -64,8 +64,8 @@
   <data name="NavActivities" xml:space="preserve">
     <value>Activities</value>
   </data>
-  <data name="NavStatistics" xml:space="preserve">
-    <value>Statistics</value>
+  <data name="NavBudgets" xml:space="preserve">
+    <value>Budgets</value>
   </data>
   <data name="NavHistory" xml:space="preserve">
     <value>History</value>
