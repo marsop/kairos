@@ -52,6 +52,47 @@
     white-space: nowrap;
 }
 
+/* ===== Chart ===== */
+
+.chart-container {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    width: 100%;
+    height: auto;
+}
+
+.timeline-chart {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    color: var(--color-text-primary);
+}
+
+.timeline-chart .grid-lines line {
+    stroke: var(--color-bg-tertiary);
+}
+
+.timeline-chart .y-labels text,
+.timeline-chart .x-labels text {
+    fill: var(--color-text-muted);
+    font-family: inherit;
+}
+
+.timeline-chart .pulse-circle {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
 /* ===== Budgets Section ===== */
 
 .budgets-section {

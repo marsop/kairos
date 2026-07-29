@@ -3,11 +3,13 @@
 @using Kairos.Core.Models
 @using Kairos.Application.Resources
 @using Microsoft.JSInterop
+@using System.Globalization
 @inject ITimeTrackingService TimeService
 @inject IActivityEventSyncService SyncService
 @inject IStringLocalizer<Strings> Localizer
 @inject IJSRuntime JSRuntime
 @inject ISettingsService SettingsService
+@inject IStatisticsService StatisticsService
 @implements IDisposable
 
 <div class="history-page">
@@ -18,6 +20,7 @@
                 <div class="view-toggle">
                     <button class="@(SettingsService.HistoryView == "list" ? "active" : "")" @onclick="@(() => SetHistoryView("list"))">@Localizer["HistoryList"]</button>
                     <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">@Localizer["HistoryCalendar"]</button>
+                    <button class="@(SettingsService.HistoryView == "stats" ? "active" : "")" @onclick="@(() => SetHistoryView("stats"))">@Localizer["HistoryStats"]</button>
                 </div>
                 <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
                     <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
@@ -32,18 +35,29 @@
             </div>
         </div>
         <div class="history-toolbar">
-            <div class="history-date-filter">
-                <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
-                <div class="history-date-selector">
-                    <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="PreviousDay">&lt;</button>
-                    <input id="history-date"
-                           class="history-date-input"
-                           type="date"
-                           value="@SelectedDateValue"
-                           @onchange="OnSelectedDateChanged" />
-                    <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="NextDay">&gt;</button>
+            @if (SettingsService.HistoryView != "stats")
+            {
+                <div class="history-date-filter">
+                    <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
+                    <div class="history-date-selector">
+                        <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="PreviousDay">&lt;</button>
+                        <input id="history-date"
+                               class="history-date-input"
+                               type="date"
+                               value="@SelectedDateValue"
+                               @onchange="OnSelectedDateChanged" />
+                        <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="NextDay">&gt;</button>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="view-toggle">
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Day ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Day)">@Localizer["Today"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["ThisWeek"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["ThisMonth"]</button>
+                </div>
+            }
             @if (SettingsService.HistoryView == "calendar")
             {
                 <div style="display: flex; gap: var(--spacing-sm);">
@@ -74,7 +88,122 @@
     }
     else
     {
-        @if (SettingsService.HistoryView == "calendar")
+        @if (SettingsService.HistoryView == "stats")
+        {
+            <div class="stat-summary-card">
+                <div class="stat-label">@Localizer["TotalTrackedTime"]</div>
+                <div class="stat-big-value">@((int)BudgetTotalTime.TotalHours)<span class="stat-unit">h</span> @(BudgetTotalTime.Minutes)<span class="stat-unit">m</span></div>
+                <div class="stat-period">(@BudgetPeriodLabel)</div>
+            </div>
+
+            <!-- Timeline Chart -->
+            <div class="chart-container">
+                <svg viewBox="0 0 800 400" class="timeline-chart" preserveAspectRatio="xMidYMid meet">
+                    <!-- Grid lines -->
+                    <g class="grid-lines">
+                        @for (int i = 0; i <= 4; i++)
+                        {
+                            var y = 50 + i * 75;
+                            <line x1="50" y1="@y" x2="750" y2="@y" stroke="#333" stroke-dasharray="4,4" />
+                        }
+                        <!-- Vertical grid lines -->
+                        @for (int i = 0; i <= 4; i++)
+                        {
+                            var x = 50 + i * 175;
+                            <line x1="@x" y1="50" x2="@x" y2="350" stroke="#333" stroke-dasharray="4,4" />
+                        }
+                    </g>
+
+                    <!-- Y-axis labels -->
+                    <g class="y-labels">
+                        @{
+                            var range = BudgetMaxY - BudgetMinY;
+                            if (range == 0) range = 1;
+                        }
+                        @for (int i = 0; i <= 4; i++)
+                        {
+                            var value = BudgetMaxY - (i * range / 4);
+                            var y = 50 + i * 75;
+                            @((MarkupString)$@"<text x=""45"" y=""{y + 5}"" text-anchor=""end"" fill=""#888"" font-size=""12"">{value.ToString("F1", CultureInfo.InvariantCulture)}h</text>")
+                        }
+                    </g>
+
+                    <!-- X-axis time labels -->
+                    <g class="x-labels">
+                        @{
+                            var chartEndTime = BudgetEndDate.DateTime;
+                            var chartStartTime = BudgetStartDate.DateTime;
+                            var chartPeriod = chartEndTime - chartStartTime;
+                        }
+                        @for (int i = 0; i <= 4; i++)
+                        {
+                            var x = 50 + i * 175;
+                            var time = chartStartTime + TimeSpan.FromTicks((long)(chartPeriod.Ticks * i / 4.0));
+                            var timeLabel = FormatBudgetTimeLabel(time);
+                            @((MarkupString)$@"<text x=""{x}"" y=""370"" text-anchor=""middle"" fill=""#888"" font-size=""11"">{System.Net.WebUtility.HtmlEncode(timeLabel)}</text>")
+                        }
+                    </g>
+
+                    <!-- Gradient definitions -->
+                    <defs>
+                        @foreach (var color in BudgetDataPoints.Select(p => p.Color).Distinct())
+                        {
+                            var idSafe = color.Replace("#", "");
+                            <linearGradient id="areaGradient_@idSafe" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="@color" stop-opacity="0.4" />
+                                <stop offset="100%" stop-color="@color" stop-opacity="0" />
+                            </linearGradient>
+                        }
+                    </defs>
+
+                    <!-- Data visualization -->
+                    @if (BudgetDataPoints.Count > 1)
+                    {
+                        <!-- Area fills & Lines -->
+                        @for (int i = 1; i < BudgetDataPoints.Count; i++)
+                        {
+                            var prev = BudgetDataPoints[i - 1];
+                            var curr = BudgetDataPoints[i];
+                            var color = curr.Color;
+                            var idSafe = color.Replace("#", "");
+
+                            var x1 = GetBudgetXFromTimestamp(prev.Timestamp);
+                            var y1 = GetBudgetY(prev.BalanceHours);
+                            var x2 = GetBudgetXFromTimestamp(curr.Timestamp);
+                            var y2 = GetBudgetY(curr.BalanceHours);
+
+                            var yZero = GetBudgetY(0);
+
+                            var areaPath = FormattableString.Invariant($"M {x1} {yZero} L {x1} {y1} L {x2} {y2} L {x2} {yZero} Z");
+
+                            <path d="@areaPath" fill="url(#areaGradient_@idSafe)" opacity="0.3" />
+                            <line x1="@x1.ToString(CultureInfo.InvariantCulture)" y1="@y1.ToString(CultureInfo.InvariantCulture)" x2="@x2.ToString(CultureInfo.InvariantCulture)" y2="@y2.ToString(CultureInfo.InvariantCulture)" stroke="@color" stroke-width="3" />
+                        }
+
+                        <!-- Current value indicator -->
+                        @if (BudgetDataPoints.Count > 0)
+                        {
+                            var lastPoint = BudgetDataPoints.Last();
+                            var indicatorColor = lastPoint.Color;
+                            var x = GetBudgetXFromTimestamp(lastPoint.Timestamp);
+                            var y = GetBudgetY(lastPoint.BalanceHours);
+                            var valueText = lastPoint.BalanceHours >= 0
+                                ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
+                                : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
+
+                            <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@indicatorColor" class="pulse-circle" />
+                            @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(indicatorColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
+                        }
+                    }
+                    else
+                    {
+                        <!-- Show "no data" message but keep the grid -->
+                        @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
+                    }
+                </svg>
+            </div>
+        }
+        else if (SettingsService.HistoryView == "calendar")
         {
             @if (_dragAction != DragAction.None)
             {
@@ -293,6 +422,12 @@
 }
 
 @code {
+    private enum BudgetViewMode { Day, Week, Month }
+    
+    // Stats view state
+    private BudgetViewMode CurrentBudgetView = BudgetViewMode.Day;
+    private List<TimelineDataPoint> BudgetDataPoints { get; set; } = new();
+
     private IEnumerable<ActivityEvent> AllEvents => TimeService.Account.Events
         .OrderByDescending(e => e.StartTime);
 
@@ -364,6 +499,103 @@
             {
                 _shouldScrollCalendar = true;
             }
+            else if (view == "stats")
+            {
+                RefreshBudgetTimelineData();
+            }
+        }
+    }
+
+    private void SetBudgetView(BudgetViewMode mode)
+    {
+        CurrentBudgetView = mode;
+        RefreshBudgetTimelineData();
+    }
+
+    private DateTimeOffset BudgetStartDate => CurrentBudgetView switch
+    {
+        BudgetViewMode.Day => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
+        BudgetViewMode.Week => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date,
+        _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
+    };
+        
+    private DateTimeOffset BudgetEndDate => CurrentBudgetView switch
+    {
+        BudgetViewMode.Day => BudgetStartDate.AddDays(1),
+        BudgetViewMode.Week => BudgetStartDate.AddDays(7),
+        _ => BudgetStartDate.AddMonths(1)
+    };
+
+    private string BudgetPeriodLabel => CurrentBudgetView switch
+    {
+        BudgetViewMode.Day => Localizer["Today"].Value,
+        BudgetViewMode.Week => Localizer["ThisWeek"].Value,
+        _ => Localizer["ThisMonth"].Value
+    };
+
+    private TimeSpan BudgetTotalTime
+    {
+        get
+        {
+            var events = TimeService.Account.Events
+                .Where(e => (e.StartTime >= BudgetStartDate && e.StartTime < BudgetEndDate) || 
+                            (e.EndTime.HasValue && e.EndTime >= BudgetStartDate && e.EndTime < BudgetEndDate) ||
+                            (e.StartTime < BudgetStartDate && (!e.EndTime.HasValue || e.EndTime > BudgetEndDate)))
+                .ToList();
+
+            double totalHours = 0;
+            foreach (var e in events)
+            {
+                var start = e.StartTime > BudgetStartDate ? e.StartTime : BudgetStartDate;
+                var end = (e.EndTime ?? DateTimeOffset.UtcNow) < BudgetEndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : BudgetEndDate;
+                if (end > start)
+                {
+                    totalHours += (end - start).TotalHours;
+                }
+            }
+            return TimeSpan.FromHours(totalHours);
+        }
+    }
+
+    private double BudgetMinY => BudgetDataPoints.Count > 0 ? Math.Min(0, BudgetDataPoints.Min(p => p.BalanceHours)) : 0;
+    private double BudgetMaxY => BudgetDataPoints.Count > 0 ? Math.Max(0, BudgetDataPoints.Max(p => p.BalanceHours)) : 1;
+
+    private void RefreshBudgetTimelineData()
+    {
+        BudgetDataPoints = TimeService.GetTimelineData(BudgetStartDate, BudgetEndDate);
+    }
+
+    private double GetBudgetXFromTimestamp(DateTimeOffset timestamp)
+    {
+        var totalTicks = (BudgetEndDate - BudgetStartDate).Ticks;
+        if (totalTicks == 0) return 400;
+        
+        var positionTicks = (timestamp - BudgetStartDate).Ticks;
+        var ratio = (double)positionTicks / totalTicks;
+        
+        ratio = Math.Clamp(ratio, 0.0, 1.0);
+        
+        return 50 + ratio * 700;
+    }
+
+    private double GetBudgetY(double value)
+    {
+        var range = BudgetMaxY - BudgetMinY;
+        if (range == 0) range = 1;
+        var normalized = (BudgetMaxY - value) / range;
+        return 50 + normalized * 300;
+    }
+
+    private string FormatBudgetTimeLabel(DateTime time)
+    {
+        var period = BudgetEndDate - BudgetStartDate;
+        if (period.TotalHours <= 24)
+        {
+            return time.ToString("HH:mm");
+        }
+        else
+        {
+            return time.ToString("dd MMM");
         }
     }
 
