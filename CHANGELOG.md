@@ -18,9 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Budgets**: Budget progress bars now use the colors defined in settings — green below the threshold, yellow between threshold and 100%, red when over budget.
 - **Budgets**: When the minimum setting is enabled, each budget can have a minimum hours value. Progress bars use blue when tracked time is below the minimum, and a small marker shows the minimum position on the bar.
+- **Budgets UI**: Budget definition now labels inputs as "Min Hours" and "Max Hours", and shows a read-only calculated threshold hours value between them when a threshold percentage is configured.
+- **Budgets UI**: Budget editor now enforces `Min Hours <= Max Hours` both in input constraints and in saved values.
 - **Activities UI**: Formatted the lower banner to display the active activity name and comment inline on the same line, removing the standalone comment block.
 - **Settings UI**: Display only major, minor, and patch version (plus pre-release tags) in the About section, removing the Git commit hash.
 - **Settings UI**: Redesigned the Budgets color configuration controls into a clearer card/grid layout with improved color picker presentation.
+- **Settings UI**: Improved budget color section titles by using consistent terminology ("Below min", "Between min and threshold", "Between threshold and max", "Above max") instead of verbose "Color for" prefixes and ambiguous terms.
 - **Statistics UI**: Moved the timeline chart in the Statistics tab above the budgets section.
 - **Activities UI**: Hide activity index from card UI and display it via tooltip.
 - **Timeular UI**: Hide Timeular status indicator when settings are disabled.

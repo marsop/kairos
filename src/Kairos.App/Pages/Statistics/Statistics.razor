@@ -73,17 +73,24 @@
             <h3>@string.Format(Localizer["BudgetFor"], EditingActivityName)</h3>
             <p>@GetBudgetPeriodLabel()</p>
             <div class="edit-form">
-                <div class="edit-field">
-                    <label class="edit-label">@Localizer["AllocatedHours"]</label>
-                    <input type="number" class="edit-input" @ref="_budgetInputRef" @bind="EditingBudgetHours" min="0" step="1" />
-                </div>
                 @if (BudgetSettingsService.MinimumEnabled)
                 {
                     <div class="edit-field">
-                        <label class="edit-label">@Localizer["MinimumHours"]</label>
-                        <input type="number" class="edit-input" @bind="EditingMinimumHours" min="0" step="1" />
+                        <label class="edit-label">Min Hours</label>
+                        <input type="number" class="edit-input" @bind="EditingMinimumHours" min="0" max="@EditingBudgetHours" step="1" />
                     </div>
                 }
+                @if (BudgetSettingsService.Threshold > 0)
+                {
+                    <div class="edit-field">
+                        <label class="edit-label">@($"{Localizer["BudgetSettingsThreshold"]} ({BudgetSettingsService.Threshold}%)")</label>
+                        <input type="number" class="edit-input" value="@CalculatedThresholdHours" readonly min="0" step="0.1" />
+                    </div>
+                }
+                <div class="edit-field">
+                    <label class="edit-label">Max Hours</label>
+                    <input type="number" class="edit-input" @ref="_budgetInputRef" @bind="EditingBudgetHours" min="@EditingMinimumHours" step="1" />
+                </div>
             </div>
             <div class="modal-actions">
                 <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
@@ -99,8 +106,27 @@
     private bool IsEditingBudget = false;
     private Guid EditingActivityId;
     private string EditingActivityName = "";
-    private double EditingBudgetHours = 0;
-    private double EditingMinimumHours = 0;
+    private double _editingBudgetHours = 0;
+    private double EditingBudgetHours
+    {
+        get => _editingBudgetHours;
+        set
+        {
+            _editingBudgetHours = Math.Max(0, value);
+            if (EditingMinimumHours > _editingBudgetHours)
+            {
+                EditingMinimumHours = _editingBudgetHours;
+            }
+        }
+    }
+
+    private double _editingMinimumHours = 0;
+    private double EditingMinimumHours
+    {
+        get => _editingMinimumHours;
+        set => _editingMinimumHours = Math.Max(0, Math.Min(value, EditingBudgetHours));
+    }
+    private double CalculatedThresholdHours => Math.Round(EditingBudgetHours * (BudgetSettingsService.Threshold / 100.0), 1);
     private ElementReference _budgetInputRef;
     private bool _budgetFocusRequested;
 
