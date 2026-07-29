@@ -6,6 +6,7 @@
 @inject ITimeTrackingService TimeService
 @inject IStatisticsService StatisticsService
 @inject ISettingsService SettingsService
+@inject IBudgetSettingsService BudgetSettingsService
 @inject IStringLocalizer<Strings> Localizer
 
 <div class="statistics-page">
@@ -62,7 +63,7 @@
     <div class="modal-overlay" @onclick="CancelEdit">
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@string.Format(Localizer["BudgetFor"], EditingActivityName)</h3>
-            <p>@(CurrentView == ViewMode.Day ? Localizer["HoursForToday"].Value : CurrentView == ViewMode.Week ? Localizer["HoursForThisWeek"].Value : Localizer["HoursForThisMonth"].Value)</p>
+            <p>@GetBudgetPeriodLabel()</p>
             <div class="edit-form">
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["AllocatedHours"]</label>
@@ -79,8 +80,6 @@
 
 
 @code {
-    private enum ViewMode { Day, Week, Month }
-    private ViewMode CurrentView = ViewMode.Day;
     private List<ActivityBudget> _currentBudgets = new();
     private bool IsEditingBudget = false;
     private Guid EditingActivityId;
@@ -109,6 +108,7 @@
     {
         TimeService.OnStateChanged += StateHasChanged;
         SettingsService.OnSettingsChanged += StateHasChanged;
+        BudgetSettingsService.OnSettingsChanged += HandleBudgetSettingsChanged;
         RefreshTimelineData();
         await LoadBudgetsAsync();
         
@@ -125,12 +125,7 @@
 
     private async Task LoadBudgetsAsync()
     {
-        var currentType = CurrentView switch
-        {
-            ViewMode.Day => BudgetType.Daily,
-            ViewMode.Week => BudgetType.Weekly,
-            _ => BudgetType.Monthly
-        };
+        var currentType = BudgetSettingsService.BudgetType;
         
         _currentBudgets.Clear();
         foreach (var act in TimeService.Account.Activities)
@@ -140,33 +135,36 @@
         }
     }
     
-    private void SetView(ViewMode mode)
+    private DateTimeOffset StartDate => BudgetSettingsService.BudgetType switch
     {
-        CurrentView = mode;
-        _ = LoadBudgetsAsync();
-        RefreshTimelineData();
-    }
-
-    private DateTimeOffset StartDate => CurrentView switch
-    {
-        ViewMode.Day => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
-        ViewMode.Week => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date, // Monday of this week
+        BudgetType.Daily => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
+        BudgetType.Weekly => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date, // Monday of this week
         _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
     };
         
-    private DateTimeOffset EndDate => CurrentView switch
+    private DateTimeOffset EndDate => BudgetSettingsService.BudgetType switch
     {
-        ViewMode.Day => StartDate.AddDays(1),
-        ViewMode.Week => StartDate.AddDays(7),
+        BudgetType.Daily => StartDate.AddDays(1),
+        BudgetType.Weekly => StartDate.AddDays(7),
         _ => StartDate.AddMonths(1)
     };
 
-    private string PeriodLabel => CurrentView switch
+    private string PeriodLabel => BudgetSettingsService.BudgetType switch
     {
-        ViewMode.Day => Localizer["Today"].Value,
-        ViewMode.Week => Localizer["ThisWeek"].Value,
+        BudgetType.Daily => Localizer["Today"].Value,
+        BudgetType.Weekly => Localizer["ThisWeek"].Value,
         _ => Localizer["ThisMonth"].Value
     };
+
+    private string GetBudgetPeriodLabel()
+    {
+        return BudgetSettingsService.BudgetType switch
+        {
+            BudgetType.Daily => Localizer["HoursForToday"].Value,
+            BudgetType.Weekly => Localizer["HoursForThisWeek"].Value,
+            _ => Localizer["HoursForThisMonth"].Value
+        };
+    }
 
     private TimeSpan TotalTime
     {
@@ -234,12 +232,7 @@
 
     private async Task SaveBudget()
     {
-        var currentType = CurrentView switch
-        {
-            ViewMode.Day => BudgetType.Daily,
-            ViewMode.Week => BudgetType.Weekly,
-            _ => BudgetType.Monthly
-        };
+        var currentType = BudgetSettingsService.BudgetType;
 
         var budget = GetBudgetForActivity(EditingActivityId) ?? new ActivityBudget 
         { 
@@ -260,10 +253,21 @@
         IsEditingBudget = false;
     }
 
+    private void HandleBudgetSettingsChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            await LoadBudgetsAsync();
+            RefreshTimelineData();
+            StateHasChanged();
+        });
+    }
+
     public void Dispose()
     {
         TimeService.OnStateChanged -= StateHasChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
+        BudgetSettingsService.OnSettingsChanged -= HandleBudgetSettingsChanged;
         _timer?.Dispose();
     }
 
