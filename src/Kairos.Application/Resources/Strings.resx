@@ -863,15 +863,15 @@
     <value>Notifications</value>
   </data>
   <data name="BudgetSettingsColorMinNotReached" xml:space="preserve">
-    <value>Color for minimum not reached</value>
+    <value>Below min</value>
   </data>
   <data name="BudgetSettingsColorMinReachedMaxNotReached" xml:space="preserve">
-    <value>Color for minimum reached but max not reached</value>
+    <value>Between min and threshold</value>
   </data>
   <data name="BudgetSettingsColorBetweenThresholdMax" xml:space="preserve">
-    <value>Color for budget between threshold and max</value>
+    <value>Between threshold and max</value>
   </data>
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
-    <value>Color for budget over max</value>
+    <value>Above max</value>
   </data>
 </root>
