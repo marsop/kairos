@@ -54,8 +54,8 @@
             {
                 <div class="view-toggle">
                     <button class="@(CurrentBudgetView == BudgetViewMode.Day ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Day)">@Localizer["Day"]</button>
-                    <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["ThisWeek"]</button>
-                    <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["ThisMonth"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["Week"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["Month"]</button>
                 </div>
                 @if (CurrentBudgetView == BudgetViewMode.Day)
                 {
@@ -68,6 +68,34 @@
                                    value="@BudgetSelectedDayValue"
                                    @onchange="OnBudgetDayChanged" />
                             <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="BudgetDayNext">&gt;</button>
+                        </div>
+                    </div>
+                }
+                else if (CurrentBudgetView == BudgetViewMode.Week)
+                {
+                    <div class="history-date-filter">
+                        <div class="history-date-selector">
+                            <button class="history-date-nav-btn" aria-label="@Localizer["PreviousWeek"]" @onclick="BudgetWeekPrevious">&lt;</button>
+                            <input id="stats-week"
+                                   class="history-date-input"
+                                   type="week"
+                                   value="@BudgetSelectedWeekValue"
+                                   @onchange="OnBudgetWeekChanged" />
+                            <button class="history-date-nav-btn" aria-label="@Localizer["NextWeek"]" @onclick="BudgetWeekNext">&gt;</button>
+                        </div>
+                    </div>
+                }
+                else if (CurrentBudgetView == BudgetViewMode.Month)
+                {
+                    <div class="history-date-filter">
+                        <div class="history-date-selector">
+                            <button class="history-date-nav-btn" aria-label="@Localizer["PreviousMonth"]" @onclick="BudgetMonthPrevious">&lt;</button>
+                            <input id="stats-month"
+                                   class="history-date-input"
+                                   type="month"
+                                   value="@BudgetSelectedMonthValue"
+                                   @onchange="OnBudgetMonthChanged" />
+                            <button class="history-date-nav-btn" aria-label="@Localizer["NextMonth"]" @onclick="BudgetMonthNext">&gt;</button>
                         </div>
                     </div>
                 }
@@ -441,7 +469,11 @@
     // Stats view state
     private BudgetViewMode CurrentBudgetView = BudgetViewMode.Day;
     private DateOnly _budgetSelectedDay = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly _budgetSelectedWeek = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1).Date);
+    private DateOnly _budgetSelectedMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
     private string BudgetSelectedDayValue => _budgetSelectedDay.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    private string BudgetSelectedWeekValue => GetIsoWeekString(_budgetSelectedWeek);
+    private string BudgetSelectedMonthValue => _budgetSelectedMonth.ToString("yyyy-MM", CultureInfo.InvariantCulture);
     private List<TimelineDataPoint> BudgetDataPoints { get; set; } = new();
 
     private IEnumerable<ActivityEvent> AllEvents => TimeService.Account.Events
@@ -549,11 +581,63 @@
         }
     }
 
+    private void BudgetWeekPrevious()
+    {
+        _budgetSelectedWeek = _budgetSelectedWeek.AddDays(-7);
+        RefreshBudgetTimelineData();
+    }
+
+    private void BudgetWeekNext()
+    {
+        _budgetSelectedWeek = _budgetSelectedWeek.AddDays(7);
+        RefreshBudgetTimelineData();
+    }
+
+    private void OnBudgetWeekChanged(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString();
+        if (!string.IsNullOrEmpty(value) && value.Length >= 8 &&
+            int.TryParse(value[..4], out var year) && int.TryParse(value[6..], out var week))
+        {
+            _budgetSelectedWeek = DateOnly.FromDateTime(ISOWeek.ToDateTime(year, week, DayOfWeek.Monday));
+            RefreshBudgetTimelineData();
+        }
+    }
+
+    private void BudgetMonthPrevious()
+    {
+        _budgetSelectedMonth = _budgetSelectedMonth.AddMonths(-1);
+        RefreshBudgetTimelineData();
+    }
+
+    private void BudgetMonthNext()
+    {
+        _budgetSelectedMonth = _budgetSelectedMonth.AddMonths(1);
+        RefreshBudgetTimelineData();
+    }
+
+    private void OnBudgetMonthChanged(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString();
+        if (!string.IsNullOrEmpty(value) &&
+            DateOnly.TryParseExact(value + "-01", "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+        {
+            _budgetSelectedMonth = date;
+            RefreshBudgetTimelineData();
+        }
+    }
+
+    private static string GetIsoWeekString(DateOnly monday)
+    {
+        var dt = monday.ToDateTime(TimeOnly.MinValue);
+        return $"{ISOWeek.GetYear(dt)}-W{ISOWeek.GetWeekOfYear(dt):D2}";
+    }
+
     private DateTimeOffset BudgetStartDate => CurrentBudgetView switch
     {
         BudgetViewMode.Day => new DateTimeOffset(_budgetSelectedDay.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero),
-        BudgetViewMode.Week => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date,
-        _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
+        BudgetViewMode.Week => new DateTimeOffset(_budgetSelectedWeek.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero),
+        _ => new DateTimeOffset(_budgetSelectedMonth.Year, _budgetSelectedMonth.Month, 1, 0, 0, 0, TimeSpan.Zero)
     };
         
     private DateTimeOffset BudgetEndDate => CurrentBudgetView switch
@@ -566,8 +650,8 @@
     private string BudgetPeriodLabel => CurrentBudgetView switch
     {
         BudgetViewMode.Day => _budgetSelectedDay.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-        BudgetViewMode.Week => Localizer["ThisWeek"].Value,
-        _ => Localizer["ThisMonth"].Value
+        BudgetViewMode.Week => $"W{ISOWeek.GetWeekOfYear(_budgetSelectedWeek.ToDateTime(TimeOnly.MinValue))} {ISOWeek.GetYear(_budgetSelectedWeek.ToDateTime(TimeOnly.MinValue))}",
+        _ => _budgetSelectedMonth.ToString("MMMM yyyy", CultureInfo.CurrentCulture)
     };
 
     private TimeSpan BudgetTotalTime

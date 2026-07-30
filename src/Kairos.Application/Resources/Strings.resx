@@ -760,6 +760,12 @@
   <data name="Day" xml:space="preserve">
     <value>Day</value>
   </data>
+  <data name="Week" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
   <data name="ThisWeek" xml:space="preserve">
     <value>This Week</value>
   </data>
@@ -828,6 +834,18 @@
   </data>
   <data name="NextDay" xml:space="preserve">
     <value>Next Day</value>
+  </data>
+  <data name="PreviousWeek" xml:space="preserve">
+    <value>Previous Week</value>
+  </data>
+  <data name="NextWeek" xml:space="preserve">
+    <value>Next Week</value>
+  </data>
+  <data name="PreviousMonth" xml:space="preserve">
+    <value>Previous Month</value>
+  </data>
+  <data name="NextMonth" xml:space="preserve">
+    <value>Next Month</value>
   </data>
   <data name="Tracker" xml:space="preserve">
     <value>Tracker</value>
