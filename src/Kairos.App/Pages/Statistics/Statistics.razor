@@ -3,11 +3,13 @@
 @using Kairos.Application.Services
 @using Kairos.Application.Resources
 @using System.Globalization
+@using System.Text.Json
 @inject ITimeTrackingService TimeService
 @inject IStatisticsService StatisticsService
 @inject ISettingsService SettingsService
 @inject IBudgetSettingsService BudgetSettingsService
 @inject INotificationService NotificationService
+@inject IStorageService StorageService
 @inject IStringLocalizer<Strings> Localizer
 
 <div class="statistics-page">
@@ -205,6 +207,7 @@
         BudgetSettingsService.OnSettingsChanged += HandleBudgetSettingsChanged;
         RefreshTimelineData();
         await LoadBudgetsAsync();
+        await LoadBudgetNotificationStateAsync();
         
         // Refresh every 5 seconds
         _timer = new System.Threading.Timer(_ =>
@@ -383,11 +386,12 @@
         if (!BudgetSettingsService.NotificationsEnabled || !SettingsService.BudgetsEnabled)
             return;
 
-        // Reset tracked states when the budget period rolls over
+        // Load state for new period when the period rolls over
         if (StartDate != _lastKnownPeriodStart)
         {
             _notifiedBudgetStates.Clear();
             _lastKnownPeriodStart = StartDate;
+            await LoadBudgetNotificationStateAsync();
         }
 
         foreach (var activity in TimeService.Account.Activities)
@@ -411,12 +415,14 @@
                 await NotificationService.NotifyAsync(
                     Localizer["NotificationBudgetMaxReachedTitle"].Value,
                     string.Format(Localizer["NotificationBudgetMaxReachedBody"].Value, activity.Name));
+                await SaveBudgetNotificationStateAsync();
             }
             else if (BudgetSettingsService.Threshold > 0 && progress >= BudgetSettingsService.Threshold && fired.Add("threshold"))
             {
                 await NotificationService.NotifyAsync(
                     Localizer["NotificationBudgetThresholdReachedTitle"].Value,
                     string.Format(Localizer["NotificationBudgetThresholdReachedBody"].Value, activity.Name, BudgetSettingsService.Threshold));
+                await SaveBudgetNotificationStateAsync();
             }
 
             if (BudgetSettingsService.MinimumEnabled && minimumHours > 0 && tracked.TotalHours >= minimumHours && fired.Add("min"))
@@ -424,8 +430,33 @@
                 await NotificationService.NotifyAsync(
                     Localizer["NotificationBudgetMinReachedTitle"].Value,
                     string.Format(Localizer["NotificationBudgetMinReachedBody"].Value, activity.Name));
+                await SaveBudgetNotificationStateAsync();
             }
         }
+    }
+
+    private async Task LoadBudgetNotificationStateAsync()
+    {
+        var json = await StorageService.GetItemAsync(BudgetNotificationStorageKey);
+        if (string.IsNullOrEmpty(json)) return;
+        try
+        {
+            var stored = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
+            if (stored == null) return;
+            foreach (var (key, values) in stored)
+            {
+                if (Guid.TryParse(key, out var id))
+                    _notifiedBudgetStates[id] = new HashSet<string>(values);
+            }
+        }
+        catch { /* ignore corrupt storage */ }
+    }
+
+    private async Task SaveBudgetNotificationStateAsync()
+    {
+        var serializable = _notifiedBudgetStates
+            .ToDictionary(kv => kv.Key.ToString(), kv => kv.Value.ToList());
+        await StorageService.SetItemAsync(BudgetNotificationStorageKey, JsonSerializer.Serialize(serializable));
     }
 
     // --- Timeline Chart Logic ---
@@ -438,6 +469,9 @@
     // Tracks which budget notification types have already fired per activity in the current period
     private readonly Dictionary<Guid, HashSet<string>> _notifiedBudgetStates = new();
     private DateTimeOffset _lastKnownPeriodStart = DateTimeOffset.MinValue;
+
+    private string BudgetNotificationStorageKey =>
+        $"Kairos_budgetNotifications_{StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
 
     private void RefreshTimelineData()
     {
