@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Budgets UI**: The threshold hours field in the budget editor now renders as a read-only calculated value (dimmed text, dashed border) instead of an editable input, making it clear it cannot be modified directly.
 - **Settings UI**: Budget threshold input now shows a `%` suffix to make it clear the configured value is a percentage.
+- **Budgets UI**: The selected budget ordering is now persisted in browser storage and restored when navigating back to the Budgets tab.
 
 ### Fixed
 

@@ -35,9 +35,9 @@
     <!-- Budgets List -->
     <div class="budgets-section">
         <div class="view-toggle budget-sort-toggle">
-            <button class="@(_budgetSortMode == BudgetSortMode.DisplayOrder ? "active" : "")" @onclick="() => _budgetSortMode = BudgetSortMode.DisplayOrder">@Localizer["SortByDefault"]</button>
-            <button class="@(_budgetSortMode == BudgetSortMode.TrackedTime ? "active" : "")" @onclick="() => _budgetSortMode = BudgetSortMode.TrackedTime">@Localizer["SortByTrackedTime"]</button>
-            <button class="@(_budgetSortMode == BudgetSortMode.BudgetUsage ? "active" : "")" @onclick="() => _budgetSortMode = BudgetSortMode.BudgetUsage">@Localizer["SortByBudgetUsage"]</button>
+            <button class="@(_budgetSortMode == BudgetSortMode.DisplayOrder ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.DisplayOrder)">@Localizer["SortByDefault"]</button>
+            <button class="@(_budgetSortMode == BudgetSortMode.TrackedTime ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.TrackedTime)">@Localizer["SortByTrackedTime"]</button>
+            <button class="@(_budgetSortMode == BudgetSortMode.BudgetUsage ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.BudgetUsage)">@Localizer["SortByBudgetUsage"]</button>
         </div>
         <div class="budgets-list">
             @foreach (var activity in GetSortedActivities())
@@ -205,6 +205,7 @@
         TimeService.OnStateChanged += StateHasChanged;
         SettingsService.OnSettingsChanged += StateHasChanged;
         BudgetSettingsService.OnSettingsChanged += HandleBudgetSettingsChanged;
+        await LoadBudgetSortModeAsync();
         RefreshTimelineData();
         await LoadBudgetsAsync();
         await LoadBudgetNotificationStateAsync();
@@ -459,6 +460,26 @@
         await StorageService.SetItemAsync(BudgetNotificationStorageKey, JsonSerializer.Serialize(serializable));
     }
 
+    private async Task SetBudgetSortModeAsync(BudgetSortMode sortMode)
+    {
+        _budgetSortMode = sortMode;
+        await StorageService.SetItemAsync(BudgetSortStorageKey, sortMode.ToString());
+    }
+
+    private async Task LoadBudgetSortModeAsync()
+    {
+        var value = await StorageService.GetItemAsync(BudgetSortStorageKey);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        if (Enum.TryParse<BudgetSortMode>(value, ignoreCase: true, out var parsedSortMode))
+        {
+            _budgetSortMode = parsedSortMode;
+        }
+    }
+
     // --- Timeline Chart Logic ---
     private List<TimelineDataPoint> DataPoints { get; set; } = new();
     
@@ -469,6 +490,7 @@
     // Tracks which budget notification types have already fired per activity in the current period
     private readonly Dictionary<Guid, HashSet<string>> _notifiedBudgetStates = new();
     private DateTimeOffset _lastKnownPeriodStart = DateTimeOffset.MinValue;
+    private const string BudgetSortStorageKey = "Kairos_budgetSortMode";
 
     private string BudgetNotificationStorageKey =>
         $"Kairos_budgetNotifications_{StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
