@@ -874,4 +874,13 @@
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
     <value>Above max</value>
   </data>
+  <data name="SortByTrackedTime" xml:space="preserve">
+    <value>Tracked Time</value>
+  </data>
+  <data name="SortByBudgetUsage" xml:space="preserve">
+    <value>Budget Usage</value>
+  </data>
+  <data name="SortByDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
 </root>

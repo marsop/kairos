@@ -876,4 +876,13 @@
   <data name="RestartTutorial" xml:space="preserve">
     <value>Tutorial neu starten</value>
   </data>
+  <data name="SortByTrackedTime" xml:space="preserve">
+    <value>Erfasste Zeit</value>
+  </data>
+  <data name="SortByBudgetUsage" xml:space="preserve">
+    <value>Budgetnutzung</value>
+  </data>
+  <data name="SortByDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
 </root>

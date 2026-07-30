@@ -879,4 +879,13 @@
   <data name="ViewOnGitHub" xml:space="preserve">
     <value>Ver en GitHub</value>
   </data>
+  <data name="SortByTrackedTime" xml:space="preserve">
+    <value>Tempo rexistrado</value>
+  </data>
+  <data name="SortByBudgetUsage" xml:space="preserve">
+    <value>Uso do orzamento</value>
+  </data>
+  <data name="SortByDefault" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
 </root>

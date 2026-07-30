@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
+
 ### Fixed
 
 - **Budgets**: Fixed budget settings not loading from Supabase on a fresh browser. The settings service was initialized before the auth service, so the user was never authenticated when the remote fetch ran, causing defaults to be used and overwrite remote data.

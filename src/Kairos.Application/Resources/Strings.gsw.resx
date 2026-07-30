@@ -879,4 +879,13 @@
   <data name="ViewOnGitHub" xml:space="preserve">
     <value>Uf GitHub aaluege</value>
   </data>
+  <data name="SortByTrackedTime" xml:space="preserve">
+    <value>Ufgzeichneti Ziit</value>
+  </data>
+  <data name="SortByBudgetUsage" xml:space="preserve">
+    <value>Büdschee-Nutzung</value>
+  </data>
+  <data name="SortByDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
 </root>
