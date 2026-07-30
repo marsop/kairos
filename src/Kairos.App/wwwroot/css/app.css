@@ -369,6 +369,7 @@ body {
 .activities-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 100px;
     gap: var(--spacing-md);
 }
 
@@ -388,8 +389,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-sm) var(--spacing-md);
+    gap: 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
     border: 2px solid var(--color-bg-tertiary);
     border-radius: var(--radius-xl);
     background: var(--color-bg-secondary);
@@ -436,11 +437,12 @@ body {
 }
 
 .activity-name {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     font-weight: 700;
     color: var(--color-text-primary);
     text-align: center;
     word-break: break-word;
+    line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -953,6 +955,23 @@ body {
 .btn-cancel {
     background: var(--color-bg-tertiary);
     color: var(--color-text-secondary);
+}
+
+.btn-save {
+    background: var(--color-positive);
+    color: white;
+}
+
+.btn-save:hover {
+    background: #0d9668;
+    box-shadow: var(--shadow-glow-positive);
+}
+
+.activity-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
 }
 
 .btn-cancel:hover {

@@ -43,11 +43,10 @@
         {
             var activity = orderedActivities[index];
             var isActive = IsActiveActivity(activity.Id);
-            var isEditing = _editingActivityId == activity.Id;
             var isDragging = _draggedActivity?.Id == activity.Id;
             var isDragOver = _dragTargetActivityId.HasValue && _dragTargetActivityId.Value == activity.Id && _draggedActivity?.Id != activity.Id;
 
-            <div draggable="@(isEditing ? "false" : "true")"
+            <div draggable="true"
                  class="activity-container @(isActive ? "is-active" : "") @(isDragging ? "dragging" : "") @(isDragOver ? "drag-over" : "")"
                  @ondragstart="() => HandleDragStart(activity)"
                  @ondragenter="() => HandleDragEnter(activity)"
@@ -56,130 +55,35 @@
                  @ondrop="() => HandleDrop(activity)"
                  @ondragend="HandleDragEnd"
                  @ondragleave="HandleDragLeave">
-                @if (isEditing)
-                {
-                    <div class="activity-edit-form">
-                        <input type="text" 
-                               class="activity-name-input @(_validationError != null ? "invalid" : "")"
-                               @bind="_editingActivityName"
-                               @bind:event="oninput"
-                               @onkeydown="HandleEditKeyDown"
-                               maxlength="40"
-                               autofocus />
-                        <div class="activity-metadata-field">
-                            <input type="text"
-                                   class="activity-metadata-input"
-                                   title="@Localizer["ActivityId"]"
-                                   value="@activity.Id"
-                                   readonly />
-                        </div>
-                        <div class="activity-emoji-field">
-                            <label class="activity-color-label">@Localizer["Emoji"]</label>
-                            <button id="edit-emoji-btn-@activity.Id"
-                                    type="button"
-                                    class="emoji-button"
-                                    @onclick="@(() => ShowEmojiPicker($"edit-emoji-btn-{activity.Id}", true))">
-                                @(string.IsNullOrEmpty(_editingActivityEmoji) ? "😃" : _editingActivityEmoji)
-                            </button>
-                        </div>
-                        <div class="activity-color-field">
-                            <label class="activity-color-label">@Localizer["Color"]</label>
-                            <div class="activity-color-picker-row">
-                                <input type="color"
-                                       class="activity-color-input"
-                                       @bind="_editingActivityColor"
-                                       @bind:event="oninput" />
-                                <span class="activity-color-value">@_editingActivityColor</span>
-                            </div>
-                        </div>
-                        <div class="edit-actions">
-                            <button class="edit-action-btn save" @onclick="SaveEdit" title="@Localizer["Save"]">✓</button>
-                            <button class="edit-action-btn cancel" @onclick="CancelEdit" @onclick:stopPropagation="true" title="@Localizer["Cancel"]">✕</button>
-                        </div>
-                        @if (_validationError != null)
-                        {
-                            <div class="validation-error">@_validationError</div>
-                        }
-                        <div class="char-count @(_editingActivityName?.Length > 40 ? "over-limit" : "")">
-                            @(_editingActivityName?.Length ?? 0)/40
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <button class="activity-button activity-colored @(isActive ? "active" : "")"
-                            style="@GetActivityStyle(activity.Color, isActive)"
-                            title="#@(index + 1) @activity.Emoji @activity.Name"
-                            @onclick="() => ToggleActivity(activity.Id)">
-                        <div class="activity-name">@activity.Emoji @activity.Name</div>
+                <button class="activity-button activity-colored @(isActive ? "active" : "")"
+                        style="@GetActivityStyle(activity.Color, isActive)"
+                        title="#@(index + 1) @activity.Emoji @activity.Name"
+                        @onclick="() => ToggleActivity(activity.Id)">
+                    <div class="activity-name">@activity.Emoji @activity.Name</div>
+                </button>
+                <div class="activity-actions left">
+                    <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
+                        ✏️
                     </button>
-                    <div class="activity-actions left">
-                        <button class="activity-action-btn" @onclick="() => StartEditing(activity)" @onclick:stopPropagation="true" title="@Localizer["RenameActivity"]">
-                            ✏️
+                </div>
+                <div class="activity-actions right">
+                    @if (!isActive)
+                    {
+                        <button class="activity-action-btn delete" @onclick="() => DeleteActivity(activity)" @onclick:stopPropagation="true" title="@Localizer["DeleteActivity"]">
+                            🗑️
                         </button>
-                    </div>
-                    <div class="activity-actions right">
-                        @if (!isActive)
-                        {
-                            <button class="activity-action-btn delete" @onclick="() => DeleteActivity(activity)" @onclick:stopPropagation="true" title="@Localizer["DeleteActivity"]">
-                                🗑️
-                            </button>
-                        }
-                    </div>
-                }
+                    }
+                </div>
             </div>
         }
         
            @if (CanAddActivity())
         {
         <div class="activity-container add-activity">
-            @if (_isAddingActivity)
-            {
-                <div class="activity-edit-form">
-                    <input type="text" 
-                           class="activity-name-input"
-                           placeholder="@Localizer["Name"]"
-                           @bind="_newActivityName"
-                           maxlength="40"
-                           autofocus />
-                    <div class="activity-emoji-field">
-                        <label class="activity-color-label">@Localizer["Emoji"]</label>
-                        <button id="add-emoji-btn"
-                                type="button"
-                                class="emoji-button"
-                                @onclick='@(() => ShowEmojiPicker("add-emoji-btn", false))'>
-                            @(string.IsNullOrEmpty(_newActivityEmoji) ? "😃" : _newActivityEmoji)
-                        </button>
-                    </div>
-                    <div class="activity-color-field">
-                        <label class="activity-color-label">@Localizer["Color"]</label>
-                        <div class="activity-color-picker-row">
-                            <input type="color"
-                                   class="activity-color-input"
-                                   @bind="_newActivityColor"
-                                   @bind:event="oninput" />
-                            <span class="activity-color-value">@_newActivityColor</span>
-                        </div>
-                    </div>
-                            
-                    <div class="edit-actions">
-                        <button class="edit-action-btn save" @onclick="SaveNewActivity" title="@Localizer["Add"]">✓</button>
-                        <button class="edit-action-btn cancel" @onclick="CancelAdd" title="@Localizer["Cancel"]">✕</button>
-                    </div>
-                    
-                    @if (_addValidationError != null)
-                    {
-                        <div class="validation-error">@_addValidationError</div>
-                    }
-                </div>
-            }
-            else
-            {
-                <button class="activity-button add-activity-btn" @onclick="StartAdding">
-                    <div class="add-icon">+</div>
-                    <div class="add-text">@Localizer["AddActivity"]</div>
-                </button>
-            }
+            <button class="activity-button add-activity-btn" @onclick="StartAdding">
+                <div class="add-icon">+</div>
+                <div class="add-text">@Localizer["AddActivity"]</div>
+            </button>
         </div>
         }
     </div>
@@ -213,6 +117,109 @@
             <div class="modal-actions">
                 <button class="btn-cancel" @onclick="CancelDelete">@Localizer["Cancel"]</button>
                 <button class="btn-delete" @onclick="ConfirmDeleteActivity">@Localizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_editingActivityId != null)
+{
+    var editingActivity = TimeService.Account.Activities.FirstOrDefault(a => a.Id == _editingActivityId);
+    if (editingActivity != null)
+    {
+        <div class="modal-overlay" @onclick="CancelEdit">
+            <div class="modal-dialog" @onclick:stopPropagation="true">
+                <h3>@Localizer["RenameActivity"]</h3>
+                <div class="activity-form-fields">
+                    <input type="text"
+                           class="activity-name-input @(_validationError != null ? "invalid" : "")"
+                           @bind="_editingActivityName"
+                           @bind:event="oninput"
+                           @onkeydown="HandleEditKeyDown"
+                           maxlength="40"
+                           autofocus />
+                    <div class="activity-metadata-field">
+                        <input type="text"
+                               class="activity-metadata-input"
+                               title="@Localizer["ActivityId"]"
+                               value="@editingActivity.Id"
+                               readonly />
+                    </div>
+                    <div class="activity-emoji-field">
+                        <label class="activity-color-label">@Localizer["Emoji"]</label>
+                        <button id="edit-emoji-btn"
+                                type="button"
+                                class="emoji-button"
+                                @onclick='@(() => ShowEmojiPicker("edit-emoji-btn", true))'>
+                            @(string.IsNullOrEmpty(_editingActivityEmoji) ? "😃" : _editingActivityEmoji)
+                        </button>
+                    </div>
+                    <div class="activity-color-field">
+                        <label class="activity-color-label">@Localizer["Color"]</label>
+                        <div class="activity-color-picker-row">
+                            <input type="color"
+                                   class="activity-color-input"
+                                   @bind="_editingActivityColor"
+                                   @bind:event="oninput" />
+                            <span class="activity-color-value">@_editingActivityColor</span>
+                        </div>
+                    </div>
+                    @if (_validationError != null)
+                    {
+                        <div class="validation-error">@_validationError</div>
+                    }
+                    <div class="char-count @(_editingActivityName?.Length > 40 ? "over-limit" : "")">
+                        @(_editingActivityName?.Length ?? 0)/40
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
+                    <button class="btn-save" @onclick="SaveEdit">@Localizer["Save"]</button>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@if (_isAddingActivity)
+{
+    <div class="modal-overlay" @onclick="CancelAdd">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["AddActivity"]</h3>
+            <div class="activity-form-fields">
+                <input type="text"
+                       class="activity-name-input @(_addValidationError != null ? "invalid" : "")"
+                       placeholder="@Localizer["Name"]"
+                       @bind="_newActivityName"
+                       maxlength="40"
+                       autofocus />
+                <div class="activity-emoji-field">
+                    <label class="activity-color-label">@Localizer["Emoji"]</label>
+                    <button id="add-emoji-btn"
+                            type="button"
+                            class="emoji-button"
+                            @onclick='@(() => ShowEmojiPicker("add-emoji-btn", false))'>
+                        @(string.IsNullOrEmpty(_newActivityEmoji) ? "😃" : _newActivityEmoji)
+                    </button>
+                </div>
+                <div class="activity-color-field">
+                    <label class="activity-color-label">@Localizer["Color"]</label>
+                    <div class="activity-color-picker-row">
+                        <input type="color"
+                               class="activity-color-input"
+                               @bind="_newActivityColor"
+                               @bind:event="oninput" />
+                        <span class="activity-color-value">@_newActivityColor</span>
+                    </div>
+                </div>
+                @if (_addValidationError != null)
+                {
+                    <div class="validation-error">@_addValidationError</div>
+                }
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelAdd">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="SaveNewActivity">@Localizer["Add"]</button>
             </div>
         </div>
     </div>
