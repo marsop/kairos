@@ -68,12 +68,25 @@
                         var minimumProgress = (minimumHours > 0 && budget!.AllocatedTimeSpan.TotalHours > 0)
                             ? Math.Min(100, minimumHours / budget!.AllocatedTimeSpan.TotalHours * 100)
                             : 0.0;
+                        var thresholdProgress = BudgetSettingsService.Threshold;
+                        var periodDuration = (EndDate - StartDate).TotalHours;
+                        var elapsedDuration = (DateTimeOffset.UtcNow - StartDate).TotalHours;
+                        var expectedProgress = Math.Clamp((elapsedDuration / periodDuration) * 100, 0, 100);
                         <div class="budget-progress-track">
                             <div class="budget-progress-fill @(isOver ? "over" : "")" style="@GetBudgetProgressStyle(progress, isOver, tracked.TotalHours, minimumHours)"></div>
                             @if (BudgetSettingsService.MinimumEnabled && minimumProgress > 0)
                             {
                                 <div class="budget-minimum-marker" style="left: @(minimumProgress.ToString("F2", CultureInfo.InvariantCulture))%"></div>
                             }
+                            @if (thresholdProgress > 0 && thresholdProgress < 100)
+                            {
+                                <div class="budget-threshold-marker" style="left: @(thresholdProgress.ToString("F2", CultureInfo.InvariantCulture))%"></div>
+                            }
+                            @if (expectedProgress > 0 && expectedProgress < 100)
+                            {
+                                <div class="budget-expected-marker" style="left: @(expectedProgress.ToString("F2", CultureInfo.InvariantCulture))%"></div>
+                            }
+                            <div class="budget-max-marker" style="left: 100%"></div>
                         </div>
                     }
 

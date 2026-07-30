@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.
 - **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
 - **Budgets UI**: Added a context summary to the Budgets page that shows the active budget type and the current period start/end dates.
+- **Budgets UI**: Budget progress bars now display visual markers for key budget points: minimum (gray), threshold (yellow), maximum (red), and expected progress (secondary, with border). The expected progress marker shows where you should be today if the budget will be completed 100% at the end of the period. Markers are enhanced with improved size, opacity, and subtle shadows for better visibility.
 
 ### Changed
 
