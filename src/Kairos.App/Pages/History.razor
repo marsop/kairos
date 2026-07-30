@@ -83,7 +83,7 @@
         <div class="empty-state">
             <span class="empty-icon">🗓️</span>
             <p>@Localizer["NoEventsForDate"]</p>
-            <p class="empty-hint">@SelectedDate.ToString("D")</p>
+            <p class="empty-hint">@SelectedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)</p>
         </div>
     }
     else
@@ -595,7 +595,7 @@
         }
         else
         {
-            return time.ToString("dd MMM");
+            return time.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
     }
 
@@ -733,7 +733,7 @@
         }
         else
         {
-            return Localizer["DateTimeAt", local.ToString("MMM d"), local.ToString("HH:mm")];
+            return Localizer["DateTimeAt", local.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), local.ToString("HH:mm")];
         }
     }
 

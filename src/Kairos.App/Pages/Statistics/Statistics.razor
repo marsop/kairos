@@ -253,8 +253,8 @@
         _ => Localizer["BudgetSettingsBudgetTypeMonthly"].Value
     };
 
-    private string CurrentPeriodStartLabel => StartDate.ToLocalTime().ToString("d", CultureInfo.CurrentCulture);
-    private string CurrentPeriodEndLabel => EndDate.AddTicks(-1).ToLocalTime().ToString("d", CultureInfo.CurrentCulture);
+    private string CurrentPeriodStartLabel => StartDate.ToLocalTime().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    private string CurrentPeriodEndLabel => EndDate.AddTicks(-1).ToLocalTime().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
     private TimeSpan TotalTime
     {
@@ -408,7 +408,7 @@
         }
         else
         {
-            return time.ToString("dd MMM");
+            return time.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
     }
 
