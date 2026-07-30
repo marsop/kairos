@@ -598,6 +598,8 @@ public class TimeTrackingService : ITimeTrackingService
             }
         }
 
+        CompactActivityGroupIds();
+
         NormalizeDisplayOrderWithinGroups();
         SaveAndNotify();
     }
@@ -875,6 +877,27 @@ public class TimeTrackingService : ITimeTrackingService
             for (var index = 0; index < ordered.Count; index++)
             {
                 ordered[index].DisplayOrder = index;
+            }
+        }
+    }
+
+    private void CompactActivityGroupIds()
+    {
+        var orderedGroupIds = _account.Activities
+            .Select(a => a.ActivityGroupId)
+            .Distinct()
+            .OrderBy(id => id)
+            .ToList();
+
+        var groupMap = orderedGroupIds
+            .Select((id, index) => new { id, index })
+            .ToDictionary(x => x.id, x => x.index);
+
+        foreach (var activity in _account.Activities)
+        {
+            if (groupMap.TryGetValue(activity.ActivityGroupId, out var compactedId))
+            {
+                activity.ActivityGroupId = compactedId;
             }
         }
     }

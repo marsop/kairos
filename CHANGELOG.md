@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Activity Groups**: Fixed group deletion edge cases so activities from the removed group are reassigned correctly and group IDs are compacted to keep all activities visible.
 - **Budgets**: Fixed budget settings not loading from Supabase on a fresh browser. The settings service was initialized before the auth service, so the user was never authenticated when the remote fetch ran, causing defaults to be used and overwrite remote data.
 - **Budgets**: Improved error handling and logging for budget settings sync operations to better diagnose synchronization issues.
 - **Dates UI**: Standardized user-visible date formatting to ISO (`yyyy-MM-dd`) across history and budget period labels.

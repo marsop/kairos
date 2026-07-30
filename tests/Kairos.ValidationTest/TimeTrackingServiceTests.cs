@@ -178,6 +178,25 @@ public class TimeTrackingServiceTests
     }
 
     [Fact]
+    public async Task RemoveActivityGroup_WithSparseIds_CompactsGroupsAndKeepsActivitiesAccessible()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        sut.Account.Activities = new List<Activity>
+        {
+            new() { Name = "Group0-A", Color = "#10B981", ActivityGroupId = 0, DisplayOrder = 0 },
+            new() { Name = "Group0-B", Color = "#10B981", ActivityGroupId = 0, DisplayOrder = 1 },
+            new() { Name = "Group2-A", Color = "#3B82F6", ActivityGroupId = 2, DisplayOrder = 0 },
+            new() { Name = "Group2-B", Color = "#3B82F6", ActivityGroupId = 2, DisplayOrder = 1 }
+        };
+
+        sut.RemoveActivityGroup(1);
+
+        Assert.Equal(2, sut.Account.Activities.Count(a => a.ActivityGroupId == 0));
+        Assert.Equal(2, sut.Account.Activities.Count(a => a.ActivityGroupId == 1));
+        Assert.DoesNotContain(sut.Account.Activities, a => a.ActivityGroupId >= 2);
+    }
+
+    [Fact]
     public async Task ActivateActivity_NoPreviousActive_CreatesActiveEvent()
     {
         var sut = await CreateLoadedServiceAsync();
