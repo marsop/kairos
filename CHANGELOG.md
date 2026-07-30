@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
+- **Activities UI**: Removed the extra "Activity Groups" text label from the Activities header since the dropdown selector already makes the context clear.
 - **Activity Groups**: Deleting a group now moves its activities into the previous group (instead of moving them to Group 0).
 - **Translations**: Translated all previously untranslated budget settings labels and color range names (de, es, gl, gsw). Also translated the `StickyEventsDuration` setting in all non-English locales.
 - **Activities**: Removed activity count caps. There is no max activities limit anymore, including when Activity Groups are enabled.

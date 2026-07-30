@@ -17,8 +17,7 @@
         <div style="display: flex; gap: var(--spacing-md); align-items: center;">
             @if (SettingsService.ActivityGroupsEnabled)
             {
-                <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                    <span class="setting-label" style="white-space: nowrap;">@Localizer["ActivityGroups"]</span>
+                <div style="display: flex; align-items: center;">
                     <select class="edit-input"
                             style="min-width: 140px;"
                             value="@SettingsService.ActiveActivityGroup"
