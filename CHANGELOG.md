@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Settings UI**: Added description text below each budget setting (Minimum, Threshold, Budget Type, Notifications) to explain what each option does.
+
+### Changed
+
+- **Translations**: Translated all previously untranslated budget settings labels and color range names (de, es, gl, gsw). Also translated the `StickyEventsDuration` setting in all non-English locales.
+
+### Added
+
 - **History Stats**: The "Day" period in the Stats view now shows a date picker, allowing the user to navigate to any day (same prev/next arrow controls as the List and Calendar views).
 - **Budgets**: When budget notifications are enabled in Settings, the app now sends a notification when an activity reaches its threshold, minimum, or maximum (100%) budget for the current period. Each event fires at most once per period.
 - **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.

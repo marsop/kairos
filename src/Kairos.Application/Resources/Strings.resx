@@ -868,11 +868,20 @@
   <data name="BudgetSettingsMinEnabled" xml:space="preserve">
     <value>Minimum enabled</value>
   </data>
+  <data name="BudgetSettingsMinEnabledDesc" xml:space="preserve">
+    <value>When enabled, activities with tracked time below the minimum budget are highlighted in a separate color.</value>
+  </data>
   <data name="BudgetSettingsThreshold" xml:space="preserve">
     <value>Threshold</value>
   </data>
+  <data name="BudgetSettingsThresholdDesc" xml:space="preserve">
+    <value>Percentage of the maximum budget at which the near-maximum warning color activates. Must be between 75% and 99%.</value>
+  </data>
   <data name="BudgetSettingsBudgetType" xml:space="preserve">
     <value>Budget Type</value>
+  </data>
+  <data name="BudgetSettingsBudgetTypeDesc" xml:space="preserve">
+    <value>How often the budget resets: daily resets every day, weekly every Monday, monthly on the 1st.</value>
   </data>
   <data name="BudgetSettingsBudgetTypeMonthly" xml:space="preserve">
     <value>Monthly</value>
@@ -885,6 +894,9 @@
   </data>
   <data name="BudgetSettingsNotificationsEnabled" xml:space="preserve">
     <value>Notifications</value>
+  </data>
+  <data name="BudgetSettingsNotificationsEnabledDesc" xml:space="preserve">
+    <value>Send a browser notification when an activity reaches its minimum, threshold, or maximum budget for the current period.</value>
   </data>
   <data name="BudgetSettingsColorMinNotReached" xml:space="preserve">
     <value>Below min</value>

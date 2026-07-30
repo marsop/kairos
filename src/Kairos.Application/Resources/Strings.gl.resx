@@ -708,10 +708,10 @@
     <value>Mostrar Opcións Avanzadas</value>
   </data>
   <data name="StickyEventsDuration" xml:space="preserve">
-    <value>Sticky Events Duration (seconds)</value>
+    <value>Duración de eventos adheridos (segundos)</value>
   </data>
   <data name="StickyEventsDurationDesc" xml:space="preserve">
-    <value>Automatically snap the start time of a new event to the end of the previous one if it ended within this threshold.</value>
+    <value>Axusta automaticamente o inicio dun novo evento ao final do anterior se este rematou dentro deste limiar.</value>
   </data>
   <data name="NavStatus" xml:space="preserve">
     <value>Estado</value>
@@ -859,37 +859,49 @@
     <value>Budgets</value>
   </data>
   <data name="BudgetSettingsMinEnabled" xml:space="preserve">
-    <value>Minimum enabled</value>
+    <value>Mínimo activado</value>
+  </data>
+  <data name="BudgetSettingsMinEnabledDesc" xml:space="preserve">
+    <value>Cando está activado, as actividades con tempo rexistrado por baixo do mínimo resáltanse cun cor específico.</value>
   </data>
   <data name="BudgetSettingsThreshold" xml:space="preserve">
-    <value>Threshold</value>
+    <value>Limiar</value>
+  </data>
+  <data name="BudgetSettingsThresholdDesc" xml:space="preserve">
+    <value>Porcentaxe do orzamento máximo a partir da cal se activa a cor de aviso de "preto do máximo". Debe estar entre o 75 % e o 99 %.</value>
   </data>
   <data name="BudgetSettingsBudgetType" xml:space="preserve">
-    <value>Budget Type</value>
+    <value>Tipo de orzamento</value>
+  </data>
+  <data name="BudgetSettingsBudgetTypeDesc" xml:space="preserve">
+    <value>Con que frecuencia se reinicia o orzamento: diariamente cada día, semanalmente cada luns, mensualmente o día 1.</value>
   </data>
   <data name="BudgetSettingsBudgetTypeMonthly" xml:space="preserve">
-    <value>Monthly</value>
+    <value>Mensual</value>
   </data>
   <data name="BudgetSettingsBudgetTypeWeekly" xml:space="preserve">
-    <value>Weekly</value>
+    <value>Semanal</value>
   </data>
   <data name="BudgetSettingsBudgetTypeDaily" xml:space="preserve">
-    <value>Daily</value>
+    <value>Diario</value>
   </data>
   <data name="BudgetSettingsNotificationsEnabled" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Notificacións</value>
+  </data>
+  <data name="BudgetSettingsNotificationsEnabledDesc" xml:space="preserve">
+    <value>Envía unha notificación do navegador cando unha actividade acada o seu mínimo, limiar ou máximo de orzamento no período actual.</value>
   </data>
   <data name="BudgetSettingsColorMinNotReached" xml:space="preserve">
-    <value>Below min</value>
+    <value>Por baixo do mínimo</value>
   </data>
   <data name="BudgetSettingsColorMinReachedMaxNotReached" xml:space="preserve">
-    <value>Between min and threshold</value>
+    <value>Entre mínimo e limiar</value>
   </data>
   <data name="BudgetSettingsColorBetweenThresholdMax" xml:space="preserve">
-    <value>Between threshold and max</value>
+    <value>Entre limiar e máximo</value>
   </data>
   <data name="BudgetSettingsColorOverMax" xml:space="preserve">
-    <value>Above max</value>
+    <value>Por riba do máximo</value>
   </data>
   <data name="Activities" xml:space="preserve">
     <value>Actividades</value>
