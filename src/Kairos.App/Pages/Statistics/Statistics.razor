@@ -105,7 +105,7 @@
                 {
                     <div class="edit-field">
                         <label class="edit-label">@($"{Localizer["BudgetSettingsThreshold"]} ({BudgetSettingsService.Threshold}%)")</label>
-                        <input type="number" class="edit-input" value="@CalculatedThresholdHours" readonly min="0" step="0.1" />
+                        <div class="edit-input-readonly">@CalculatedThresholdHours.ToString("F1")</div>
                     </div>
                 }
                 <div class="edit-field">
