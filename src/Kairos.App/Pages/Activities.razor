@@ -360,13 +360,7 @@
 
     private bool CanAddActivity()
     {
-        if (!SettingsService.ActivityGroupsEnabled)
-        {
-            return true;
-        }
-
-        return TimeService.Account.Activities.Count < Kairos.Application.Services.TimeTrackingService.MaxActivities
-            && TimeService.Account.Activities.Count(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup) < Kairos.Application.Services.TimeTrackingService.MaxActivitiesPerGroup;
+        return true;
     }
 
     private async Task PlaySoundAsync(string soundFunction)

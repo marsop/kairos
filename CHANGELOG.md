@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Translations**: Translated all previously untranslated budget settings labels and color range names (de, es, gl, gsw). Also translated the `StickyEventsDuration` setting in all non-English locales.
-- **Activities**: The 8-activity cap is now enforced only when Activity Groups are enabled. When groups are disabled, users can add more than 8 activities.
+- **Activities**: Removed activity count caps. There is no max activities limit anymore, including when Activity Groups are enabled.
 - **Activities**: When Activity Groups are turned off, activities from all groups are shown together in a single list instead of hiding non-active-group activities.
 
 ### Added

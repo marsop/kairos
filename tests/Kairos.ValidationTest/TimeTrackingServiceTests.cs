@@ -105,19 +105,20 @@ public class TimeTrackingServiceTests
     }
 
     [Fact]
-    public async Task AddActivity_AtMaxActivitiesPerGroupWithGroupingEnabled_Throws()
+    public async Task AddActivity_OverEightWithGroupingEnabled_AllowsMoreActivitiesInSameGroup()
     {
         var settings = new StubSettingsService
         {
             ActivityGroupsEnabled = true
         };
         var sut = await CreateLoadedServiceAsync(settings);
-        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) < TimeTrackingService.MaxActivitiesPerGroup)
+
+        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) <= 8)
         {
             sut.AddActivity($"Activity {sut.Account.Activities.Count}");
         }
 
-        Assert.Throws<InvalidOperationException>(() => sut.AddActivity("Overflow"));
+        Assert.True(sut.Account.Activities.Count(a => a.ActivityGroupId == 0) > 8);
     }
 
     [Fact]
@@ -129,12 +130,29 @@ public class TimeTrackingServiceTests
         };
         var sut = await CreateLoadedServiceAsync(settings);
 
-        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) < TimeTrackingService.MaxActivitiesPerGroup + 3)
+        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) <= 8)
         {
             sut.AddActivity($"Activity {sut.Account.Activities.Count}");
         }
 
-        Assert.True(sut.Account.Activities.Count(a => a.ActivityGroupId == 0) > TimeTrackingService.MaxActivitiesPerGroup);
+        Assert.True(sut.Account.Activities.Count(a => a.ActivityGroupId == 0) > 8);
+    }
+
+    [Fact]
+    public async Task AddActivity_CanExceedSixteenActivities()
+    {
+        var settings = new StubSettingsService
+        {
+            ActivityGroupsEnabled = true
+        };
+        var sut = await CreateLoadedServiceAsync(settings);
+
+        while (sut.Account.Activities.Count <= 16)
+        {
+            sut.AddActivity($"Activity {sut.Account.Activities.Count}");
+        }
+
+        Assert.True(sut.Account.Activities.Count > 16);
     }
 
     [Fact]

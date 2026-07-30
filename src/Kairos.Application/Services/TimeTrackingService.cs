@@ -27,8 +27,6 @@ public class TimeTrackingService : ITimeTrackingService
     private TimeAccount _account = new TimeAccount();
     private const string StorageKey = "Kairos_account";
     public const int MaxActivityGroups = 2;
-    public const int MaxActivitiesPerGroup = 8;
-    public const int MaxActivities = MaxActivityGroups * MaxActivitiesPerGroup;
     public const int MinCommentLength = 1;
     public const int MaxCommentLength = 250;
 
@@ -48,8 +46,6 @@ public class TimeTrackingService : ITimeTrackingService
     }
 
     public event Action? OnStateChanged;
-
-    private bool ShouldEnforceActivityLimits => _settingsService.ActivityGroupsEnabled;
 
     public TimeTrackingService(
         IStorageService storage,
@@ -318,15 +314,6 @@ public class TimeTrackingService : ITimeTrackingService
                     NormalizePersistedActivityEvent(activityEvent);
                 }
 
-                // Enforce maximum activity limit only when grouping is enabled.
-                if (ShouldEnforceActivityLimits && _account.Activities.Count > MaxActivities)
-                {
-                    _account.Activities = _account.Activities
-                        .OrderBy(m => m.DisplayOrder)
-                        .Take(MaxActivities)
-                        .ToList();
-                }
-
                 // Ensure TimelinePeriod is valid (handle migration from versions without it)
                 if (loaded.TimelinePeriod != TimeSpan.Zero)
                 {
@@ -500,12 +487,6 @@ public class TimeTrackingService : ITimeTrackingService
             importData.Activities[i].DisplayOrder = i;
         }
 
-        // Enforce maximum activity limit only when grouping is enabled.
-        if (ShouldEnforceActivityLimits && importData.Activities.Count > MaxActivities)
-        {
-            importData.Activities = importData.Activities.Take(MaxActivities).ToList();
-        }
-
         // Replace current data
         _account.Activities = importData.Activities;
         _account.Events = importData.Events ?? new List<ActivityEvent>();
@@ -565,19 +546,6 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void AddActivity(string name, string color, string emoji, int groupId)
     {
-        if (ShouldEnforceActivityLimits)
-        {
-            if (_account.Activities.Count(a => a.ActivityGroupId == groupId) >= MaxActivitiesPerGroup)
-            {
-                throw new InvalidOperationException($"Cannot add more than {MaxActivitiesPerGroup} activities per group.");
-            }
-
-            if (_account.Activities.Count >= MaxActivities)
-            {
-                throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
-            }
-        }
-
         if (string.IsNullOrWhiteSpace(name) || name.Length < 1 || name.Length > 40)
         {
             throw new ArgumentException("Activity name must be between 1 and 40 characters.");
@@ -753,9 +721,7 @@ public class TimeTrackingService : ITimeTrackingService
             var orderedActivities = remoteActivities
                 .OrderBy(m => m.DisplayOrder);
 
-            _account.Activities = ShouldEnforceActivityLimits
-                ? orderedActivities.Take(MaxActivities).ToList()
-                : orderedActivities.ToList();
+            _account.Activities = orderedActivities.ToList();
 
             foreach (var activity in _account.Activities)
             {
