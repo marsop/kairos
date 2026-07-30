@@ -33,32 +33,39 @@ public sealed class SupabaseBudgetSettingsStore : ISupabaseBudgetSettingsStore
             return null;
         }
 
-        using var request = new HttpRequestMessage(
-            HttpMethod.Get,
-            BuildUrl($"rest/v1/budget_settings?select=minimum_enabled,threshold,color_minimum_not_reached,color_minimum_reached_max_not_reached,color_between_threshold_max,color_over_max,budget_type,notifications_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
-
-        AddHeaders(request);
-        using var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        var rows = await response.Content.ReadFromJsonAsync<List<SupabaseBudgetSettingsRow>>() ?? new List<SupabaseBudgetSettingsRow>();
-        var row = rows.FirstOrDefault();
-        if (row is null)
+        try
         {
-            return null;
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                BuildUrl($"rest/v1/budget_settings?select=minimum_enabled,threshold,color_minimum_not_reached,color_minimum_reached_max_not_reached,color_between_threshold_max,color_over_max,budget_type,notifications_enabled&user_id=eq.{Uri.EscapeDataString(userId!)}&limit=1"));
+
+            AddHeaders(request);
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var rows = await response.Content.ReadFromJsonAsync<List<SupabaseBudgetSettingsRow>>() ?? new List<SupabaseBudgetSettingsRow>();
+            var row = rows.FirstOrDefault();
+            if (row is null)
+            {
+                return null;
+            }
+
+            return new BudgetSettingsData
+            {
+                MinimumEnabled = row.MinimumEnabled,
+                Threshold = row.Threshold,
+                ColorMinimumNotReached = row.ColorMinimumNotReached ?? "#0000ff",
+                ColorMinimumReachedMaxNotReached = row.ColorMinimumReachedMaxNotReached ?? "#00ff00",
+                ColorBetweenThresholdMax = row.ColorBetweenThresholdMax ?? "#ffff00",
+                ColorOverMax = row.ColorOverMax ?? "#ff0000",
+                BudgetType = (BudgetType)row.BudgetType,
+                NotificationsEnabled = row.NotificationsEnabled
+            };
         }
-
-        return new BudgetSettingsData
+        catch (HttpRequestException ex)
         {
-            MinimumEnabled = row.MinimumEnabled,
-            Threshold = row.Threshold,
-            ColorMinimumNotReached = row.ColorMinimumNotReached ?? "#0000ff",
-            ColorMinimumReachedMaxNotReached = row.ColorMinimumReachedMaxNotReached ?? "#00ff00",
-            ColorBetweenThresholdMax = row.ColorBetweenThresholdMax ?? "#ffff00",
-            ColorOverMax = row.ColorOverMax ?? "#ff0000",
-            BudgetType = (BudgetType)row.BudgetType,
-            NotificationsEnabled = row.NotificationsEnabled
-        };
+            throw new InvalidOperationException("Failed to load budget settings from Supabase due to network error.", ex);
+        }
     }
 
     public async Task SaveSettingsAsync(BudgetSettingsData settings)
@@ -74,29 +81,36 @@ public sealed class SupabaseBudgetSettingsStore : ISupabaseBudgetSettingsStore
             return;
         }
 
-        var row = new SupabaseBudgetSettingsWriteRow
+        try
         {
-            UserId = userId!,
-            MinimumEnabled = settings.MinimumEnabled,
-            Threshold = settings.Threshold,
-            ColorMinimumNotReached = settings.ColorMinimumNotReached,
-            ColorMinimumReachedMaxNotReached = settings.ColorMinimumReachedMaxNotReached,
-            ColorBetweenThresholdMax = settings.ColorBetweenThresholdMax,
-            ColorOverMax = settings.ColorOverMax,
-            BudgetType = (int)settings.BudgetType,
-            NotificationsEnabled = settings.NotificationsEnabled
-        };
+            var row = new SupabaseBudgetSettingsWriteRow
+            {
+                UserId = userId!,
+                MinimumEnabled = settings.MinimumEnabled,
+                Threshold = settings.Threshold,
+                ColorMinimumNotReached = settings.ColorMinimumNotReached,
+                ColorMinimumReachedMaxNotReached = settings.ColorMinimumReachedMaxNotReached,
+                ColorBetweenThresholdMax = settings.ColorBetweenThresholdMax,
+                ColorOverMax = settings.ColorOverMax,
+                BudgetType = (int)settings.BudgetType,
+                NotificationsEnabled = settings.NotificationsEnabled
+            };
 
-        using var request = new HttpRequestMessage(
-            HttpMethod.Post,
-            BuildUrl("rest/v1/budget_settings?on_conflict=user_id"));
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                BuildUrl("rest/v1/budget_settings?on_conflict=user_id"));
 
-        AddHeaders(request);
-        request.Headers.TryAddWithoutValidation("Prefer", "resolution=merge-duplicates,return=minimal");
-        request.Content = JsonContent.Create(new[] { row });
+            AddHeaders(request);
+            request.Headers.TryAddWithoutValidation("Prefer", "resolution=merge-duplicates,return=minimal");
+            request.Content = JsonContent.Create(new[] { row });
 
-        using var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new InvalidOperationException("Failed to save budget settings to Supabase due to network error.", ex);
+        }
     }
 
     private bool CanSync(string? userId)

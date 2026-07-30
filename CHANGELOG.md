@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Budgets**: Fixed budget settings synchronization across devices. Settings are now reliably synced to Supabase and properly initialized on startup.
+- **Budgets**: Improved error handling and logging for budget settings sync operations to better diagnose synchronization issues.
+
 ## [1.6.0] - 2026-07-29
 
 ### Added

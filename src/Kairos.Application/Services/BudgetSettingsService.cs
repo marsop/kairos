@@ -166,16 +166,24 @@ public class BudgetSettingsService : IBudgetSettingsService
 
             if (_supabaseStore != null)
             {
-                var remoteData = await _supabaseStore.LoadSettingsAsync();
-                if (remoteData != null)
+                try
                 {
-                    ApplyData(remoteData);
-                    await SaveLocalAsync();
+                    var remoteData = await _supabaseStore.LoadSettingsAsync();
+                    if (remoteData != null)
+                    {
+                        ApplyData(remoteData);
+                        await SaveLocalAsync();
+                    }
+                    else
+                    {
+                        // No remote data exists, save current settings to initialize
+                        await InitializeDefaultsIfEmptyAsync();
+                    }
                 }
-                else if (_settingsService.BudgetsEnabled)
+                catch (Exception ex)
                 {
-                    // No remote data but budgets are enabled, save defaults
-                    await InitializeDefaultsIfEmptyAsync();
+                    // Log but don't fail if Supabase is unavailable
+                    _logger.LogError(ex, "Failed to synchronize budget settings from Supabase.");
                 }
             }
         }
@@ -192,19 +200,28 @@ public class BudgetSettingsService : IBudgetSettingsService
 
     public async Task SaveAsync()
     {
-        await SaveLocalAsync();
-
-        if (_supabaseStore != null)
+        try
         {
-            try
+            await SaveLocalAsync();
+
+            if (_supabaseStore != null)
             {
-                var data = BuildData();
-                await _supabaseStore.SaveSettingsAsync(data);
+                try
+                {
+                    var data = BuildData();
+                    await _supabaseStore.SaveSettingsAsync(data);
+                    _logger.LogInformation("Budget settings synchronized to Supabase successfully.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to save budget settings to Supabase. Changes are saved locally but not synchronized to remote.");
+                    // Don't rethrow - we've already saved locally
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to save budget settings to Supabase.");
-            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Critical error during budget settings save operation.");
         }
     }
 
@@ -214,16 +231,25 @@ public class BudgetSettingsService : IBudgetSettingsService
         {
             try
             {
+                // Check if settings already exist in Supabase
                 var remoteData = await _supabaseStore.LoadSettingsAsync();
                 if (remoteData == null)
                 {
+                    // No settings in Supabase, save the current state (defaults or loaded from local)
                     var data = BuildData();
                     await _supabaseStore.SaveSettingsAsync(data);
+                    _logger.LogInformation("Budget settings initialized in Supabase with defaults.");
+                }
+                else
+                {
+                    // Settings exist in Supabase, ensure they're applied locally
+                    ApplyData(remoteData);
+                    await SaveLocalAsync();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to initialize default budget settings in Supabase.");
+                _logger.LogError(ex, "Failed to initialize default budget settings in Supabase. Settings will use local values.");
             }
         }
     }
