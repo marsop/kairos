@@ -105,15 +105,36 @@ public class TimeTrackingServiceTests
     }
 
     [Fact]
-    public async Task AddActivity_AtMaxActivities_Throws()
+    public async Task AddActivity_AtMaxActivitiesPerGroupWithGroupingEnabled_Throws()
     {
-        var sut = await CreateLoadedServiceAsync();
+        var settings = new StubSettingsService
+        {
+            ActivityGroupsEnabled = true
+        };
+        var sut = await CreateLoadedServiceAsync(settings);
         while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) < TimeTrackingService.MaxActivitiesPerGroup)
         {
             sut.AddActivity($"Activity {sut.Account.Activities.Count}");
         }
 
         Assert.Throws<InvalidOperationException>(() => sut.AddActivity("Overflow"));
+    }
+
+    [Fact]
+    public async Task AddActivity_OverEightWithoutGroupingEnabled_AllowsMoreActivities()
+    {
+        var settings = new StubSettingsService
+        {
+            ActivityGroupsEnabled = false
+        };
+        var sut = await CreateLoadedServiceAsync(settings);
+
+        while (sut.Account.Activities.Count(a => a.ActivityGroupId == 0) < TimeTrackingService.MaxActivitiesPerGroup + 3)
+        {
+            sut.AddActivity($"Activity {sut.Account.Activities.Count}");
+        }
+
+        Assert.True(sut.Account.Activities.Count(a => a.ActivityGroupId == 0) > TimeTrackingService.MaxActivitiesPerGroup);
     }
 
     [Fact]

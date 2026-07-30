@@ -49,6 +49,8 @@ public class TimeTrackingService : ITimeTrackingService
 
     public event Action? OnStateChanged;
 
+    private bool ShouldEnforceActivityLimits => _settingsService.ActivityGroupsEnabled;
+
     public TimeTrackingService(
         IStorageService storage,
         IActivityConfigurationService activityConfig,
@@ -316,8 +318,8 @@ public class TimeTrackingService : ITimeTrackingService
                     NormalizePersistedActivityEvent(activityEvent);
                 }
 
-                // Enforce maximum activity limit
-                if (_account.Activities.Count > MaxActivities)
+                // Enforce maximum activity limit only when grouping is enabled.
+                if (ShouldEnforceActivityLimits && _account.Activities.Count > MaxActivities)
                 {
                     _account.Activities = _account.Activities
                         .OrderBy(m => m.DisplayOrder)
@@ -498,8 +500,8 @@ public class TimeTrackingService : ITimeTrackingService
             importData.Activities[i].DisplayOrder = i;
         }
 
-        // Enforce maximum activity limit
-        if (importData.Activities.Count > MaxActivities)
+        // Enforce maximum activity limit only when grouping is enabled.
+        if (ShouldEnforceActivityLimits && importData.Activities.Count > MaxActivities)
         {
             importData.Activities = importData.Activities.Take(MaxActivities).ToList();
         }
@@ -563,14 +565,17 @@ public class TimeTrackingService : ITimeTrackingService
 
     public void AddActivity(string name, string color, string emoji, int groupId)
     {
-        if (_account.Activities.Count(a => a.ActivityGroupId == groupId) >= MaxActivitiesPerGroup)
+        if (ShouldEnforceActivityLimits)
         {
-            throw new InvalidOperationException($"Cannot add more than {MaxActivitiesPerGroup} activities per group.");
-        }
+            if (_account.Activities.Count(a => a.ActivityGroupId == groupId) >= MaxActivitiesPerGroup)
+            {
+                throw new InvalidOperationException($"Cannot add more than {MaxActivitiesPerGroup} activities per group.");
+            }
 
-        if (_account.Activities.Count >= MaxActivities)
-        {
-            throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
+            if (_account.Activities.Count >= MaxActivities)
+            {
+                throw new InvalidOperationException($"Cannot add more than {MaxActivities} activities.");
+            }
         }
 
         if (string.IsNullOrWhiteSpace(name) || name.Length < 1 || name.Length > 40)
@@ -745,10 +750,12 @@ public class TimeTrackingService : ITimeTrackingService
         var remoteActivities = await _supabaseActivityStore!.LoadActivitiesAsync();
         if (remoteActivities.Count > 0 || !seedWhenMissing)
         {
-            _account.Activities = remoteActivities
-                .OrderBy(m => m.DisplayOrder)
-                .Take(MaxActivities)
-                .ToList();
+            var orderedActivities = remoteActivities
+                .OrderBy(m => m.DisplayOrder);
+
+            _account.Activities = ShouldEnforceActivityLimits
+                ? orderedActivities.Take(MaxActivities).ToList()
+                : orderedActivities.ToList();
 
             foreach (var activity in _account.Activities)
             {
