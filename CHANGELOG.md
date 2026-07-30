@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
 - **Budgets UI**: Added a context summary to the Budgets page that shows the active budget type and the current period start/end dates.
 
+### Changed
+
+- **Settings UI**: Budget threshold input now shows a `%` suffix to make it clear the configured value is a percentage.
+
 ### Fixed
 
 - **Budgets**: Fixed budget settings not loading from Supabase on a fresh browser. The settings service was initialized before the auth service, so the user was never authenticated when the remote fetch ran, causing defaults to be used and overwrite remote data.

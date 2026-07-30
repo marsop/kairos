@@ -276,7 +276,10 @@
 
             <div class="setting-item">
                 <span class="setting-label">@Localizer["BudgetSettingsThreshold"]</span>
-                <input type="number" min="75" max="99" value="@BudgetSettingsService.Threshold" @onchange="OnBudgetThresholdChanged" class="edit-input" style="width: 80px; text-align: center;" />
+                <div class="budget-threshold-input-group">
+                    <input type="number" min="75" max="99" value="@BudgetSettingsService.Threshold" @onchange="OnBudgetThresholdChanged" class="edit-input" style="width: 80px; text-align: center;" />
+                    <span class="setting-value-suffix">%</span>
+                </div>
             </div>
 
             <div class="setting-item">
