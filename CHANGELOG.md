@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **History Stats**: The "Day" period in the Stats view now shows a date picker, allowing the user to navigate to any day (same prev/next arrow controls as the List and Calendar views).
 - **Budgets**: When budget notifications are enabled in Settings, the app now sends a notification when an activity reaches its threshold, minimum, or maximum (100%) budget for the current period. Each event fires at most once per period.
 - **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.
 - **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.

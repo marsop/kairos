@@ -757,6 +757,9 @@
   <data name="Color" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
   <data name="ThisWeek" xml:space="preserve">
     <value>This Week</value>
   </data>
