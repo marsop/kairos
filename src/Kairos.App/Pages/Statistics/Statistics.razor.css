@@ -223,7 +223,6 @@
     top: -4px;
     width: 3px;
     height: 14px;
-    background: var(--color-text-muted);
     border-radius: 2px;
     transform: translateX(-50%);
     opacity: 0.9;
@@ -235,7 +234,6 @@
     top: -4px;
     width: 3px;
     height: 14px;
-    background: var(--color-warning);
     border-radius: 2px;
     transform: translateX(-50%);
     opacity: 1;
@@ -261,7 +259,6 @@
     top: -4px;
     width: 3px;
     height: 14px;
-    background: var(--color-negative);
     border-radius: 2px;
     transform: translateX(-50%);
     opacity: 1;
