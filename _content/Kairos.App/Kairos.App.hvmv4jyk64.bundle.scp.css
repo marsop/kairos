@@ -373,6 +373,20 @@
     border-color: var(--color-accent);
 }
 
+.edit-input-readonly[b-cf5v8cqnw4] {
+    background: transparent;
+    border: 1px dashed var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    width: 100%;
+    cursor: default;
+    user-select: none;
+    box-sizing: border-box;
+}
+
 /* ===== Modal Actions ===== */
 
 .modal-actions[b-cf5v8cqnw4] {
