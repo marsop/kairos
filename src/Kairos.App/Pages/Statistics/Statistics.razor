@@ -14,6 +14,21 @@
         <h2 class="page-title">@Localizer["NavBudgets"]</h2>
     </div>
 
+    <div class="budget-context-card">
+        <div class="budget-context-item">
+            <span class="budget-context-label">@Localizer["BudgetSettingsBudgetType"]:</span>
+            <span class="budget-context-value">@CurrentBudgetTypeLabel</span>
+        </div>
+        <div class="budget-context-item">
+            <span class="budget-context-label">@Localizer["Start"]:</span>
+            <span class="budget-context-value">@CurrentPeriodStartLabel</span>
+        </div>
+        <div class="budget-context-item">
+            <span class="budget-context-label">@Localizer["End"]:</span>
+            <span class="budget-context-value">@CurrentPeriodEndLabel</span>
+        </div>
+    </div>
+
     <!-- Budgets List -->
     <div class="budgets-section">
         <div class="view-toggle budget-sort-toggle">
@@ -230,6 +245,16 @@
             _ => Localizer["HoursForThisMonth"].Value
         };
     }
+
+    private string CurrentBudgetTypeLabel => BudgetSettingsService.BudgetType switch
+    {
+        BudgetType.Daily => Localizer["BudgetSettingsBudgetTypeDaily"].Value,
+        BudgetType.Weekly => Localizer["BudgetSettingsBudgetTypeWeekly"].Value,
+        _ => Localizer["BudgetSettingsBudgetTypeMonthly"].Value
+    };
+
+    private string CurrentPeriodStartLabel => StartDate.ToLocalTime().ToString("d", CultureInfo.CurrentCulture);
+    private string CurrentPeriodEndLabel => EndDate.AddTicks(-1).ToLocalTime().ToString("d", CultureInfo.CurrentCulture);
 
     private TimeSpan TotalTime
     {
