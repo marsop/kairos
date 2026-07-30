@@ -45,11 +45,12 @@ var host = builder.Build();
 var settingsService = host.Services.GetRequiredService<ISettingsService>();
 await settingsService.LoadAsync();
 
-var budgetSettingsService = host.Services.GetRequiredService<IBudgetSettingsService>();
-await budgetSettingsService.LoadAsync();
-
 var authService = host.Services.GetRequiredService<ISupabaseAuthService>();
 await authService.InitializeAsync();
+
+// Load after auth so Supabase remote data can be fetched
+var budgetSettingsService = host.Services.GetRequiredService<IBudgetSettingsService>();
+await budgetSettingsService.LoadAsync();
 
 var realtimeService = host.Services.GetRequiredService<ISupabaseRealtimeService>();
 await realtimeService.InitializeAsync();

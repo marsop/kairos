@@ -176,8 +176,8 @@ public class BudgetSettingsService : IBudgetSettingsService
                     }
                     else
                     {
-                        // No remote data exists, save current settings to initialize
-                        await InitializeDefaultsIfEmptyAsync();
+                        // No remote data exists yet, seed Supabase with local/default values
+                        await _supabaseStore.SaveSettingsAsync(BuildData());
                     }
                 }
                 catch (Exception ex)
@@ -231,13 +231,10 @@ public class BudgetSettingsService : IBudgetSettingsService
         {
             try
             {
-                // Check if settings already exist in Supabase
                 var remoteData = await _supabaseStore.LoadSettingsAsync();
                 if (remoteData == null)
                 {
-                    // No settings in Supabase, save the current state (defaults or loaded from local)
-                    var data = BuildData();
-                    await _supabaseStore.SaveSettingsAsync(data);
+                    await _supabaseStore.SaveSettingsAsync(BuildData());
                     _logger.LogInformation("Budget settings initialized in Supabase with defaults.");
                 }
                 else
