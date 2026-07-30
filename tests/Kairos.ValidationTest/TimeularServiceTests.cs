@@ -86,14 +86,61 @@ public class TimeularServiceTests
         Assert.Contains(notifications.SentNotifications, n => n.Title == "NotificationTimeularDisconnectedTitle");
     }
 
-    private static async Task<TimeTrackingService> CreateLoadedTimeTrackingServiceAsync(StubSettingsService settings)
+    [Fact]
+    public async Task OnTimeularChange_GroupsDisabled_MapsAcrossBothGroupsInSingleList()
+    {
+        var settings = new StubSettingsService
+        {
+            ActivityGroupsEnabled = false,
+            ActiveActivityGroup = 0
+        };
+
+        var groupedActivities = new[]
+        {
+            new Activity { Name = "Group0-A", DisplayOrder = 0, ActivityGroupId = 0 },
+            new Activity { Name = "Group1-A", DisplayOrder = 0, ActivityGroupId = 1 }
+        };
+
+        var timeTracking = await CreateLoadedTimeTrackingServiceAsync(settings, groupedActivities);
+        var activityPrompt = new ActivityStartPromptService(timeTracking, new StubStringLocalizer());
+        var sut = new TimeularService(
+            new TestJsRuntime(),
+            timeTracking,
+            activityPrompt,
+            new StubNotificationService(),
+            settings,
+            new StubStringLocalizer(),
+            NullLogger<TimeularService>.Instance);
+
+        await sut.OnTimeularChange(new TimeularService.TimeularChangeEvent
+        {
+            EventType = "orientation",
+            Face = 2,
+            RawHex = "0x02"
+        });
+
+        var expectedSecondActivityId = timeTracking.Account.Activities
+            .OrderBy(a => a.ActivityGroupId)
+            .ThenBy(a => a.DisplayOrder)
+            .Skip(1)
+            .First()
+            .Id;
+
+        Assert.Equal(expectedSecondActivityId, activityPrompt.PendingActivityId);
+        Assert.Contains("comment requested for #2", sut.ChangeLog[0].Message);
+    }
+
+    private static async Task<TimeTrackingService> CreateLoadedTimeTrackingServiceAsync(
+        StubSettingsService settings,
+        IEnumerable<Activity>? activities = null)
     {
         var storage = new InMemoryStorageService();
-        var config = new StubActivityConfigurationService(new[]
-        {
+        var seedActivities = activities ??
+        [
             new Activity { Name = "Work", DisplayOrder = 0, ActivityGroupId = 0 },
             new Activity { Name = "Break", DisplayOrder = 1, ActivityGroupId = 0 }
-        });
+        ];
+        var config = new StubActivityConfigurationService(seedActivities);
         var notifications = new StubNotificationService();
         var service = new TimeTrackingService(
             storage,

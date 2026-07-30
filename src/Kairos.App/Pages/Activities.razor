@@ -37,9 +37,7 @@
     
     <div class="activities-grid @(ActiveEvent != null ? "has-active" : "")">
         @{
-            var orderedActivities = TimeService.Account.Activities
-                .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
-                .OrderBy(m => m.DisplayOrder).ToList();
+            var orderedActivities = GetVisibleActivities().ToList();
         }
         @for (var index = 0; index < orderedActivities.Count; index++)
         {
@@ -132,8 +130,7 @@
             </div>
         }
         
-        @if (TimeService.Account.Activities.Count < Kairos.Application.Services.TimeTrackingService.MaxActivities &&
-             TimeService.Account.Activities.Count(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup) < Kairos.Application.Services.TimeTrackingService.MaxActivitiesPerGroup)
+           @if (CanAddActivity())
         {
         <div class="activity-container add-activity">
             @if (_isAddingActivity)
@@ -301,9 +298,7 @@
     [JSInvokable]
     public async Task OnNumpadKeyPress(int number)
     {
-        var orderedActivities = TimeService.Account.Activities
-            .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
-            .OrderBy(m => m.DisplayOrder).ToList();
+        var orderedActivities = GetVisibleActivities().ToList();
 
         int index = number - 1;
         if (index >= 0 && index < orderedActivities.Count)
@@ -339,6 +334,32 @@
         {
             StartActivityWithComment(activityId);
         }
+    }
+
+    private IEnumerable<Activity> GetVisibleActivities()
+    {
+        var activities = TimeService.Account.Activities;
+        if (!SettingsService.ActivityGroupsEnabled)
+        {
+            return activities
+                .OrderBy(a => a.ActivityGroupId)
+                .ThenBy(m => m.DisplayOrder);
+        }
+
+        return activities
+            .Where(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup)
+            .OrderBy(m => m.DisplayOrder);
+    }
+
+    private bool CanAddActivity()
+    {
+        if (!SettingsService.ActivityGroupsEnabled)
+        {
+            return true;
+        }
+
+        return TimeService.Account.Activities.Count < Kairos.Application.Services.TimeTrackingService.MaxActivities
+            && TimeService.Account.Activities.Count(a => a.ActivityGroupId == SettingsService.ActiveActivityGroup) < Kairos.Application.Services.TimeTrackingService.MaxActivitiesPerGroup;
     }
 
     private async Task PlaySoundAsync(string soundFunction)

@@ -292,10 +292,15 @@ public sealed class TimeularService : ITimeularService, IDisposable
             mappedToMinusOne = true;
         }
 
-        var orderedActivities = _timeService.Account.Activities
-            .Where(a => a.ActivityGroupId == _settingsService.ActiveActivityGroup)
-            .OrderBy(m => m.DisplayOrder)
-            .ToList();
+        var orderedActivities = _settingsService.ActivityGroupsEnabled
+            ? _timeService.Account.Activities
+                .Where(a => a.ActivityGroupId == _settingsService.ActiveActivityGroup)
+                .OrderBy(m => m.DisplayOrder)
+                .ToList()
+            : _timeService.Account.Activities
+                .OrderBy(a => a.ActivityGroupId)
+                .ThenBy(m => m.DisplayOrder)
+                .ToList();
 
         Activity? targetActivity = null;
         if (face.HasValue && face.Value > 0)
