@@ -31,6 +31,7 @@ builder.Services.AddScoped<ISupabaseActivityEventStore, SupabaseActivityEventSto
 builder.Services.AddScoped<ISupabaseTimeAccountStore, SupabaseTimeAccountStore>();
 builder.Services.AddScoped<ISupabaseSettingsStore, SupabaseSettingsStore>();
 builder.Services.AddScoped<ISupabaseBudgetSettingsStore, SupabaseBudgetSettingsStore>();
+builder.Services.AddScoped<ISupabaseBudgetStore, SupabaseBudgetStore>();
 builder.Services.AddScoped<IBudgetSettingsService, BudgetSettingsService>();
 builder.Services.AddScoped<ISupabaseRealtimeService, SupabaseRealtimeService>();
 builder.Services.AddScoped<IActivityEventSyncService, ActivityEventSyncService>();

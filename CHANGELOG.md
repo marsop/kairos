@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Statistics**: Fix timeline graph calculation to start count from 0 for the selected period.
 - **Statistics**: Fix color timeline chart segments by active activity.
+- **Supabase Sync**: Sync activity budgets (allocated/minimum hours and period type) across devices, not just budget display settings.
 - **UI**: Fix CSS stacking issue causing dropdown clicks to be intercepted by calendar.
 - **CSV**: Fix CSV export button not clicking in Calendar mode.
 
