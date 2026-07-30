@@ -448,6 +448,9 @@
   <data name="NextStep" xml:space="preserve">
     <value>Weiter</value>
   </data>
+  <data name="SkipTutorial" xml:space="preserve">
+    <value>Tutorial überspringen</value>
+  </data>
   <data name="ConfirmationDefaultTitle" xml:space="preserve">
     <value>Aktion bestätigen</value>
   </data>

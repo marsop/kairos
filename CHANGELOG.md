@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.
 - **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
 
 ### Fixed

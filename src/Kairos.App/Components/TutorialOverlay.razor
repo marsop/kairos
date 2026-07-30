@@ -62,6 +62,10 @@
                     }
                 </div>
                 <div class="dialogue-actions">
+                    @if (TutorialService.IsInitialSetupStep)
+                    {
+                        <button class="btn-skip" @onclick="SkipTutorial">@Localizer["SkipTutorial"]</button>
+                    }
                     <button class="btn-next" @onclick="NextStep" disabled="@(!TutorialService.CanAdvanceFromCurrentStep)">@Localizer["NextStep"] ▶</button>
                 </div>
             </div>
@@ -146,6 +150,25 @@
     .dialogue-actions {
         margin-top: auto;
         text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-skip {
+        background: transparent;
+        border: none;
+        color: var(--color-text-secondary, #4b635f);
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .btn-skip:hover {
+        opacity: 1;
+        text-decoration: underline;
     }
 
     .setup-options {
@@ -246,6 +269,11 @@
     private async Task NextStep()
     {
         await TutorialService.NextStepAsync();
+    }
+
+    private async Task SkipTutorial()
+    {
+        await TutorialService.CompleteTutorialAsync();
     }
 
     private void ToggleLanguageDropdown() => isLanguageDropdownOpen = !isLanguageDropdownOpen;
