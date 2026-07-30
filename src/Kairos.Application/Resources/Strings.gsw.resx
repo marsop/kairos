@@ -610,6 +610,24 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Din Timeular-Tracker isch trennt worra.</value>
   </data>
+  <data name="NotificationBudgetThresholdReachedTitle" xml:space="preserve">
+    <value>💰 Budget-Schwellwert erreicht</value>
+  </data>
+  <data name="NotificationBudgetThresholdReachedBody" xml:space="preserve">
+    <value>{0} het {1}% vom Budget erreicht</value>
+  </data>
+  <data name="NotificationBudgetMinReachedTitle" xml:space="preserve">
+    <value>💰 Budget-Minimum erreicht</value>
+  </data>
+  <data name="NotificationBudgetMinReachedBody" xml:space="preserve">
+    <value>{0} het s Mindestziel erreicht</value>
+  </data>
+  <data name="NotificationBudgetMaxReachedTitle" xml:space="preserve">
+    <value>💰 Budget abgschlosse</value>
+  </data>
+  <data name="NotificationBudgetMaxReachedBody" xml:space="preserve">
+    <value>{0} het 100% vom Budget erreicht</value>
+  </data>
   <data name="SettingsGeneral" xml:space="preserve">
     <value>Allgemein</value>
   </data>

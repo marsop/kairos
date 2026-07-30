@@ -607,6 +607,24 @@
   <data name="NotificationTimeularDisconnectedBody" xml:space="preserve">
     <value>Tu rastreador Timeular se ha desconectado.</value>
   </data>
+  <data name="NotificationBudgetThresholdReachedTitle" xml:space="preserve">
+    <value>💰 Umbral de presupuesto alcanzado</value>
+  </data>
+  <data name="NotificationBudgetThresholdReachedBody" xml:space="preserve">
+    <value>{0} ha alcanzado el {1}% de su presupuesto</value>
+  </data>
+  <data name="NotificationBudgetMinReachedTitle" xml:space="preserve">
+    <value>💰 Mínimo de presupuesto alcanzado</value>
+  </data>
+  <data name="NotificationBudgetMinReachedBody" xml:space="preserve">
+    <value>{0} ha alcanzado su objetivo de tiempo mínimo</value>
+  </data>
+  <data name="NotificationBudgetMaxReachedTitle" xml:space="preserve">
+    <value>💰 Presupuesto completado</value>
+  </data>
+  <data name="NotificationBudgetMaxReachedBody" xml:space="preserve">
+    <value>{0} ha alcanzado el 100% de su presupuesto</value>
+  </data>
   <data name="SettingsGeneral" xml:space="preserve">
     <value>General</value>
   </data>

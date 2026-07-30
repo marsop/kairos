@@ -7,6 +7,7 @@
 @inject IStatisticsService StatisticsService
 @inject ISettingsService SettingsService
 @inject IBudgetSettingsService BudgetSettingsService
+@inject INotificationService NotificationService
 @inject IStringLocalizer<Strings> Localizer
 
 <div class="statistics-page">
@@ -195,9 +196,10 @@
         // Refresh every 5 seconds
         _timer = new System.Threading.Timer(_ =>
         {
-            InvokeAsync(() =>
+            InvokeAsync(async () =>
             {
                 RefreshTimelineData();
+                await CheckBudgetNotificationsAsync();
                 StateHasChanged();
             });
         }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
@@ -363,12 +365,66 @@
         _timer?.Dispose();
     }
 
+    private async Task CheckBudgetNotificationsAsync()
+    {
+        if (!BudgetSettingsService.NotificationsEnabled || !SettingsService.BudgetsEnabled)
+            return;
+
+        // Reset tracked states when the budget period rolls over
+        if (StartDate != _lastKnownPeriodStart)
+        {
+            _notifiedBudgetStates.Clear();
+            _lastKnownPeriodStart = StartDate;
+        }
+
+        foreach (var activity in TimeService.Account.Activities)
+        {
+            var budget = GetBudgetForActivity(activity.Id);
+            if (budget == null || budget.AllocatedTimeSpan.TotalSeconds <= 0)
+                continue;
+
+            var tracked = GetTrackedTimeForActivity(activity.Name);
+            var progress = (tracked.TotalHours / budget.AllocatedTimeSpan.TotalHours) * 100;
+            var minimumHours = budget.MinimumTimeSpan.TotalHours;
+
+            if (!_notifiedBudgetStates.TryGetValue(activity.Id, out var fired))
+            {
+                fired = new HashSet<string>();
+                _notifiedBudgetStates[activity.Id] = fired;
+            }
+
+            if (progress >= 100 && fired.Add("max"))
+            {
+                await NotificationService.NotifyAsync(
+                    Localizer["NotificationBudgetMaxReachedTitle"].Value,
+                    string.Format(Localizer["NotificationBudgetMaxReachedBody"].Value, activity.Name));
+            }
+            else if (BudgetSettingsService.Threshold > 0 && progress >= BudgetSettingsService.Threshold && fired.Add("threshold"))
+            {
+                await NotificationService.NotifyAsync(
+                    Localizer["NotificationBudgetThresholdReachedTitle"].Value,
+                    string.Format(Localizer["NotificationBudgetThresholdReachedBody"].Value, activity.Name, BudgetSettingsService.Threshold));
+            }
+
+            if (BudgetSettingsService.MinimumEnabled && minimumHours > 0 && tracked.TotalHours >= minimumHours && fired.Add("min"))
+            {
+                await NotificationService.NotifyAsync(
+                    Localizer["NotificationBudgetMinReachedTitle"].Value,
+                    string.Format(Localizer["NotificationBudgetMinReachedBody"].Value, activity.Name));
+            }
+        }
+    }
+
     // --- Timeline Chart Logic ---
     private List<TimelineDataPoint> DataPoints { get; set; } = new();
     
     private double MinY => DataPoints.Count > 0 ? Math.Min(0, DataPoints.Min(p => p.BalanceHours)) : 0;
     private double MaxY => DataPoints.Count > 0 ? Math.Max(0, DataPoints.Max(p => p.BalanceHours)) : 1;
     private System.Threading.Timer? _timer;
+
+    // Tracks which budget notification types have already fired per activity in the current period
+    private readonly Dictionary<Guid, HashSet<string>> _notifiedBudgetStates = new();
+    private DateTimeOffset _lastKnownPeriodStart = DateTimeOffset.MinValue;
 
     private void RefreshTimelineData()
     {
