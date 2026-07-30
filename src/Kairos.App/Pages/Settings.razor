@@ -261,6 +261,34 @@
         </div>
     }
 
+    @if (SettingsService.ActivityGroupsEnabled)
+    {
+        <div class="settings-section">
+            <h2 class="section-title">🗂️ @Localizer["ActivityGroups"]</h2>
+
+            @for (var groupId = 0; groupId < SettingsService.ActivityGroupCount; groupId++)
+            {
+                <div class="setting-item">
+                    <div>
+                        <span class="setting-label">@string.Format(Localizer["Group"], groupId)</span>
+                        <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
+                    </div>
+                    <button class="activity-action-btn delete"
+                            title="@Localizer["Delete"]"
+                            disabled="@(SettingsService.ActivityGroupCount <= 1)"
+                            @onclick="@(() => RemoveActivityGroup(groupId))">
+                        🗑️
+                    </button>
+                </div>
+            }
+
+            <button class="sync-button tutorial-btn" @onclick="AddActivityGroup">
+                <span class="btn-icon">+</span>
+                <span>@string.Format(Localizer["Group"], SettingsService.ActivityGroupCount)</span>
+            </button>
+        </div>
+    }
+
     @if (SettingsService.BudgetsEnabled)
     {
         <div class="settings-section">
@@ -642,6 +670,40 @@
     {
         var enabled = (bool)(e.Value ?? false);
         SettingsService.ActivityGroupsEnabled = enabled;
+        StateHasChanged();
+    }
+
+    private int GetGroupActivitiesCount(int groupId)
+    {
+        return TimeService.Account.Activities.Count(a => a.ActivityGroupId == groupId);
+    }
+
+    private void AddActivityGroup()
+    {
+        SettingsService.ActivityGroupCount += 1;
+        SettingsService.ActiveActivityGroup = SettingsService.ActivityGroupCount - 1;
+        StateHasChanged();
+    }
+
+    private void RemoveActivityGroup(int groupId)
+    {
+        if (SettingsService.ActivityGroupCount <= 1)
+        {
+            return;
+        }
+
+        TimeService.RemoveActivityGroup(groupId);
+        SettingsService.ActivityGroupCount -= 1;
+
+        if (SettingsService.ActiveActivityGroup > groupId)
+        {
+            SettingsService.ActiveActivityGroup -= 1;
+        }
+        else if (SettingsService.ActiveActivityGroup >= SettingsService.ActivityGroupCount)
+        {
+            SettingsService.ActiveActivityGroup = SettingsService.ActivityGroupCount - 1;
+        }
+
         StateHasChanged();
     }
 

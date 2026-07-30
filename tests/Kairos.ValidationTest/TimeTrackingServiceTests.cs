@@ -156,6 +156,28 @@ public class TimeTrackingServiceTests
     }
 
     [Fact]
+    public async Task RemoveActivityGroup_MovesDeletedGroupActivitiesToPreviousGroup()
+    {
+        var sut = await CreateLoadedServiceAsync();
+        sut.Account.Activities = new List<Activity>
+        {
+            new() { Name = "Group0", Color = "#10B981", ActivityGroupId = 0, DisplayOrder = 0 },
+            new() { Name = "Group1-A", Color = "#3B82F6", ActivityGroupId = 1, DisplayOrder = 0 },
+            new() { Name = "Group1-B", Color = "#F59E0B", ActivityGroupId = 1, DisplayOrder = 1 },
+            new() { Name = "Group2", Color = "#EF4444", ActivityGroupId = 2, DisplayOrder = 0 }
+        };
+
+        sut.RemoveActivityGroup(1);
+
+        Assert.Equal(3, sut.Account.Activities.Count(a => a.ActivityGroupId == 0));
+        Assert.Single(sut.Account.Activities, a => a.ActivityGroupId == 1);
+        Assert.DoesNotContain(sut.Account.Activities, a => a.ActivityGroupId == 2);
+        Assert.Contains(sut.Account.Activities, a => a.Name == "Group1-A" && a.ActivityGroupId == 0);
+        Assert.Contains(sut.Account.Activities, a => a.Name == "Group1-B" && a.ActivityGroupId == 0);
+        Assert.Contains(sut.Account.Activities, a => a.Name == "Group2" && a.ActivityGroupId == 1);
+    }
+
+    [Fact]
     public async Task ActivateActivity_NoPreviousActive_CreatesActiveEvent()
     {
         var sut = await CreateLoadedServiceAsync();

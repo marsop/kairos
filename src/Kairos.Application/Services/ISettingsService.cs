@@ -58,6 +58,11 @@ public interface ISettingsService
     int ActiveActivityGroup { get; set; }
 
     /// <summary>
+    /// Gets or sets how many activity groups are available.
+    /// </summary>
+    int ActivityGroupCount { get; set; }
+
+    /// <summary>
     /// Gets or sets the threshold in seconds below which completed events are automatically deleted.
     /// </summary>
     int AutoDeleteEventDuration { get; set; }

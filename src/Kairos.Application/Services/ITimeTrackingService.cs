@@ -164,6 +164,12 @@ public interface ITimeTrackingService
     /// Replaces the local events with the ones from the server.
     /// </summary>
     void UpdateEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents);
+
+    /// <summary>
+    /// Removes a group, moves its activities to the previous group (if available), and compacts subsequent group IDs.
+    /// </summary>
+    /// <param name="groupId">The group ID to remove.</param>
+    void RemoveActivityGroup(int groupId);
 }
 
 /// <summary>

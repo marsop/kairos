@@ -17,9 +17,17 @@
         <div style="display: flex; gap: var(--spacing-md); align-items: center;">
             @if (SettingsService.ActivityGroupsEnabled)
             {
-                <div class="view-toggle">
-                    <button class="@(SettingsService.ActiveActivityGroup == 0 ? "active" : "")" @onclick="@(() => SetActiveGroup(0))">@string.Format(Localizer["Group"], 0)</button>
-                    <button class="@(SettingsService.ActiveActivityGroup == 1 ? "active" : "")" @onclick="@(() => SetActiveGroup(1))">@string.Format(Localizer["Group"], 1)</button>
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <span class="setting-label" style="white-space: nowrap;">@Localizer["ActivityGroups"]</span>
+                    <select class="edit-input"
+                            style="min-width: 140px;"
+                            value="@SettingsService.ActiveActivityGroup"
+                            @onchange="OnGroupChanged">
+                    @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
+                    {
+                        <option value="@group">@string.Format(Localizer["Group"], group)</option>
+                    }
+                    </select>
                 </div>
             }
             <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
@@ -247,6 +255,14 @@
                 }
             }
             SettingsService.ActiveActivityGroup = group;
+        }
+    }
+
+    private void OnGroupChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var groupId))
+        {
+            SetActiveGroup(groupId);
         }
     }
 

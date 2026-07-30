@@ -78,6 +78,7 @@ internal sealed class StubSettingsService : ISettingsService
     public bool ActivityGroupsEnabled { get; set; }
     public bool BudgetsEnabled { get; set; } = true;
     public int ActiveActivityGroup { get; set; } = 0;
+    public int ActivityGroupCount { get; set; } = 2;
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
     public DateTimeOffset? LastSupabaseSync { get; private set; }

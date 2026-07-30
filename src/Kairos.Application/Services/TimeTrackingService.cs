@@ -565,6 +565,42 @@ public class TimeTrackingService : ITimeTrackingService
         _account.Activities.Add(newActivity);
         SaveAndNotify();
     }
+
+    public void RemoveActivityGroup(int groupId)
+    {
+        if (groupId < 0)
+        {
+            return;
+        }
+
+        // Keep at least one group available at all times.
+        var existingGroupCount = _account.Activities
+            .Select(a => a.ActivityGroupId)
+            .Distinct()
+            .Count();
+
+        if (existingGroupCount <= 1)
+        {
+            return;
+        }
+
+        var targetGroupId = groupId > 0 ? groupId - 1 : 0;
+
+        foreach (var activity in _account.Activities)
+        {
+            if (activity.ActivityGroupId == groupId)
+            {
+                activity.ActivityGroupId = targetGroupId;
+            }
+            else if (activity.ActivityGroupId > groupId)
+            {
+                activity.ActivityGroupId--;
+            }
+        }
+
+        NormalizeDisplayOrderWithinGroups();
+        SaveAndNotify();
+    }
     public async Task ResetDataAsync()
     {
         _account.Events.Clear();
@@ -825,6 +861,22 @@ public class TimeTrackingService : ITimeTrackingService
     private static void NormalizePersistedActivity(Activity activity)
     {
         activity.Color = Activity.SanitizeColor(activity.Color);
+    }
+
+    private void NormalizeDisplayOrderWithinGroups()
+    {
+        foreach (var group in _account.Activities.GroupBy(a => a.ActivityGroupId))
+        {
+            var ordered = group
+                .OrderBy(a => a.DisplayOrder)
+                .ThenBy(a => a.Name, StringComparer.Ordinal)
+                .ToList();
+
+            for (var index = 0; index < ordered.Count; index++)
+            {
+                ordered[index].DisplayOrder = index;
+            }
+        }
     }
 
     private static void NormalizePersistedActivityEvent(ActivityEvent activityEvent)

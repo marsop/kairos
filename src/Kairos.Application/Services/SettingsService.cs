@@ -19,6 +19,8 @@ public class SettingsService : ISettingsService
     private const string StorageKey = "Kairos_settings";
     private const string DefaultLanguage = "en";
     private const string DefaultTheme = "light";
+    private const int DefaultActivityGroupCount = 2;
+    private const int MaxActivityGroupCount = 20;
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
@@ -28,6 +30,7 @@ public class SettingsService : ISettingsService
     private bool _activityGroupsEnabled;
     private bool _budgetsEnabled = true;
     private int _activeActivityGroup;
+    private int _activityGroupCount = DefaultActivityGroupCount;
     private int _autoDeleteEventDuration;
     private int _stickyEventsDuration;
     private string _language = DefaultLanguage;
@@ -123,9 +126,30 @@ public class SettingsService : ISettingsService
         get => _activeActivityGroup;
         set
         {
-            if (_activeActivityGroup != value)
+            var normalized = Math.Clamp(value, 0, _activityGroupCount - 1);
+            if (_activeActivityGroup != normalized)
             {
-                _activeActivityGroup = value;
+                _activeActivityGroup = normalized;
+                _ = SaveAsync();
+                OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
+    public int ActivityGroupCount
+    {
+        get => _activityGroupCount;
+        set
+        {
+            var normalized = Math.Clamp(value, 1, MaxActivityGroupCount);
+            if (_activityGroupCount != normalized)
+            {
+                _activityGroupCount = normalized;
+                if (_activeActivityGroup >= _activityGroupCount)
+                {
+                    _activeActivityGroup = _activityGroupCount - 1;
+                }
+
                 _ = SaveAsync();
                 OnSettingsChanged?.Invoke();
             }
@@ -284,6 +308,11 @@ public class SettingsService : ISettingsService
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _budgetsEnabled = data.BudgetsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
+                    _activityGroupCount = Math.Clamp(data.ActivityGroupCount <= 0 ? DefaultActivityGroupCount : data.ActivityGroupCount, 1, MaxActivityGroupCount);
+                    if (_activeActivityGroup >= _activityGroupCount)
+                    {
+                        _activeActivityGroup = _activityGroupCount - 1;
+                    }
                     _autoDeleteEventDuration = data.AutoDeleteEventDuration;
                     _stickyEventsDuration = data.StickyEventsDuration;
                     _historyView = data.HistoryView ?? "list";
@@ -341,6 +370,7 @@ public class SettingsService : ISettingsService
             ActivityGroupsEnabled = _activityGroupsEnabled,
             BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            ActivityGroupCount = _activityGroupCount,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
@@ -455,7 +485,11 @@ public class SettingsService : ISettingsService
         _timeularSettingsEnabled = settings.TimeularSettingsEnabled;
         _activityGroupsEnabled = settings.ActivityGroupsEnabled;
         _budgetsEnabled = settings.BudgetsEnabled;
-        _activeActivityGroup = settings.ActiveActivityGroup;
+        if (settings.ActiveActivityGroup >= _activityGroupCount)
+        {
+            _activityGroupCount = Math.Clamp(settings.ActiveActivityGroup + 1, 1, MaxActivityGroupCount);
+        }
+        _activeActivityGroup = Math.Clamp(settings.ActiveActivityGroup, 0, _activityGroupCount - 1);
         _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
         _stickyEventsDuration = settings.StickyEventsDuration;
         UpdateCulture(_language);
@@ -475,6 +509,7 @@ public class SettingsService : ISettingsService
             ActivityGroupsEnabled = _activityGroupsEnabled,
             BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
+            ActivityGroupCount = _activityGroupCount,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
@@ -500,6 +535,7 @@ internal class SettingsData
     public bool ActivityGroupsEnabled { get; set; }
     public bool BudgetsEnabled { get; set; } = true;
     public int ActiveActivityGroup { get; set; }
+    public int ActivityGroupCount { get; set; } = 2;
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
     public string HistoryView { get; set; } = "list";

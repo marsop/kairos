@@ -10,9 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Settings UI**: Added description text below each budget setting (Minimum, Threshold, Budget Type, Notifications) to explain what each option does.
+- **Settings UI**: Added Activity Group management in Settings (visible only when Activity Groups are enabled), including listing groups with activity counts plus add/remove group actions.
 
 ### Changed
 
+- **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
+- **Activity Groups**: Deleting a group now moves its activities into the previous group (instead of moving them to Group 0).
 - **Translations**: Translated all previously untranslated budget settings labels and color range names (de, es, gl, gsw). Also translated the `StickyEventsDuration` setting in all non-English locales.
 - **Activities**: Removed activity count caps. There is no max activities limit anymore, including when Activity Groups are enabled.
 - **Activities**: When Activity Groups are turned off, activities from all groups are shown together in a single list instead of hiding non-active-group activities.
