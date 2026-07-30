@@ -2127,6 +2127,18 @@ html[data-theme="dark"] .edit-input {
     color: var(--color-text-secondary);
 }
 
+.budget-threshold-input-group {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.setting-value-suffix {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+}
+
 .setting-item.budget-color-setting {
     display: block;
 }
