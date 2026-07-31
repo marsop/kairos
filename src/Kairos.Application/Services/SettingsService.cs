@@ -13,6 +13,7 @@ public class SettingsService : ISettingsService
     private readonly IStorageService _storage;
     private readonly ISupabaseAuthService? _authService;
     private readonly ISupabaseSettingsStore? _supabaseSettingsStore;
+    private readonly ISupabaseActivityGroupsStore? _supabaseActivityGroupsStore;
     private readonly ISupabaseRealtimeService? _realtimeService;
     private readonly ILogger<SettingsService> _logger;
     private readonly SemaphoreSlim _supabaseSyncLock = new(1, 1);
@@ -20,7 +21,8 @@ public class SettingsService : ISettingsService
     private const string DefaultLanguage = "en";
     private const string DefaultTheme = "light";
     private const int DefaultActivityGroupCount = 2;
-    private const int MaxActivityGroupCount = 20;
+    private const string DefaultGroupColor = "#10B981";
+    private const string DefaultGroupIcon = "🗂️";
 
     private bool _tutorialCompleted;
     private bool _browserNotificationsEnabled;
@@ -31,6 +33,10 @@ public class SettingsService : ISettingsService
     private bool _budgetsEnabled = true;
     private int _activeActivityGroup;
     private int _activityGroupCount = DefaultActivityGroupCount;
+    private List<string> _activityGroupNames = [];
+    private List<Guid> _activityGroupIds = [];
+    private List<string> _activityGroupColors = [];
+    private List<string> _activityGroupIcons = [];
     private int _autoDeleteEventDuration;
     private int _stickyEventsDuration;
     private string _language = DefaultLanguage;
@@ -141,7 +147,7 @@ public class SettingsService : ISettingsService
         get => _activityGroupCount;
         set
         {
-            var normalized = Math.Clamp(value, 1, MaxActivityGroupCount);
+            var normalized = Math.Max(value, 1);
             if (_activityGroupCount != normalized)
             {
                 _activityGroupCount = normalized;
@@ -149,6 +155,11 @@ public class SettingsService : ISettingsService
                 {
                     _activeActivityGroup = _activityGroupCount - 1;
                 }
+
+                EnsureActivityGroupNamesCapacity(_activityGroupCount);
+                EnsureActivityGroupIdsCapacity(_activityGroupCount);
+                EnsureActivityGroupColorsCapacity(_activityGroupCount);
+                EnsureActivityGroupIconsCapacity(_activityGroupCount);
 
                 _ = SaveAsync();
                 OnSettingsChanged?.Invoke();
@@ -188,6 +199,131 @@ public class SettingsService : ISettingsService
                 }
             }
         }
+    }
+
+    public string? GetActivityGroupName(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupNames.Count)
+        {
+            return null;
+        }
+
+        var name = _activityGroupNames[groupId]?.Trim();
+        return string.IsNullOrWhiteSpace(name) ? null : name;
+    }
+
+    public void SetActivityGroupName(int groupId, string? name)
+    {
+        if (groupId < 0 || groupId >= _activityGroupCount)
+        {
+            return;
+        }
+
+        EnsureActivityGroupNamesCapacity(_activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
+        EnsureActivityGroupColorsCapacity(_activityGroupCount);
+        EnsureActivityGroupIconsCapacity(_activityGroupCount);
+
+        var normalized = string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim();
+        if (normalized.Length > 40)
+        {
+            normalized = normalized[..40];
+        }
+
+        if (string.Equals(_activityGroupNames[groupId], normalized, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _activityGroupNames[groupId] = normalized;
+        OnSettingsChanged?.Invoke();
+        _ = SaveAsync();
+    }
+
+    public void RemoveActivityGroupNameAt(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupNames.Count)
+        {
+            return;
+        }
+
+        _activityGroupNames.RemoveAt(groupId);
+        if (groupId < _activityGroupIds.Count)
+        {
+            _activityGroupIds.RemoveAt(groupId);
+        }
+        if (groupId < _activityGroupColors.Count)
+        {
+            _activityGroupColors.RemoveAt(groupId);
+        }
+        if (groupId < _activityGroupIcons.Count)
+        {
+            _activityGroupIcons.RemoveAt(groupId);
+        }
+        EnsureActivityGroupNamesCapacity(_activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
+        EnsureActivityGroupColorsCapacity(_activityGroupCount);
+        EnsureActivityGroupIconsCapacity(_activityGroupCount);
+        OnSettingsChanged?.Invoke();
+        _ = SaveAsync();
+    }
+
+    public string? GetActivityGroupColor(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupColors.Count)
+        {
+            return null;
+        }
+
+        return _activityGroupColors[groupId];
+    }
+
+    public void SetActivityGroupColor(int groupId, string? color)
+    {
+        if (groupId < 0 || groupId >= _activityGroupCount)
+        {
+            return;
+        }
+
+        EnsureActivityGroupColorsCapacity(_activityGroupCount);
+        var normalized = NormalizeGroupColor(color);
+        if (string.Equals(_activityGroupColors[groupId], normalized, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _activityGroupColors[groupId] = normalized;
+        OnSettingsChanged?.Invoke();
+        _ = SaveAsync();
+    }
+
+    public string? GetActivityGroupIcon(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupIcons.Count)
+        {
+            return null;
+        }
+
+        return _activityGroupIcons[groupId];
+    }
+
+    public void SetActivityGroupIcon(int groupId, string? icon)
+    {
+        if (groupId < 0 || groupId >= _activityGroupCount)
+        {
+            return;
+        }
+
+        EnsureActivityGroupIconsCapacity(_activityGroupCount);
+        var normalized = NormalizeGroupIcon(icon);
+        if (string.Equals(_activityGroupIcons[groupId], normalized, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _activityGroupIcons[groupId] = normalized;
+        OnSettingsChanged?.Invoke();
+        _ = SaveAsync();
     }
 
     public DateTimeOffset? LastSupabaseSync => _lastSupabaseSync;
@@ -271,12 +407,14 @@ public class SettingsService : ISettingsService
         ILogger<SettingsService> logger,
         ISupabaseAuthService? authService = null,
         ISupabaseSettingsStore? supabaseSettingsStore = null,
+        ISupabaseActivityGroupsStore? supabaseActivityGroupsStore = null,
         ISupabaseRealtimeService? realtimeService = null)
     {
         _storage = storage;
         _logger = logger;
         _authService = authService;
         _supabaseSettingsStore = supabaseSettingsStore;
+        _supabaseActivityGroupsStore = supabaseActivityGroupsStore;
         _realtimeService = realtimeService;
         if (_authService is not null)
         {
@@ -308,7 +446,11 @@ public class SettingsService : ISettingsService
                     _activityGroupsEnabled = data.ActivityGroupsEnabled;
                     _budgetsEnabled = data.BudgetsEnabled;
                     _activeActivityGroup = data.ActiveActivityGroup;
-                    _activityGroupCount = Math.Clamp(data.ActivityGroupCount <= 0 ? DefaultActivityGroupCount : data.ActivityGroupCount, 1, MaxActivityGroupCount);
+                    _activityGroupCount = Math.Max(data.ActivityGroupCount <= 0 ? DefaultActivityGroupCount : data.ActivityGroupCount, 1);
+                    _activityGroupNames = NormalizeActivityGroupNames(data.ActivityGroupNames, _activityGroupCount);
+                    _activityGroupIds = NormalizeActivityGroupIds(data.ActivityGroupIds, _activityGroupCount);
+                    _activityGroupColors = NormalizeActivityGroupColors(data.ActivityGroupColors, _activityGroupCount);
+                    _activityGroupIcons = NormalizeActivityGroupIcons(data.ActivityGroupIcons, _activityGroupCount);
                     if (_activeActivityGroup >= _activityGroupCount)
                     {
                         _activeActivityGroup = _activityGroupCount - 1;
@@ -326,8 +468,17 @@ public class SettingsService : ISettingsService
                 _tutorialCompleted = false;
                 _browserNotificationsEnabled = false;
                 _soundsEnabled = false;
+                _activityGroupNames = [];
+                _activityGroupIds = [];
+                _activityGroupColors = [];
+                _activityGroupIcons = [];
             }
         }
+
+        EnsureActivityGroupNamesCapacity(_activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
+        EnsureActivityGroupColorsCapacity(_activityGroupCount);
+        EnsureActivityGroupIconsCapacity(_activityGroupCount);
 
         await PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: true);
         UpdateCulture(_language);
@@ -371,6 +522,10 @@ public class SettingsService : ISettingsService
             BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             ActivityGroupCount = _activityGroupCount,
+            ActivityGroupNames = _activityGroupNames,
+            ActivityGroupIds = _activityGroupIds.Select(id => id.ToString()).ToList(),
+            ActivityGroupColors = _activityGroupColors,
+            ActivityGroupIcons = _activityGroupIcons,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
@@ -392,7 +547,8 @@ public class SettingsService : ISettingsService
 
     private void HandleRemoteTableChanged(string table)
     {
-        if (string.Equals(table, "user_settings", StringComparison.Ordinal))
+        if (string.Equals(table, "user_settings", StringComparison.Ordinal)
+            || string.Equals(table, "user_activity_groups", StringComparison.Ordinal))
         {
             _ = PullSettingsFromSupabaseOrSeedAsync(seedWhenMissing: false);
         }
@@ -412,6 +568,20 @@ public class SettingsService : ISettingsService
             if (remote is not null)
             {
                 ApplySyncedSettings(remote);
+
+                if (_supabaseActivityGroupsStore is not null)
+                {
+                    var remoteGroups = await _supabaseActivityGroupsStore.LoadGroupsAsync();
+                    if (remoteGroups is not null && remoteGroups.Count > 0)
+                    {
+                        ApplySyncedActivityGroups(remoteGroups);
+                    }
+                    else if (seedWhenMissing)
+                    {
+                        await _supabaseActivityGroupsStore.SaveGroupsAsync(BuildSyncedActivityGroups());
+                    }
+                }
+
                 await SaveLocalAsync();
                 UpdateLastSupabaseSync();
                 OnSettingsChanged?.Invoke();
@@ -421,6 +591,10 @@ public class SettingsService : ISettingsService
             if (seedWhenMissing)
             {
                 await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+                if (_supabaseActivityGroupsStore is not null)
+                {
+                    await _supabaseActivityGroupsStore.SaveGroupsAsync(BuildSyncedActivityGroups());
+                }
                 UpdateLastSupabaseSync();
             }
         }
@@ -445,6 +619,10 @@ public class SettingsService : ISettingsService
         try
         {
             await _supabaseSettingsStore.SaveSettingsAsync(BuildSyncedSettings());
+            if (_supabaseActivityGroupsStore is not null)
+            {
+                await _supabaseActivityGroupsStore.SaveGroupsAsync(BuildSyncedActivityGroups());
+            }
             UpdateLastSupabaseSync();
         }
         catch
@@ -487,8 +665,10 @@ public class SettingsService : ISettingsService
         _budgetsEnabled = settings.BudgetsEnabled;
         if (settings.ActiveActivityGroup >= _activityGroupCount)
         {
-            _activityGroupCount = Math.Clamp(settings.ActiveActivityGroup + 1, 1, MaxActivityGroupCount);
+            _activityGroupCount = Math.Max(settings.ActiveActivityGroup + 1, 1);
         }
+        EnsureActivityGroupNamesCapacity(_activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
         _activeActivityGroup = Math.Clamp(settings.ActiveActivityGroup, 0, _activityGroupCount - 1);
         _autoDeleteEventDuration = settings.AutoDeleteEventDuration;
         _stickyEventsDuration = settings.StickyEventsDuration;
@@ -510,6 +690,10 @@ public class SettingsService : ISettingsService
             BudgetsEnabled = _budgetsEnabled,
             ActiveActivityGroup = _activeActivityGroup,
             ActivityGroupCount = _activityGroupCount,
+            ActivityGroupNames = _activityGroupNames,
+            ActivityGroupIds = _activityGroupIds.Select(id => id.ToString()).ToList(),
+            ActivityGroupColors = _activityGroupColors,
+            ActivityGroupIcons = _activityGroupIcons,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
             HistoryView = _historyView
@@ -517,6 +701,209 @@ public class SettingsService : ISettingsService
 
         var json = JsonSerializer.Serialize(data);
         await _storage.SetItemAsync(StorageKey, json);
+    }
+
+    private void EnsureActivityGroupNamesCapacity(int groupCount)
+    {
+        if (_activityGroupNames.Count > groupCount)
+        {
+            _activityGroupNames.RemoveRange(groupCount, _activityGroupNames.Count - groupCount);
+            return;
+        }
+
+        while (_activityGroupNames.Count < groupCount)
+        {
+            _activityGroupNames.Add(string.Empty);
+        }
+    }
+
+    private void EnsureActivityGroupIdsCapacity(int groupCount)
+    {
+        if (_activityGroupIds.Count > groupCount)
+        {
+            _activityGroupIds.RemoveRange(groupCount, _activityGroupIds.Count - groupCount);
+            return;
+        }
+
+        while (_activityGroupIds.Count < groupCount)
+        {
+            _activityGroupIds.Add(Guid.NewGuid());
+        }
+    }
+
+    private void EnsureActivityGroupColorsCapacity(int groupCount)
+    {
+        if (_activityGroupColors.Count > groupCount)
+        {
+            _activityGroupColors.RemoveRange(groupCount, _activityGroupColors.Count - groupCount);
+            return;
+        }
+
+        while (_activityGroupColors.Count < groupCount)
+        {
+            _activityGroupColors.Add(DefaultGroupColor);
+        }
+    }
+
+    private void EnsureActivityGroupIconsCapacity(int groupCount)
+    {
+        if (_activityGroupIcons.Count > groupCount)
+        {
+            _activityGroupIcons.RemoveRange(groupCount, _activityGroupIcons.Count - groupCount);
+            return;
+        }
+
+        while (_activityGroupIcons.Count < groupCount)
+        {
+            _activityGroupIcons.Add(DefaultGroupIcon);
+        }
+    }
+
+    private static List<string> NormalizeActivityGroupNames(List<string>? names, int groupCount)
+    {
+        var normalized = names?
+            .Select(name => string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim())
+            .Take(groupCount)
+            .ToList() ?? [];
+
+        while (normalized.Count < groupCount)
+        {
+            normalized.Add(string.Empty);
+        }
+
+        return normalized;
+    }
+
+    private static List<Guid> NormalizeActivityGroupIds(List<string>? ids, int groupCount)
+    {
+        var normalized = ids?
+            .Select(id => Guid.TryParse(id, out var parsed) ? parsed : Guid.NewGuid())
+            .Take(groupCount)
+            .ToList() ?? [];
+
+        while (normalized.Count < groupCount)
+        {
+            normalized.Add(Guid.NewGuid());
+        }
+
+        return normalized;
+    }
+
+    private static List<string> NormalizeActivityGroupColors(List<string>? colors, int groupCount)
+    {
+        var normalized = colors?
+            .Select(NormalizeGroupColor)
+            .Take(groupCount)
+            .ToList() ?? [];
+
+        while (normalized.Count < groupCount)
+        {
+            normalized.Add(DefaultGroupColor);
+        }
+
+        return normalized;
+    }
+
+    private static List<string> NormalizeActivityGroupIcons(List<string>? icons, int groupCount)
+    {
+        var normalized = icons?
+            .Select(NormalizeGroupIcon)
+            .Take(groupCount)
+            .ToList() ?? [];
+
+        while (normalized.Count < groupCount)
+        {
+            normalized.Add(DefaultGroupIcon);
+        }
+
+        return normalized;
+    }
+
+    private static string NormalizeGroupColor(string? color)
+    {
+        if (string.IsNullOrWhiteSpace(color))
+        {
+            return DefaultGroupColor;
+        }
+
+        var trimmed = color.Trim();
+        if (trimmed.Length != 7 || trimmed[0] != '#')
+        {
+            return DefaultGroupColor;
+        }
+
+        for (var i = 1; i < trimmed.Length; i++)
+        {
+            if (!Uri.IsHexDigit(trimmed[i]))
+            {
+                return DefaultGroupColor;
+            }
+        }
+
+        return trimmed.ToUpperInvariant();
+    }
+
+    private static string NormalizeGroupIcon(string? icon)
+    {
+        if (string.IsNullOrWhiteSpace(icon))
+        {
+            return DefaultGroupIcon;
+        }
+
+        var trimmed = icon.Trim();
+        return trimmed.Length > 8 ? trimmed[..8] : trimmed;
+    }
+
+    private List<SyncedActivityGroupData> BuildSyncedActivityGroups()
+    {
+        EnsureActivityGroupNamesCapacity(_activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
+        EnsureActivityGroupColorsCapacity(_activityGroupCount);
+        EnsureActivityGroupIconsCapacity(_activityGroupCount);
+
+        var result = new List<SyncedActivityGroupData>(_activityGroupCount);
+        for (var i = 0; i < _activityGroupCount; i++)
+        {
+            result.Add(new SyncedActivityGroupData
+            {
+                GroupId = _activityGroupIds[i],
+                GroupOrder = i,
+                Name = _activityGroupNames[i],
+                Color = _activityGroupColors[i],
+                Icon = _activityGroupIcons[i]
+            });
+        }
+
+        return result;
+    }
+
+    private void ApplySyncedActivityGroups(IReadOnlyList<SyncedActivityGroupData> groups)
+    {
+        var ordered = groups
+            .OrderBy(g => g.GroupOrder)
+            .ToList();
+
+        var names = ordered
+            .Select(g => string.IsNullOrWhiteSpace(g.Name) ? string.Empty : g.Name.Trim())
+            .ToList();
+
+        var ids = ordered
+            .Select(g => g.GroupId == Guid.Empty ? Guid.NewGuid() : g.GroupId)
+            .ToList();
+
+        var colors = ordered
+            .Select(g => NormalizeGroupColor(g.Color))
+            .ToList();
+
+        var icons = ordered
+            .Select(g => NormalizeGroupIcon(g.Icon))
+            .ToList();
+
+        _activityGroupNames = NormalizeActivityGroupNames(names, _activityGroupCount);
+        _activityGroupIds = ids.Take(_activityGroupCount).ToList();
+        _activityGroupColors = NormalizeActivityGroupColors(colors, _activityGroupCount);
+        _activityGroupIcons = NormalizeActivityGroupIcons(icons, _activityGroupCount);
+        EnsureActivityGroupIdsCapacity(_activityGroupCount);
     }
 }
 
@@ -536,6 +923,10 @@ internal class SettingsData
     public bool BudgetsEnabled { get; set; } = true;
     public int ActiveActivityGroup { get; set; }
     public int ActivityGroupCount { get; set; } = 2;
+    public List<string> ActivityGroupNames { get; set; } = [];
+    public List<string> ActivityGroupIds { get; set; } = [];
+    public List<string> ActivityGroupColors { get; set; } = [];
+    public List<string> ActivityGroupIcons { get; set; } = [];
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
     public string HistoryView { get; set; } = "list";

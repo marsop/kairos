@@ -63,6 +63,46 @@ public interface ISettingsService
     int ActivityGroupCount { get; set; }
 
     /// <summary>
+    /// Gets the custom name for a given activity group, if any.
+    /// </summary>
+    /// <param name="groupId">The group id.</param>
+    /// <returns>The custom group name or null when no custom name is set.</returns>
+    string? GetActivityGroupName(int groupId);
+
+    /// <summary>
+    /// Sets a custom name for a given activity group.
+    /// </summary>
+    /// <param name="groupId">The group id.</param>
+    /// <param name="name">The new name. Null or empty clears the custom name.</param>
+    void SetActivityGroupName(int groupId, string? name);
+
+    /// <summary>
+    /// Removes a group name entry and shifts following names left.
+    /// </summary>
+    /// <param name="groupId">The removed group id.</param>
+    void RemoveActivityGroupNameAt(int groupId);
+
+    /// <summary>
+    /// Gets the custom color for a given activity group, if any.
+    /// </summary>
+    string? GetActivityGroupColor(int groupId);
+
+    /// <summary>
+    /// Sets a custom color for a given activity group.
+    /// </summary>
+    void SetActivityGroupColor(int groupId, string? color);
+
+    /// <summary>
+    /// Gets the custom icon for a given activity group, if any.
+    /// </summary>
+    string? GetActivityGroupIcon(int groupId);
+
+    /// <summary>
+    /// Sets a custom icon for a given activity group.
+    /// </summary>
+    void SetActivityGroupIcon(int groupId, string? icon);
+
+    /// <summary>
     /// Gets or sets the threshold in seconds below which completed events are automatically deleted.
     /// </summary>
     int AutoDeleteEventDuration { get; set; }

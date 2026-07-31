@@ -67,6 +67,10 @@ internal sealed class StubActivityConfigurationService : IActivityConfigurationS
 
 internal sealed class StubSettingsService : ISettingsService
 {
+    private readonly List<string> _activityGroupNames = [string.Empty, string.Empty];
+    private readonly List<string> _activityGroupColors = ["#10B981", "#10B981"];
+    private readonly List<string> _activityGroupIcons = ["🗂️", "🗂️"];
+
     public string Theme { get; set; } = "light";
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
@@ -92,6 +96,104 @@ internal sealed class StubSettingsService : ISettingsService
         Language = language;
         OnSettingsChanged?.Invoke();
         return Task.CompletedTask;
+    }
+
+    public string? GetActivityGroupName(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupNames.Count)
+        {
+            return null;
+        }
+
+        var value = _activityGroupNames[groupId]?.Trim();
+        return string.IsNullOrWhiteSpace(value) ? null : value;
+    }
+
+    public void SetActivityGroupName(int groupId, string? name)
+    {
+        if (groupId < 0)
+        {
+            return;
+        }
+
+        while (_activityGroupNames.Count <= groupId)
+        {
+            _activityGroupNames.Add(string.Empty);
+        }
+
+        _activityGroupNames[groupId] = string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim();
+        OnSettingsChanged?.Invoke();
+    }
+
+    public void RemoveActivityGroupNameAt(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupNames.Count)
+        {
+            return;
+        }
+
+        _activityGroupNames.RemoveAt(groupId);
+        if (groupId < _activityGroupColors.Count)
+        {
+            _activityGroupColors.RemoveAt(groupId);
+        }
+        if (groupId < _activityGroupIcons.Count)
+        {
+            _activityGroupIcons.RemoveAt(groupId);
+        }
+        OnSettingsChanged?.Invoke();
+    }
+
+    public string? GetActivityGroupColor(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupColors.Count)
+        {
+            return null;
+        }
+
+        return _activityGroupColors[groupId];
+    }
+
+    public void SetActivityGroupColor(int groupId, string? color)
+    {
+        if (groupId < 0)
+        {
+            return;
+        }
+
+        while (_activityGroupColors.Count <= groupId)
+        {
+            _activityGroupColors.Add("#10B981");
+        }
+
+        _activityGroupColors[groupId] = string.IsNullOrWhiteSpace(color) ? "#10B981" : color.Trim();
+        OnSettingsChanged?.Invoke();
+    }
+
+    public string? GetActivityGroupIcon(int groupId)
+    {
+        if (groupId < 0 || groupId >= _activityGroupIcons.Count)
+        {
+            return null;
+        }
+
+        return _activityGroupIcons[groupId];
+    }
+
+    public void SetActivityGroupIcon(int groupId, string? icon)
+    {
+        if (groupId < 0)
+        {
+            return;
+        }
+
+        while (_activityGroupIcons.Count <= groupId)
+        {
+            _activityGroupIcons.Add("🗂️");
+        }
+
+        _activityGroupIcons[groupId] = string.IsNullOrWhiteSpace(icon) ? "🗂️" : icon.Trim();
+        OnSettingsChanged?.Invoke();
     }
 
     public void UpdateLastSupabaseSync()

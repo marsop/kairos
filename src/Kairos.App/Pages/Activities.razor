@@ -19,12 +19,12 @@
             {
                 <div style="display: flex; align-items: center;">
                     <select class="edit-input"
-                            style="min-width: 140px;"
+                            style="@GetGroupSelectStyle()"
                             value="@SettingsService.ActiveActivityGroup"
                             @onchange="OnGroupChanged">
                     @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
                     {
-                        <option value="@group">@string.Format(Localizer["Group"], group)</option>
+                        <option value="@group">@GetGroupDisplayName(group)</option>
                     }
                     </select>
                 </div>
@@ -263,6 +263,22 @@
         {
             SetActiveGroup(groupId);
         }
+    }
+
+    private string GetGroupDisplayName(int groupId)
+    {
+        var customName = SettingsService.GetActivityGroupName(groupId);
+        var name = string.IsNullOrWhiteSpace(customName)
+            ? string.Format(Localizer["Group"], groupId)
+            : customName;
+        var icon = SettingsService.GetActivityGroupIcon(groupId) ?? "🗂️";
+        return $"{icon} {name}";
+    }
+
+    private string GetGroupSelectStyle()
+    {
+        var color = SettingsService.GetActivityGroupColor(SettingsService.ActiveActivityGroup) ?? "#10B981";
+        return $"min-width: 140px; border-color: {color}; box-shadow: 0 0 0 1px {color}33 inset;";
     }
 
     private void ToggleMenu() => _isMenuOpen = !_isMenuOpen;

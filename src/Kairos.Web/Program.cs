@@ -30,6 +30,7 @@ builder.Services.AddScoped<ISupabaseActivityStore, SupabaseActivityStore>();
 builder.Services.AddScoped<ISupabaseActivityEventStore, SupabaseActivityEventStore>();
 builder.Services.AddScoped<ISupabaseTimeAccountStore, SupabaseTimeAccountStore>();
 builder.Services.AddScoped<ISupabaseSettingsStore, SupabaseSettingsStore>();
+builder.Services.AddScoped<ISupabaseActivityGroupsStore, SupabaseActivityGroupsStore>();
 builder.Services.AddScoped<ISupabaseBudgetSettingsStore, SupabaseBudgetSettingsStore>();
 builder.Services.AddScoped<ISupabaseBudgetStore, SupabaseBudgetStore>();
 builder.Services.AddScoped<IBudgetSettingsService, BudgetSettingsService>();

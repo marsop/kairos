@@ -270,7 +270,22 @@
             {
                 <div class="setting-item">
                     <div>
-                        <span class="setting-label">@string.Format(Localizer["Group"], groupId)</span>
+                        <input class="edit-input"
+                               style="min-width: 220px;"
+                               value="@GetGroupDisplayName(groupId)"
+                               @oninput="@(e => RenameActivityGroup(groupId, e.Value?.ToString()))" />
+                       <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
+                        <input class="edit-input"
+                            style="width: 72px; text-align: center;"
+                            maxlength="8"
+                            value="@GetGroupIcon(groupId)"
+                            @oninput="@(e => UpdateGroupIcon(groupId, e.Value?.ToString()))" />
+                        <input class="edit-input"
+                            type="color"
+                            style="width: 44px; padding: 0;"
+                            value="@GetGroupColor(groupId)"
+                            @oninput="@(e => UpdateGroupColor(groupId, e.Value?.ToString()))" />
+                       </div>
                         <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
                     </div>
                     <button class="activity-action-btn delete"
@@ -284,7 +299,7 @@
 
             <button class="sync-button tutorial-btn" @onclick="AddActivityGroup">
                 <span class="btn-icon">+</span>
-                <span>@string.Format(Localizer["Group"], SettingsService.ActivityGroupCount)</span>
+                <span>@GetAddGroupLabel()</span>
             </button>
         </div>
     }
@@ -678,11 +693,53 @@
         return TimeService.Account.Activities.Count(a => a.ActivityGroupId == groupId);
     }
 
+    private string GetGroupDisplayName(int groupId)
+    {
+        var customName = SettingsService.GetActivityGroupName(groupId);
+        return string.IsNullOrWhiteSpace(customName)
+            ? string.Format(Localizer["Group"], groupId)
+            : customName;
+    }
+
+    private string GetGroupColor(int groupId)
+    {
+        return SettingsService.GetActivityGroupColor(groupId) ?? "#10B981";
+    }
+
+    private string GetGroupIcon(int groupId)
+    {
+        return SettingsService.GetActivityGroupIcon(groupId) ?? "🗂️";
+    }
+
+    private void RenameActivityGroup(int groupId, string? name)
+    {
+        SettingsService.SetActivityGroupName(groupId, name);
+    }
+
+    private void UpdateGroupColor(int groupId, string? color)
+    {
+        SettingsService.SetActivityGroupColor(groupId, color);
+    }
+
+    private void UpdateGroupIcon(int groupId, string? icon)
+    {
+        SettingsService.SetActivityGroupIcon(groupId, icon);
+    }
+
     private void AddActivityGroup()
     {
+        var newGroupId = SettingsService.ActivityGroupCount;
         SettingsService.ActivityGroupCount += 1;
+        SettingsService.SetActivityGroupName(newGroupId, string.Format(Localizer["Group"], DateTime.Now.ToString("yyyy-MM-dd")));
+        SettingsService.SetActivityGroupColor(newGroupId, "#10B981");
+        SettingsService.SetActivityGroupIcon(newGroupId, "🗂️");
         SettingsService.ActiveActivityGroup = SettingsService.ActivityGroupCount - 1;
         StateHasChanged();
+    }
+
+    private string GetAddGroupLabel()
+    {
+        return $"+ {Localizer["Group", string.Empty].Value.Trim()}";
     }
 
     private void RemoveActivityGroup(int groupId)
@@ -693,6 +750,7 @@
         }
 
         TimeService.RemoveActivityGroup(groupId);
+        SettingsService.RemoveActivityGroupNameAt(groupId);
         SettingsService.ActivityGroupCount -= 1;
 
         if (SettingsService.ActiveActivityGroup > groupId)
