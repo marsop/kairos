@@ -19,19 +19,14 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 - **One-Touch Activation**: Tap an activity to start/stop tracking time
 - **Real-time Duration**: See live updates of running duration
 
-### Statistics
+### Budgets
 
 - **Data Visualization**: Understand your time distribution with charts and visual styling
-- **Budgets**: Set rolling budgets (daily, weekly, monthly) for individual activities
+- **Rolling Budgets**: Set rolling budgets (daily, weekly, monthly) for individual activities
 
 ### Hardware Integration
 
 - **Timeular Tracker**: Connect via Bluetooth to automatically start/stop activities by flipping your device
-
-### Overview Dashboard
-
-- **Current Balance**: At-a-glance view of your total time balance in hours
-- **Active Indicator**: Shows which activity is currently running
 
 ### History
 

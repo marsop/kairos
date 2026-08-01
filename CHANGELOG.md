@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Navigation**: Added keyboard navigation cyclically through main tabs using PageDown/PageUp.
+- **Activities**: Enabled activating activities using numpad 1-8.
+- **Settings**: Added sound effects on user interactions, controlled by a settings toggle.
 - **Settings UI**: Added description text below each budget setting (Minimum, Threshold, Budget Type, Notifications) to explain what each option does.
 - **Settings UI**: Added Activity Group management in Settings (visible only when Activity Groups are enabled), including listing groups with activity counts plus add/remove group actions.
 
 ### Changed
 
+- **UI**: Added focus management for input fields in History and Statistics pages.
 - **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
 - **Activities UI**: Removed the extra "Activity Groups" text label from the Activities header since the dropdown selector already makes the context clear.
 - **Activity Groups**: Group names can now be renamed from Settings (in the same section used to delete groups), and custom names are shown in both Settings and the Activities group selector.
@@ -44,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Navigation**: Fixed JS interop initialization bug for keyboard navigation across tabs.
 - **Activity Groups**: Fixed group deletion edge cases so activities from the removed group are reassigned correctly and group IDs are compacted to keep all activities visible.
 - **Budgets**: Fixed budget settings not loading from Supabase on a fresh browser. The settings service was initialized before the auth service, so the user was never authenticated when the remote fetch ran, causing defaults to be used and overwrite remote data.
 - **Budgets**: Improved error handling and logging for budget settings sync operations to better diagnose synchronization issues.
