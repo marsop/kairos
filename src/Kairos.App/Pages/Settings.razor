@@ -739,7 +739,7 @@
 
     private string GetAddGroupLabel()
     {
-        return $"+ {Localizer["Group", string.Empty].Value.Trim()}";
+        return Localizer["Group", string.Empty].Value.Trim();
     }
 
     private void RemoveActivityGroup(int groupId)
