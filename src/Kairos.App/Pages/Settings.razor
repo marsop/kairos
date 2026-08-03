@@ -839,13 +839,13 @@
     private async Task SignOutAsync()
     {
         await AuthService.SignOutAsync();
-        NavigationManager.NavigateTo("/", forceLoad: true);
+        NavigationManager.NavigateTo("", forceLoad: true);
     }
 
     private async Task RestartTutorialAsync()
     {
         await TutorialService.ResetTutorialAsync();
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("");
     }
 
     private void RequestReset()
