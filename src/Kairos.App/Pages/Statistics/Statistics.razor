@@ -15,6 +15,13 @@
 <div class="statistics-page">
     <div class="page-header">
         <h2 class="page-title">@Localizer["NavBudgets"]</h2>
+        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+            <div class="view-toggle">
+                <button class="@(_budgetSortMode == BudgetSortMode.DisplayOrder ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.DisplayOrder)">@Localizer["SortByDefault"]</button>
+                <button class="@(_budgetSortMode == BudgetSortMode.TrackedTime ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.TrackedTime)">@Localizer["SortByTrackedTime"]</button>
+                <button class="@(_budgetSortMode == BudgetSortMode.BudgetUsage ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.BudgetUsage)">@Localizer["SortByBudgetUsage"]</button>
+            </div>
+        </div>
     </div>
 
     <div class="budget-context-card">
@@ -34,11 +41,6 @@
 
     <!-- Budgets List -->
     <div class="budgets-section">
-        <div class="view-toggle budget-sort-toggle">
-            <button class="@(_budgetSortMode == BudgetSortMode.DisplayOrder ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.DisplayOrder)">@Localizer["SortByDefault"]</button>
-            <button class="@(_budgetSortMode == BudgetSortMode.TrackedTime ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.TrackedTime)">@Localizer["SortByTrackedTime"]</button>
-            <button class="@(_budgetSortMode == BudgetSortMode.BudgetUsage ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.BudgetUsage)">@Localizer["SortByBudgetUsage"]</button>
-        </div>
         <div class="budgets-list">
             @foreach (var activity in GetSortedActivities())
             {
