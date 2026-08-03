@@ -311,6 +311,17 @@
 
             <div class="setting-item">
                 <div>
+                    <span class="setting-label">@Localizer["BudgetSettingsNotificationsEnabled"]</span>
+                    <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["BudgetSettingsNotificationsEnabledDesc"]</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked="@BudgetSettingsService.NotificationsEnabled" @onchange="OnBudgetNotificationsEnabledToggled" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div>
                     <span class="setting-label">@Localizer["BudgetSettingsMinEnabled"]</span>
                     <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["BudgetSettingsMinEnabledDesc"]</span>
                 </div>
@@ -341,17 +352,6 @@
                     <option value="1">@Localizer["BudgetSettingsBudgetTypeWeekly"]</option>
                     <option value="2">@Localizer["BudgetSettingsBudgetTypeDaily"]</option>
                 </select>
-            </div>
-
-            <div class="setting-item">
-                <div>
-                    <span class="setting-label">@Localizer["BudgetSettingsNotificationsEnabled"]</span>
-                    <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["BudgetSettingsNotificationsEnabledDesc"]</span>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked="@BudgetSettingsService.NotificationsEnabled" @onchange="OnBudgetNotificationsEnabledToggled" />
-                    <span class="toggle-slider"></span>
-                </label>
             </div>
 
             <div class="setting-item budget-color-setting">
