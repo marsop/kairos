@@ -801,6 +801,11 @@
         SettingsService.OnSettingsChanged += StateHasChanged;
         SyncService.OnSyncStateChanged += HandleSyncStateChanged;
 
+        if (SettingsService.HistoryView == "stats")
+        {
+            RefreshBudgetTimelineData();
+        }
+
         _timer = new System.Threading.Timer(_ =>
         {
             if (TimeService.GetActiveEvent() != null)
@@ -818,6 +823,10 @@
     private void HandleTimeServiceStateChanged()
     {
         SyncSelectedDateWithHistory();
+        if (SettingsService.HistoryView == "stats")
+        {
+            RefreshBudgetTimelineData();
+        }
         StateHasChanged();
     }
 
