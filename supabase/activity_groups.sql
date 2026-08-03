@@ -73,3 +73,5 @@ begin
     end if;
 end;
 $$;
+
+alter table public.user_activity_groups add column if not exists icon text not null default '🗂️';

@@ -273,18 +273,18 @@
                         <input class="edit-input"
                                style="min-width: 220px;"
                                value="@GetGroupDisplayName(groupId)"
-                               @oninput="@(e => RenameActivityGroup(groupId, e.Value?.ToString()))" />
+                               @onchange="@(e => RenameActivityGroup(groupId, e.Value?.ToString()))" />
                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
                         <input class="edit-input"
                             style="width: 72px; text-align: center;"
                             maxlength="8"
                             value="@GetGroupIcon(groupId)"
-                            @oninput="@(e => UpdateGroupIcon(groupId, e.Value?.ToString()))" />
+                            @onchange="@(e => UpdateGroupIcon(groupId, e.Value?.ToString()))" />
                         <input class="edit-input"
                             type="color"
                             style="width: 44px; padding: 0;"
                             value="@GetGroupColor(groupId)"
-                            @oninput="@(e => UpdateGroupColor(groupId, e.Value?.ToString()))" />
+                            @onchange="@(e => UpdateGroupColor(groupId, e.Value?.ToString()))" />
                        </div>
                         <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
                     </div>
