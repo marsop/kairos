@@ -92,16 +92,16 @@ public class TutorialService : ITutorialService
             new TutorialStep(_localizer["TutorialHistorySync"], "history", ""),
 
             // 11. Statistics - period summary
-            new TutorialStep(_localizer["TutorialOverviewBalance"], "", ""),
+            new TutorialStep(_localizer["TutorialOverviewBalance"], "statistics", ""),
 
             // 12. Statistics - budgets and chart
-            new TutorialStep(_localizer["TutorialOverviewActive"], "", ""),
+            new TutorialStep(_localizer["TutorialOverviewActive"], "statistics", ""),
 
             // 13. Statistics - period controls
-            new TutorialStep(_localizer["TutorialTimelinePeriods"], "", ""),
+            new TutorialStep(_localizer["TutorialTimelinePeriods"], "statistics", ""),
 
             // 14. Statistics - reading the chart
-            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "", ""),
+            new TutorialStep(_localizer["TutorialTimelineInterpretation"], "statistics", ""),
 
             // 15. Settings - personalization
             new TutorialStep(_localizer["TutorialSettingsPersonalize"], "settings", ""),

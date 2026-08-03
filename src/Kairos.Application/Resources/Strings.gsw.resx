@@ -407,13 +407,13 @@
     <value>Kairos schafft mit Aktivitäts-Sitziga. Jedes Mol wenn du e Aktivität startesch, wird a Ereignis mit Startzit erstellt, und bim Stoppa wird d'Endzit gspeichert. Din Saldo isch d'Summa vo allna erfassta Dauera.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Des isch d'Statistik-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über dia Wucha oder dr Monet.</value>
+    <value>Des isch d'Budgets-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über dia Wucha oder dr Monet.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Under dr Zämmefassig bricht Kairos dini Zit noch Aktivitäta uf. Du kasch erfassti Zit vergliicha, eifachi Budgets inklusive ere rollierende Budgetfunktion setza und im Diagramm luega, ob dr Ziitrum uffa, gliich oder abe goht.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
+    <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel oder nimm dr Zifferablock 1-8 zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Biim Starta vo a Aktivität wirst no am Kommentar gfrogt. Nutz kurzi, klare Notiza, zum Bispil was d gmacht hesch, wo oder für wen. Kommentara erschinat im Verloff und machat spätere Reviews viel eifacher.</value>
@@ -422,7 +422,7 @@
     <value>Du kasch Aktivitäta umbenenna, inaktivi löscha, neue hinzufüega und per Drag-and-Drop umsortiera. Halt d'Lista sauber und stabil, damit s'tägliche Erfassa schnell und konsistent blibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>S'Diagramm isch uf dr Statistik-Soita. Mit Hüt, Diese Wucha und Dieser Monet wechslisch dr Ziitrum und berechnisch Summä und Aktivitäts-Budgets für genau den Bereich neu.</value>
+    <value>S'Diagramm isch uf dr Budgets-Soita. Mit Hüt, Wucha und Monet wechslisch dr Ziitrum und berechnisch Summä und Aktivitäts-Budgets für genau den Bereich neu.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lies s'Diagramm vo links nach rechts: stiigendi Abschnitt bedütat bessers Guthaba, flachi Abschnitt kei Änderig und Abfäll zeigat an sinkenda Saldo. So erkennsch ungliichmäßigi Phase früah.</value>
@@ -431,10 +431,10 @@
     <value>Dr Verloff isch dis detaillierte Prüfprotokoll. Jedi Charte zeigt Aktivitätsname, Startzit, Endzit, Dauer und Kommentar. Die Seita isch dini zuverlässige Quella, wenn du prüefa willsch, was passiert isch.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat dini Summä neu und aktualisierat d'Statistik-Soita sofort.</value>
+    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat dini Summä neu und aktualisierat d'Budgets-Soita sofort.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>In dr Istelliga kasch Sprach, Tutorial-Avatar und Browser-Benachrichtigunga anpassa. Stell des amol passend i, damit d'App zu dim täglicha Ablauf passt.</value>
+    <value>In dr Istelliga kasch Sprach, Tutorial-Avatar, Soundeffekt aktiviere und Browser-Benachrichtigunga anpassa. Stell des amol passend i, damit d'App zu dim täglicha Ablauf passt.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>I dr Istelliga findsch au Integrations-Optiona, zum Bispil d'Timeular-Verbindig. Wenn du Hardware-Tracking nutzsch, prüef do dr Verbindigsstatus, bevor du di uf automatische Aktivitätswechsel verlahsch.</value>
@@ -801,7 +801,7 @@
     <value>Navigier eifach dur din Verlauf mit de neue Chnöpf für de vorig und nöchscht Tag. Zuedem händ aktivi Ereignis jetzt e pulsierendi Animation i de Kalender- und Lischteaasicht, demit du immer gsehsch, was grad lauft.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Aktivier 'Erwiiterti Iistellige aazeige' im Bereich Allgemein, zum meh Optione gseh. Du chasch Element in Aktivitätsgruppe organisiere, Ereignis, wo chürzer als e festgleiti Duur sind, automatisch lösche, zum din Verlauf suuber z'bhalte, oder Timeular-Iistellige umschalte.</value>
+    <value>Aktivier 'Erwiiterti Iistellige aazeige' im Bereich Allgemein, zum meh Optione gseh. Du chasch Element in Aktivitätsgruppe organisiere, Budgets aktiviere, Ereignis, wo chürzer als e festgleiti Duur sind, automatisch lösche, zum din Verlauf suuber z'bhalte, oder Timeular-Iistellige umschalte.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Fürs Hardware-Tracking gits ide undere Navigationsliischte e permanänti Statusazeig für de Tracker. Sie git der e schnälle Überblick über de Verbindigsstatus vo dim Timeular, egal uf wellere Siite du bisch.</value>

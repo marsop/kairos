@@ -404,13 +404,13 @@
     <value>Kairos se basa en sesiones de actividad. Cada vez que inicias una actividad, se crea un evento con hora de inicio, y al detenerla se guarda la hora de fin. Tu saldo es la suma de todas las duraciones registradas.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Esta es la pantalla de Estadísticas. La tarjeta principal muestra cuánto tiempo registraste en el periodo seleccionado. Úsala como lectura rápida de esta semana o de este mes antes de entrar en más detalle.</value>
+    <value>Esta es la pantalla de Presupuestos. La tarjeta principal muestra cuánto tiempo registraste en el periodo seleccionado. Úsala como lectura rápida de esta semana o de este mes antes de entrar en más detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Debajo del resumen, Kairos desglosa el tiempo por actividad. Puedes comparar tiempo registrado, definir presupuestos sencillos incluyendo una función de presupuesto móvil, y usar la gráfica para ver si el periodo sube, se mantiene plano o baja.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
+    <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta o usa el teclado numérico del 1 al 8 para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Al iniciar una actividad se solicita un comentario. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>
@@ -419,7 +419,7 @@
     <value>Puedes renombrar actividades, eliminar las inactivas, añadir nuevas y reordenarlas arrastrando. Mantén la lista limpia y estable para que el registro diario sea rápido y consistente.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>La gráfica está dentro de la pantalla de Estadísticas. Usa los botones Hoy, Esta semana y Este mes para cambiar el periodo y recalcular tanto los totales como los presupuestos de actividades para ese rango.</value>
+    <value>La gráfica está dentro de la pantalla de Presupuestos. Usa los botones Hoy, Semana y Mes para cambiar el periodo y recalcular tanto los totales como los presupuestos de actividades para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lee la gráfica de izquierda a derecha: los tramos ascendentes significan que el saldo mejora, los tramos planos que no hay cambios y las caídas muestran que el saldo baja. Es la forma más rápida de detectar ritmos irregulares en el periodo elegido.</value>
@@ -428,10 +428,10 @@
     <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Estadísticas.</value>
+    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Presupuestos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>En Ajustes puedes cambiar idioma, elegir el avatar del tutorial y controlar notificaciones del navegador. Configúralo una vez para que la app se adapte a tu flujo diario.</value>
+    <value>En Ajustes puedes cambiar idioma, elegir el avatar del tutorial, activar efectos de sonido y controlar notificaciones del navegador. Configúralo una vez para que la app se adapte a tu flujo diario.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>Ajustes también incluye opciones de integración, como la conexión con Timeular. Si usas seguimiento por hardware, verifica aquí el estado de conexión antes de depender de cambios automáticos de actividad.</value>
@@ -798,7 +798,7 @@
     <value>Navega por tu Historial fácilmente usando los nuevos botones de Día Anterior y Día Siguiente. Además, los eventos activos ahora tienen una animación intermitente tanto en la vista de Calendario como en la de Lista para que siempre puedas ver lo que está en ejecución.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Activa 'Mostrar ajustes avanzados' en la sección General para revelar más opciones. Puedes organizar elementos con Grupos de Actividades, eliminar automáticamente eventos más cortos que una duración configurada para mantener tu historial limpio, o alternar los ajustes de Timeular.</value>
+    <value>Activa 'Mostrar ajustes avanzados' en la sección General para revelar más opciones. Puedes organizar elementos con Grupos de Actividades, activar Presupuestos, eliminar automáticamente eventos más cortos que una duración configurada para mantener tu historial limpio, o alternar los ajustes de Timeular.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Para el seguimiento por hardware, un indicador de estado permanente del Rastreador se encuentra en la barra de navegación inferior. Proporciona una visibilidad rápida del estado de conexión de tu Timeular sin importar en qué página te encuentres.</value>
