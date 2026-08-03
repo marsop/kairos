@@ -180,6 +180,7 @@
                     </div>
                 </div>
                 <div class="modal-actions">
+                    <button class="btn-delete" @onclick="() => DeleteActivity(editingActivity)">@Localizer["Delete"]</button>
                     <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
                     <button class="btn-save" @onclick="SaveEdit">@Localizer["Save"]</button>
                 </div>
@@ -491,6 +492,7 @@
     private void DeleteActivity(Activity activity)
     {
         if (IsActiveActivity(activity.Id)) return;
+        CancelEdit();
         _activityToDelete = activity;
     }
 
