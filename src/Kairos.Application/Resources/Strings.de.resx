@@ -404,13 +404,13 @@
     <value>Kairos arbeitet mit Aktivitäts-Sitzungen. Jedes Mal, wenn du eine Aktivität startest, wird ein Ereignis mit Startzeit angelegt. Beim Stoppen wird die Endzeit gespeichert. Dein Kontostand ist die Summe aller erfassten Dauern.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Das ist die Statistik-Seite. Die große Zusammenfassung zeigt dir, wie viel Zeit du im aktuell gewählten Zeitraum erfasst hast. So bekommst du schnell einen Überblick über diese Woche oder diesen Monat.</value>
+    <value>Das ist die Budgets-Seite. Die große Zusammenfassung zeigt dir, wie viel Zeit du im aktuell gewählten Zeitraum erfasst hast. So bekommst du schnell einen Überblick über diese Woche oder diesen Monat.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Unter der Zusammenfassung zerlegt Kairos deine Zeit nach Aktivitäten. Du kannst erfasste Zeit vergleichen, einfache Budgets einschließlich einer rollierenden Budgetfunktion setzen und im Diagramm sehen, ob sich der Zeitraum nach oben, seitwärts oder nach unten entwickelt.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
+    <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel oder verwende den Ziffernblock 1-8, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>
@@ -419,7 +419,7 @@
     <value>Du kannst Aktivitäten umbenennen, inaktive löschen, neue hinzufügen und per Drag-and-Drop neu sortieren. Halte die Liste klar und stabil, damit die tägliche Erfassung schnell und konsistent bleibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>Das Diagramm befindet sich auf der Statistik-Seite. Mit den Schaltern Heute, Diese Woche und Dieser Monat wechselst du den Zeitraum und berechnest Summen sowie Aktivitätsbudgets für genau diesen Bereich neu.</value>
+    <value>Das Diagramm befindet sich auf der Budgets-Seite. Mit den Schaltern Heute, Woche und Monat wechselst du den Zeitraum und berechnest Summen sowie Aktivitätsbudgets für genau diesen Bereich neu.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lies das Diagramm von links nach rechts: steigende Abschnitte bedeuten besseres Guthaben, flache Abschnitte keine Änderung und Abfälle zeigen sinkenden Kontostand. So erkennst du ungleichmäßige Phasen frühzeitig.</value>
@@ -428,10 +428,10 @@
     <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen deine Summen neu und aktualisieren die Statistik-Seite sofort.</value>
+    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen deine Summen neu und aktualisieren die Budgets-Seite sofort.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>In den Einstellungen kannst du Sprache, Tutorial-Avatar und Browser-Benachrichtigungen anpassen. Richte das einmal passend ein, damit die App zu deinem täglichen Ablauf passt.</value>
+    <value>In den Einstellungen kannst du Sprache, Tutorial-Avatar, Soundeffekte aktivieren und Browser-Benachrichtigungen anpassen. Richte das einmal passend ein, damit die App zu deinem täglichen Ablauf passt.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>In den Einstellungen findest du auch Integrationen wie die Timeular-Verbindung. Wenn du Hardware-Tracking nutzt, prüfe hier den Verbindungsstatus, bevor du dich auf automatische Aktivitätswechsel verlässt.</value>
@@ -798,7 +798,7 @@
     <value>Navigieren Sie einfach durch Ihren Verlauf mit den neuen Schaltflächen für den vorherigen und nächsten Tag. Außerdem verfügen aktive Ereignisse jetzt über eine pulsierende Animation in der Kalender- und Listenansicht, damit Sie immer erkennen können, was gerade läuft.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Aktivieren Sie 'Erweiterte Einstellungen anzeigen' im Bereich Allgemein, um weitere Optionen anzuzeigen. Sie können Elemente in Aktivitätsgruppen organisieren, Ereignisse, die kürzer als eine festgelegte Dauer sind, automatisch löschen, um Ihren Verlauf sauber zu halten, oder Timeular-Einstellungen umschalten.</value>
+    <value>Aktivieren Sie 'Erweiterte Einstellungen anzeigen' im Bereich Allgemein, um weitere Optionen anzuzeigen. Sie können Elemente in Aktivitätsgruppen organisieren, Budgets aktivieren, Ereignisse, die kürzer als eine festgelegte Dauer sind, automatisch löschen, um Ihren Verlauf sauber zu halten, oder Timeular-Einstellungen umschalten.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Für das Hardware-Tracking befindet sich in der unteren Navigationsleiste eine permanente Statusanzeige für den Tracker. Sie bietet einen schnellen Überblick über den Verbindungsstatus Ihres Timeulars, unabhängig davon, auf welcher Seite Sie sich befinden.</value>
