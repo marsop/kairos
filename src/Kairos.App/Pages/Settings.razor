@@ -275,16 +275,19 @@
                                value="@GetGroupDisplayName(groupId)"
                                @onchange="@(e => RenameActivityGroup(groupId, e.Value?.ToString()))" />
                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
-                        <input class="edit-input"
-                            style="width: 72px; text-align: center;"
-                            maxlength="8"
-                            value="@GetGroupIcon(groupId)"
-                            @onchange="@(e => UpdateGroupIcon(groupId, e.Value?.ToString()))" />
+                        @{ var currentGroupId = groupId; }
+                        <button id="@($"edit-group-emoji-{currentGroupId}")"
+                            type="button"
+                            class="edit-input"
+                            style="width: 72px; text-align: center; cursor: pointer; padding: 0; background-color: var(--color-surface);"
+                            @onclick='@(() => ShowEmojiPicker($"edit-group-emoji-{currentGroupId}", currentGroupId))'>
+                            @(GetGroupIcon(currentGroupId))
+                        </button>
                         <input class="edit-input"
                             type="color"
                             style="width: 44px; padding: 0;"
-                            value="@GetGroupColor(groupId)"
-                            @onchange="@(e => UpdateGroupColor(groupId, e.Value?.ToString()))" />
+                            value="@GetGroupColor(currentGroupId)"
+                            @onchange="@(e => UpdateGroupColor(currentGroupId, e.Value?.ToString()))" />
                        </div>
                         <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
                     </div>
@@ -476,6 +479,8 @@
 </div>
 
 @code {
+    private DotNetObjectReference<Settings>? _objRef;
+    private int? _editingGroupId;
     private bool isDropdownOpen;
     private bool isThemeDropdownOpen;
     private bool isAvatarDropdownOpen;
@@ -559,6 +564,7 @@
         SettingsService.OnSettingsChanged -= StateHasChanged;
         TutorialService.OnChange -= StateHasChanged;
         TimeularService.OnStateChanged -= OnTimeularStateChanged;
+        _objRef?.Dispose();
     }
 
     private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
@@ -724,6 +730,23 @@
     private void UpdateGroupIcon(int groupId, string? icon)
     {
         SettingsService.SetActivityGroupIcon(groupId, icon);
+    }
+
+    private async Task ShowEmojiPicker(string buttonId, int groupId)
+    {
+        _editingGroupId = groupId;
+        _objRef ??= DotNetObjectReference.Create(this);
+        await JSRuntime.InvokeVoidAsync("window.emojiPickerInterop.showPicker", buttonId, _objRef, nameof(SetGroupEmoji));
+    }
+
+    [JSInvokable]
+    public void SetGroupEmoji(string emoji)
+    {
+        if (_editingGroupId.HasValue)
+        {
+            UpdateGroupIcon(_editingGroupId.Value, emoji);
+            StateHasChanged();
+        }
     }
 
     private void AddActivityGroup()
