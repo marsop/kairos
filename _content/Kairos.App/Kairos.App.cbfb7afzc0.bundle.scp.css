@@ -218,10 +218,6 @@
     gap: var(--spacing-md);
 }
 
-.budget-sort-toggle[b-cf5v8cqnw4] {
-    align-self: flex-end;
-}
-
 .section-title[b-cf5v8cqnw4] {
     font-size: var(--font-size-md);
     font-weight: 600;
