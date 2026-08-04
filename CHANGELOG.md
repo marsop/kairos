@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **History**: Added a toggle to switch between line and bar charts in the History view.
 - **Navigation**: Added keyboard navigation cyclically through main tabs using PageDown/PageUp.
 - **Activities**: Enabled activating activities using numpad 1-8.
 - **Settings**: Added sound effects on user interactions, controlled by a settings toggle.

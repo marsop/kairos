@@ -679,7 +679,12 @@
     }
 
     private double BudgetMinY => 0;
-    private double BudgetMaxY => BudgetDataPoints.Count > 0 ? Math.Max(0, BudgetDataPoints.Max(p => p.BalanceHours)) : 1;
+    private List<BarDataPoint> BarDataPoints { get; set; } = new();
+
+    private double BudgetMaxY => SettingsService.ChartType == "bar"
+        ? (BarDataPoints.Count > 0 ? Math.Max(0, BarDataPoints.Max(p => p.Hours)) : 1)
+        : (BudgetDataPoints.Count > 0 ? Math.Max(0, BudgetDataPoints.Max(p => p.BalanceHours)) : 1);
+
 
     private void RefreshBudgetTimelineData()
     {
@@ -1312,5 +1317,12 @@
         double eventCenterHours = (startSeconds + endSeconds) / 7200.0;
 
         _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
+        _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
+    }
+
+    private class BarDataPoint
+    {
+        public Kairos.Core.Models.Activity Activity { get; set; } = null!;
+        public double Hours { get; set; }
     }
 }

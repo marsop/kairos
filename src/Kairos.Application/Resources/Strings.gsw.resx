@@ -945,4 +945,10 @@
   <data name="EditGroup" xml:space="preserve">
     <value>Gruppe bearbeite</value>
   </data>
+  <data name="ChartTypeLine" xml:space="preserve">
+    <value>Linie</value>
+  </data>
+  <data name="ChartTypeBar" xml:space="preserve">
+    <value>Balke</value>
+  </data>
 </root>
