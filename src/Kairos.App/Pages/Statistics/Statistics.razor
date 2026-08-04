@@ -485,7 +485,7 @@
     // --- Timeline Chart Logic ---
     private List<TimelineDataPoint> DataPoints { get; set; } = new();
     
-    private double MinY => DataPoints.Count > 0 ? Math.Min(0, DataPoints.Min(p => p.BalanceHours)) : 0;
+    private double MinY => 0;
     private double MaxY => DataPoints.Count > 0 ? Math.Max(0, DataPoints.Max(p => p.BalanceHours)) : 1;
     private System.Threading.Timer? _timer;
 
