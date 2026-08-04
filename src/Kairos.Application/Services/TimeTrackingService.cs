@@ -347,7 +347,7 @@ public class TimeTrackingService : ITimeTrackingService
         UpdateActivity(activityId, newName, existingColor);
     }
 
-    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "")
+    public void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", int? groupId = null)
     {
         if (string.IsNullOrWhiteSpace(newName) || newName.Length < 1 || newName.Length > 40)
         {
@@ -363,6 +363,13 @@ public class TimeTrackingService : ITimeTrackingService
         activity.Name = newName.Trim();
         activity.Color = normalizedColor;
         activity.Emoji = emoji ?? string.Empty;
+
+        if (groupId.HasValue && activity.ActivityGroupId != groupId.Value)
+        {
+            activity.ActivityGroupId = groupId.Value;
+            var maxDisplayOrder = _account.Activities.Where(a => a.ActivityGroupId == groupId.Value && a.Id != activityId).Select(a => a.DisplayOrder).DefaultIfEmpty(-1).Max();
+            activity.DisplayOrder = maxDisplayOrder + 1;
+        }
 
         // Update active event if this activity is currently running
         var activeEvent = GetActiveEvent();

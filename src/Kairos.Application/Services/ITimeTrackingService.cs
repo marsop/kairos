@@ -121,7 +121,8 @@ public interface ITimeTrackingService
     /// <param name="newName">The new name (1-40 characters).</param>
     /// <param name="newColor">The new color in #RRGGBB format.</param>
     /// <param name="emoji">Optional emoji string.</param>
-    void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "");
+    /// <param name="groupId">The group ID of the activity.</param>
+    void UpdateActivity(Guid activityId, string newName, string newColor, string emoji = "", int? groupId = null);
 
     /// <summary>
     /// Deletes a activity by its ID.
