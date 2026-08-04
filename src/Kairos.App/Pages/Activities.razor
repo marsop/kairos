@@ -89,18 +89,18 @@
     
     @if (ActiveEvent != null)
     {
-        <div class="active-info">
-            <div class="active-duration">
-                <span class="label">
-                    @ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName
-                    @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
-                    {
-                        var comment = ActiveEvent.Comment;
-                        var displayComment = comment.Length > 40 ? comment.Substring(0, 40) + "..." : comment;
-                        <text> / @displayComment</text>
-                    }
-                </span>
-                <span class="value">@FormatDuration(ActiveEvent.Duration)</span>
+        <div class="stat-summary-card">
+            <div class="stat-label">
+                @ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName
+                @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
+                {
+                    var comment = ActiveEvent.Comment;
+                    var displayComment = comment.Length > 40 ? comment.Substring(0, 40) + "..." : comment;
+                    <text> / @displayComment</text>
+                }
+            </div>
+            <div class="stat-big-value">
+                @FormatDurationMarkup(ActiveEvent.Duration)
             </div>
         </div>
     }
@@ -464,6 +464,47 @@
             CancelEdit();
         }
     }
+
+
+    private RenderFragment FormatDurationMarkup(TimeSpan duration) => builder =>
+    {
+        if (duration.TotalHours >= 1)
+        {
+            builder.AddContent(0, (int)duration.TotalHours);
+            builder.OpenElement(1, "span");
+            builder.AddAttribute(2, "class", "stat-unit");
+            builder.AddContent(3, "h");
+            builder.CloseElement();
+            builder.AddContent(4, " ");
+            builder.AddContent(5, duration.Minutes);
+            builder.OpenElement(6, "span");
+            builder.AddAttribute(7, "class", "stat-unit");
+            builder.AddContent(8, "m");
+            builder.CloseElement();
+        }
+        else if (duration.TotalMinutes >= 1)
+        {
+            builder.AddContent(0, (int)duration.TotalMinutes);
+            builder.OpenElement(1, "span");
+            builder.AddAttribute(2, "class", "stat-unit");
+            builder.AddContent(3, "m");
+            builder.CloseElement();
+            builder.AddContent(4, " ");
+            builder.AddContent(5, duration.Seconds);
+            builder.OpenElement(6, "span");
+            builder.AddAttribute(7, "class", "stat-unit");
+            builder.AddContent(8, "s");
+            builder.CloseElement();
+        }
+        else
+        {
+            builder.AddContent(0, (int)duration.TotalSeconds);
+            builder.OpenElement(1, "span");
+            builder.AddAttribute(2, "class", "stat-unit");
+            builder.AddContent(3, "s");
+            builder.CloseElement();
+        }
+    };
 
     private string FormatDuration(TimeSpan duration)
     {
