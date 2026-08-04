@@ -678,7 +678,7 @@
         }
     }
 
-    private double BudgetMinY => BudgetDataPoints.Count > 0 ? Math.Min(0, BudgetDataPoints.Min(p => p.BalanceHours)) : 0;
+    private double BudgetMinY => 0;
     private double BudgetMaxY => BudgetDataPoints.Count > 0 ? Math.Max(0, BudgetDataPoints.Max(p => p.BalanceHours)) : 1;
 
     private void RefreshBudgetTimelineData()
