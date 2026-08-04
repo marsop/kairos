@@ -273,18 +273,20 @@
                         <div style="display: flex; gap: 8px; align-items: center; min-width: 220px; font-weight: bold; margin-bottom: 4px;">
                             @{ var currentGroupId = groupId; }
                             <span>@(GetGroupIcon(currentGroupId)) @(GetGroupDisplayName(currentGroupId))</span>
-                            <button class="activity-action-btn" @onclick="() => StartEditingGroup(currentGroupId)" @onclick:stopPropagation="true" title="@Localizer["EditGroup"]">
-                                ✏️
-                            </button>
                         </div>
-                        <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
+                        <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(currentGroupId) @Localizer["Activities"]</span>
                     </div>
-                    <button class="activity-action-btn delete"
-                            title="@Localizer["Delete"]"
-                            disabled="@(SettingsService.ActivityGroupCount <= 1)"
-                            @onclick="@(() => RemoveActivityGroup(groupId))">
-                        🗑️
-                    </button>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="activity-action-btn" @onclick="() => StartEditingGroup(currentGroupId)" @onclick:stopPropagation="true" title="@Localizer["EditGroup"]">
+                            ✏️
+                        </button>
+                        <button class="activity-action-btn delete"
+                                title="@Localizer["Delete"]"
+                                disabled="@(SettingsService.ActivityGroupCount <= 1)"
+                                @onclick="@(() => RemoveActivityGroup(currentGroupId))">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
             }
 
