@@ -75,6 +75,7 @@ internal sealed class StubSettingsService : ISettingsService
     public string Language { get; set; } = "en";
     public bool TutorialCompleted { get; set; }
     public string HistoryView { get; set; } = "list";
+    public string ChartType { get; set; } = "line";
     public bool BrowserNotificationsEnabled { get; set; }
     public bool SoundsEnabled { get; set; }
     public bool AdvancedSettingsEnabled { get; set; } = true;

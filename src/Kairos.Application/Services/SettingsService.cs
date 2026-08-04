@@ -348,6 +348,21 @@ public class SettingsService : ISettingsService
         }
     }
 
+    private string _chartType = "line";
+    public string ChartType
+    {
+        get => _chartType;
+        set
+        {
+            if (_chartType != value)
+            {
+                _chartType = value;
+                OnSettingsChanged?.Invoke();
+                _ = SaveAsync();
+            }
+        }
+    }
+
     private string _historyView = "list";
     public string HistoryView
     {
@@ -458,6 +473,7 @@ public class SettingsService : ISettingsService
                     _autoDeleteEventDuration = data.AutoDeleteEventDuration;
                     _stickyEventsDuration = data.StickyEventsDuration;
                     _historyView = data.HistoryView ?? "list";
+                    _chartType = data.ChartType ?? "line";
                 }
             }
             catch
@@ -528,7 +544,8 @@ public class SettingsService : ISettingsService
             ActivityGroupIcons = _activityGroupIcons,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
-            HistoryView = _historyView
+            HistoryView = _historyView,
+            ChartType = _chartType
         };
         var json = JsonSerializer.Serialize(data);
         await _storage.SetItemAsync(StorageKey, json);
@@ -696,7 +713,8 @@ public class SettingsService : ISettingsService
             ActivityGroupIcons = _activityGroupIcons,
             AutoDeleteEventDuration = _autoDeleteEventDuration,
             StickyEventsDuration = StickyEventsDuration,
-            HistoryView = _historyView
+            HistoryView = _historyView,
+            ChartType = _chartType
         };
 
         var json = JsonSerializer.Serialize(data);
@@ -930,6 +948,7 @@ internal class SettingsData
     public int AutoDeleteEventDuration { get; set; }
     public int StickyEventsDuration { get; set; } = 0;
     public string HistoryView { get; set; } = "list";
+    public string ChartType { get; set; } = "line";
 }
 
 public class SyncedSettingsData

@@ -21,6 +21,7 @@ public interface ISettingsService
     bool TutorialCompleted { get; set; }
 
     string HistoryView { get; set; }
+    string ChartType { get; set; }
 
     /// <summary>
     /// Gets or sets whether browser notifications are enabled.
