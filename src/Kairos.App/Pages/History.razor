@@ -52,14 +52,10 @@
             }
             else
             {
-                <div class="view-toggle">
-                    <button class="@(CurrentBudgetView == BudgetViewMode.Day ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Day)">@Localizer["Day"]</button>
-                    <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["Week"]</button>
-                    <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["Month"]</button>
-                </div>
                 @if (CurrentBudgetView == BudgetViewMode.Day)
                 {
                     <div class="history-date-filter">
+                        <label class="history-filter-label" for="stats-day-date">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
                             <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="BudgetDayPrevious">&lt;</button>
                             <input id="stats-day-date"
@@ -74,6 +70,7 @@
                 else if (CurrentBudgetView == BudgetViewMode.Week)
                 {
                     <div class="history-date-filter">
+                        <label class="history-filter-label" for="stats-week">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
                             <button class="history-date-nav-btn" aria-label="@Localizer["PreviousWeek"]" @onclick="BudgetWeekPrevious">&lt;</button>
                             <input id="stats-week"
@@ -88,6 +85,7 @@
                 else if (CurrentBudgetView == BudgetViewMode.Month)
                 {
                     <div class="history-date-filter">
+                        <label class="history-filter-label" for="stats-month">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
                             <button class="history-date-nav-btn" aria-label="@Localizer["PreviousMonth"]" @onclick="BudgetMonthPrevious">&lt;</button>
                             <input id="stats-month"
@@ -99,6 +97,11 @@
                         </div>
                     </div>
                 }
+                <div class="view-toggle">
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Day ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Day)">@Localizer["Day"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["Week"]</button>
+                    <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["Month"]</button>
+                </div>
             }
             @if (SettingsService.HistoryView == "calendar")
             {
