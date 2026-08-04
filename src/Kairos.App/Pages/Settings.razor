@@ -280,12 +280,6 @@
                         <button class="activity-action-btn" @onclick="() => StartEditingGroup(currentGroupId)" @onclick:stopPropagation="true" title="@Localizer["EditGroup"]">
                             ✏️
                         </button>
-                        <button class="activity-action-btn delete"
-                                title="@Localizer["Delete"]"
-                                disabled="@(SettingsService.ActivityGroupCount <= 1)"
-                                @onclick="@(() => RemoveActivityGroup(currentGroupId))">
-                            🗑️
-                        </button>
                     </div>
                 </div>
             }

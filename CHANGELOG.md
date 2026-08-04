@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Settings UI**: Added Activity Group management in Settings (visible only when Activity Groups are enabled), including listing groups with activity counts plus add/remove group actions.
 
 ### Changed
+- **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
+
 
 - **UI**: Added focus management for input fields in History and Statistics pages.
 - **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
