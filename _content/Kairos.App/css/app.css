@@ -460,31 +460,9 @@ body {
     }
 }
 
-.active-info {
-    text-align: center;
-    padding: var(--spacing-lg);
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-}
 
-.active-duration .label {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-}
 
-.active-duration .value {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    margin-left: var(--spacing-sm);
-}
 
-.active-comment {
-    margin-top: var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    word-break: break-word;
-}
 
 /* ===== Timeline Page ===== */
 
@@ -3005,4 +2983,50 @@ textarea.edit-input {
 .tutorial-btn:hover:not(:disabled) {
     background: var(--color-bg-secondary);
     border-color: var(--color-text-secondary);
+}
+
+/* ===== Summary Card ===== */
+
+.stat-summary-card {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 1px solid var(--color-bg-tertiary);
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+.stat-big-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-positive);
+    font-variant-numeric: tabular-nums;
+    text-shadow: var(--shadow-glow-positive);
+    white-space: nowrap;
+}
+
+.stat-unit {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.stat-period {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
 }

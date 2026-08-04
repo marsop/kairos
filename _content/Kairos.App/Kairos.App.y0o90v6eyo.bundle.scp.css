@@ -1,50 +1,4 @@
 /* _content/Kairos.App/Pages/History.razor.rz.scp.css */
-/* ===== Summary Card ===== */
-
-.stat-summary-card[b-kmut9yq2nw] {
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border: 1px solid var(--color-bg-tertiary);
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
-}
-
-.stat-label[b-kmut9yq2nw] {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-}
-
-.stat-big-value[b-kmut9yq2nw] {
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    color: var(--color-positive);
-    font-variant-numeric: tabular-nums;
-    text-shadow: var(--shadow-glow-positive);
-    white-space: nowrap;
-}
-
-.stat-unit[b-kmut9yq2nw] {
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    font-weight: 400;
-}
-
-.stat-period[b-kmut9yq2nw] {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-}
-
 /* ===== Chart ===== */
 
 .chart-container[b-kmut9yq2nw] {
@@ -121,52 +75,6 @@
     color: var(--color-text-primary);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-}
-
-/* ===== Summary Card ===== */
-
-.stat-summary-card[b-cf5v8cqnw4] {
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border: 1px solid var(--color-bg-tertiary);
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
-}
-
-.stat-label[b-cf5v8cqnw4] {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-}
-
-.stat-big-value[b-cf5v8cqnw4] {
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    color: var(--color-positive);
-    font-variant-numeric: tabular-nums;
-    text-shadow: var(--shadow-glow-positive);
-    white-space: nowrap;
-}
-
-.stat-unit[b-cf5v8cqnw4] {
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    font-weight: 400;
-}
-
-.stat-period[b-cf5v8cqnw4] {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
 }
 
 /* ===== Chart ===== */
