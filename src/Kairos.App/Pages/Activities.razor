@@ -100,7 +100,27 @@
                 }
             </div>
             <div class="stat-big-value">
-                @FormatDurationMarkup(ActiveEvent.Duration)
+                @if (ActiveEvent.Duration.TotalHours >= 1)
+                {
+                    @((int)ActiveEvent.Duration.TotalHours)
+                    <span class="stat-unit">h</span>
+                    @(" ")
+                    @ActiveEvent.Duration.Minutes
+                    <span class="stat-unit">m</span>
+                }
+                else if (ActiveEvent.Duration.TotalMinutes >= 1)
+                {
+                    @((int)ActiveEvent.Duration.TotalMinutes)
+                    <span class="stat-unit">m</span>
+                    @(" ")
+                    @ActiveEvent.Duration.Seconds
+                    <span class="stat-unit">s</span>
+                }
+                else
+                {
+                    @((int)ActiveEvent.Duration.TotalSeconds)
+                    <span class="stat-unit">s</span>
+                }
             </div>
         </div>
     }
@@ -466,47 +486,7 @@
     }
 
 
-    private RenderFragment FormatDurationMarkup(TimeSpan duration) => builder =>
-    {
-        if (duration.TotalHours >= 1)
-        {
-            builder.AddContent(0, (int)duration.TotalHours);
-            builder.OpenElement(1, "span");
-            builder.AddAttribute(2, "class", "stat-unit");
-            builder.AddContent(3, "h");
-            builder.CloseElement();
-            builder.AddContent(4, " ");
-            builder.AddContent(5, duration.Minutes);
-            builder.OpenElement(6, "span");
-            builder.AddAttribute(7, "class", "stat-unit");
-            builder.AddContent(8, "m");
-            builder.CloseElement();
-        }
-        else if (duration.TotalMinutes >= 1)
-        {
-            builder.AddContent(0, (int)duration.TotalMinutes);
-            builder.OpenElement(1, "span");
-            builder.AddAttribute(2, "class", "stat-unit");
-            builder.AddContent(3, "m");
-            builder.CloseElement();
-            builder.AddContent(4, " ");
-            builder.AddContent(5, duration.Seconds);
-            builder.OpenElement(6, "span");
-            builder.AddAttribute(7, "class", "stat-unit");
-            builder.AddContent(8, "s");
-            builder.CloseElement();
-        }
-        else
-        {
-            builder.AddContent(0, (int)duration.TotalSeconds);
-            builder.OpenElement(1, "span");
-            builder.AddAttribute(2, "class", "stat-unit");
-            builder.AddContent(3, "s");
-            builder.CloseElement();
-        }
-    };
-
-    private string FormatDuration(TimeSpan duration)
+        private string FormatDuration(TimeSpan duration)
     {
         if (duration.TotalHours >= 1)
         {
