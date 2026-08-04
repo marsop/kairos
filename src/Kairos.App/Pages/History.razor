@@ -102,6 +102,10 @@
                     <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["Week"]</button>
                     <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["Month"]</button>
                 </div>
+                <div class="view-toggle" style="margin-left: auto;">
+                    <button class="@(SettingsService.ChartType == "line" ? "active" : "")" @onclick="@(() => SetChartType("line"))" title="@Localizer["ChartTypeLine"]">📈</button>
+                    <button class="@(SettingsService.ChartType == "bar" ? "active" : "")" @onclick="@(() => SetChartType("bar"))" title="@Localizer["ChartTypeBar"]">📊</button>
+                </div>
             }
             @if (SettingsService.HistoryView == "calendar")
             {
@@ -202,48 +206,96 @@
                     </defs>
 
                     <!-- Data visualization -->
-                    @if (BudgetDataPoints.Count > 1)
+                    @if (SettingsService.ChartType == "bar")
                     {
-                        <!-- Area fills & Lines -->
-                        @for (int i = 1; i < BudgetDataPoints.Count; i++)
+                        @if (BarDataPoints.Count > 0)
                         {
-                            var prev = BudgetDataPoints[i - 1];
-                            var curr = BudgetDataPoints[i];
-                            var color = curr.Color;
-                            var idSafe = color.Replace("#", "");
+                            var barCount = BarDataPoints.Count;
+                            var totalWidth = 700.0;
+                            var startX = 50.0;
+                            var barPadding = 10.0;
+                            var maxBarWidth = 100.0;
 
-                            var x1 = GetBudgetXFromTimestamp(prev.Timestamp);
-                            var y1 = GetBudgetY(prev.BalanceHours);
-                            var x2 = GetBudgetXFromTimestamp(curr.Timestamp);
-                            var y2 = GetBudgetY(curr.BalanceHours);
+                            var availableWidthPerBar = (totalWidth - (barPadding * (barCount + 1))) / barCount;
+                            var barWidth = Math.Min(availableWidthPerBar, maxBarWidth);
+                            var actualTotalWidth = (barWidth * barCount) + (barPadding * (barCount - 1));
+                            var currentX = startX + (totalWidth - actualTotalWidth) / 2; // Center bars
 
-                            var yZero = GetBudgetY(0);
+                            foreach (var point in BarDataPoints)
+                            {
+                                var yZero = GetBudgetY(0);
+                                var y = GetBudgetY(point.Hours);
+                                var barHeight = yZero - y;
+                                var color = point.Activity.Color;
 
-                            var areaPath = FormattableString.Invariant($"M {x1} {yZero} L {x1} {y1} L {x2} {y2} L {x2} {yZero} Z");
+                                <rect x="@currentX.ToString(CultureInfo.InvariantCulture)"
+                                      y="@y.ToString(CultureInfo.InvariantCulture)"
+                                      width="@barWidth.ToString(CultureInfo.InvariantCulture)"
+                                      height="@barHeight.ToString(CultureInfo.InvariantCulture)"
+                                      fill="@color"
+                                      rx="4" ry="4" opacity="0.8" />
 
-                            <path d="@areaPath" fill="url(#areaGradient_@idSafe)" opacity="0.3" />
-                            <line x1="@x1.ToString(CultureInfo.InvariantCulture)" y1="@y1.ToString(CultureInfo.InvariantCulture)" x2="@x2.ToString(CultureInfo.InvariantCulture)" y2="@y2.ToString(CultureInfo.InvariantCulture)" stroke="@color" stroke-width="3" />
+                                <!-- Label inside or above the bar -->
+                                var textY = y - 5;
+                                @((MarkupString)$@"<text x=""{(currentX + barWidth / 2).ToString(CultureInfo.InvariantCulture)}"" y=""{textY.ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(color)}"" font-size=""12"" font-weight=""bold"">{point.Hours.ToString("F1", CultureInfo.InvariantCulture)}h</text>")
+
+                                <!-- Activity name/emoji below the bar -->
+                                @((MarkupString)$@"<text x=""{(currentX + barWidth / 2).ToString(CultureInfo.InvariantCulture)}"" y=""{(yZero + 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""#888"" font-size=""12"">{System.Net.WebUtility.HtmlEncode(point.Activity.Emoji)}</text>")
+
+                                currentX += barWidth + barPadding;
+                            }
                         }
-
-                        <!-- Current value indicator -->
-                        @if (BudgetDataPoints.Count > 0)
+                        else
                         {
-                            var lastPoint = BudgetDataPoints.Last();
-                            var indicatorColor = lastPoint.Color;
-                            var x = GetBudgetXFromTimestamp(lastPoint.Timestamp);
-                            var y = GetBudgetY(lastPoint.BalanceHours);
-                            var valueText = lastPoint.BalanceHours >= 0
-                                ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
-                                : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
-
-                            <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@indicatorColor" class="pulse-circle" />
-                            @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(indicatorColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
+                            <!-- Show "no data" message but keep the grid -->
+                            @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
                         }
                     }
                     else
                     {
-                        <!-- Show "no data" message but keep the grid -->
-                        @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
+                        @if (BudgetDataPoints.Count > 1)
+                        {
+                            <!-- Area fills & Lines -->
+                            @for (int i = 1; i < BudgetDataPoints.Count; i++)
+                            {
+                                var prev = BudgetDataPoints[i - 1];
+                                var curr = BudgetDataPoints[i];
+                                var color = curr.Color;
+                                var idSafe = color.Replace("#", "");
+
+                                var x1 = GetBudgetXFromTimestamp(prev.Timestamp);
+                                var y1 = GetBudgetY(prev.BalanceHours);
+                                var x2 = GetBudgetXFromTimestamp(curr.Timestamp);
+                                var y2 = GetBudgetY(curr.BalanceHours);
+
+                                var yZero = GetBudgetY(0);
+
+                                var areaPath = FormattableString.Invariant($"M {x1} {yZero} L {x1} {y1} L {x2} {y2} L {x2} {yZero} Z");
+
+                                <path d="@areaPath" fill="url(#areaGradient_@idSafe)" opacity="0.3" />
+                                <line x1="@x1.ToString(CultureInfo.InvariantCulture)" y1="@y1.ToString(CultureInfo.InvariantCulture)" x2="@x2.ToString(CultureInfo.InvariantCulture)" y2="@y2.ToString(CultureInfo.InvariantCulture)" stroke="@color" stroke-width="3" />
+                            }
+
+                            <!-- Current value indicator -->
+                            @if (BudgetDataPoints.Count > 0)
+                            {
+                                var lastPoint = BudgetDataPoints.Last();
+                                var indicatorColor = lastPoint.Color;
+                                var x = GetBudgetXFromTimestamp(lastPoint.Timestamp);
+                                var y = GetBudgetY(lastPoint.BalanceHours);
+                                var valueText = lastPoint.BalanceHours >= 0
+                                    ? $"+{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h"
+                                    : $"{lastPoint.BalanceHours.ToString("F2", CultureInfo.InvariantCulture)}h";
+
+                                <circle cx="@x.ToString(CultureInfo.InvariantCulture)" cy="@y.ToString(CultureInfo.InvariantCulture)" r="6" fill="@indicatorColor" class="pulse-circle" />
+                                @((MarkupString)$@"<text x=""{x.ToString(CultureInfo.InvariantCulture)}"" y=""{(y - 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(indicatorColor)}"" font-size=""14"" font-weight=""bold"">{System.Net.WebUtility.HtmlEncode(valueText)}</text>")
+                            }
+                        }
+                        else
+                        {
+                            <!-- Show "no data" message but keep the grid -->
+                            @((MarkupString)$@"<text x=""400"" y=""200"" text-anchor=""middle"" fill=""#666"" font-size=""16"">{System.Net.WebUtility.HtmlEncode(Localizer["NoDataPeriod"].Value)}</text>")
+                        }
                     }
                 </svg>
             </div>
@@ -541,6 +593,18 @@
         StateHasChanged();
     }
 
+    private void SetChartType(string type)
+    {
+        if (SettingsService.ChartType != type)
+        {
+            SettingsService.ChartType = type;
+            if (SettingsService.HistoryView == "stats")
+            {
+                RefreshBudgetTimelineData();
+            }
+        }
+    }
+
     private void SetHistoryView(string view)
     {
         if (SettingsService.HistoryView != view)
@@ -692,6 +756,37 @@
     private void RefreshBudgetTimelineData()
     {
         BudgetDataPoints = TimeService.GetTimelineData(BudgetStartDate, BudgetEndDate);
+
+        BarDataPoints.Clear();
+        foreach (var activity in TimeService.Account.Activities)
+        {
+            var events = TimeService.Account.Events
+                .Where(e => e.ActivityName == activity.Name &&
+                            ((e.StartTime >= BudgetStartDate && e.StartTime < BudgetEndDate) ||
+                             (e.EndTime.HasValue && e.EndTime >= BudgetStartDate && e.EndTime < BudgetEndDate) ||
+                             (e.StartTime < BudgetStartDate && (!e.EndTime.HasValue || e.EndTime > BudgetEndDate))))
+                .ToList();
+
+            double totalHours = 0;
+            foreach (var e in events)
+            {
+                var start = e.StartTime > BudgetStartDate ? e.StartTime : BudgetStartDate;
+                var end = (e.EndTime ?? DateTimeOffset.UtcNow) < BudgetEndDate ? (e.EndTime ?? DateTimeOffset.UtcNow) : BudgetEndDate;
+                if (end > start)
+                {
+                    totalHours += (end - start).TotalHours;
+                }
+            }
+
+            if (totalHours > 0)
+            {
+                BarDataPoints.Add(new BarDataPoint
+                {
+                    Activity = activity,
+                    Hours = totalHours
+                });
+            }
+        }
     }
 
     private double GetBudgetXFromTimestamp(DateTimeOffset timestamp)
