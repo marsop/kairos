@@ -509,6 +509,7 @@
                 </div>
             </div>
             <div class="modal-actions">
+                <button class="btn-delete" disabled="@(SettingsService.ActivityGroupCount <= 1)" @onclick="() => RemoveActivityGroupAndCloseModal(_editingGroupId.Value)">@Localizer["Delete"]</button>
                 <button class="btn-cancel" @onclick="CancelEditGroup">@Localizer["Cancel"]</button>
                 <button class="btn-save" @onclick="SaveEditGroup">@Localizer["Save"]</button>
             </div>
@@ -866,6 +867,12 @@
     private string GetAddGroupLabel()
     {
         return Localizer["Group", string.Empty].Value.Trim();
+    }
+
+    private void RemoveActivityGroupAndCloseModal(int groupId)
+    {
+        RemoveActivityGroup(groupId);
+        CancelEditGroup();
     }
 
     private void RemoveActivityGroup(int groupId)
