@@ -164,6 +164,18 @@
                                value="@editingActivity.Id"
                                readonly />
                     </div>
+                    @if (SettingsService.ActivityGroupsEnabled)
+                    {
+                        <div class="activity-color-field">
+                            <label class="activity-color-label">@Localizer["Group"]</label>
+                            <select class="edit-input" @bind="_editingActivityGroupId">
+                                @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
+                                {
+                                    <option value="@group">@GetGroupDisplayName(group)</option>
+                                }
+                            </select>
+                        </div>
+                    }
                     <div class="activity-emoji-field">
                         <label class="activity-color-label">@Localizer["Emoji"]</label>
                         <button id="edit-emoji-btn"
@@ -252,6 +264,7 @@
     private bool _isMenuOpen;
     private Guid? _editingActivityId;
     private string? _editingActivityName;
+    private int? _editingActivityGroupId;
 
     private void SetActiveGroup(int group)
     {
@@ -431,6 +444,7 @@
     {
         _editingActivityId = activity.Id;
         _editingActivityName = activity.Name;
+        _editingActivityGroupId = activity.ActivityGroupId;
         _editingActivityColor = Activity.SanitizeColor(activity.Color);
         _editingActivityEmoji = activity.Emoji;
         _validationError = null;
@@ -455,7 +469,7 @@
 
         try
         {
-            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor, _editingActivityEmoji ?? string.Empty);
+            TimeService.UpdateActivity(_editingActivityId.Value, trimmedName, _editingActivityColor, _editingActivityEmoji ?? string.Empty, _editingActivityGroupId);
             CancelEdit();
         }
         catch (ArgumentException ex)
@@ -468,6 +482,7 @@
     {
         _editingActivityId = null;
         _editingActivityName = null;
+        _editingActivityGroupId = null;
         _editingActivityColor = Activity.DefaultColor;
         _editingActivityEmoji = null;
         _validationError = null;
