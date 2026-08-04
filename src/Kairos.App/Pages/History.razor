@@ -1317,5 +1317,12 @@
         double eventCenterHours = (startSeconds + endSeconds) / 7200.0;
 
         _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
+        _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
+    }
+
+    private class BarDataPoint
+    {
+        public Kairos.Core.Models.Activity Activity { get; set; } = null!;
+        public double Hours { get; set; }
     }
 }
