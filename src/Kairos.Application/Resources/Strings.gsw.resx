@@ -942,4 +942,7 @@
   <data name="SortByDefault" xml:space="preserve">
     <value>Standard</value>
   </data>
+  <data name="EditGroup" xml:space="preserve">
+    <value>Gruppe bearbeite</value>
+  </data>
 </root>

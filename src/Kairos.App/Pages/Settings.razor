@@ -270,25 +270,13 @@
             {
                 <div class="setting-item">
                     <div>
-                        <input class="edit-input"
-                               style="min-width: 220px;"
-                               value="@GetGroupDisplayName(groupId)"
-                               @onchange="@(e => RenameActivityGroup(groupId, e.Value?.ToString()))" />
-                       <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
-                        @{ var currentGroupId = groupId; }
-                        <button id="@($"edit-group-emoji-{currentGroupId}")"
-                            type="button"
-                            class="edit-input"
-                            style="width: 72px; text-align: center; cursor: pointer; padding: 0; background-color: var(--color-surface);"
-                            @onclick='@(() => ShowEmojiPicker($"edit-group-emoji-{currentGroupId}", currentGroupId))'>
-                            @(GetGroupIcon(currentGroupId))
-                        </button>
-                        <input class="edit-input"
-                            type="color"
-                            style="width: 44px; padding: 0;"
-                            value="@GetGroupColor(currentGroupId)"
-                            @onchange="@(e => UpdateGroupColor(currentGroupId, e.Value?.ToString()))" />
-                       </div>
+                        <div style="display: flex; gap: 8px; align-items: center; min-width: 220px; font-weight: bold; margin-bottom: 4px;">
+                            @{ var currentGroupId = groupId; }
+                            <span>@(GetGroupIcon(currentGroupId)) @(GetGroupDisplayName(currentGroupId))</span>
+                            <button class="activity-action-btn" @onclick="() => StartEditingGroup(currentGroupId)" @onclick:stopPropagation="true" title="@Localizer["EditGroup"]">
+                                ✏️
+                            </button>
+                        </div>
                         <span class="setting-description" style="display: block; margin-top: 2px;">@GetGroupActivitiesCount(groupId) @Localizer["Activities"]</span>
                     </div>
                     <button class="activity-action-btn delete"
@@ -478,9 +466,63 @@
     </div>
 </div>
 
+@if (_isEditingGroupModalOpen)
+{
+    <div class="modal-overlay" @onclick="CancelEditGroup">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["EditGroup"]</h3>
+            <div class="activity-form-fields">
+                <input type="text"
+                       class="activity-name-input @(_editGroupValidationError != null ? "invalid" : "")"
+                       @bind="_editingGroupName"
+                       @bind:event="oninput"
+                       @onkeydown="HandleEditGroupKeyDown"
+                       maxlength="40"
+                       autofocus />
+                <div class="activity-emoji-field">
+                    <label class="activity-color-label">@Localizer["Emoji"]</label>
+                    <button id="edit-group-emoji-modal"
+                            type="button"
+                            class="emoji-button"
+                            @onclick='@(() => ShowEmojiPicker("edit-group-emoji-modal", _editingGroupId.Value))'>
+                        @(string.IsNullOrEmpty(_editingGroupEmoji) ? "🗂️" : _editingGroupEmoji)
+                    </button>
+                </div>
+                <div class="activity-color-field">
+                    <label class="activity-color-label">@Localizer["Color"]</label>
+                    <div class="activity-color-picker-row">
+                        <input type="color"
+                               class="activity-color-input"
+                               @bind="_editingGroupColor"
+                               @bind:event="oninput" />
+                        <span class="activity-color-value">@_editingGroupColor</span>
+                    </div>
+                </div>
+                @if (_editGroupValidationError != null)
+                {
+                    <div class="validation-error">@_editGroupValidationError</div>
+                }
+                <div class="char-count @(_editingGroupName?.Length > 40 ? "over-limit" : "")">
+                    @(_editingGroupName?.Length ?? 0)/40
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelEditGroup">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="SaveEditGroup">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private DotNetObjectReference<Settings>? _objRef;
     private int? _editingGroupId;
+    private bool _isEditingGroupModalOpen;
+    private string? _editingGroupName;
+    private string? _editingGroupColor;
+    private string? _editingGroupEmoji;
+    private string? _editGroupValidationError;
+
     private bool isDropdownOpen;
     private bool isThemeDropdownOpen;
     private bool isAvatarDropdownOpen;
@@ -717,6 +759,60 @@
         return SettingsService.GetActivityGroupIcon(groupId) ?? "🗂️";
     }
 
+    private void StartEditingGroup(int groupId)
+    {
+        _editingGroupId = groupId;
+        _editingGroupName = GetGroupDisplayName(groupId);
+        _editingGroupColor = GetGroupColor(groupId);
+        _editingGroupEmoji = GetGroupIcon(groupId);
+        _editGroupValidationError = null;
+        _isEditingGroupModalOpen = true;
+    }
+
+    private void CancelEditGroup()
+    {
+        _isEditingGroupModalOpen = false;
+        _editingGroupId = null;
+        _editingGroupName = null;
+        _editingGroupColor = null;
+        _editingGroupEmoji = null;
+        _editGroupValidationError = null;
+    }
+
+    private void SaveEditGroup()
+    {
+        if (_editingGroupId == null || _editingGroupName == null)
+        {
+            CancelEditGroup();
+            return;
+        }
+
+        var trimmedName = _editingGroupName.Trim();
+        if (trimmedName.Length < 1 || trimmedName.Length > 40)
+        {
+            _editGroupValidationError = Localizer["NameLengthError"];
+            return;
+        }
+
+        SettingsService.SetActivityGroupName(_editingGroupId.Value, trimmedName);
+        SettingsService.SetActivityGroupColor(_editingGroupId.Value, _editingGroupColor ?? "#10B981");
+        SettingsService.SetActivityGroupIcon(_editingGroupId.Value, string.IsNullOrWhiteSpace(_editingGroupEmoji) ? "🗂️" : _editingGroupEmoji);
+
+        CancelEditGroup();
+    }
+
+    private void HandleEditGroupKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SaveEditGroup();
+        }
+        else if (e.Key == "Escape")
+        {
+            CancelEditGroup();
+        }
+    }
+
     private void RenameActivityGroup(int groupId, string? name)
     {
         SettingsService.SetActivityGroupName(groupId, name);
@@ -742,7 +838,12 @@
     [JSInvokable]
     public void SetGroupEmoji(string emoji)
     {
-        if (_editingGroupId.HasValue)
+        if (_isEditingGroupModalOpen)
+        {
+            _editingGroupEmoji = emoji;
+            StateHasChanged();
+        }
+        else if (_editingGroupId.HasValue)
         {
             UpdateGroupIcon(_editingGroupId.Value, emoji);
             StateHasChanged();
