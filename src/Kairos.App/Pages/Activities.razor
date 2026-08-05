@@ -18,15 +18,22 @@
             @if (SettingsService.ActivityGroupsEnabled)
             {
                 <div style="display: flex; align-items: center;">
-                    <select class="edit-input"
-                            style="@GetGroupSelectStyle()"
-                            value="@SettingsService.ActiveActivityGroup"
-                            @onchange="OnGroupChanged">
-                    @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
-                    {
-                        <option value="@group">@GetGroupDisplayName(group)</option>
-                    }
-                    </select>
+                    <div class="custom-dropdown" style="@GetGroupSelectStyle()" @onfocusout="CloseGroupDropdown" tabindex="-1">
+                        <button type="button" class="dropdown-trigger" @onclick="ToggleGroupDropdown">
+                            <span>@GetGroupDisplayName(SettingsService.ActiveActivityGroup)</span>
+                        </button>
+                        <div class="dropdown-menu @(_isGroupDropdownOpen ? "show" : "")">
+                            @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
+                            {
+                                var currentGroup = group;
+                                <div class="dropdown-item @(SettingsService.ActiveActivityGroup == currentGroup ? "selected" : "")"
+                                     @onclick="() => SelectGroup(currentGroup)"
+                                     @onclick:stopPropagation="true">
+                                    <span>@GetGroupDisplayName(currentGroup)</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             }
             <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
@@ -172,12 +179,22 @@
                     {
                         <div class="activity-color-field">
                             <label class="activity-color-label">@Localizer["Group"]</label>
-                            <select class="edit-input" @bind="_editingActivityGroupId">
-                                @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
-                                {
-                                    <option value="@group">@GetGroupDisplayName(group)</option>
-                                }
-                            </select>
+                            <div class="custom-dropdown" @onfocusout="CloseEditGroupDropdown" tabindex="-1">
+                                <button type="button" class="dropdown-trigger" @onclick="ToggleEditGroupDropdown">
+                                    <span>@GetGroupDisplayName(_editingActivityGroupId ?? 0)</span>
+                                </button>
+                                <div class="dropdown-menu @(_isEditGroupDropdownOpen ? "show" : "")">
+                                    @for (var group = 0; group < SettingsService.ActivityGroupCount; group++)
+                                    {
+                                        var currentGroup = group;
+                                        <div class="dropdown-item @(_editingActivityGroupId == currentGroup ? "selected" : "")"
+                                             @onclick="() => SelectEditGroup(currentGroup)"
+                                             @onclick:stopPropagation="true">
+                                            <span>@GetGroupDisplayName(currentGroup)</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     }
                     <div class="activity-emoji-field">
@@ -280,9 +297,41 @@
 
     private System.Threading.Timer? _timer;
     private bool _isMenuOpen;
+    private bool _isGroupDropdownOpen;
+    private bool _isEditGroupDropdownOpen;
     private Guid? _editingActivityId;
     private string? _editingActivityName;
     private int? _editingActivityGroupId;
+
+    private void ToggleEditGroupDropdown() => _isEditGroupDropdownOpen = !_isEditGroupDropdownOpen;
+
+    private async Task CloseEditGroupDropdown()
+    {
+        await Task.Delay(100);
+        _isEditGroupDropdownOpen = false;
+        StateHasChanged();
+    }
+
+    private void SelectEditGroup(int group)
+    {
+        _editingActivityGroupId = group;
+        _isEditGroupDropdownOpen = false;
+    }
+
+    private void ToggleGroupDropdown() => _isGroupDropdownOpen = !_isGroupDropdownOpen;
+
+    private async Task CloseGroupDropdown()
+    {
+        await Task.Delay(100);
+        _isGroupDropdownOpen = false;
+        StateHasChanged();
+    }
+
+    private void SelectGroup(int group)
+    {
+        SetActiveGroup(group);
+        _isGroupDropdownOpen = false;
+    }
 
     private void SetActiveGroup(int group)
     {
@@ -298,14 +347,6 @@
                 }
             }
             SettingsService.ActiveActivityGroup = group;
-        }
-    }
-
-    private void OnGroupChanged(ChangeEventArgs e)
-    {
-        if (int.TryParse(e.Value?.ToString(), out var groupId))
-        {
-            SetActiveGroup(groupId);
         }
     }
 
