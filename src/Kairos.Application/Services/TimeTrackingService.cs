@@ -269,7 +269,9 @@ public class TimeTrackingService : ITimeTrackingService
                 {
                     Timestamp = evt.EndTime.Value,
                     BalanceHours = runningBalance,
-                    Color = evt.ActivityColor
+                    Color = evt.ActivityColor,
+                    ActivityName = evt.ActivityName,
+                    ActivityEmoji = evt.ActivityEmoji
                 });
             }
         }
@@ -278,7 +280,14 @@ public class TimeTrackingService : ITimeTrackingService
         if (!points.Any(p => p.Timestamp == limit))
         {
             var activeEvent = relevantEvents.FirstOrDefault(e => e.StartTime <= limit && (e.EndTime == null || e.EndTime > limit));
-            points.Add(new TimelineDataPoint { Timestamp = limit, BalanceHours = runningBalance, Color = activeEvent?.ActivityColor ?? "#ffffff" });
+            points.Add(new TimelineDataPoint
+            {
+                Timestamp = limit,
+                BalanceHours = runningBalance,
+                Color = activeEvent?.ActivityColor ?? "#ffffff",
+                ActivityName = activeEvent?.ActivityName ?? string.Empty,
+                ActivityEmoji = activeEvent?.ActivityEmoji ?? string.Empty
+            });
         }
 
         return points.OrderBy(p => p.Timestamp).ToList();
