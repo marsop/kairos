@@ -484,6 +484,26 @@ body {
     height: 100%;
 }
 
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    justify-content: center;
+}
+
+.chart-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+}
+
+.chart-legend-label {
+    white-space: nowrap;
+}
+
 .pulse-circle {
     animation: pulse-circle 2s ease-in-out infinite;
 }
