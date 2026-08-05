@@ -22,7 +22,7 @@
         <h2 class="section-title">⚙️ @Localizer["SettingsGeneral"]</h2>
         <div class="setting-item compact no-border">
             <span class="setting-label">@Localizer["DisplayLanguage"]</span>
-            <div class="language-dropdown">
+            <div class="custom-dropdown">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleDropdown">
                     <span class="flag-icon">@GetFlag(SelectedLanguage)</span>
                     <span>@GetLanguageName(SelectedLanguage)</span>
@@ -43,7 +43,7 @@
 
         <div class="setting-item compact no-border">
             <span class="setting-label">@Localizer["Theme"]</span>
-            <div class="language-dropdown">
+            <div class="custom-dropdown">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleThemeDropdown">
                     <span class="theme-icon">@GetThemeIcon(SelectedTheme)</span>
                     <span>@GetThemeName(SelectedTheme)</span>
@@ -64,7 +64,7 @@
 
         <div class="setting-item compact">
             <span class="setting-label">@Localizer["TutorialAvatar"]</span>
-            <div class="language-dropdown">
+            <div class="custom-dropdown">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
                     <span class="avatar-icon"><img src="@($"{TutorialService.CurrentAvatar?.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                     <span>@SelectedAvatarName</span>
@@ -332,16 +332,33 @@
                 </div>
             </div>
 
-            <div class="setting-item">
+            <div class="setting-item compact no-border">
                 <div>
                     <span class="setting-label">@Localizer["BudgetSettingsBudgetType"]</span>
                     <span class="setting-description" style="display: block; margin-top: 2px;">@Localizer["BudgetSettingsBudgetTypeDesc"]</span>
                 </div>
-                <select value="@((int)BudgetSettingsService.BudgetType)" @onchange="OnBudgetTypeChanged" class="edit-input">
-                    <option value="0">@Localizer["BudgetSettingsBudgetTypeMonthly"]</option>
-                    <option value="1">@Localizer["BudgetSettingsBudgetTypeWeekly"]</option>
-                    <option value="2">@Localizer["BudgetSettingsBudgetTypeDaily"]</option>
-                </select>
+                <div class="custom-dropdown" @onfocusout="CloseBudgetTypeDropdown" tabindex="-1">
+                    <button type="button" class="dropdown-trigger" @onclick="ToggleBudgetTypeDropdown">
+                        <span>@GetBudgetTypeName(BudgetSettingsService.BudgetType)</span>
+                    </button>
+                    <div class="dropdown-menu @(isBudgetTypeDropdownOpen ? "show" : "")">
+                        <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Monthly ? "selected" : "")"
+                             @onclick="() => SelectBudgetType(BudgetType.Monthly)"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer["BudgetSettingsBudgetTypeMonthly"]</span>
+                        </div>
+                        <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Weekly ? "selected" : "")"
+                             @onclick="() => SelectBudgetType(BudgetType.Weekly)"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer["BudgetSettingsBudgetTypeWeekly"]</span>
+                        </div>
+                        <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Daily ? "selected" : "")"
+                             @onclick="() => SelectBudgetType(BudgetType.Daily)"
+                             @onclick:stopPropagation="true">
+                            <span>@Localizer["BudgetSettingsBudgetTypeDaily"]</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="setting-item budget-color-setting">
@@ -526,6 +543,7 @@
     private bool isDropdownOpen;
     private bool isThemeDropdownOpen;
     private bool isAvatarDropdownOpen;
+    private bool isBudgetTypeDropdownOpen;
     private bool showConfirmation1;
     private bool showConfirmation2;
     private bool browserNotificationsDenied;
@@ -691,12 +709,30 @@
         }
     }
 
-    private void OnBudgetTypeChanged(ChangeEventArgs e)
+    private void ToggleBudgetTypeDropdown() => isBudgetTypeDropdownOpen = !isBudgetTypeDropdownOpen;
+
+    private async Task CloseBudgetTypeDropdown()
     {
-        if (int.TryParse(e.Value?.ToString(), out int typeVal))
+        await Task.Delay(100);
+        isBudgetTypeDropdownOpen = false;
+        StateHasChanged();
+    }
+
+    private void SelectBudgetType(BudgetType budgetType)
+    {
+        BudgetSettingsService.BudgetType = budgetType;
+        isBudgetTypeDropdownOpen = false;
+    }
+
+    private string GetBudgetTypeName(BudgetType budgetType)
+    {
+        return budgetType switch
         {
-            BudgetSettingsService.BudgetType = (BudgetType)typeVal;
-        }
+            BudgetType.Monthly => Localizer["BudgetSettingsBudgetTypeMonthly"],
+            BudgetType.Weekly => Localizer["BudgetSettingsBudgetTypeWeekly"],
+            BudgetType.Daily => Localizer["BudgetSettingsBudgetTypeDaily"],
+            _ => Localizer["BudgetSettingsBudgetTypeMonthly"]
+        };
     }
 
     private void OnBudgetNotificationsEnabledToggled(ChangeEventArgs e)
