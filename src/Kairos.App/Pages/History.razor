@@ -366,6 +366,17 @@
                                 <span class="calendar-event-comment">@evt.Comment</span>
                             }
 
+                            @if (isSelected)
+                            {
+                                <div class="calendar-event-times">
+                                    <span class="time-label">@Localizer["Started"]</span> @evt.StartTime.ToLocalTime().ToString("HH:mm")
+                                    @if (evt.EndTime.HasValue)
+                                    {
+                                        <br />
+                                        <span class="time-label">@Localizer["Ended"]</span> @evt.EndTime.Value.ToLocalTime().ToString("HH:mm")
+                                    }
+                                </div>
+                            }
                             @if (isSelected && !evt.IsActive)
                             {
                                 <div class="resize-handle bottom"

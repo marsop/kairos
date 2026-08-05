@@ -3030,3 +3030,10 @@ textarea.edit-input {
     letter-spacing: 0.1em;
     white-space: nowrap;
 }
+
+.calendar-event-times {
+    font-size: var(--font-size-xs);
+    opacity: 0.9;
+    margin-top: var(--spacing-xs);
+    line-height: 1.2;
+}
