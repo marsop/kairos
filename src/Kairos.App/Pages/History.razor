@@ -298,6 +298,29 @@
                         }
                     }
                 </svg>
+
+                <div class="chart-legend">
+                    @if (SettingsService.ChartType == "bar")
+                    {
+                        @foreach (var point in BarDataPoints)
+                        {
+                            <div class="chart-legend-item">
+                                <span class="activity-color-dot small" style="@GetColorDotStyle(point.Activity.Color)"></span>
+                                <span class="chart-legend-label">@point.Activity.Emoji @point.Activity.Name</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var point in BudgetDataPoints.Where(p => !string.IsNullOrEmpty(p.ActivityName)).DistinctBy(p => p.Color))
+                        {
+                            <div class="chart-legend-item">
+                                <span class="activity-color-dot small" style="@GetColorDotStyle(point.Color)"></span>
+                                <span class="chart-legend-label">@point.ActivityEmoji @point.ActivityName</span>
+                            </div>
+                        }
+                    }
+                </div>
             </div>
         }
         else if (SettingsService.HistoryView == "calendar")

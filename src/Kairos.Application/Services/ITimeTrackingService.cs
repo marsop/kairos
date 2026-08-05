@@ -181,4 +181,6 @@ public class TimelineDataPoint
     public DateTimeOffset Timestamp { get; set; }
     public double BalanceHours { get; set; }
     public string Color { get; set; } = "#ffffff";
+    public string ActivityName { get; set; } = string.Empty;
+    public string ActivityEmoji { get; set; } = string.Empty;
 }
