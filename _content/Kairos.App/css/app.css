@@ -2279,7 +2279,7 @@ html[data-theme="dark"] .edit-input {
 }
 
 /* Custom Language Dropdown */
-.language-dropdown {
+.custom-dropdown {
     position: relative;
     min-width: 160px;
 }
