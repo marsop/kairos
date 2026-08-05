@@ -156,10 +156,13 @@
                             <line x1="50" y1="@y" x2="750" y2="@y" stroke="#333" stroke-dasharray="4,4" />
                         }
                         <!-- Vertical grid lines -->
-                        @for (int i = 0; i <= 4; i++)
+                        @if (SettingsService.ChartType != "bar")
                         {
-                            var x = 50 + i * 175;
-                            <line x1="@x" y1="50" x2="@x" y2="350" stroke="#333" stroke-dasharray="4,4" />
+                            @for (int i = 0; i <= 4; i++)
+                            {
+                                var x = 50 + i * 175;
+                                <line x1="@x" y1="50" x2="@x" y2="350" stroke="#333" stroke-dasharray="4,4" />
+                            }
                         }
                     </g>
 
@@ -178,20 +181,23 @@
                     </g>
 
                     <!-- X-axis time labels -->
-                    <g class="x-labels">
-                        @{
-                            var chartEndTime = BudgetEndDate.DateTime;
-                            var chartStartTime = BudgetStartDate.DateTime;
-                            var chartPeriod = chartEndTime - chartStartTime;
-                        }
-                        @for (int i = 0; i <= 4; i++)
-                        {
-                            var x = 50 + i * 175;
-                            var time = chartStartTime + TimeSpan.FromTicks((long)(chartPeriod.Ticks * i / 4.0));
-                            var timeLabel = FormatBudgetTimeLabel(time);
-                            @((MarkupString)$@"<text x=""{x}"" y=""370"" text-anchor=""middle"" fill=""#888"" font-size=""11"">{System.Net.WebUtility.HtmlEncode(timeLabel)}</text>")
-                        }
-                    </g>
+                    @if (SettingsService.ChartType != "bar")
+                    {
+                        <g class="x-labels">
+                            @{
+                                var chartEndTime = BudgetEndDate.DateTime;
+                                var chartStartTime = BudgetStartDate.DateTime;
+                                var chartPeriod = chartEndTime - chartStartTime;
+                            }
+                            @for (int i = 0; i <= 4; i++)
+                            {
+                                var x = 50 + i * 175;
+                                var time = chartStartTime + TimeSpan.FromTicks((long)(chartPeriod.Ticks * i / 4.0));
+                                var timeLabel = FormatBudgetTimeLabel(time);
+                                @((MarkupString)$@"<text x=""{x}"" y=""370"" text-anchor=""middle"" fill=""#888"" font-size=""11"">{System.Net.WebUtility.HtmlEncode(timeLabel)}</text>")
+                            }
+                        </g>
+                    }
 
                     <!-- Gradient definitions -->
                     <defs>
