@@ -44,7 +44,7 @@
     
     @if (ActiveEvent != null)
     {
-        <div class="stat-summary-card">
+        <div class="stat-summary-card" @onclick="EditActiveEvent" style="cursor: pointer;" title="@Localizer["EditEvent"]">
             <div class="stat-label">
                 @ActiveEvent.ActivityEmoji @ActiveEvent.ActivityName
                 @if (!string.IsNullOrWhiteSpace(ActiveEvent.Comment))
@@ -53,6 +53,7 @@
                     var displayComment = comment.Length > 40 ? comment.Substring(0, 40) + "..." : comment;
                     <text> / @displayComment</text>
                 }
+                <span style="margin-left: 8px; font-size: 0.9em; opacity: 0.7;">✏️</span>
             </div>
             <div class="stat-big-value">
                 @if (ActiveEvent.Duration.TotalHours >= 1)
@@ -257,9 +258,23 @@
     </div>
 }
 
+<Kairos.App.Components.EditEventDialog EventToEdit="@_eventToEdit" OnClose="CancelEditEvent" />
+
 @code {
     private ActivityEvent? ActiveEvent => TimeService.GetActiveEvent();
     
+    private ActivityEvent? _eventToEdit;
+
+    private void EditActiveEvent()
+    {
+        _eventToEdit = ActiveEvent;
+    }
+
+    private void CancelEditEvent()
+    {
+        _eventToEdit = null;
+    }
+
     private System.Threading.Timer? _timer;
     private bool _isMenuOpen;
     private Guid? _editingActivityId;
