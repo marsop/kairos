@@ -1,0 +1,164 @@
+@using Kairos.Application.Resources
+@using Kairos.Application.Services
+@using Kairos.Core.Models
+@using Microsoft.Extensions.Localization
+@inject ITimeTrackingService TimeService
+@inject IStringLocalizer<Strings> Localizer
+
+@if (EventToEdit != null)
+{
+    <div class="modal-overlay" @onclick="CancelEdit">
+        <div class="modal-dialog" @onclick:stopPropagation="true">
+            <h3>@Localizer["EditEventTitle"]</h3>
+            <div class="edit-form">
+                @if (!EventToEdit.IsActive)
+                {
+                    <div class="edit-field">
+                        <label class="edit-label">@Localizer["StartTime"]</label>
+                        <input type="datetime-local" class="edit-input"
+                               @ref="_editStartTimeRef"
+                               value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
+                               @onchange="OnStartTimeChanged" />
+                    </div>
+                    <div class="edit-field">
+                        <label class="edit-label">@Localizer["EndTime"]</label>
+                        <input type="datetime-local" class="edit-input"
+                               value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
+                               @onchange="OnEndTimeChanged" />
+                    </div>
+                }
+                <div class="edit-field">
+                    <label class="edit-label">@Localizer["Comment"]</label>
+                    <textarea class="edit-input" @ref="_editCommentRef" @bind="_editComment"></textarea>
+                </div>
+                @if (!string.IsNullOrEmpty(_editError))
+                {
+                    <p class="edit-error">@_editError</p>
+                }
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
+                <button class="btn-save" @onclick="SaveEditEvent">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ActivityEvent? EventToEdit { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private ElementReference _editStartTimeRef;
+    private ElementReference _editCommentRef;
+    private bool _editFocusRequested;
+    private DateTime _editStartTime;
+    private DateTime _editEndTime;
+    private string _editComment = string.Empty;
+    private string? _editError;
+
+    protected override void OnParametersSet()
+    {
+        if (EventToEdit != null)
+        {
+            _editStartTime = EventToEdit.StartTime.ToLocalTime().DateTime;
+            _editEndTime = EventToEdit.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
+            _editComment = EventToEdit.Comment ?? string.Empty;
+            _editError = null;
+            _editFocusRequested = true;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_editFocusRequested && EventToEdit != null)
+        {
+            _editFocusRequested = false;
+            try
+            {
+                if (!EventToEdit.IsActive)
+                    await _editStartTimeRef.FocusAsync();
+                else
+                    await _editCommentRef.FocusAsync();
+            }
+            catch
+            {
+                // Ignore focus errors (e.g., element not visible yet)
+            }
+        }
+    }
+
+    private void OnStartTimeChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
+        {
+            _editStartTime = dt;
+        }
+    }
+
+    private void OnEndTimeChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
+        {
+            _editEndTime = dt;
+        }
+    }
+
+    private async Task CancelEdit()
+    {
+        _editError = null;
+        if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
+    }
+
+    private async Task SaveEditEvent()
+    {
+        if (EventToEdit == null) return;
+
+        _editError = null;
+
+        if (EventToEdit.IsActive)
+        {
+            try
+            {
+                TimeService.UpdateEventComment(EventToEdit.Id, _editComment);
+                await CancelEdit();
+            }
+            catch (Exception ex)
+            {
+                _editError = ex.Message;
+            }
+        }
+        else
+        {
+            var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
+            var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
+
+            if (newStart >= newEnd)
+            {
+                _editError = Localizer["EndBeforeStart"];
+                return;
+            }
+
+            if (newEnd > DateTimeOffset.Now)
+            {
+                _editError = Localizer["FutureEndTime"];
+                return;
+            }
+
+            try
+            {
+                TimeService.UpdateEventDetails(EventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
+                await CancelEdit();
+            }
+            catch (Exception ex)
+            {
+                _editError = ex.Message;
+            }
+        }
+    }
+}

@@ -502,44 +502,7 @@
     </div>
 }
 
-@if (_eventToEdit != null)
-{
-    <div class="modal-overlay" @onclick="CancelEdit">
-        <div class="modal-dialog" @onclick:stopPropagation="true">
-            <h3>@Localizer["EditEventTitle"]</h3>
-            <div class="edit-form">
-                @if (_eventToEdit != null && !_eventToEdit.IsActive)
-                {
-                    <div class="edit-field">
-                        <label class="edit-label">@Localizer["StartTime"]</label>
-                        <input type="datetime-local" class="edit-input"
-                               @ref="_editStartTimeRef"
-                               value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
-                               @onchange="OnStartTimeChanged" />
-                    </div>
-                    <div class="edit-field">
-                        <label class="edit-label">@Localizer["EndTime"]</label>
-                        <input type="datetime-local" class="edit-input"
-                               value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
-                               @onchange="OnEndTimeChanged" />
-                    </div>
-                }
-                <div class="edit-field">
-                    <label class="edit-label">@Localizer["Comment"]</label>
-                    <textarea class="edit-input" @ref="_editCommentRef" @bind="_editComment"></textarea>
-                </div>
-                @if (!string.IsNullOrEmpty(_editError))
-                {
-                    <p class="edit-error">@_editError</p>
-                }
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
-                <button class="btn-save" @onclick="SaveEditEvent">@Localizer["Save"]</button>
-            </div>
-        </div>
-    </div>
-}
+<Kairos.App.Components.EditEventDialog EventToEdit="@_eventToEdit" OnClose="CancelEdit" />
 
 @code {
     private enum BudgetViewMode { Day, Week, Month }
@@ -572,9 +535,6 @@
 
     private ElementReference _calendarScrollArea;
     private bool _shouldScrollCalendar;
-    private ElementReference _editStartTimeRef;
-    private ElementReference _editCommentRef;
-    private bool _editFocusRequested;
 
     private double _pixelsPerHour = 60;
     private double _minPixelsPerHour = 60;
@@ -584,10 +544,6 @@
     private System.Threading.Timer? _timer;
     private ActivityEvent? _eventToDelete;
     private ActivityEvent? _eventToEdit;
-    private DateTime _editStartTime;
-    private DateTime _editEndTime;
-    private string _editComment = string.Empty;
-    private string? _editError;
     private bool _isMenuOpen;
     private bool _isForceResyncInProgress;
 
@@ -848,22 +804,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_editFocusRequested && _eventToEdit != null)
-        {
-            _editFocusRequested = false;
-            try
-            {
-                if (!_eventToEdit.IsActive)
-                    await _editStartTimeRef.FocusAsync();
-                else
-                    await _editCommentRef.FocusAsync();
-            }
-            catch
-            {
-                // Ignore focus errors (e.g., element not visible yet)
-            }
-        }
-
         if (firstRender && SettingsService.HistoryView == "calendar")
         {
             _shouldScrollCalendar = true;
@@ -1047,80 +987,11 @@
     private void StartEditEvent(ActivityEvent evt)
     {
         _eventToEdit = evt;
-        _editStartTime = evt.StartTime.ToLocalTime().DateTime;
-        _editEndTime = evt.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
-        _editComment = evt.Comment ?? string.Empty;
-        _editError = null;
-        _editFocusRequested = true;
     }
 
     private void CancelEdit()
     {
         _eventToEdit = null;
-        _editError = null;
-    }
-
-    private void OnStartTimeChanged(ChangeEventArgs e)
-    {
-        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
-        {
-            _editStartTime = dt;
-        }
-    }
-
-    private void OnEndTimeChanged(ChangeEventArgs e)
-    {
-        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
-        {
-            _editEndTime = dt;
-        }
-    }
-
-    private void SaveEditEvent()
-    {
-        if (_eventToEdit == null) return;
-
-        _editError = null;
-
-        if (_eventToEdit.IsActive)
-        {
-            try
-            {
-                TimeService.UpdateEventComment(_eventToEdit.Id, _editComment);
-                _eventToEdit = null;
-            }
-            catch (Exception ex)
-            {
-                _editError = ex.Message;
-            }
-        }
-        else
-        {
-            var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
-            var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
-
-            if (newStart >= newEnd)
-            {
-                _editError = Localizer["EndBeforeStart"];
-                return;
-            }
-
-            if (newEnd > DateTimeOffset.Now)
-            {
-                _editError = Localizer["FutureEndTime"];
-                return;
-            }
-
-            try
-            {
-                TimeService.UpdateEventDetails(_eventToEdit.Id, newStart.ToUniversalTime(), newEnd.ToUniversalTime(), _editComment);
-                _eventToEdit = null;
-            }
-            catch (Exception ex)
-            {
-                _editError = ex.Message;
-            }
-        }
     }
 
     private void OnSelectedDateChanged(ChangeEventArgs args)
