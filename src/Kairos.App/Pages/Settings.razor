@@ -287,10 +287,12 @@
                 </div>
             }
 
-            <button class="sync-button tutorial-btn" @onclick="AddActivityGroup">
-                <span class="btn-icon">+</span>
-                <span>@GetAddGroupLabel()</span>
-            </button>
+            <div class="activity-container add-activity" style="margin-top: 16px;">
+                <button class="activity-button add-activity-btn" @onclick="AddActivityGroup">
+                    <div class="add-icon">+</div>
+                    <div class="add-text">@GetAddGroupLabel()</div>
+                </button>
+            </div>
         </div>
     }
 
