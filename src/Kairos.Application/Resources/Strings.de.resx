@@ -785,12 +785,6 @@
   <data name="BudgetFor" xml:space="preserve">
     <value>Budget für {0}</value>
   </data>
-  <data name="HoursForThisWeek" xml:space="preserve">
-    <value>Stunden für diese Woche</value>
-  </data>
-  <data name="HoursForThisMonth" xml:space="preserve">
-    <value>Stunden für diesen Monat</value>
-  </data>
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zugewiesene Stunden</value>
   </data>
@@ -856,9 +850,6 @@
   </data>
   <data name="ShowTimeularSettingsDesc" xml:space="preserve">
     <value>Umschalten, um die Timeular-Integrationseinstellungen ein- oder auszublenden.</value>
-  </data>
-  <data name="HoursForToday" xml:space="preserve">
-    <value>Stunden für heute</value>
   </data>
   <data name="Today" xml:space="preserve">
     <value>Heute</value>

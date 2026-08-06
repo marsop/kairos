@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
 
 ### Changed

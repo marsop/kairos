@@ -103,7 +103,7 @@
     <div class="modal-overlay" @onclick="CancelEdit">
         <div class="modal-dialog" @onclick:stopPropagation="true">
             <h3>@string.Format(Localizer["BudgetFor"], EditingActivityName)</h3>
-            <p>@GetBudgetPeriodLabel()</p>
+            <p>@($"{Localizer["BudgetSettingsBudgetType"].Value}: {CurrentBudgetTypeLabel}")</p>
             <div class="edit-form">
                 @if (BudgetSettingsService.MinimumEnabled)
                 {
@@ -250,16 +250,6 @@
         BudgetType.Weekly => Localizer["ThisWeek"].Value,
         _ => Localizer["ThisMonth"].Value
     };
-
-    private string GetBudgetPeriodLabel()
-    {
-        return BudgetSettingsService.BudgetType switch
-        {
-            BudgetType.Daily => Localizer["HoursForToday"].Value,
-            BudgetType.Weekly => Localizer["HoursForThisWeek"].Value,
-            _ => Localizer["HoursForThisMonth"].Value
-        };
-    }
 
     private string CurrentBudgetTypeLabel => BudgetSettingsService.BudgetType switch
     {
