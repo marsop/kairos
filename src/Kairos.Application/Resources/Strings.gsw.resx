@@ -160,8 +160,8 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Uf d'Backe drucka</value>
   </data>
-  <data name="RenameActivity" xml:space="preserve">
-    <value>Zähler umbenenna</value>
+  <data name="EditActivity" xml:space="preserve">
+    <value>Aktivität bearbeita</value>
   </data>
   <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löscha</value>
@@ -788,12 +788,6 @@
   <data name="BudgetFor" xml:space="preserve">
     <value>Budget für {0}</value>
   </data>
-  <data name="HoursForThisWeek" xml:space="preserve">
-    <value>Stunde für deli Wuche</value>
-  </data>
-  <data name="HoursForThisMonth" xml:space="preserve">
-    <value>Stunde für deli Monet</value>
-  </data>
   <data name="AllocatedHours" xml:space="preserve">
     <value>Zuegwiseni Stunde</value>
   </data>
@@ -859,9 +853,6 @@
   </data>
   <data name="ShowTimeularSettingsDesc" xml:space="preserve">
     <value>Umschalde, um d'Timeular-Integration i- oder uszblende.</value>
-  </data>
-  <data name="HoursForToday" xml:space="preserve">
-    <value>Stunde für hüt</value>
   </data>
   <data name="Today" xml:space="preserve">
     <value>Hüt</value>
@@ -950,5 +941,14 @@
   </data>
   <data name="ChartTypeBar" xml:space="preserve">
     <value>Balke</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name:</value>
+  </data>
+  <data name="AddGroup" xml:space="preserve">
+    <value>Gruppa dazuatua</value>
   </data>
 </root>

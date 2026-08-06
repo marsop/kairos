@@ -2,19 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
 
-### Changed
-- Moved chart type selector (line vs bar) from main toolbar to top-right corner of graph area in History view.
+### Added
+- **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
 
 ### Changed
+- Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
+- **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
 - Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
-
-### Changed
 - Updated `AGENTS.md` to ensure `CHANGELOG.md` is updated with every change made.
+- **Testing**: Added agent guideline requiring automated tests for all new functionality or modifications
+- Remove 'Default' view from Budgets page, making 'Budget Usage' the default
+- Changed the "Group" creation button text to "Add Group" to unify with the "Add Activity" button.
+- Moved chart type selector (line vs bar) from main toolbar to top-right corner of graph area in History view.
+- Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
 
 ## [1.7.0] - 2026-08-05
 
@@ -26,11 +33,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Settings**: Added sound effects on user interactions, controlled by a settings toggle.
 - **Settings UI**: Added description text below each budget setting (Minimum, Threshold, Budget Type, Notifications) to explain what each option does.
 - **Settings UI**: Added Activity Group management in Settings (visible only when Activity Groups are enabled), including listing groups with activity counts plus add/remove group actions.
+- - **History Stats**: The "Day" period in the Stats view now shows a date picker, allowing the user to navigate to any day (same prev/next arrow controls as the List and Calendar views).
+- **History Stats**: The "This Week" button is now "Week" with a week picker (defaults to the current week). The "This Month" button is now "Month" with a month picker (defaults to the current month). Both support prev/next navigation arrows.
+- **Budgets**: When budget notifications are enabled in Settings, the app now sends a notification when an activity reaches its threshold, minimum, or maximum (100%) budget for the current period. Each event fires at most once per period.
+- **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.
+- **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
+- **Budgets UI**: Added a context summary to the Budgets page that shows the active budget type and the current period start/end dates.
+- **Budgets UI**: Budget progress bars now display visual markers for key budget points: minimum (gray), threshold (yellow), maximum (red), and expected progress (secondary, with border). The expected progress marker shows where you should be today if the budget will be completed 100% at the end of the period. Markers are enhanced with improved size, opacity, and subtle shadows for better visibility.
 
 ### Changed
 - **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
-
-
 - **UI**: Added focus management for input fields in History and Statistics pages.
 - **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
 - **Activities UI**: Removed the extra "Activity Groups" text label from the Activities header since the dropdown selector already makes the context clear.
@@ -43,19 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Translations**: Translated all previously untranslated budget settings labels and color range names (de, es, gl, gsw). Also translated the `StickyEventsDuration` setting in all non-English locales.
 - **Activities**: Removed activity count caps. There is no max activities limit anymore, including when Activity Groups are enabled.
 - **Activities**: When Activity Groups are turned off, activities from all groups are shown together in a single list instead of hiding non-active-group activities.
-
-### Added
-
-- **History Stats**: The "Day" period in the Stats view now shows a date picker, allowing the user to navigate to any day (same prev/next arrow controls as the List and Calendar views).
-- **History Stats**: The "This Week" button is now "Week" with a week picker (defaults to the current week). The "This Month" button is now "Month" with a month picker (defaults to the current month). Both support prev/next navigation arrows.
-- **Budgets**: When budget notifications are enabled in Settings, the app now sends a notification when an activity reaches its threshold, minimum, or maximum (100%) budget for the current period. Each event fires at most once per period.
-- **Tutorial**: Added a "Skip tutorial" button on the initial setup step (language and avatar selection) that completes the tutorial immediately.
-- **Budgets**: Added sort controls to the Budgets tab to order activities by tracked time (descending) or by budget usage percentage (descending). Activities without a budget are pushed to the bottom when sorting by budget usage.
-- **Budgets UI**: Added a context summary to the Budgets page that shows the active budget type and the current period start/end dates.
-- **Budgets UI**: Budget progress bars now display visual markers for key budget points: minimum (gray), threshold (yellow), maximum (red), and expected progress (secondary, with border). The expected progress marker shows where you should be today if the budget will be completed 100% at the end of the period. Markers are enhanced with improved size, opacity, and subtle shadows for better visibility.
-
-### Changed
-
 - **Budgets UI**: The threshold hours field in the budget editor now renders as a read-only calculated value (dimmed text, dashed border) instead of an editable input, making it clear it cannot be modified directly.
 - **Settings UI**: Budget threshold input now shows a `%` suffix to make it clear the configured value is a percentage.
 - **Budgets UI**: The selected budget ordering is now persisted in browser storage and restored when navigating back to the Budgets tab.
