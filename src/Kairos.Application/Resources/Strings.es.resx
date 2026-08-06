@@ -948,4 +948,10 @@
   <data name="ChartTypeBar" xml:space="preserve">
     <value>Barra</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name:</value>
+  </data>
 </root>
