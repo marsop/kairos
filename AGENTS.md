@@ -62,6 +62,7 @@ Welcome to the Kairos codebase! This file contains important guidelines and cont
 * When programmatically editing `.resx` files to add translations, avoid using standard XML parsing libraries (e.g., Python's `xml.etree.ElementTree`) as they can corrupt the strict XML formatting required by the framework. Use text-based manipulation like string replacement or bash tools (e.g., `sed`) to safely append new `<data>` nodes without altering existing formatting.
 
 ## Playwright & Testing
+* Whenever introducing new functionality or making modifications, always ensure the implementation is robustly covered and verified by appropriate automated tests.
 * The default local application URL for running `src/Kairos.Web` is `http://localhost:5111`, as defined in `launchSettings.json`. Use this URL when writing automated Playwright tests.
 * To bypass the application tutorial during automated frontend tests (e.g., with Playwright), inject a settings JSON object into `localStorage` under the key `Kairos_settings` with `"TutorialCompleted": true` and a valid language property (e.g., `"Language": "en"`).
 * To prevent the 'Add Comment' modal from intercepting subsequent UI clicks during automated Playwright tests when starting an activity, set `"CommentRequired": false` in the injected `Kairos_settings` localStorage object.
