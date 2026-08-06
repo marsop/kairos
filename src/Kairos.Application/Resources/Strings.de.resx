@@ -157,8 +157,8 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Tippen zum Starten</value>
   </data>
-  <data name="RenameActivity" xml:space="preserve">
-    <value>Zähler umbenennen</value>
+  <data name="EditActivity" xml:space="preserve">
+    <value>Aktivität bearbeiten</value>
   </data>
   <data name="DeleteActivity" xml:space="preserve">
     <value>Zähler löschen</value>
