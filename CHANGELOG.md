@@ -12,11 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
 
 ### Changed
+- Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
-
 - Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
-
-### Changed
 - Updated `AGENTS.md` to ensure `CHANGELOG.md` is updated with every change made.
 
 ## [1.7.0] - 2026-08-05

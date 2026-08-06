@@ -788,12 +788,6 @@
   <data name="BudgetFor" xml:space="preserve">
     <value>Orzamento para {0}</value>
   </data>
-  <data name="HoursForThisWeek" xml:space="preserve">
-    <value>Horas para esta semana</value>
-  </data>
-  <data name="HoursForThisMonth" xml:space="preserve">
-    <value>Horas para este mes</value>
-  </data>
   <data name="AllocatedHours" xml:space="preserve">
     <value>Horas asignadas</value>
   </data>
@@ -859,9 +853,6 @@
   </data>
   <data name="ShowTimeularSettingsDesc" xml:space="preserve">
     <value>Activar para mostrar ou ocultar a configuración de integración de Timeular.</value>
-  </data>
-  <data name="HoursForToday" xml:space="preserve">
-    <value>Horas para hoxe</value>
   </data>
   <data name="Today" xml:space="preserve">
     <value>Hoxe</value>
