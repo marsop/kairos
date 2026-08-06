@@ -38,6 +38,10 @@
             </div>
             <div class="modal-actions">
                 <button class="btn-cancel" @onclick="CancelEdit">@Localizer["Cancel"]</button>
+                @if (!EventToEdit.IsActive)
+                {
+                    <button class="btn-delete" @onclick="HandleDelete">@Localizer["Delete"]</button>
+                }
                 <button class="btn-save" @onclick="SaveEditEvent">@Localizer["Save"]</button>
             </div>
         </div>
@@ -50,6 +54,9 @@
 
     [Parameter]
     public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<ActivityEvent> OnDelete { get; set; }
 
     private ElementReference _editStartTimeRef;
     private ElementReference _editCommentRef;
@@ -103,6 +110,14 @@
         if (DateTime.TryParse(e.Value?.ToString(), out var dt))
         {
             _editEndTime = dt;
+        }
+    }
+
+    private async Task HandleDelete()
+    {
+        if (EventToEdit != null && OnDelete.HasDelegate)
+        {
+            await OnDelete.InvokeAsync(EventToEdit);
         }
     }
 
