@@ -160,8 +160,8 @@
   <data name="TapToStart" xml:space="preserve">
     <value>Preme para iniciar</value>
   </data>
-  <data name="RenameActivity" xml:space="preserve">
-    <value>Renomear contador</value>
+  <data name="EditActivity" xml:space="preserve">
+    <value>Editar actividade</value>
   </data>
   <data name="DeleteActivity" xml:space="preserve">
     <value>Borrar contador</value>
@@ -941,5 +941,11 @@
   </data>
   <data name="ChartTypeBar" xml:space="preserve">
     <value>Barra</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name:</value>
   </data>
 </root>

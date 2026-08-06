@@ -17,7 +17,6 @@
         <h2 class="page-title">@Localizer["NavBudgets"]</h2>
         <div style="display: flex; gap: var(--spacing-md); align-items: center;">
             <div class="view-toggle">
-                <button class="@(_budgetSortMode == BudgetSortMode.DisplayOrder ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.DisplayOrder)">@Localizer["SortByDefault"]</button>
                 <button class="@(_budgetSortMode == BudgetSortMode.TrackedTime ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.TrackedTime)">@Localizer["SortByTrackedTime"]</button>
                 <button class="@(_budgetSortMode == BudgetSortMode.BudgetUsage ? "active" : "")" @onclick="() => SetBudgetSortModeAsync(BudgetSortMode.BudgetUsage)">@Localizer["SortByBudgetUsage"]</button>
             </div>
@@ -134,22 +133,21 @@
 
 
 @code {
-    private enum BudgetSortMode { DisplayOrder, TrackedTime, BudgetUsage }
-    private BudgetSortMode _budgetSortMode = BudgetSortMode.DisplayOrder;
+    private enum BudgetSortMode { TrackedTime, BudgetUsage }
+    private BudgetSortMode _budgetSortMode = BudgetSortMode.BudgetUsage;
 
     private IEnumerable<Kairos.Core.Models.Activity> GetSortedActivities() => _budgetSortMode switch
     {
         BudgetSortMode.TrackedTime => TimeService.Account.Activities
             .OrderByDescending(a => GetTrackedTimeForActivity(a.Name)),
-        BudgetSortMode.BudgetUsage => TimeService.Account.Activities
+        _ => TimeService.Account.Activities
             .OrderByDescending(a =>
             {
                 var b = GetBudgetForActivity(a.Id);
                 if (b == null || b.AllocatedTimeSpan.TotalSeconds <= 0 || !SettingsService.BudgetsEnabled)
                     return -1.0;
                 return GetTrackedTimeForActivity(a.Name).TotalHours / b.AllocatedTimeSpan.TotalHours;
-            }),
-        _ => TimeService.Account.Activities.OrderBy(a => a.DisplayOrder).AsEnumerable()
+            })
     };
 
     private List<ActivityBudget> _currentBudgets = new();
