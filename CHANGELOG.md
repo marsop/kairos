@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
+
+### Changed
 - Updated `AGENTS.md` to ensure `CHANGELOG.md` is updated with every change made.
 
 ## [1.7.0] - 2026-08-05
