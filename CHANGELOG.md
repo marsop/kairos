@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Moved chart type selector (line vs bar) from main toolbar to top-right corner of graph area in History view.
+
+### Changed
 - Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
 
 ### Changed

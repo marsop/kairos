@@ -102,10 +102,6 @@
                     <button class="@(CurrentBudgetView == BudgetViewMode.Week ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Week)">@Localizer["Week"]</button>
                     <button class="@(CurrentBudgetView == BudgetViewMode.Month ? "active" : "")" @onclick="() => SetBudgetView(BudgetViewMode.Month)">@Localizer["Month"]</button>
                 </div>
-                <div class="view-toggle" style="margin-left: auto;">
-                    <button class="@(SettingsService.ChartType == "line" ? "active" : "")" @onclick="@(() => SetChartType("line"))" title="@Localizer["ChartTypeLine"]">📈</button>
-                    <button class="@(SettingsService.ChartType == "bar" ? "active" : "")" @onclick="@(() => SetChartType("bar"))" title="@Localizer["ChartTypeBar"]">📊</button>
-                </div>
             }
             @if (SettingsService.HistoryView == "calendar")
             {
@@ -147,6 +143,10 @@
 
             <!-- Timeline Chart -->
             <div class="chart-container">
+                <div class="view-toggle chart-type-selector">
+                    <button class="@(SettingsService.ChartType == "line" ? "active" : "")" @onclick="@(() => SetChartType("line"))" title="@Localizer["ChartTypeLine"]">📈</button>
+                    <button class="@(SettingsService.ChartType == "bar" ? "active" : "")" @onclick="@(() => SetChartType("bar"))" title="@Localizer["ChartTypeBar"]">📊</button>
+                </div>
                 <svg viewBox="0 0 800 400" class="timeline-chart" preserveAspectRatio="xMidYMid meet">
                     <!-- Grid lines -->
                     <g class="grid-lines">

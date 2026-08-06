@@ -477,6 +477,14 @@ body {
     border-radius: var(--radius-lg);
     padding: var(--spacing-md);
     aspect-ratio: 2 / 1;
+    position: relative;
+}
+
+.chart-type-selector {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: 10;
 }
 
 .timeline-chart {
