@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
+
 ### Changed
 - Updated `AGENTS.md` to ensure `CHANGELOG.md` is updated with every change made.
 
