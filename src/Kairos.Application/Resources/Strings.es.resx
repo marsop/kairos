@@ -945,4 +945,7 @@
   <data name="FileName" xml:space="preserve">
     <value>File name:</value>
   </data>
+  <data name="AddGroup" xml:space="preserve">
+    <value>Añadir grupo</value>
+  </data>
 </root>
