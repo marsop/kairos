@@ -901,6 +901,15 @@ public class SettingsService : ISettingsService
             .OrderBy(g => g.GroupOrder)
             .ToList();
 
+        if (ordered.Count > 0)
+        {
+            _activityGroupCount = ordered.Count;
+            if (_activeActivityGroup >= _activityGroupCount)
+            {
+                _activeActivityGroup = _activityGroupCount - 1;
+            }
+        }
+
         var names = ordered
             .Select(g => string.IsNullOrWhiteSpace(g.Name) ? string.Empty : g.Name.Trim())
             .ToList();
