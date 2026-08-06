@@ -943,4 +943,7 @@
   <data name="FileName" xml:space="preserve">
     <value>File name:</value>
   </data>
+  <data name="AddGroup" xml:space="preserve">
+    <value>Add Group</value>
+  </data>
 </root>
