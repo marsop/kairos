@@ -6,11 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Remove 'Default' view from Budgets page, making 'Budget Usage' the default
 
 ### Added
 - **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
 
 ### Changed
+- **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
+
 - Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
 
 ### Changed
