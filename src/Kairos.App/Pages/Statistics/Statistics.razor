@@ -24,18 +24,12 @@
         </div>
     </div>
 
-    <div class="budget-context-card">
-        <div class="budget-context-item">
-            <span class="budget-context-label">@Localizer["BudgetSettingsBudgetType"]:</span>
-            <span class="budget-context-value">@CurrentBudgetTypeLabel</span>
+    <div class="stat-summary-card">
+        <div class="stat-label">
+            @Localizer["BudgetSettingsBudgetType"]: @CurrentBudgetTypeLabel
         </div>
-        <div class="budget-context-item">
-            <span class="budget-context-label">@Localizer["Start"]:</span>
-            <span class="budget-context-value">@CurrentPeriodStartLabel</span>
-        </div>
-        <div class="budget-context-item">
-            <span class="budget-context-label">@Localizer["End"]:</span>
-            <span class="budget-context-value">@CurrentPeriodEndLabel</span>
+        <div class="stat-big-value" style="color: var(--color-text-primary); text-shadow: none; font-size: var(--font-size-lg);">
+            @CurrentPeriodStartLabel - @CurrentPeriodEndLabel
         </div>
     </div>
 
