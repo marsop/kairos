@@ -35,6 +35,10 @@ jobs:
         env:
           ASPNETCORE_URLS: http://localhost:5111
 
+      - name: Wait for Application
+        run: sleep 5
+
+
       - name: Install Playwright Browsers
         run: pwsh tests/Kairos.PlaywrightTests/bin/Release/net10.0/playwright.ps1 install --with-deps
 
