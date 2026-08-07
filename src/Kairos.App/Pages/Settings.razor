@@ -31,8 +31,8 @@
                     @foreach (var lang in Languages)
                     {
                         <div class="dropdown-item @(SelectedLanguage == lang.Code ? "selected" : "")"
-                             @onclick="() => SelectLanguage(lang.Code)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectLanguage(lang.Code)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span class="flag-icon">@lang.Flag</span>
                             <span>@lang.Name</span>
                         </div>
@@ -52,8 +52,8 @@
                     @foreach (var theme in Themes)
                     {
                         <div class="dropdown-item @(SelectedTheme == theme.Code ? "selected" : "")"
-                             @onclick="() => SelectTheme(theme.Code)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectTheme(theme.Code)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span class="theme-icon">@theme.Icon</span>
                             <span>@Localizer[theme.LabelKey]</span>
                         </div>
@@ -73,8 +73,8 @@
                     @foreach (var avatar in TutorialService.AvailableAvatars)
                     {
                         <div class="dropdown-item @(TutorialService.CurrentAvatar?.Id == avatar.Id ? "selected" : "")"
-                             @onclick="() => SelectAvatar(avatar.Id)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectAvatar(avatar.Id)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span class="avatar-icon"><img src="@($"{avatar.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                             <span>@avatar.Name</span>
                         </div>
@@ -345,18 +345,18 @@
                     </button>
                     <div class="dropdown-menu @(isBudgetTypeDropdownOpen ? "show" : "")">
                         <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Monthly ? "selected" : "")"
-                             @onclick="() => SelectBudgetType(BudgetType.Monthly)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectBudgetType(BudgetType.Monthly)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span>@Localizer["BudgetSettingsBudgetTypeMonthly"]</span>
                         </div>
                         <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Weekly ? "selected" : "")"
-                             @onclick="() => SelectBudgetType(BudgetType.Weekly)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectBudgetType(BudgetType.Weekly)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span>@Localizer["BudgetSettingsBudgetTypeWeekly"]</span>
                         </div>
                         <div class="dropdown-item @(BudgetSettingsService.BudgetType == BudgetType.Daily ? "selected" : "")"
-                             @onclick="() => SelectBudgetType(BudgetType.Daily)"
-                             @onclick:stopPropagation="true">
+                             @onmousedown="() => SelectBudgetType(BudgetType.Daily)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                             >
                             <span>@Localizer["BudgetSettingsBudgetTypeDaily"]</span>
                         </div>
                     </div>

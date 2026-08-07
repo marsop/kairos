@@ -30,8 +30,8 @@
                                         @foreach (var language in Languages)
                                         {
                                             <div class="dropdown-item @(SettingsService.Language == language.Code ? "selected" : "")"
-                                                 @onclick="() => SelectLanguage(language.Code)"
-                                                 @onclick:stopPropagation="true">
+                                                 @onmousedown="() => SelectLanguage(language.Code)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                                                 >
                                                 <span>@language.Name</span>
                                             </div>
                                         }
@@ -49,8 +49,8 @@
                                         @foreach (var avatar in TutorialService.AvailableAvatars)
                                         {
                                             <div class="dropdown-item @(TutorialService.CurrentAvatar?.Id == avatar.Id ? "selected" : "")"
-                                                 @onclick="() => SelectAvatar(avatar.Id)"
-                                                 @onclick:stopPropagation="true">
+                                                 @onmousedown="() => SelectAvatar(avatar.Id)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                                                 >
                                                 <span class="avatar-icon"><img src="@($"{avatar.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                                                 <span>@avatar.Name</span>
                                             </div>

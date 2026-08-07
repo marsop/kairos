@@ -30,6 +30,22 @@ jobs:
         run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' src/Kairos.Web/wwwroot/index.html
 
       # Publishes Blazor project to the release-folder
+      - name: Start Application
+        run: dotnet run --project src/Kairos.Web -c Release &
+        env:
+          ASPNETCORE_URLS: http://localhost:5111
+
+      - name: Wait for Application
+        run: sleep 5
+
+
+      - name: Install Playwright Browsers
+        run: pwsh tests/Kairos.PlaywrightTests/bin/Release/net10.0/playwright.ps1 install --with-deps
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal -c Release
+
+
       - name: Publish .NET Core Project
         run: dotnet publish src/Kairos.Web/Kairos.Web.csproj -c Release -o release
 

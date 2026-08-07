@@ -27,8 +27,8 @@
                             {
                                 var currentGroup = group;
                                 <div class="dropdown-item @(SettingsService.ActiveActivityGroup == currentGroup ? "selected" : "")"
-                                     @onclick="() => SelectGroup(currentGroup)"
-                                     @onclick:stopPropagation="true">
+                                     @onmousedown="() => SelectGroup(currentGroup)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                                     >
                                     <span>@GetGroupDisplayName(currentGroup)</span>
                                 </div>
                             }
@@ -40,8 +40,8 @@
                 <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
                 <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
                     <div class="dropdown-item @(!TimeService.Account.Activities.Any() ? "disabled" : "")"
-                         @onclick="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }"
-                         @onclick:stopPropagation="true">
+                         @onmousedown="async () => { ToggleMenu(); await ExportActivitiesCsvAsync(); }" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                         >
                         <span>@Localizer["ExportActivitiesCsv"]</span>
                     </div>
                 </div>
@@ -195,8 +195,8 @@
                                     {
                                         var currentGroup = group;
                                         <div class="dropdown-item @(_editingActivityGroupId == currentGroup ? "selected" : "")"
-                                             @onclick="() => SelectEditGroup(currentGroup)"
-                                             @onclick:stopPropagation="true">
+                                             @onmousedown="() => SelectEditGroup(currentGroup)" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                                             >
                                             <span>@GetGroupDisplayName(currentGroup)</span>
                                         </div>
                                     }
