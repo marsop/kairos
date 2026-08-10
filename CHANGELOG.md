@@ -43,7 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Budgets UI**: Budget progress bars now display visual markers for key budget points: minimum (gray), threshold (yellow), maximum (red), and expected progress (secondary, with border). The expected progress marker shows where you should be today if the budget will be completed 100% at the end of the period. Markers are enhanced with improved size, opacity, and subtle shadows for better visibility.
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 - **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
 - **UI**: Added focus management for input fields in History and Statistics pages.
 - **Activities UI**: Replaced Activity Group header buttons with a dropdown selector to make group switching reliable when multiple groups are available.
@@ -79,7 +78,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Budgets**: Added a new rolling budget feature for activities.
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 
 - **Budgets**: Budget progress bars now use the colors defined in settings — green below the threshold, yellow between threshold and 100%, red when over budget.
 - **Budgets**: When the minimum setting is enabled, each budget can have a minimum hours value. Progress bars use blue when tracked time is below the minimum, and a small marker shows the minimum position on the bar.
@@ -113,7 +111,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Settings**: Added a new Advanced setting for configuring sticky events duration.
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 
 - **History UI**: Improved visual accuracy of event blocks in the Calendar view by accounting for seconds in their start and end calculations to prevent short false visual overlaps.
 - **Localization**: Localized hardcoded UI text in razor components.
@@ -142,7 +139,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **UI Enhancements**: Added a pulsating animation effect to active events in both Calendar and List views on the History page to make them more obvious.
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 
 - **Settings Layout**: Moved "Activity Groups" toggle from General to a new Advanced section.
 - **UI Tweaks**: Standardized Sync Conflict dialog style to match other application modals and localized strings.
@@ -156,7 +152,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2026-06-26
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 
 - **UI Tweaks**: Made the "Display Language", "Theme" and "Tutorial Avatar" settings options more compact.
 - **UI Tweaks**: Added icons to the "Dark" and "Light" theme options in Settings.
@@ -186,7 +181,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pages**: Added Overview, Activities, and Timeline pages with core functionality.
 
 ### Changed
-- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 
 - **UI Tweaks**: Made the "Total Tracked Time" card on the Statistics page more compact by changing its layout to horizontal.
 - **Core Tracking System**: Refactored the time tracking system to use "activities" instead of "meters".
