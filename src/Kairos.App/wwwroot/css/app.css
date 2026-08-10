@@ -947,7 +947,8 @@ body {
 }
 
 .btn-cancel,
-.btn-delete {
+.btn-delete,
+.btn-save {
     padding: var(--spacing-sm) var(--spacing-lg);
     border-radius: var(--radius-md);
     font-family: inherit;
@@ -961,16 +962,6 @@ body {
 .btn-cancel {
     background: var(--color-bg-tertiary);
     color: var(--color-text-secondary);
-}
-
-.btn-save {
-    background: var(--color-positive);
-    color: white;
-}
-
-.btn-save:hover {
-    background: #0d9668;
-    box-shadow: var(--shadow-glow-positive);
 }
 
 .activity-form-fields {
@@ -995,6 +986,16 @@ body {
     box-shadow: var(--shadow-glow-negative);
 }
 
+.btn-save {
+    background: var(--color-positive);
+    color: white;
+}
+
+.btn-save:hover {
+    background: #0d9668;
+    box-shadow: var(--shadow-glow-positive);
+}
+
 .edit-btn {
     display: flex;
     align-items: center;
@@ -1013,24 +1014,6 @@ body {
 .edit-btn:hover {
     background: rgba(99, 102, 241, 0.15);
     color: var(--color-accent);
-}
-
-.btn-save {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    font-family: inherit;
-    font-size: var(--font-size-md);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border: none;
-    background: var(--color-accent);
-    color: white;
-}
-
-.btn-save:hover {
-    background: #5457e5;
-    box-shadow: 0 0 20px var(--color-accent-glow);
 }
 
 .edit-form {
@@ -2563,7 +2546,6 @@ html[data-theme="dark"] .edit-input {
     background: rgba(15, 118, 110, 0.12);
 }
 
-.btn-save:hover,
 .backup-btn:hover:not(:disabled),
 .install-btn:hover {
     background: var(--color-accent-hover);

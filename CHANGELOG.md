@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AGENTS.md**: Add Playwright authentication mocking documentation.
 
 ### Changed
+- **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
+- Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - **Budgets UI**: Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - **Budgets UI**: Remove "Default" view from Budgets page, making "Budget Usage" the default.
 - **Budgets UI**: Update Budgets page banner styling to match activity banner.
