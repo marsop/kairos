@@ -404,13 +404,13 @@
     <value>Benvido a Kairos. Esta guía amósache o funcionamento completo da aplicación: rexistrar, revisar e protexer os teus datos. Sigue os pasos unha vez en orde e despois usa só o que necesites no día a día.</value>
   </data>
   <data name="TutorialHowItWorks" xml:space="preserve">
-    <value>Kairos baséase en sesións de actividade. Cada vez que inicias unha actividade, créase un evento coa hora de inicio, e ao detela gárdase a hora de fin. O teu saldo é a suma de todas as duracións rexistradas.</value>
+    <value>Kairos baséase en sesións de actividade. Cada vez que inicias unha actividade, rexístrase un novo evento cunha hora de inicio, e cando a detés, gárdase a hora de fin. O teu saldo é a suma de todas as duracións rexistradas. Podes navegar entre as lapelas principais usando as teclas RePág e AvPág.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
     <value>Esta é a pantalla de Orzamentos. A tarxeta principal amosa canto tempo rexistraches no período seleccionado. Úsaa como lectura rápida desta semana ou deste mes antes de entrar no detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Debaixo do resumo, Kairos desagrega o tempo por actividade. Podes comparar o tempo rexistrado, definir orzamentos sinxelos incluíndo unha función de orzamento móbil e usar a gráfica para ver se o período sobe, queda plano ou baixa.</value>
+    <value>Debaixo do resumo, Kairos desglosa o tempo por actividade, que podes ordenar por tempo rexistrado ou uso do orzamento. As barras de progreso do orzamento mostran marcadores visuais para o mínimo, limiar, máximo e progreso esperado, axudándoche a comparar o tempo rexistrado cos orzamentos simples ou continuos.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta ou usa o teclado numérico do 1 ao 8 para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
@@ -419,10 +419,10 @@
     <value>Ao iniciar unha actividade pídesche un comentario. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>Podes renomear actividades, borrar as inactivas, engadir novas e reordenalas arrastrando. Mantén a lista limpa e estable para que o rexistro diario sexa rápido e consistente.</value>
+    <value>Podes renomear actividades, eliminar as inactivas, engadir novas e arrastralas para reordenalas. Se usas Grupos de Actividades, un selector despregable permíteche cambiar entre eles. Mantén a lista limpa e estable para que o seguimento diario sexa rápido e constante.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>A gráfica está dentro da pantalla de Orzamentos. Usa os botóns Hoxe, Semana e Mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
+    <value>O gráfico atópase na pantalla de Orzamentos. Usa os selectores de Día, Semana e Mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Le a gráfica de esquerda a dereita: os tramos ascendentes significan que o saldo mellora, os tramos planos que non hai cambios e as baixadas mostran que o saldo cae. É a forma máis rápida de detectar ritmos irregulares no período escollido.</value>
@@ -434,7 +434,7 @@
     <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula os teus totais e actualiza de inmediato a pantalla de Orzamentos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>En Axustes podes cambiar idioma, escoller o avatar do tutorial, activar efectos de son e controlar as notificacións do navegador. Configúrao unha vez para que a app se adapte ao teu fluxo diario.</value>
+    <value>En Configuración podes cambiar o idioma, elixir o teu avatar do tutorial, habilitar efectos de son e controlar as notificacións do navegador (incluídas as notificacións de orzamento). Configura isto unha vez para que a aplicación se adapte ao teu fluxo de traballo diario preferido.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>Axustes tamén inclúe opcións de integración, como a conexión con Timeular. Se usas seguimento por hardware, comproba aquí o estado da conexión antes de depender de cambios automáticos de actividade.</value>
@@ -792,10 +792,10 @@
     <value>Horas asignadas</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navega polo teu Historial facilmente usando os novos botóns de Día Anterior e Día Seguinte. Ademais, os eventos activos agora teñen unha animación intermitente tanto na vista de Calendario como na de Lista para que sempre poidas ver o que está en execución.</value>
+    <value>Navega polo teu Historial facilmente usando os botóns de Día Anterior e Seguinte, ou fai clic nos eventos do calendario para ver as súas horas exactas de inicio e fin. Podes alternar o gráfico entre os modos de liña e barra, consultar a lenda de actividades e exportar CSV diarios de forma segura cun diálogo de confirmación.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Activa 'Mostrar axustes avanzados' na sección Xeral para revelar máis opcións. Podes organizar elementos con Grupos de Actividades, activar Orzamentos, eliminar automaticamente eventos máis curtos ca unha duración configurada para manter o teu historial limpo, ou alternar os axustes de Timeular.</value>
+    <value>Activa 'Mostrar configuración avanzada' na sección Xeral para revelar máis opcións. Podes organizar e renomear Grupos de Actividades, habilitar Orzamentos, eliminar automaticamente eventos máis curtos que unha duración configurada para manter limpo o teu historial ou activar a configuración de Timeular.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>Para o seguimento por hardware, un indicador de estado permanente do Rastrexador atópase na barra de navegación inferior. Proporciona unha visibilidade rápida do estado de conexión do teu Timeular sen importar en que páxina te atopes.</value>

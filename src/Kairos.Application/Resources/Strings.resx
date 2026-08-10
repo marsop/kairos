@@ -431,13 +431,13 @@
     <value>Welcome to Kairos. This walkthrough will show you how the app works end to end: tracking, reviewing, and protecting your data. Follow the steps in order once, then use only the parts you need day to day.</value>
   </data>
   <data name="TutorialHowItWorks" xml:space="preserve">
-    <value>Kairos is built around activity sessions. Every time you start an activity, a new event is recorded with a start time, and when you stop it, the end time is saved. Your balance is the sum of all recorded durations.</value>
+    <value>Kairos is built around activity sessions. Every time you start an activity, a new event is recorded with a start time, and when you stop it, the end time is saved. Your balance is the sum of all recorded durations. You can navigate between the main tabs using the PageUp and PageDown keys.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
     <value>This is the Budgets screen. The large summary card shows how much time you tracked in the currently selected period. Use it as your quick read for this week or this month before you dig into the details.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
-    <value>Below the summary, Kairos breaks time down by activity. You can compare tracked time, set simple budgets including a rolling budget feature, and use the chart to see whether the period is trending up, flat, or down.</value>
+    <value>Below the summary, Kairos breaks time down by activity, which you can sort by tracked time or budget usage. Budget progress bars show visual markers for minimum, threshold, maximum, and expected progress, helping you compare tracked time against simple or rolling budgets.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
     <value>On Activities, each tile is one trackable activity. Tap a tile or use numpad 1-8 to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
@@ -446,10 +446,10 @@
     <value>Starting an activity asks for a comment. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
+    <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. If you use Activity Groups, a dropdown selector lets you switch between them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>The chart lives on the Budgets screen. Use the Today, Week and Month buttons to switch the period and recalculate both the totals and the activity budgets for that range.</value>
+    <value>The chart lives on the Budgets screen. Use the Day, Week and Month pickers to switch the period and recalculate both the totals and the activity budgets for that range.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>
@@ -461,7 +461,7 @@
     <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Budgets screen.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>In Settings you can change language, choose your tutorial avatar, enable sound effects, and control browser notifications. Configure these once so the app matches your preferred daily workflow.</value>
+    <value>In Settings you can change language, choose your tutorial avatar, enable sound effects, and control browser notifications (including budget notifications). Configure these once so the app matches your preferred daily workflow.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>Settings also includes integration options such as Timeular device connection. If you use hardware tracking, verify connection state here before relying on automatic activity changes.</value>
@@ -791,10 +791,10 @@
     <value>Minimum hours</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigate your History easily using the new Previous and Next Day buttons. Additionally, active events now feature a pulsating animation in both Calendar and List views so you can always spot what is running.</value>
+    <value>Navigate your History easily using the Previous and Next Day buttons, or click calendar events to see their exact start and end times. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs with a confirmation dialog.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
-    <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize items with Activity Groups, enable Budgets, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
+    <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize and rename Activity Groups, enable Budgets, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
   </data>
   <data name="TutorialTrackerStatus" xml:space="preserve">
     <value>For hardware tracking, a permanent Tracker status indicator sits in the bottom navigation bar. It provides quick visibility of your Timeular connection state no matter which page you are on.</value>
