@@ -9,20 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
+
 ### Added
 - **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
+- **History UI**: Show start and end times for selected calendar events.
+- **History UI**: Add activity legend to history charts showing distinct colors and names.
+- **AGENTS.md**: Add testing guideline requiring automated tests for all new functionality or modifications.
+- **AGENTS.md**: Add Playwright authentication mocking documentation.
 
 ### Changed
 - **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
 - Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
+- **Budgets UI**: Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
+- **Budgets UI**: Remove "Default" view from Budgets page, making "Budget Usage" the default.
+- **Budgets UI**: Update Budgets page banner styling to match activity banner.
 - **Settings UI**: Removed the inline trash-icon button for deleting Activity Groups. Deletion is now only available from within the group editing dialog.
-- Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
-- Updated `AGENTS.md` to ensure `CHANGELOG.md` is updated with every change made.
-- **Testing**: Added agent guideline requiring automated tests for all new functionality or modifications
-- Remove 'Default' view from Budgets page, making 'Budget Usage' the default
-- Changed the "Group" creation button text to "Add Group" to unify with the "Add Activity" button.
-- Moved chart type selector (line vs bar) from main toolbar to top-right corner of graph area in History view.
-- Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
+- **Settings UI**: Unify Add Group button text with Add Activity button.
+- **Settings UI**: Update "Add group" button styling to match "Add activity" button.
+- **Activities UI**: Move ActiveEvent banner to the top in Activities page.
+- **Activities UI**: Use a proper edit icon button instead of an emoji on the active event card in the Activities page.
+- **Activities UI**: Change "Rename activity" to "Edit activity" in UI and localized resources.
+- **History UI**: Moved chart type selector (line vs bar) from main toolbar to top-right corner of graph area in History view.
+- **History UI**: Extract event edit dialog and allow editing active events.
+- **UI**: Unify edit icons and dropdown style across the application.
+- **AGENTS.md**: Updated AGENTS.md to ensure CHANGELOG.md is updated with every change made.
+
+### Fixed
+- **UI**: Fix custom dropdown premature closing on item click and prevent focus loss by using onmousedown.
+- **History UI**: Move history event deletion into edit dialog to prevent accidental clicks.
+- **History UI**: Hide x-axis time labels on bar chart.
+- **Activities UI**: Fix activity edit button position and visibility.
+- **Sync**: Fix activity group truncation on sync.
 
 ## [1.7.0] - 2026-08-05
 
