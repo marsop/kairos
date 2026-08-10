@@ -987,13 +987,13 @@ body {
 }
 
 .btn-save {
-    background: var(--color-accent);
+    background: var(--color-positive);
     color: white;
 }
 
 .btn-save:hover {
-    background: #5457e5;
-    box-shadow: 0 0 20px var(--color-accent-glow);
+    background: #0d9668;
+    box-shadow: var(--shadow-glow-positive);
 }
 
 .edit-btn {
