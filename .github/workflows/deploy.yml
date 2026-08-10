@@ -36,7 +36,7 @@ jobs:
           ASPNETCORE_URLS: http://localhost:5111
 
       - name: Wait for Application
-        run: sleep 5
+        run: sleep 60
 
       - name: Build Tests
         run: dotnet build tests/Kairos.PlaywrightTests -c Release
