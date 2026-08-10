@@ -8,6 +8,8 @@ namespace Kairos.Application.Services;
 /// </summary>
 public class ActivityConfigurationService : IActivityConfigurationService
 {
+    private const string ConfigFilePath = "_content/Kairos.App/activities.json";
+
     private readonly HttpClient _httpClient;
 
     public ActivityConfigurationService(HttpClient httpClient)
@@ -17,7 +19,7 @@ public class ActivityConfigurationService : IActivityConfigurationService
 
     public async Task<List<Activity>> LoadActivitiesAsync()
     {
-        var config = await _httpClient.GetFromJsonAsync<ActivityConfiguration>("_content/Kairos.App/activities.json");
+        var config = await _httpClient.GetFromJsonAsync<ActivityConfiguration>(ConfigFilePath);
 
         if (config?.Activities == null || config.Activities.Count == 0)
         {
