@@ -9,8 +9,8 @@
             <p class="modal-message">@Message</p>
             
             <div class="modal-actions">
-                <button class="btn btn-secondary" @onclick="OnCancel">@Localizer["Cancel"]</button>
-                <button class="btn btn-danger" @onclick="OnConfirm">@Localizer["Confirm"]</button>
+                <button class="btn-cancel" @onclick="OnCancel">@Localizer["Cancel"]</button>
+                <button class="btn-delete" @onclick="OnConfirm">@Localizer["Confirm"]</button>
             </div>
         </div>
     </div>
@@ -58,23 +58,7 @@
         gap: 10px;
     }
 
-    .btn {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
-    }
 
-    .btn-secondary {
-        background: var(--color-bg-tertiary, #e6ebe8);
-        color: var(--color-text-primary, #0f1f1e);
-    }
-
-    .btn-danger {
-        background: var(--color-negative, #bb3e3e);
-        color: white;
-    }
 </style>
 
 @code {
