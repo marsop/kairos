@@ -61,6 +61,7 @@
     private ElementReference _editStartTimeRef;
     private ElementReference _editCommentRef;
     private bool _editFocusRequested;
+    private Guid? _lastEventId;
     private DateTime _editStartTime;
     private DateTime _editEndTime;
     private string _editComment = string.Empty;
@@ -70,11 +71,19 @@
     {
         if (EventToEdit != null)
         {
-            _editStartTime = EventToEdit.StartTime.ToLocalTime().DateTime;
-            _editEndTime = EventToEdit.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
-            _editComment = EventToEdit.Comment ?? string.Empty;
-            _editError = null;
-            _editFocusRequested = true;
+            if (_lastEventId != EventToEdit.Id)
+            {
+                _lastEventId = EventToEdit.Id;
+                _editStartTime = EventToEdit.StartTime.ToLocalTime().DateTime;
+                _editEndTime = EventToEdit.EndTime?.ToLocalTime().DateTime ?? DateTime.Now;
+                _editComment = EventToEdit.Comment ?? string.Empty;
+                _editError = null;
+                _editFocusRequested = true;
+            }
+        }
+        else
+        {
+            _lastEventId = null;
         }
     }
 
