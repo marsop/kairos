@@ -442,3 +442,34 @@ public class StubBudgetSettingsService : IBudgetSettingsService
     public Task SaveAsync() => Task.CompletedTask;
     public Task InitializeDefaultsIfEmptyAsync() => Task.CompletedTask;
 }
+
+internal sealed class StubSupabaseBudgetSettingsStore : ISupabaseBudgetSettingsStore
+{
+    public BudgetSettingsData? LoadedData { get; set; }
+    public int LoadCalls { get; private set; }
+    public int SaveCalls { get; private set; }
+    public BudgetSettingsData? SavedData { get; private set; }
+
+    public Task<BudgetSettingsData?> LoadSettingsAsync()
+    {
+        LoadCalls++;
+        return Task.FromResult(LoadedData);
+    }
+
+    public Task SaveSettingsAsync(BudgetSettingsData settings)
+    {
+        SaveCalls++;
+        SavedData = new BudgetSettingsData
+        {
+            MinimumEnabled = settings.MinimumEnabled,
+            Threshold = settings.Threshold,
+            ColorMinimumNotReached = settings.ColorMinimumNotReached,
+            ColorMinimumReachedMaxNotReached = settings.ColorMinimumReachedMaxNotReached,
+            ColorBetweenThresholdMax = settings.ColorBetweenThresholdMax,
+            ColorOverMax = settings.ColorOverMax,
+            BudgetType = settings.BudgetType,
+            NotificationsEnabled = settings.NotificationsEnabled
+        };
+        return Task.CompletedTask;
+    }
+}
