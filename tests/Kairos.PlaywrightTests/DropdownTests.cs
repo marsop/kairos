@@ -17,6 +17,9 @@ namespace Kairos.PlaywrightTests
         {
             await Page.GotoAsync(AppUrl);
 
+            await Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });
+            await Page.WaitForSelectorAsync(".auth-card");
+
             // Bypass tutorial and auth
             var settings = new
             {
@@ -41,6 +44,7 @@ namespace Kairos.PlaywrightTests
             ");
 
             await Page.ReloadAsync();
+            await Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });
         }
 
         [Test]
