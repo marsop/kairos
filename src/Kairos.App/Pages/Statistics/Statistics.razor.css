@@ -186,26 +186,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* ===== Budget Edit Button ===== */
-
-.budget-edit-btn {
-    align-self: flex-start;
-    background: none;
-    border: 1px solid var(--color-bg-tertiary);
-    border-radius: var(--radius-full);
-    color: var(--color-text-muted);
-    font-family: inherit;
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-md);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.budget-edit-btn:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-}
-
 /* ===== Edit Form (in modal) ===== */
 
 .edit-form {
