@@ -52,10 +52,10 @@
                             @activity.Emoji @activity.Name
                         </span>
                         <span class="budget-time @(isOver ? "over" : "")">
-                            @tracked.TotalHours.ToString("F1")h
+                            @tracked.TotalHours.ToString("F1")@Localizer["UnitHourShort"]
                             @if (hasBudget)
                             {
-                                <span class="budget-of"> / @budget!.AllocatedTimeSpan.TotalHours.ToString("F0")h</span>
+                                <span class="budget-of"> / @budget!.AllocatedTimeSpan.TotalHours.ToString("F0")@Localizer["UnitHourShort"]</span>
                             }
                         </span>
                     </div>
@@ -107,7 +107,7 @@
                 @if (BudgetSettingsService.MinimumEnabled)
                 {
                     <div class="edit-field">
-                        <label class="edit-label">Min Hours</label>
+                        <label class="edit-label">@Localizer["BudgetSettingsMinHours"]</label>
                         <input type="number" class="edit-input" @bind="EditingMinimumHours" min="0" max="@EditingBudgetHours" step="1" />
                     </div>
                 }
@@ -119,7 +119,7 @@
                     </div>
                 }
                 <div class="edit-field">
-                    <label class="edit-label">Max Hours</label>
+                    <label class="edit-label">@Localizer["BudgetSettingsMaxHours"]</label>
                     <input type="number" class="edit-input" @ref="_budgetInputRef" @bind="EditingBudgetHours" min="@EditingMinimumHours" step="1" />
                 </div>
             </div>

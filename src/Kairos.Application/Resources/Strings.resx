@@ -946,4 +946,19 @@
   <data name="AddGroup" xml:space="preserve">
     <value>Add Group</value>
   </data>
+  <data name="BudgetSettingsMinHours" xml:space="preserve">
+    <value>Min Hours</value>
+  </data>
+  <data name="BudgetSettingsMaxHours" xml:space="preserve">
+    <value>Max Hours</value>
+  </data>
+  <data name="UnitHourShort" xml:space="preserve">
+    <value>h</value>
+  </data>
+  <data name="UnitMinuteShort" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="UnitSecondShort" xml:space="preserve">
+    <value>s</value>
+  </data>
 </root>
