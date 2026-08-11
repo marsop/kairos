@@ -1012,7 +1012,7 @@ body {
 }
 
 .edit-btn:hover {
-    background: rgba(99, 102, 241, 0.15);
+    background: var(--color-accent-glow);
     color: var(--color-accent);
 }
 
@@ -2540,10 +2540,6 @@ html[data-theme="dark"] .edit-input {
 
 .event-card.active {
     box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
-}
-
-.edit-btn:hover {
-    background: rgba(15, 118, 110, 0.12);
 }
 
 .backup-btn:hover:not(:disabled),
