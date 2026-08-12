@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-08-12
+
 ### Changed
 - **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
 
