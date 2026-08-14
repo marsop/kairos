@@ -844,26 +844,6 @@ body {
     gap: var(--spacing-sm);
 }
 
-.delete-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: var(--radius-md);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: var(--font-size-md);
-    transition: all var(--transition-fast);
-}
-
-.delete-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--color-negative);
-}
-
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -1009,11 +989,6 @@ body {
     cursor: pointer;
     font-size: var(--font-size-md);
     transition: all var(--transition-fast);
-}
-
-.edit-btn:hover {
-    background: rgba(99, 102, 241, 0.15);
-    color: var(--color-accent);
 }
 
 .edit-form {
@@ -1891,39 +1866,6 @@ html[data-theme="dark"] .edit-input {
     justify-content: center;
 }
 
-.edit-action-btn {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-size: var(--font-size-md);
-    transition: all var(--transition-fast);
-}
-
-.edit-action-btn.save {
-    background: var(--color-positive);
-    color: white;
-}
-
-.edit-action-btn.save:hover {
-    background: #0d9668;
-    box-shadow: var(--shadow-glow-positive);
-}
-
-.edit-action-btn.cancel {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-muted);
-}
-
-.edit-action-btn.cancel:hover {
-    background: var(--color-bg-primary);
-    color: var(--color-text-secondary);
-}
-
 .validation-error {
     font-size: var(--font-size-xs);
     color: var(--color-negative);
@@ -2544,6 +2486,7 @@ html[data-theme="dark"] .edit-input {
 
 .edit-btn:hover {
     background: rgba(15, 118, 110, 0.12);
+    color: var(--color-accent);
 }
 
 .backup-btn:hover:not(:disabled),
