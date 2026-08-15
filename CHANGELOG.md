@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
+## [1.8.0] - 2026-08-15
 
 ### Added
 - **History UI**: Added a confirmation dialog before exporting a daily CSV, featuring a date picker and a read-only filename preview.
@@ -20,8 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AGENTS.md**: Add Playwright authentication mocking documentation.
 
 ### Changed
+- **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
 - **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
-- Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - **Budgets UI**: Improved clarity of the budget modal text by changing "Hours for this month/week/today" to "Budget Type: Monthly/Weekly/Daily".
 - **Budgets UI**: Remove "Default" view from Budgets page, making "Budget Usage" the default.
 - **Budgets UI**: Update Budgets page banner styling to match activity banner.
@@ -42,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **History UI**: Hide x-axis time labels on bar chart.
 - **Activities UI**: Fix activity edit button position and visibility.
 - **Sync**: Fix activity group truncation on sync.
+
 
 ## [1.7.0] - 2026-08-05
 
