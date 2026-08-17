@@ -41,6 +41,8 @@ namespace Kairos.PlaywrightTests
             await Page.EvaluateAsync($@"
                 localStorage.setItem('Kairos_settings', JSON.stringify({JsonSerializer.Serialize(settings)}));
                 localStorage.setItem('Kairos_supabase_session', JSON.stringify({JsonSerializer.Serialize(session)}));
+                localStorage.setItem('Kairos_TutorialCompleted', 'true');
+                localStorage.setItem('Kairos_LastSeenVersion', 'true');
             ");
 
             await Page.ReloadAsync();
