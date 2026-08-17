@@ -419,7 +419,7 @@
     <value>Ao iniciar unha actividade pídesche un comentario. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>Podes renomear actividades, eliminar as inactivas, engadir novas e arrastralas para reordenalas. Se usas Grupos de Actividades, un selector despregable permíteche cambiar entre eles. Mantén a lista limpa e estable para que o seguimento diario sexa rápido e constante.</value>
+    <value>Podes editar actividades, eliminar as inactivas, engadir novas e arrastralas para reordenalas. Se usas Grupos de Actividades, un selector despregable permíteche cambiar entre eles. Mantén a lista limpa e estable para que o seguimento diario sexa rápido e constante.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
     <value>O gráfico atópase na pantalla de Orzamentos. Usa os selectores de Día, Semana e Mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
@@ -431,7 +431,7 @@
     <value>Historial é o teu rexistro detallado de auditoría. Cada tarxeta mostra nome da actividade, inicio, fin, duración e comentario. Esta páxina é a fonte fiable cando precisas comprobar o que pasou.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Podes editar horas de inicio e fin nas entradas completadas e eliminar entradas incorrectas. Corrixir aquí recalcula os teus totais e actualiza de inmediato a pantalla de Orzamentos.</value>
+    <value>Podes editar horas de inicio e fin nas entradas completadas, editar eventos activos e eliminar entradas incorrectas. Corrixir aquí recalcula os teus totais e actualiza de inmediato a pantalla de Orzamentos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>En Configuración podes cambiar o idioma, elixir o teu avatar do tutorial, habilitar efectos de son e controlar as notificacións do navegador (incluídas as notificacións de orzamento). Configura isto unha vez para que a aplicación se adapte ao teu fluxo de traballo diario preferido.</value>
@@ -792,7 +792,7 @@
     <value>Horas asignadas</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navega polo teu Historial facilmente usando os botóns de Día Anterior e Seguinte, ou fai clic nos eventos do calendario para ver as súas horas exactas de inicio e fin. Podes alternar o gráfico entre os modos de liña e barra, consultar a lenda de actividades e exportar CSV diarios de forma segura cun diálogo de confirmación.</value>
+    <value>Navega polo teu Historial facilmente usando os botóns de Día Anterior e Seguinte, ou fai clic nos eventos do calendario para ver as súas horas exactas de inicio e fin. Podes alternar o gráfico entre os modos de liña e barra, consultar a lenda de actividades e exportar CSV diarios de forma segura seleccionando a data nun diálogo de confirmación.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Activa 'Mostrar configuración avanzada' na sección Xeral para revelar máis opcións. Podes organizar e renomear Grupos de Actividades, habilitar Orzamentos, eliminar automaticamente eventos máis curtos que unha duración configurada para manter limpo o teu historial ou activar a configuración de Timeular.</value>

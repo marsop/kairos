@@ -416,7 +416,7 @@
     <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>Du kannst Aktivitäten umbenennen, inaktive löschen, neue hinzufügen und sie durch Ziehen neu anordnen. Wenn du Aktivitätsgruppen verwendest, kannst du mit einem Dropdown-Auswahlmenü zwischen ihnen wechseln. Halte die Liste sauber und übersichtlich, damit die tägliche Zeiterfassung schnell und konsistent bleibt.</value>
+    <value>Du kannst Aktivitäten bearbeiten, inaktive löschen, neue hinzufügen und sie durch Ziehen neu anordnen. Wenn du Aktivitätsgruppen verwendest, kannst du mit einer Dropdown-Auswahl zwischen ihnen wechseln. Halte die Liste sauber und stabil, damit das tägliche Tracking schnell und konsistent bleibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
     <value>Das Diagramm befindet sich auf dem Budgets-Bildschirm. Verwende die Tag-, Wochen- und Monatsauswahl, um den Zeitraum zu wechseln und sowohl die Summen als auch die Aktivitätsbudgets für diesen Bereich neu zu berechnen.</value>
@@ -428,7 +428,7 @@
     <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bei abgeschlossenen Einträgen kannst du Start- und Endzeiten bearbeiten und fehlerhafte Einträge löschen. Korrekturen hier berechnen deine Summen neu und aktualisieren die Budgets-Seite sofort.</value>
+    <value>Du kannst die Start- und Endzeiten von abgeschlossenen Einträgen bearbeiten, aktive Ereignisse bearbeiten und fehlerhafte löschen. Das Beheben von Fehlern hier berechnet deine Summen sofort neu und aktualisiert den Budget-Bildschirm.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>In den Einstellungen kannst du die Sprache ändern, deinen Tutorial-Avatar auswählen, Soundeffekte aktivieren und Browser-Benachrichtigungen (einschließlich Budget-Benachrichtigungen) steuern. Richte dies einmal ein, damit die App deinem bevorzugten täglichen Arbeitsablauf entspricht.</value>
@@ -789,7 +789,7 @@
     <value>Zugewiesene Stunden</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigiere einfach durch deinen Verlauf mit den Schaltflächen für den vorherigen und nächsten Tag, oder klicke auf Kalenderereignisse, um deren genaue Start- und Endzeiten zu sehen. Du kannst das Diagramm zwischen Linien- und Balkenmodus umschalten, die Aktivitätenlegende überprüfen und sichere tägliche CSV-Exporte mit einem Bestätigungsdialog durchführen.</value>
+    <value>Navigiere einfach durch deinen Verlauf mit den Schaltflächen für den vorherigen und nächsten Tag, oder klicke auf Kalenderereignisse, um deren genaue Start- und Endzeiten zu sehen. Du kannst das Diagramm zwischen Linien- und Balkenmodus umschalten, die Aktivitätenlegende überprüfen und sichere tägliche CSV-Exporte mit einem Bestätigungsdialog durchführen, in dem das Datum ausgewählt werden kann.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Aktiviere 'Erweiterte Einstellungen anzeigen' im Abschnitt Allgemein, um weitere Optionen anzuzeigen. Du kannst Aktivitätsgruppen organisieren und umbenennen, Budgets aktivieren, Ereignisse, die kürzer als eine konfigurierte Dauer sind, automatisch löschen, um deinen Verlauf sauber zu halten, oder Timeular-Einstellungen umschalten.</value>

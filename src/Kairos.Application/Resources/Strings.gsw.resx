@@ -419,7 +419,7 @@
     <value>Biim Starta vo a Aktivität wirst no am Kommentar gfrogt. Nutz kurzi, klare Notiza, zum Bispil was d gmacht hesch, wo oder für wen. Kommentara erschinat im Verloff und machat spätere Reviews viel eifacher.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>Du kasch Aktivitäta umbenenna, inaktivi löschen, neui hinzfüega und se durch Ziacha neu aordna. Wenn du Aktivitätsgruppa verwendisch, kasch mit emene Dropdown-Uswahlmenü zwüscha ihna wechsla. Halt d'Lischt suuber und übersichtlich, damit d'täglichi Ziterfassig schnell und konsistent blibt.</value>
+    <value>Du kasch Aktivitäta bearbeita, inaktivi löschen, neui hinzfüega und se durch Ziacha neu aordna. Wenn du Aktivitätsgruppa verwendisch, kasch mit emene Dropdown-Uswahlmenü zwüscha ihna wechsla. Halt d'Lischt suuber und übersichtlich, damit d'täglichi Ziterfassig schnell und konsistent blibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
     <value>S'Diagramm befindet sich uf em Budgets-Bildschirm. Verwänd d'Tag-, Wucha- und Monatsuswahl, um dr Zitraum z'wechsla und sowohl d'Summa als o d'Aktivitätsbudgets für dean Bereich neu z'berechna.</value>
@@ -431,7 +431,7 @@
     <value>Dr Verloff isch dis detaillierte Prüfprotokoll. Jedi Charte zeigt Aktivitätsname, Startzit, Endzit, Dauer und Kommentar. Die Seita isch dini zuverlässige Quella, wenn du prüefa willsch, was passiert isch.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Bi abgeschlossene Iträg kasch Start- und Endzita bearbeita und falschi Iträg löscha. Korrektura do berechnat dini Summä neu und aktualisierat d'Budgets-Soita sofort.</value>
+    <value>Du kasch d'Start- und Endzita vo abgschlossana Iiträg bearbeita, aktivi Ereigniss bearbeita und fehlerhafti löschen. S'Beheba vo Fehler do berechnet dini Summa sofort neu und aktualisiert da Budget-Bildschirm.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>I da Istellunga kasch d'Sproch ändera, din Tutorial-Avatar uswähla, Soundeffekt aktiviara und Browser-Benachrichtigunga (ischliesslich Budget-Benachrichtigunga) stüra. Richt das einmol i, damit d'App dim bevorzugta täglicha Arbeitsablauf entspricht.</value>
@@ -792,7 +792,7 @@
     <value>Zuegwiseni Stunde</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigier aifach durch din Verlauf mit da Schaltflächa für da vorig und nöchscht Tag, oder klick uf Kalenderereigniss, zum dera gnaui Start- und Endzita z'seh. Du kasch s'Diagramm zwüscha Linia- und Balkamodus umschalta, d'Aktivitätslegende überprüafa und sicheri täglichi CSV-Export mit ama Bestätigungsdialog durchfüehra.</value>
+    <value>Navigier aifach durch din Verlauf mit da Schaltflächa für da vorig und nöchscht Tag, oder klick uf Kalenderereigniss, zum dera gnaui Start- und Endzita z'seh. Du kasch s'Diagramm zwüscha Linia- und Balkamodus umschalta, d'Aktivitätslegende überprüafa und sicheri täglichi CSV-Export durchfüehra, wo du s'Datum imana Bestätigungsdialog uswählsch.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Aktiviär 'Erwiterti Istellunga azeiga' im Abschnitt Allgemein, um witeri Optiona azzeiga. Du kasch Aktivitätsgruppa organisiara und umbenenna, Budgets aktiviara, Ereignis, wo kürzer als a konfigurierti Duur sind, automatisch löschen, um din Verlauf suuber z'halta, oder Timeular-Istellunga umschalta.</value>
