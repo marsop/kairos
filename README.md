@@ -41,10 +41,15 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 - **Supabase Integration**: Backup and restore data to/from a Supabase cloud database
 - **Auto-Sync**: Enable automatic synchronization when signed in to Supabase
 
+### Navigation & Shortcuts
+
+- **Keyboard Navigation**: Cyclically navigate through main tabs using PageDown/PageUp
+- **Quick Activation**: Start/stop activities instantly using numpad keys 1-8
+
 ### Settings
 
 - **Multi-Language Support**: Available in English, Deutsch, Español, Galego, and Vorarlbergerisch
-- **Advanced Options**: Configure activity groups, sticky events duration, auto-deletion of short events, and toggle Timeular integration
+- **Advanced Options**: Configure activity groups, sticky events duration, auto-deletion of short events, toggle Timeular integration, and enable sound effects
 - **Factory Reset**: Clear all data and start fresh
 
 ### Progressive Web App (PWA)
