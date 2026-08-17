@@ -416,7 +416,7 @@
     <value>Al iniciar una actividad se solicita un comentario. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>Puedes renombrar actividades, eliminar las inactivas, añadir nuevas y arrastrarlas para reordenarlas. Si usas Grupos de Actividades, un selector desplegable te permite cambiar entre ellos. Mantén la lista limpia y estable para que el seguimiento diario sea rápido y constante.</value>
+    <value>Puedes editar actividades, eliminar las inactivas, añadir nuevas y arrastrarlas para reordenarlas. Si usas Grupos de Actividades, un selector desplegable te permite cambiar entre ellos. Mantén la lista limpia y estable para que el seguimiento diario sea rápido y constante.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
     <value>El gráfico se encuentra en la pantalla de Presupuestos. Usa los selectores de Día, Semana y Mes para cambiar el período y recalcular tanto los totales como los presupuestos de actividad para ese rango.</value>
@@ -428,7 +428,7 @@
     <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>Puedes editar horas de inicio y fin en entradas completadas y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Presupuestos.</value>
+    <value>Puedes editar horas de inicio y fin en entradas completadas, editar eventos activos y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Presupuestos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>En Configuración puedes cambiar el idioma, elegir tu avatar del tutorial, habilitar efectos de sonido y controlar las notificaciones del navegador (incluidas las notificaciones de presupuesto). Configura esto una vez para que la aplicación se adapte a tu flujo de trabajo diario preferido.</value>
@@ -789,7 +789,7 @@
     <value>Horas asignadas</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navega por tu Historial fácilmente usando los botones de Día Anterior y Siguiente, o haz clic en los eventos del calendario para ver sus horas exactas de inicio y fin. Puedes alternar el gráfico entre los modos de línea y barra, consultar la leyenda de actividades y exportar CSV diarios de forma segura con un diálogo de confirmación.</value>
+    <value>Navega por tu Historial fácilmente usando los botones de Día Anterior y Siguiente, o haz clic en los eventos del calendario para ver sus horas exactas de inicio y fin. Puedes alternar el gráfico entre los modos de línea y barra, consultar la leyenda de actividades y exportar CSV diarios de forma segura seleccionando la fecha en un diálogo de confirmación.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Activa 'Mostrar configuración avanzada' en la sección General para revelar más opciones. Puedes organizar y renombrar Grupos de Actividades, habilitar Presupuestos, eliminar automáticamente eventos más cortos que una duración configurada para mantener limpio tu historial o activar la configuración de Timeular.</value>

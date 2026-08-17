@@ -446,7 +446,7 @@
     <value>Starting an activity asks for a comment. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
-    <value>You can rename activities, delete inactive ones, add new ones, and drag to reorder them. If you use Activity Groups, a dropdown selector lets you switch between them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
+    <value>You can edit activities, delete inactive ones, add new ones, and drag to reorder them. If you use Activity Groups, a dropdown selector lets you switch between them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
     <value>The chart lives on the Budgets screen. Use the Day, Week and Month pickers to switch the period and recalculate both the totals and the activity budgets for that range.</value>
@@ -458,7 +458,7 @@
     <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. This page is the source of truth when checking what happened.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
-    <value>You can edit start and end times on completed entries and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Budgets screen.</value>
+    <value>You can edit start and end times on completed entries, edit active events, and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Budgets screen.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
     <value>In Settings you can change language, choose your tutorial avatar, enable sound effects, and control browser notifications (including budget notifications). Configure these once so the app matches your preferred daily workflow.</value>
@@ -791,7 +791,7 @@
     <value>Minimum hours</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigate your History easily using the Previous and Next Day buttons, or click calendar events to see their exact start and end times. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs with a confirmation dialog.</value>
+    <value>Navigate your History easily using the Previous and Next Day buttons, or click calendar events to see their exact start and end times. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs selecting the date in a confirmation dialog.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize and rename Activity Groups, enable Budgets, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
