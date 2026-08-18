@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AGENTS.md**: Add testing guideline requiring automated tests for all new functionality or modifications.
 - **AGENTS.md**: Add Playwright authentication mocking documentation.
 
+### Fixed
+- **UI**: Fixed a bug where editing the comment of a completed activity event would overwrite typed text on background refreshes, and incorrectly force focus onto the start time input.
+
 ### Changed
 - **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
 - **UI**: Unified Save, Cancel, and Delete buttons styling globally across components to maintain consistent design.
