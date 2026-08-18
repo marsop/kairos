@@ -137,7 +137,7 @@
         {
             <div class="stat-summary-card">
                 <div class="stat-label">@Localizer["TotalTrackedTime"]</div>
-                <div class="stat-big-value">@((int)BudgetTotalTime.TotalHours)<span class="stat-unit">h</span> @(BudgetTotalTime.Minutes)<span class="stat-unit">m</span></div>
+                <div class="stat-big-value">@((int)BudgetTotalTime.TotalHours)<span class="stat-unit">@Localizer["UnitHourShort"]</span> @(BudgetTotalTime.Minutes)<span class="stat-unit">@Localizer["UnitMinuteShort"]</span></div>
                 <div class="stat-period">(@BudgetPeriodLabel)</div>
             </div>
 
@@ -176,7 +176,7 @@
                         {
                             var value = BudgetMaxY - (i * range / 4);
                             var y = 50 + i * 75;
-                            @((MarkupString)$@"<text x=""45"" y=""{y + 5}"" text-anchor=""end"" fill=""#888"" font-size=""12"">{value.ToString("F1", CultureInfo.InvariantCulture)}h</text>")
+                            @((MarkupString)$@"<text x=""45"" y=""{y + 5}"" text-anchor=""end"" fill=""#888"" font-size=""12"">{value.ToString("F1", CultureInfo.InvariantCulture)}{System.Net.WebUtility.HtmlEncode(Localizer["UnitHourShort"].Value)}</text>")
                         }
                     </g>
 
@@ -243,7 +243,7 @@
 
                                 <!-- Label inside or above the bar -->
                                 var textY = y - 5;
-                                @((MarkupString)$@"<text x=""{(currentX + barWidth / 2).ToString(CultureInfo.InvariantCulture)}"" y=""{textY.ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(color)}"" font-size=""12"" font-weight=""bold"">{point.Hours.ToString("F1", CultureInfo.InvariantCulture)}h</text>")
+                                @((MarkupString)$@"<text x=""{(currentX + barWidth / 2).ToString(CultureInfo.InvariantCulture)}"" y=""{textY.ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""{System.Net.WebUtility.HtmlEncode(color)}"" font-size=""12"" font-weight=""bold"">{point.Hours.ToString("F1", CultureInfo.InvariantCulture)}{System.Net.WebUtility.HtmlEncode(Localizer["UnitHourShort"].Value)}</text>")
 
                                 <!-- Activity name/emoji below the bar -->
                                 @((MarkupString)$@"<text x=""{(currentX + barWidth / 2).ToString(CultureInfo.InvariantCulture)}"" y=""{(yZero + 15).ToString(CultureInfo.InvariantCulture)}"" text-anchor=""middle"" fill=""#888"" font-size=""12"">{System.Net.WebUtility.HtmlEncode(point.Activity.Emoji)}</text>")
@@ -962,12 +962,12 @@
 
         if (Math.Abs(hours) >= 1)
         {
-            return $"{sign}{hours:F2}h";
+            return $"{sign}{hours:F2}{Localizer["UnitHourShort"]}";
         }
         else
         {
             var minutes = contribution.TotalMinutes;
-            return $"{sign}{minutes:F1}m";
+            return $"{sign}{minutes:F1}{Localizer["UnitMinuteShort"]}";
         }
     }
 
