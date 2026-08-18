@@ -17,19 +17,17 @@
                         <label class="edit-label">@Localizer["StartTime"]</label>
                         <input type="datetime-local" class="edit-input"
                                @ref="_editStartTimeRef"
-                               value="@_editStartTime.ToString("yyyy-MM-ddTHH:mm")"
-                               @onchange="OnStartTimeChanged" />
+                               @bind="_editStartTime" />
                     </div>
                     <div class="edit-field">
                         <label class="edit-label">@Localizer["EndTime"]</label>
                         <input type="datetime-local" class="edit-input"
-                               value="@_editEndTime.ToString("yyyy-MM-ddTHH:mm")"
-                               @onchange="OnEndTimeChanged" />
+                               @bind="_editEndTime" />
                     </div>
                 }
                 <div class="edit-field">
                     <label class="edit-label">@Localizer["Comment"]</label>
-                    <textarea class="edit-input" @ref="_editCommentRef" @bind="_editComment"></textarea>
+                    <textarea class="edit-input" @ref="_editCommentRef" @bind="_editComment" @bind:event="oninput"></textarea>
                 </div>
                 @if (!string.IsNullOrEmpty(_editError))
                 {
@@ -91,7 +89,6 @@
     {
         if (_editFocusRequested && EventToEdit != null)
         {
-            _editFocusRequested = false;
             try
             {
                 if (!EventToEdit.IsActive)
@@ -103,22 +100,7 @@
             {
                 // Ignore focus errors (e.g., element not visible yet)
             }
-        }
-    }
-
-    private void OnStartTimeChanged(ChangeEventArgs e)
-    {
-        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
-        {
-            _editStartTime = dt;
-        }
-    }
-
-    private void OnEndTimeChanged(ChangeEventArgs e)
-    {
-        if (DateTime.TryParse(e.Value?.ToString(), out var dt))
-        {
-            _editEndTime = dt;
+            _editFocusRequested = false;
         }
     }
 
