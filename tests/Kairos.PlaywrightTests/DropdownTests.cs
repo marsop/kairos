@@ -43,6 +43,7 @@ namespace Kairos.PlaywrightTests
                 localStorage.setItem('Kairos_supabase_session', JSON.stringify({JsonSerializer.Serialize(session)}));
                 localStorage.setItem('Kairos_TutorialCompleted', 'true');
                 localStorage.setItem('Kairos_LastSeenVersion', 'true');
+                localStorage.setItem('Kairos_ReleaseNotesSeenVersion', 'true');
             ");
 
             await Page.ReloadAsync();
