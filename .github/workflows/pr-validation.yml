@@ -25,18 +25,10 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
 
-      - name: Start Application
-        run: dotnet run --project src/Kairos.Web -c Release &
-        env:
-          ASPNETCORE_URLS: http://localhost:5111
-
-
-      - name: Wait for Application
-        run: sleep 5
-
-
       - name: Install Playwright Browsers
         run: pwsh tests/Kairos.PlaywrightTests/bin/Release/net10.0/playwright.ps1 install --with-deps
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal -c Release
+        run: dotnet run --project src/Kairos.Web -c Release & sleep 10 && dotnet test --no-build --verbosity normal -c Release
+        env:
+          ASPNETCORE_URLS: http://localhost:5111
