@@ -844,26 +844,6 @@ body {
     gap: var(--spacing-sm);
 }
 
-.delete-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: var(--radius-md);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: var(--font-size-md);
-    transition: all var(--transition-fast);
-}
-
-.delete-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--color-negative);
-}
-
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -947,7 +927,8 @@ body {
 }
 
 .btn-cancel,
-.btn-delete {
+.btn-delete,
+.btn-save {
     padding: var(--spacing-sm) var(--spacing-lg);
     border-radius: var(--radius-md);
     font-family: inherit;
@@ -961,16 +942,6 @@ body {
 .btn-cancel {
     background: var(--color-bg-tertiary);
     color: var(--color-text-secondary);
-}
-
-.btn-save {
-    background: var(--color-positive);
-    color: white;
-}
-
-.btn-save:hover {
-    background: #0d9668;
-    box-shadow: var(--shadow-glow-positive);
 }
 
 .activity-form-fields {
@@ -995,6 +966,16 @@ body {
     box-shadow: var(--shadow-glow-negative);
 }
 
+.btn-save {
+    background: var(--color-positive);
+    color: white;
+}
+
+.btn-save:hover {
+    background: #0d9668;
+    box-shadow: var(--shadow-glow-positive);
+}
+
 .edit-btn {
     display: flex;
     align-items: center;
@@ -1011,26 +992,8 @@ body {
 }
 
 .edit-btn:hover {
-    background: rgba(99, 102, 241, 0.15);
+    background: var(--color-accent-glow);
     color: var(--color-accent);
-}
-
-.btn-save {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    font-family: inherit;
-    font-size: var(--font-size-md);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border: none;
-    background: var(--color-accent);
-    color: white;
-}
-
-.btn-save:hover {
-    background: #5457e5;
-    box-shadow: 0 0 20px var(--color-accent-glow);
 }
 
 .edit-form {
@@ -1757,32 +1720,6 @@ html[data-theme="dark"] .edit-input {
 
 .activity-actions.right {
     right: var(--spacing-sm);
-}
-
-.activity-action-btn {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: var(--radius-md);
-    background: var(--color-bg-tertiary);
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: var(--color-text-muted);
-    transition: all var(--transition-fast);
-}
-
-.activity-action-btn:hover {
-    background: var(--color-bg-primary);
-    color: var(--color-text-primary);
-    transform: scale(1.1);
-}
-
-.activity-action-btn.delete:hover {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--color-negative);
 }
 
 .activity-edit-form {
@@ -2585,11 +2522,6 @@ html[data-theme="dark"] .edit-input {
     box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12);
 }
 
-.edit-btn:hover {
-    background: rgba(15, 118, 110, 0.12);
-}
-
-.btn-save:hover,
 .backup-btn:hover:not(:disabled),
 .install-btn:hover {
     background: var(--color-accent-hover);
