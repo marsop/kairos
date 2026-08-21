@@ -117,7 +117,7 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
     padding: var(--spacing-lg);
-    padding-bottom: calc(60px + var(--spacing-lg));
+    padding-bottom: calc(80px + var(--spacing-lg) + env(safe-area-inset-bottom));
 }
 
 .main-content::-webkit-scrollbar {
@@ -128,7 +128,7 @@ body {
 
 @media (min-width: 480px) {
     .main-content {
-        padding-bottom: calc(80px + var(--spacing-lg));
+        padding-bottom: calc(120px + var(--spacing-lg) + env(safe-area-inset-bottom));
     }
 }
 
