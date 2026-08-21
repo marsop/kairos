@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-08-21
+
+### Changed
+- **UI**: Unified focusout behavior across custom dropdown components by ensuring `tabindex="-1"` and `@onfocusout` handlers are applied correctly to prevent unintended dropdown persistance when clicking outside.
+
+
 ### Fixed
 - **CI/CD**: Fix deploy workflow hanging for 1h+ by reordering steps so the base-tag rewrite happens after Playwright tests instead of before.
 - **CI/CD**: Add `timeout-minutes: 15` to deploy job to prevent runaway pipeline runs.
