@@ -22,7 +22,7 @@
                         <div class="setup-options">
                             <div class="setup-item">
                                 <span class="setup-label">@Localizer["DisplayLanguage"]</span>
-                                <div class="custom-dropdown">
+                                <div class="custom-dropdown" @onfocusout="CloseLanguageDropdown" tabindex="-1">
                                     <button type="button" class="dropdown-trigger" @onclick="ToggleLanguageDropdown">
                                         <span>@GetLanguageName(SettingsService.Language)</span>
                                     </button>
@@ -40,7 +40,7 @@
                             </div>
                             <div class="setup-item">
                                 <span class="setup-label">@Localizer["TutorialAvatar"]</span>
-                                <div class="custom-dropdown">
+                                <div class="custom-dropdown" @onfocusout="CloseAvatarDropdown" tabindex="-1">
                                     <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
                                         <span class="avatar-icon"><img src="@($"{TutorialService.CurrentAvatar?.BasePath}/tutorial-avatar.png")" alt="avatar icon" /></span>
                                         <span>@(TutorialService.CurrentAvatar?.Name ?? "Unknown")</span>
@@ -304,6 +304,17 @@
 
         isAvatarDropdownOpen = false;
         StateHasChanged();
+    }
+
+
+    private void CloseLanguageDropdown()
+    {
+        isLanguageDropdownOpen = false;
+    }
+
+    private void CloseAvatarDropdown()
+    {
+        isAvatarDropdownOpen = false;
     }
 
     public void Dispose()
