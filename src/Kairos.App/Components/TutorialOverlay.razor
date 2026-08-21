@@ -306,6 +306,17 @@
         StateHasChanged();
     }
 
+
+    private void CloseLanguageDropdown()
+    {
+        isLanguageDropdownOpen = false;
+    }
+
+    private void CloseAvatarDropdown()
+    {
+        isAvatarDropdownOpen = false;
+    }
+
     public void Dispose()
     {
         TutorialService.OnChange -= StateHasChanged;
