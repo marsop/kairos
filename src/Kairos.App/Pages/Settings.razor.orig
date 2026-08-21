@@ -568,21 +568,6 @@
         }
     }
 
-    private void CloseDropdown()
-    {
-        _isDropdownOpen = false;
-    }
-
-    private void CloseThemeDropdown()
-    {
-        _isThemeDropdownOpen = false;
-    }
-
-    private void CloseAvatarDropdown()
-    {
-        _isAvatarDropdownOpen = false;
-    }
-
     private string SelectedLanguage => SettingsService.Language;
     private string SelectedTheme => SettingsService.Theme;
 
