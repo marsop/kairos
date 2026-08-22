@@ -9,7 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **UI**: Increased comment suggestion clickable area.
+- **UI**: Fixed UI inconsistencies in CSS definitions by removing unused classes and unifying hover styles.
+- **Docs**: Updated AGENTS.md with current guidelines.
+- **Localization**: Updated tutorial strings for newly added functionality.
+
 ### Fixed
+- **UI**: Fixed occlusion of main content by bottom nav on tablets.
+- **UI**: Fixed hardcoded unit strings in History.razor.
+- **UI**: Fixed a bug where editing the comment of a completed activity event would overwrite typed text on background refreshes, and incorrectly force focus onto the start time input.
+- **Tests**: Fixed Playwright E2E tests timeout by injecting Kairos_ReleaseNotesSeenVersion.
 - **CI/CD**: Fix deploy workflow hanging for 1h+ by reordering steps so the base-tag rewrite happens after Playwright tests instead of before.
 - **CI/CD**: Add `timeout-minutes: 15` to deploy job to prevent runaway pipeline runs.
 - **CI/CD**: Update `JamesIves/github-pages-deploy-action` from `@v4` to `@v4.8.0` to resolve Node 20 deprecation warning.
@@ -22,9 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **History UI**: Add activity legend to history charts showing distinct colors and names.
 - **AGENTS.md**: Add testing guideline requiring automated tests for all new functionality or modifications.
 - **AGENTS.md**: Add Playwright authentication mocking documentation.
-
-### Fixed
-- **UI**: Fixed a bug where editing the comment of a completed activity event would overwrite typed text on background refreshes, and incorrectly force focus onto the start time input.
 
 ### Changed
 - **UI**: Standardized the design of edit action buttons in the Activities and Settings pages by replacing the solid, scaling `.activity-action-btn` style with the transparent, color-changing `.edit-btn` style for a consistent visual experience across the application.
