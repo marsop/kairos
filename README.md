@@ -55,6 +55,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 ### Progressive Web App (PWA)
 
 - **Installable**: Add to home screen on mobile devices or desktop
+- **Responsive Design**: UI optimized for mobile, tablet, and desktop layouts
 - **Offline Support**: Works offline once installed
 - **Service Worker**: Background sync and caching
 
