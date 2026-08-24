@@ -23,7 +23,7 @@
                     <button class="@(SettingsService.HistoryView == "stats" ? "active" : "")" @onclick="@(() => SetHistoryView("stats"))">@Localizer["HistoryStats"]</button>
                 </div>
                 <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
-                    <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                    <button type="button" class="icon-btn icon-btn-lg" @onclick="ToggleMenu">☰</button>
                     <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
                         <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
                              @onmousedown="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
@@ -40,13 +40,13 @@
                 <div class="history-date-filter">
                     <label class="history-filter-label" for="history-date">@Localizer["HistoryDate"]</label>
                     <div class="history-date-selector">
-                        <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="PreviousDay">&lt;</button>
+                        <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["PreviousDay"]" @onclick="PreviousDay">&lt;</button>
                         <input id="history-date"
                                class="history-date-input"
                                type="date"
                                value="@SelectedDateValue"
                                @onchange="OnSelectedDateChanged" />
-                        <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="NextDay">&gt;</button>
+                        <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["NextDay"]" @onclick="NextDay">&gt;</button>
                     </div>
                 </div>
             }
@@ -57,13 +57,13 @@
                     <div class="history-date-filter">
                         <label class="history-filter-label" for="stats-day-date">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
-                            <button class="history-date-nav-btn" aria-label="@Localizer["PreviousDay"]" @onclick="BudgetDayPrevious">&lt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["PreviousDay"]" @onclick="BudgetDayPrevious">&lt;</button>
                             <input id="stats-day-date"
                                    class="history-date-input"
                                    type="date"
                                    value="@BudgetSelectedDayValue"
                                    @onchange="OnBudgetDayChanged" />
-                            <button class="history-date-nav-btn" aria-label="@Localizer["NextDay"]" @onclick="BudgetDayNext">&gt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["NextDay"]" @onclick="BudgetDayNext">&gt;</button>
                         </div>
                     </div>
                 }
@@ -72,13 +72,13 @@
                     <div class="history-date-filter">
                         <label class="history-filter-label" for="stats-week">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
-                            <button class="history-date-nav-btn" aria-label="@Localizer["PreviousWeek"]" @onclick="BudgetWeekPrevious">&lt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["PreviousWeek"]" @onclick="BudgetWeekPrevious">&lt;</button>
                             <input id="stats-week"
                                    class="history-date-input"
                                    type="week"
                                    value="@BudgetSelectedWeekValue"
                                    @onchange="OnBudgetWeekChanged" />
-                            <button class="history-date-nav-btn" aria-label="@Localizer["NextWeek"]" @onclick="BudgetWeekNext">&gt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["NextWeek"]" @onclick="BudgetWeekNext">&gt;</button>
                         </div>
                     </div>
                 }
@@ -87,13 +87,13 @@
                     <div class="history-date-filter">
                         <label class="history-filter-label" for="stats-month">@Localizer["HistoryDate"]</label>
                         <div class="history-date-selector">
-                            <button class="history-date-nav-btn" aria-label="@Localizer["PreviousMonth"]" @onclick="BudgetMonthPrevious">&lt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["PreviousMonth"]" @onclick="BudgetMonthPrevious">&lt;</button>
                             <input id="stats-month"
                                    class="history-date-input"
                                    type="month"
                                    value="@BudgetSelectedMonthValue"
                                    @onchange="OnBudgetMonthChanged" />
-                            <button class="history-date-nav-btn" aria-label="@Localizer["NextMonth"]" @onclick="BudgetMonthNext">&gt;</button>
+                            <button class="icon-btn icon-btn-xl icon-btn-outline" aria-label="@Localizer["NextMonth"]" @onclick="BudgetMonthNext">&gt;</button>
                         </div>
                     </div>
                 }
@@ -107,8 +107,8 @@
             {
                 <div style="display: flex; gap: var(--spacing-sm);">
                     <div class="view-toggle">
-                        <button @onclick="ZoomIn" title="Zoom In">+</button>
-                        <button @onclick="ZoomOut" title="Zoom Out">-</button>
+                        <button class="icon-btn icon-btn-md icon-btn-outline" @onclick="ZoomIn" title="Zoom In">+</button>
+                        <button class="icon-btn icon-btn-md icon-btn-outline" @onclick="ZoomOut" title="Zoom Out">-</button>
                     </div>
                 </div>
             }
@@ -452,7 +452,7 @@
                                     @Localizer["Active"]
                                 </span>
                             }
-                            <button class="edit-btn" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
+                            <button class="icon-btn icon-btn-md" @onclick="() => StartEditEvent(evt)" title="@Localizer["EditEvent"]">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>

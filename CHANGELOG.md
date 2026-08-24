@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **UI**: Standardized all small icon-only buttons across the application (like edit, delete, toast close, zoom, and history navigation) into a unified `.icon-btn` class with size variants, replacing divergent custom styles (`.edit-btn`, `.menu-trigger`, `.history-date-nav-btn`, `.toast-close`).
+
 ### Fixed
 - **CI/CD**: Fix deploy workflow hanging for 1h+ by reordering steps so the base-tag rewrite happens after Playwright tests instead of before.
 - **CI/CD**: Add `timeout-minutes: 15` to deploy job to prevent runaway pipeline runs.

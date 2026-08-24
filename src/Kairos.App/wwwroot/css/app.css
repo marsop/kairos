@@ -611,30 +611,6 @@ body {
     white-space: nowrap;
 }
 
-.menu-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: none;
-    background: transparent;
-    color: var(--color-text-primary);
-    font-size: 1.5rem;
-    cursor: pointer;
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition-fast);
-}
-
-.menu-trigger:hover {
-    background-color: var(--color-bg-tertiary);
-}
-
-.menu-trigger:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-}
-
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -836,6 +812,70 @@ body {
     }
 }
 
+/* ===== Icon Buttons ===== */
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.icon-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.icon-btn-sm {
+    width: 24px;
+    height: 24px;
+    font-size: var(--font-size-xs);
+}
+
+.icon-btn-md {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-md);
+}
+
+.icon-btn-lg {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+}
+
+.icon-btn-xl {
+    width: 44px;
+    height: 44px;
+    font-size: var(--font-size-lg);
+}
+
+.icon-btn-outline {
+    border: 1px solid var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.icon-btn-outline:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.icon-btn-outline:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
 /* ===== Delete Button & Modal ===== */
 
 .event-header-actions {
@@ -974,26 +1014,6 @@ body {
 .btn-save:hover {
     background: #0d9668;
     box-shadow: var(--shadow-glow-positive);
-}
-
-.edit-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: var(--radius-md);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: var(--font-size-md);
-    transition: all var(--transition-fast);
-}
-
-.edit-btn:hover {
-    background: var(--color-accent-glow);
-    color: var(--color-accent);
 }
 
 .edit-form {
@@ -1796,34 +1816,6 @@ html[data-theme="dark"] .edit-input {
     box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
-.history-date-nav-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-bg-tertiary);
-    background: var(--color-bg-secondary);
-    color: var(--color-text-primary);
-    font: inherit;
-    font-size: var(--font-size-lg);
-    cursor: pointer;
-    transition: var(--transition-base);
-}
-
-.history-date-nav-btn:hover {
-    border-color: var(--color-accent-blue);
-    color: var(--color-accent-blue);
-}
-
-.history-date-nav-btn:focus {
-    outline: none;
-    border-color: var(--color-accent-blue);
-    box-shadow: 0 0 0 3px var(--color-accent-blue-transparent);
-}
-
 .activity-name-input.invalid {
     border-color: var(--color-negative);
     box-shadow: 0 0 0 3px var(--color-negative-glow);
@@ -2484,27 +2476,6 @@ html[data-theme="dark"] .edit-input {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.toast-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: var(--font-size-xs);
-    transition: all var(--transition-fast);
-    flex-shrink: 0;
-}
-
-.toast-close:hover {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
 }
 
 /* ===== Visual Refresh (Reduced Neon) ===== */
