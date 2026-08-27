@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-08-26
+
 ### Changed
 - **UI**: Increased comment suggestion clickable area.
 - **UI**: Fixed UI inconsistencies in CSS definitions by removing unused classes and unifying hover styles.
