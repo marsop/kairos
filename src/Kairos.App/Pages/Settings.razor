@@ -22,7 +22,7 @@
         <h2 class="section-title">⚙️ @Localizer["SettingsGeneral"]</h2>
         <div class="setting-item compact no-border">
             <span class="setting-label">@Localizer["DisplayLanguage"]</span>
-            <div class="custom-dropdown">
+            <div class="custom-dropdown" @onfocusout="CloseDropdown" tabindex="-1">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleDropdown">
                     <span class="flag-icon">@GetFlag(SelectedLanguage)</span>
                     <span>@GetLanguageName(SelectedLanguage)</span>
@@ -43,7 +43,7 @@
 
         <div class="setting-item compact no-border">
             <span class="setting-label">@Localizer["Theme"]</span>
-            <div class="custom-dropdown">
+            <div class="custom-dropdown" @onfocusout="CloseDropdown" tabindex="-1">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleThemeDropdown">
                     <span class="theme-icon">@GetThemeIcon(SelectedTheme)</span>
                     <span>@GetThemeName(SelectedTheme)</span>
@@ -64,7 +64,7 @@
 
         <div class="setting-item compact">
             <span class="setting-label">@Localizer["TutorialAvatar"]</span>
-            <div class="custom-dropdown">
+            <div class="custom-dropdown" @onfocusout="CloseDropdown" tabindex="-1">
                 <button type="button" class="dropdown-trigger" @onclick="ToggleAvatarDropdown">
                     <span class="avatar-icon"><img src="@($"{TutorialService.CurrentAvatar?.BasePath}/tutorial-avatar.png")" alt="@Localizer["AvatarIcon"]" /></span>
                     <span>@SelectedAvatarName</span>
@@ -566,6 +566,21 @@
             var plusIndex = version.IndexOf('+');
             return plusIndex >= 0 ? version[..plusIndex] : version;
         }
+    }
+
+    private void CloseDropdown()
+    {
+        isDropdownOpen = false;
+    }
+
+    private void CloseThemeDropdown()
+    {
+        isThemeDropdownOpen = false;
+    }
+
+    private void CloseAvatarDropdown()
+    {
+        isAvatarDropdownOpen = false;
     }
 
     private string SelectedLanguage => SettingsService.Language;
