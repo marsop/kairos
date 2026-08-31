@@ -416,7 +416,7 @@
     <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta ou usa o teclado numérico do 1 ao 8 para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
-    <value>Ao iniciar unha actividade pídesche un comentario. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>
+    <value>Ao iniciar unha actividade pídesche un comentario. Podes escribir un novo comentario ou facer clic en calquera dos comentarios anteriores para reutilizalos. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
     <value>Podes editar actividades, eliminar as inactivas, engadir novas e arrastralas para reordenalas. Se usas Grupos de Actividades, un selector despregable permíteche cambiar entre eles. Mantén a lista limpa e estable para que o seguimento diario sexa rápido e constante.</value>

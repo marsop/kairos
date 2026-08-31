@@ -443,7 +443,7 @@
     <value>On Activities, each tile is one trackable activity. Tap a tile or use numpad 1-8 to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
-    <value>Starting an activity asks for a comment. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
+    <value>Starting an activity asks for a comment. You can type a new comment or click on any of the previous comments to reuse them. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
     <value>You can edit activities, delete inactive ones, add new ones, and drag to reorder them. If you use Activity Groups, a dropdown selector lets you switch between them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
