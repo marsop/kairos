@@ -413,7 +413,7 @@
     <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta o usa el teclado numérico del 1 al 8 para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
-    <value>Al iniciar una actividad se solicita un comentario. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>
+    <value>Al iniciar una actividad se solicita un comentario. Puedes escribir un nuevo comentario o hacer clic en cualquiera de los comentarios anteriores para reutilizarlos. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
     <value>Puedes editar actividades, eliminar las inactivas, añadir nuevas y arrastrarlas para reordenarlas. Si usas Grupos de Actividades, un selector desplegable te permite cambiar entre ellos. Mantén la lista limpia y estable para que el seguimiento diario sea rápido y constante.</value>

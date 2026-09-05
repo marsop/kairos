@@ -413,7 +413,7 @@
     <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel oder verwende den Ziffernblock 1-8, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
-    <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>
+    <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Du kannst einen neuen Kommentar eingeben oder auf einen der vorherigen Kommentare klicken, um sie wiederzuverwenden. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>
   </data>
   <data name="TutorialActivitiesManage" xml:space="preserve">
     <value>Du kannst Aktivitäten bearbeiten, inaktive löschen, neue hinzufügen und sie durch Ziehen neu anordnen. Wenn du Aktivitätsgruppen verwendest, kannst du mit einer Dropdown-Auswahl zwischen ihnen wechseln. Halte die Liste sauber und stabil, damit das tägliche Tracking schnell und konsistent bleibt.</value>
