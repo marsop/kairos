@@ -179,6 +179,53 @@ public class TimeTrackingService : ITimeTrackingService
         }
     }
 
+    public ActivityEvent? GetLastCompletedEventToday(int? activityGroupId = null)
+    {
+        var today = DateTimeOffset.Now.Date;
+        var completedEvents = _account.Events
+            .Where(e => e.EndTime.HasValue && e.EndTime.Value.ToLocalTime().Date == today)
+            .OrderByDescending(e => e.EndTime);
+
+        foreach (var evt in completedEvents)
+        {
+            var activity = _account.Activities.FirstOrDefault(a => a.Id == evt.ActivityId || a.Name == evt.ActivityName);
+            if (activity == null)
+            {
+                continue;
+            }
+
+            if (activityGroupId.HasValue && activity.ActivityGroupId != activityGroupId.Value)
+            {
+                continue;
+            }
+
+            return evt;
+        }
+
+        return null;
+    }
+
+    public void ResumeEvent(Guid eventId)
+    {
+        if (GetActiveEvent() != null)
+        {
+            throw new InvalidOperationException("Cannot resume an event while another activity is active.");
+        }
+
+        var targetEvent = _account.Events.FirstOrDefault(e => e.Id == eventId);
+        if (targetEvent == null || !targetEvent.EndTime.HasValue)
+        {
+            return;
+        }
+
+        targetEvent.EndTime = null;
+        SaveAndNotify();
+        _ = _notificationService.NotifyAsync(
+            string.Format(_localizer["NotificationActivityStartedTitle"], targetEvent.ActivityName),
+            string.Format(_localizer["NotificationActivityStartedBody"], targetEvent.Comment)
+        );
+    }
+
     public void DeleteEvent(Guid eventId)
     {
         var eventToDelete = _account.Events.FirstOrDefault(e => e.Id == eventId);

@@ -59,7 +59,8 @@ internal sealed class StubActivityConfigurationService : IActivityConfigurationS
             Id = activity.Id,
             Name = activity.Name,
             Color = activity.Color,
-
+            Emoji = activity.Emoji,
+            ActivityGroupId = activity.ActivityGroupId,
             DisplayOrder = activity.DisplayOrder
         };
     }

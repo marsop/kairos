@@ -2955,6 +2955,16 @@ textarea.edit-input {
     flex-wrap: wrap;
 }
 
+.stat-summary-card.resume-card {
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.stat-summary-card.resume-card:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-primary, #6366f1);
+}
+
 .stat-label {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);

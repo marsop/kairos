@@ -45,6 +45,18 @@ public interface ITimeTrackingService
     void DeactivateActivity();
 
     /// <summary>
+    /// Gets the most recently completed event from today, optionally filtered by activity group ID.
+    /// Returns null if no completed events exist today or the activity no longer exists.
+    /// </summary>
+    ActivityEvent? GetLastCompletedEventToday(int? activityGroupId = null);
+
+    /// <summary>
+    /// Resumes a previously completed event by moving it back to an active state (clearing EndTime).
+    /// </summary>
+    /// <param name="eventId">The ID of the completed event to resume.</param>
+    void ResumeEvent(Guid eventId);
+
+    /// <summary>
     /// Gets timeline data points for the specified period.
     /// </summary>
     List<TimelineDataPoint> GetTimelineData(DateTimeOffset start, DateTimeOffset end);

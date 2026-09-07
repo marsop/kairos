@@ -968,4 +968,10 @@
   <data name="ZoomIn" xml:space="preserve"><value>Zoom In</value></data>
   <data name="Activity" xml:space="preserve"><value>Activity</value></data>
   <data name="AvatarIcon" xml:space="preserve"><value>Avatar icon</value></data>
+  <data name="ResumeActivityTitle" xml:space="preserve">
+    <value>Fortsetzen: {0}</value>
+  </data>
+  <data name="ResumeActivityTooltip" xml:space="preserve">
+    <value>Aktivität fortsetzen</value>
+  </data>
 </root>
