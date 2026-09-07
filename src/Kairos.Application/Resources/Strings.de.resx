@@ -431,7 +431,7 @@
     <value>Du kannst die Start- und Endzeiten von abgeschlossenen Einträgen bearbeiten, aktive Ereignisse bearbeiten und fehlerhafte löschen. Das Beheben von Fehlern hier berechnet deine Summen sofort neu und aktualisiert den Budget-Bildschirm.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>In den Einstellungen kannst du die Sprache ändern, deinen Tutorial-Avatar auswählen, Soundeffekte aktivieren und Browser-Benachrichtigungen (einschließlich Budget-Benachrichtigungen) steuern. Richte dies einmal ein, damit die App deinem bevorzugten täglichen Arbeitsablauf entspricht.</value>
+    <value>In den Einstellungen kannst du die Sprache und das Theme ändern, deinen Tutorial-Avatar auswählen, Soundeffekte aktivieren und Browser-Benachrichtigungen (einschließlich Budget-Benachrichtigungen) steuern. Richte dies einmal ein, damit die App deinem bevorzugten täglichen Arbeitsablauf entspricht.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>In den Einstellungen findest du auch Integrationen wie die Timeular-Verbindung. Wenn du Hardware-Tracking nutzt, prüfe hier den Verbindungsstatus, bevor du dich auf automatische Aktivitätswechsel verlässt.</value>

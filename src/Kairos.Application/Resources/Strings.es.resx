@@ -431,7 +431,7 @@
     <value>Puedes editar horas de inicio y fin en entradas completadas, editar eventos activos y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Presupuestos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>En Configuración puedes cambiar el idioma, elegir tu avatar del tutorial, habilitar efectos de sonido y controlar las notificaciones del navegador (incluidas las notificaciones de presupuesto). Configura esto una vez para que la aplicación se adapte a tu flujo de trabajo diario preferido.</value>
+    <value>En Configuración puedes cambiar el idioma y el tema, elegir tu avatar del tutorial, habilitar efectos de sonido y controlar las notificaciones del navegador (incluidas las notificaciones de presupuesto). Configura esto una vez para que la aplicación se adapte a tu flujo de trabajo diario preferido.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>Ajustes también incluye opciones de integración, como la conexión con Timeular. Si usas seguimiento por hardware, verifica aquí el estado de conexión antes de depender de cambios automáticos de actividad.</value>
