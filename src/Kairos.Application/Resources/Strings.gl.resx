@@ -434,7 +434,7 @@
     <value>Podes editar horas de inicio e fin nas entradas completadas, editar eventos activos e eliminar entradas incorrectas. Corrixir aquí recalcula os teus totais e actualiza de inmediato a pantalla de Orzamentos.</value>
   </data>
   <data name="TutorialSettingsPersonalize" xml:space="preserve">
-    <value>En Configuración podes cambiar o idioma, elixir o teu avatar do tutorial, habilitar efectos de son e controlar as notificacións do navegador (incluídas as notificacións de orzamento). Configura isto unha vez para que a aplicación se adapte ao teu fluxo de traballo diario preferido.</value>
+    <value>En Configuración podes cambiar o idioma e o tema, elixir o teu avatar do tutorial, habilitar efectos de son e controlar as notificacións do navegador (incluídas as notificacións de orzamento). Configura isto unha vez para que a aplicación se adapte ao teu fluxo de traballo diario preferido.</value>
   </data>
   <data name="TutorialSettingsIntegrations" xml:space="preserve">
     <value>Axustes tamén inclúe opcións de integración, como a conexión con Timeular. Se usas seguimento por hardware, comproba aquí o estado da conexión antes de depender de cambios automáticos de actividade.</value>
