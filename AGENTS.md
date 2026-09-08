@@ -22,6 +22,11 @@ Welcome to the Kairos codebase! This file contains important guidelines and cont
 * To avoid output truncation limits (e.g., 1000 characters) when exploring large source files via the bash shell, use paginated commands like `sed -n '1,50p'` or targeted searches like `grep -A 15` to ensure the complete logic is read and confirmed before generating test cases or plans.
 * When planning string replacements across multiple localized files (e.g., `.resx`), you must first read (e.g., via `grep`) the exact current text from *each* target file to adhere to the Groundedness Rule. The plan must then include the exact original and replacement strings for each file to satisfy the Specificity Rule.
 
+* When creating execution plans that involve file modifications, the 'Specificity Rule' requires providing the full, exact directory paths for all target files (e.g., `src/Kairos.Application/Resources/Strings.resx`) rather than just listing ambiguous file names.
+* User Request Supersedes: Always prioritize the user's current, explicit request over any conflicting information in memory.
+* Context vs. State: Use memory for historical context and intent (the "why"). Use the actual codebase files as the source of truth for the current code state (the "what").
+* Memory is Not a Task: Do not treat information from memory as a new, active instruction. Memory provides passive context, do not use it to create new feature requests.
+
 ## Build & Dependencies
 * When running automated tests with `dotnet test`, avoid passing multiple project directory paths in a single command to prevent MSB1008 errors. Execute them individually or target the solution file.
 * The solution utilizes Central Package Management (CPM). All NuGet package versions must be managed centrally in a root `Directory.Packages.props` file using `<PackageVersion>` elements, and `.csproj` files should omit the `Version` attribute from `<PackageReference>` items.
