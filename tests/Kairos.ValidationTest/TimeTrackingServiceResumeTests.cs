@@ -72,8 +72,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = Guid.NewGuid(), // Not in Activities
             ActivityName = "Old Deleted Activity",
-            StartTime = DateTimeOffset.Now.AddHours(-2),
-            EndTime = DateTimeOffset.Now.AddHours(-1),
+            StartTime = DateTimeOffset.Now.AddMinutes(-20),
+            EndTime = DateTimeOffset.Now.AddMinutes(-10),
             Comment = "Old comment"
         });
 
@@ -95,8 +95,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = workActivity.Id,
             ActivityName = workActivity.Name,
-            StartTime = DateTimeOffset.Now.AddHours(-3),
-            EndTime = DateTimeOffset.Now.AddHours(-2),
+            StartTime = DateTimeOffset.Now.AddMinutes(-30),
+            EndTime = DateTimeOffset.Now.AddMinutes(-20),
             Comment = "Work task"
         });
 
@@ -106,8 +106,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = personalActivity.Id,
             ActivityName = personalActivity.Name,
-            StartTime = DateTimeOffset.Now.AddHours(-2),
-            EndTime = DateTimeOffset.Now.AddHours(-1),
+            StartTime = DateTimeOffset.Now.AddMinutes(-20),
+            EndTime = DateTimeOffset.Now.AddMinutes(-10),
             Comment = "Personal task"
         });
 
@@ -134,7 +134,7 @@ public class TimeTrackingServiceResumeTests
         var sut = await CreateLoadedServiceAsync(notificationService: notifications);
         var workActivity = sut.Account.Activities.First(a => a.Name == "Work");
 
-        var startTime = DateTimeOffset.Now.AddHours(-1);
+        var startTime = DateTimeOffset.Now.AddMinutes(-10);
         var endTime = DateTimeOffset.Now.AddMinutes(-10);
         var eventId = Guid.NewGuid();
 
@@ -174,8 +174,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = workActivity.Id,
             ActivityName = workActivity.Name,
-            StartTime = DateTimeOffset.Now.AddHours(-2),
-            EndTime = DateTimeOffset.Now.AddHours(-1),
+            StartTime = DateTimeOffset.Now.AddMinutes(-20),
+            EndTime = DateTimeOffset.Now.AddMinutes(-10),
             Comment = "Done work"
         };
         sut.Account.Events.Add(completedEvent);
