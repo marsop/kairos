@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-09-09
+
 ### Added
 - **Activities UI**: Added a "Resume" feature on the Activities page when idle, allowing users to quickly resume the last completed activity event from today.
 
