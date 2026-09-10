@@ -95,8 +95,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = workActivity.Id,
             ActivityName = workActivity.Name,
-            StartTime = DateTimeOffset.Now.AddHours(-3),
-            EndTime = DateTimeOffset.Now.AddHours(-2),
+            StartTime = DateTimeOffset.Now.ToLocalTime().Date.AddHours(12),
+            EndTime = DateTimeOffset.Now.ToLocalTime().Date.AddHours(13),
             Comment = "Work task"
         });
 
@@ -106,8 +106,8 @@ public class TimeTrackingServiceResumeTests
             Id = Guid.NewGuid(),
             ActivityId = personalActivity.Id,
             ActivityName = personalActivity.Name,
-            StartTime = DateTimeOffset.Now.AddHours(-2),
-            EndTime = DateTimeOffset.Now.AddHours(-1),
+            StartTime = DateTimeOffset.Now.ToLocalTime().Date.AddHours(14),
+            EndTime = DateTimeOffset.Now.ToLocalTime().Date.AddHours(15),
             Comment = "Personal task"
         });
 
