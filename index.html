@@ -37,16 +37,49 @@
         <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f5f6f3; color: #6c7f7b;">
             <div style="text-align: center;">
                 <div style="font-size: 2rem; margin-bottom: 1rem;">⏱️</div>
-                <div>Loading Kairos...</div>
+                <div id="loading-text">Loading Kairos...</div>
             </div>
         </div>
     </div>
 
     <div id="blazor-error-ui" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem; background: #b42318; color: white; text-align: center;">
-        An unhandled error has occurred.
-        <a href="." class="reload" style="color: white; margin-left: 1rem;">Reload</a>
+        <span id="error-text">An unhandled error has occurred.</span>
+        <a href="." id="reload-text" class="reload" style="color: white; margin-left: 1rem;">Reload</a>
         <span class="dismiss" style="cursor: pointer; margin-left: 1rem;">🗙</span>
     </div>
+
+    <script>
+        (function () {
+            try {
+                var rawSettings = localStorage.getItem("Kairos_settings");
+                var parsed = rawSettings ? JSON.parse(rawSettings) : null;
+                var lang = (parsed && parsed.Language) ? parsed.Language : navigator.language;
+
+                var texts = {
+                    "es": { loading: "Cargando Kairos...", error: "Ha ocurrido un error inesperado.", reload: "Recargar" },
+                    "gl": { loading: "Cargando Kairos...", error: "Produciuse un erro inesperado.", reload: "Recargar" },
+                    "de": { loading: "Kairos wird geladen...", error: "Ein unerwarteter Fehler ist aufgetreten.", reload: "Neu laden" },
+                    "gsw": { loading: "Kairos ladet...", error: "Es isch e fähler ufträtte.", reload: "Nöi lade" }
+                };
+
+                var match = null;
+                for (var key in texts) {
+                    if (lang.startsWith(key)) {
+                        match = texts[key];
+                        break;
+                    }
+                }
+
+                if (match) {
+                    document.getElementById("loading-text").innerText = match.loading;
+                    document.getElementById("error-text").innerText = match.error;
+                    document.getElementById("reload-text").innerText = match.reload;
+                }
+            } catch (e) {
+                // Ignore
+            }
+        })();
+    </script>
 
     <script src="_content/Kairos.App/timeularInterop.js"></script>
     <script src="js/notificationInterop.js"></script>
