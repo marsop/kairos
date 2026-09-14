@@ -410,7 +410,7 @@
     <value>Debajo del resumen, Kairos desglosa el tiempo por actividad, que puedes ordenar por tiempo registrado o uso del presupuesto. Las barras de progreso del presupuesto muestran marcadores visuales para el mínimo, umbral, máximo y progreso esperado, ayudándote a comparar el tiempo registrado con los presupuestos simples o continuos.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta o usa el teclado numérico del 1 al 8 para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo.</value>
+    <value>En Actividades, cada tarjeta representa una actividad registrable. Toca una tarjeta o usa el teclado numérico del 1 al 8 para iniciarla. Si ya hay otra actividad activa, Kairos detiene automáticamente la anterior y arranca la nueva para que nunca haya dos al mismo tiempo. Cuando estés inactivo, también puedes reanudar la última actividad completada hoy.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Al iniciar una actividad se solicita un comentario. Puedes escribir un nuevo comentario o hacer clic en cualquiera de los comentarios anteriores para reutilizarlos. Usa notas breves y útiles, por ejemplo qué hiciste, dónde o para quién. Los comentarios aparecen en el historial y facilitan mucho las revisiones posteriores.</value>

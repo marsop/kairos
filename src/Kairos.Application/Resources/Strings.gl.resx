@@ -413,7 +413,7 @@
     <value>Debaixo do resumo, Kairos desglosa o tempo por actividade, que podes ordenar por tempo rexistrado ou uso do orzamento. As barras de progreso do orzamento mostran marcadores visuais para o mínimo, limiar, máximo e progreso esperado, axudándoche a comparar o tempo rexistrado cos orzamentos simples ou continuos.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta ou usa o teclado numérico do 1 ao 8 para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo.</value>
+    <value>En Actividades, cada tarxeta representa unha actividade rexistrable. Toca unha tarxeta ou usa o teclado numérico do 1 ao 8 para iniciala. Se xa hai outra actividade activa, Kairos detén automaticamente a anterior e inicia a nova para que nunca haxa dúas ao mesmo tempo. Cando esteas inactivo, tamén podes reanudar a túa última actividade completada hoxe.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Ao iniciar unha actividade pídesche un comentario. Podes escribir un novo comentario ou facer clic en calquera dos comentarios anteriores para reutilizalos. Usa notas curtas e claras, por exemplo que fixeches, onde ou para quen. Os comentarios aparecen no historial e facilitan moito as revisións posteriores.</value>

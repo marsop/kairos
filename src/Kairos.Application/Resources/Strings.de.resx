@@ -410,7 +410,7 @@
     <value>Unterhalb der Zusammenfassung schlüsselt Kairos die Zeit nach Aktivität auf, die du nach erfasster Zeit oder Budgetnutzung sortieren kannst. Budget-Fortschrittsbalken zeigen visuelle Markierungen für Minimum, Schwellenwert, Maximum und erwarteten Fortschritt an, was dir hilft, die erfasste Zeit mit einfachen oder rollierenden Budgets zu vergleichen.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel oder verwende den Ziffernblock 1-8, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen.</value>
+    <value>Unter Aktivitäten steht jede Kachel für eine erfassbare Aktivität. Tippe auf eine Kachel oder verwende den Ziffernblock 1-8, um sie zu starten. Läuft bereits eine andere Aktivität, stoppt Kairos die vorherige automatisch und startet die neue, damit nie zwei gleichzeitig laufen. Wenn du inaktiv bist, kannst du auch deine zuletzt abgeschlossene Aktivität von heute fortsetzen.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Beim Starten einer Aktivität wirst du nach einem Kommentar gefragt. Du kannst einen neuen Kommentar eingeben oder auf einen der vorherigen Kommentare klicken, um sie wiederzuverwenden. Verwende kurze, aussagekräftige Notizen, zum Beispiel was du gemacht hast, wo oder für wen. Kommentare erscheinen im Verlauf und erleichtern spätere Auswertungen.</value>

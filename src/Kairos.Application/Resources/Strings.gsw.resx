@@ -413,7 +413,7 @@
     <value>Unterhalb vo dr Zämmafassig schlüsslet Kairos d'Zit noch Aktivität uf, wo du noch erfasster Zit oder Budgetnutzig sortiera kasch. Budget-Fortschrittsbalka zeigand visuelli Markieriga für s'Minimum, da Schwellawert, s'Maximum und da erwartet Fortschritt, was dr hilft, d'erfasst Zit mit eifacha oder rollierenda Budgets z'vergliicha.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel oder nimm dr Zifferablock 1-8 zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat.</value>
+    <value>Bi Aktivitäta stoht jedi Kachel für a erfassbari Aktivität. Tipp uf a Kachel oder nimm dr Zifferablock 1-8 zum starta. Wenn scho a anderi Aktivität aktiv isch, stoppt Kairos d'vorig automatisch und startet d'neue, so dass nia zwoi gliichzitig laufat. Wenn du inaktiv bisch, kasch au dini letscht abgschlosseni Aktivität vo hüt wiitermache.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Biim Starta vo a Aktivität wirst no am Kommentar gfrogt. Du kasch en neue Kommentar igeh oder uf ein vo de vorherige Kommentar klicke, um ihn widerzverwende. Nutz kurzi, klare Notiza, zum Bispil was d gmacht hesch, wo oder für wen. Kommentara erschinat im Verloff und machat spätere Reviews viel eifacher.</value>
