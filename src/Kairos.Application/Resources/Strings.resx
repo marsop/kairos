@@ -440,7 +440,7 @@
     <value>Below the summary, Kairos breaks time down by activity, which you can sort by tracked time or budget usage. Budget progress bars show visual markers for minimum, threshold, maximum, and expected progress, helping you compare tracked time against simple or rolling budgets.</value>
   </data>
   <data name="TutorialActivitiesBasics" xml:space="preserve">
-    <value>On Activities, each tile is one trackable activity. Tap a tile or use numpad 1-8 to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once.</value>
+    <value>On Activities, each tile is one trackable activity. Tap a tile or use numpad 1-8 to start it. If another activity is already active, Kairos automatically stops the previous one and starts the new one so you never track two at once. When idle, you can also resume your last completed activity from today.</value>
   </data>
   <data name="TutorialActivitiesComment" xml:space="preserve">
     <value>Starting an activity asks for a comment. You can type a new comment or click on any of the previous comments to reuse them. Use short, meaningful notes like what you worked on, where, or for whom. Comments appear in history and make reviews much easier later.</value>
