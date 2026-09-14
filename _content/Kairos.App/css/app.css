@@ -992,8 +992,8 @@ body {
 }
 
 .edit-btn:hover {
-    background: var(--color-accent-glow);
-    color: var(--color-accent);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
 }
 
 .edit-form {
@@ -1814,14 +1814,16 @@ html[data-theme="dark"] .edit-input {
 }
 
 .history-date-nav-btn:hover {
-    border-color: var(--color-accent-blue);
-    color: var(--color-accent-blue);
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
 }
 
 .history-date-nav-btn:focus {
     outline: none;
-    border-color: var(--color-accent-blue);
-    box-shadow: 0 0 0 3px var(--color-accent-blue-transparent);
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-bg-tertiary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .activity-name-input.invalid {
@@ -1901,7 +1903,7 @@ html[data-theme="dark"] .edit-input {
 
 .edit-action-btn.cancel:hover {
     background: var(--color-bg-primary);
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .validation-error {
