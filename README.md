@@ -17,6 +17,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 - **Customizable Activities**: Create multiple time trackers with custom names, metadata, emojis, and colors
 - **Activity Comments**: Add an optional descriptive comment when starting an activity
 - **One-Touch Activation**: Tap an activity to start/stop tracking time
+- **Resume Activities**: Quickly resume the last completed activity event from today
 - **Real-time Duration**: See live updates of running duration
 
 ### Budgets
