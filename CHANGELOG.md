@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.11.0] - 2026-09-16
 
+### Added
+- **Analytics**: Added Microsoft Clarity tracking script (project ID `yjlncrw5cw`).
+
 ### Fixed
 - **UI**: Fix static text in index.html to show localized strings during initial load.
 - **Tests**: Fix `TimeTrackingServiceResumeTests` flakiness on time generation.
