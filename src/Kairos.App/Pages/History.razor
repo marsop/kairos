@@ -1,5 +1,6 @@
 @page "/history"
 @using Kairos.Application.Services
+@using Kairos.Application.Common
 @using Kairos.Core.Models
 @using Kairos.Application.Resources
 @using Microsoft.JSInterop
@@ -340,18 +341,25 @@
             }
 
             <div class="calendar-scroll-area" @ref="_calendarScrollArea" @onclick="ClearSelection">
+                @{
+                    var timeMarkers = CalendarTimeScaleHelper.GetTimeMarkers(_pixelsPerHour, _calendarClientHeight);
+                }
                 <div class="calendar-y-axis" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
-                    @for (int i = 0; i < 24; i++)
+                    @foreach (var marker in timeMarkers)
                     {
-                        <div class="calendar-hour-marker" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px; height: @(_pixelsPerHour.ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
-                            @i.ToString("00"):00
+                        <div class="calendar-hour-marker @(marker.IsMajorHour ? "major-marker" : "minor-marker")"
+                             data-seconds="@marker.Seconds"
+                             style="top: @(((marker.Seconds / 3600.0) * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                            @marker.Label
                         </div>
                     }
                 </div>
                 <div class="calendar-grid" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
-                    @for (int i = 0; i < 24; i++)
+                    @foreach (var marker in timeMarkers)
                     {
-                        <div class="calendar-grid-line" style="top: @((i * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;"></div>
+                        <div class="calendar-grid-line @(marker.IsMajorHour ? "major-line" : "minor-line")"
+                             data-seconds="@marker.Seconds"
+                             style="top: @(((marker.Seconds / 3600.0) * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;"></div>
                     }
                 </div>
                 <div class="calendar-events" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
@@ -545,6 +553,7 @@
     private double _pixelsPerHour = 60;
     private double _minPixelsPerHour = 60;
     private double _maxPixelsPerHour = 1000;
+    private double _calendarClientHeight = 600;
     private DotNetObjectReference<History>? _objRef;
 
     private System.Threading.Timer? _timer;
@@ -832,6 +841,7 @@
             double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
             if (clientHeight > 0)
             {
+                _calendarClientHeight = clientHeight;
                 _minPixelsPerHour = clientHeight / 24.0;
                 if (_pixelsPerHour < _minPixelsPerHour)
                 {
@@ -1173,6 +1183,7 @@
     {
         if (clientHeight > 0)
         {
+            _calendarClientHeight = clientHeight;
             _minPixelsPerHour = clientHeight / 24.0;
             _maxPixelsPerHour = clientHeight * 6;
         }
@@ -1192,6 +1203,7 @@
         double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
         if (clientHeight > 0)
         {
+            _calendarClientHeight = clientHeight;
             _minPixelsPerHour = clientHeight / 24.0;
             _maxPixelsPerHour = clientHeight * 6;
         }
@@ -1205,6 +1217,7 @@
         double clientHeight = await JSRuntime.InvokeAsync<double>("kairosScroll.getClientHeight", _calendarScrollArea);
         if (clientHeight > 0)
         {
+            _calendarClientHeight = clientHeight;
             _minPixelsPerHour = clientHeight / 24.0;
             _maxPixelsPerHour = clientHeight * 6;
         }

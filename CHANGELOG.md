@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Analytics**: Added Microsoft Clarity tracking script (project ID `yjlncrw5cw`).
 
+### Changed
+- **History UI**: Dynamically scale calendar time labels and grid lines based on the zoom level, ensuring a minimum count of readable time labels are visible at all times.
+
 ### Fixed
 - **UI**: Fix static text in index.html to show localized strings during initial load.
 - **Tests**: Fix `TimeTrackingServiceResumeTests` flakiness on time generation.

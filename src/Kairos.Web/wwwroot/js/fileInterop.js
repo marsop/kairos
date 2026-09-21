@@ -111,14 +111,17 @@ window.kairosScroll = window.kairosScroll || {
 
             var hourMarkers = element.querySelectorAll('.calendar-hour-marker');
             for (var i = 0; i < hourMarkers.length; i++) {
-                var markerTop = i * zoom;
-                hourMarkers[i].style.top = markerTop + 'px';
-                hourMarkers[i].style.height = zoom + 'px';
+                var marker = hourMarkers[i];
+                var markerSeconds = parseFloat(marker.dataset.seconds || (i * 3600));
+                var markerTop = (markerSeconds / 3600.0) * zoom;
+                marker.style.top = markerTop + 'px';
             }
 
             var gridLines = element.querySelectorAll('.calendar-grid-line');
             for (var j = 0; j < gridLines.length; j++) {
-                gridLines[j].style.top = (j * zoom) + 'px';
+                var line = gridLines[j];
+                var lineSeconds = parseFloat(line.dataset.seconds || (j * 3600));
+                line.style.top = ((lineSeconds / 3600.0) * zoom) + 'px';
             }
 
             var blocks = element.querySelectorAll('.calendar-event-block');
