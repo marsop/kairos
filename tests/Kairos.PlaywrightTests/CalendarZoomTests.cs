@@ -186,5 +186,51 @@ namespace Kairos.PlaywrightTests
             var topAfterDblClick = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
             Assert.That(topAfterDblClick, Is.Not.EqualTo(initialTop), "Zoom level SHOULD change on double click");
         }
+
+        [Test]
+        public async Task CalendarEvent_SelectAndPressDelete_ShowsConfirmationDialogAndDeletes()
+        {
+            var eventLocator = Page.Locator(".calendar-event-block").First;
+            await eventLocator.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+
+            // 1. Click to select the event
+            await eventLocator.ClickAsync();
+            await Task.Delay(200);
+
+            var isSelected = await eventLocator.EvaluateAsync<bool>("el => el.classList.contains('selected-event')");
+            Assert.That(isSelected, Is.True, "Event should be selected after click");
+
+            // 2. Press DELETE key on keyboard
+            await Page.Keyboard.PressAsync("Delete");
+
+            // 3. Verify confirmation dialog appears
+            var modal = Page.Locator(".modal-overlay");
+            await modal.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+
+            var title = await modal.Locator("h3").TextContentAsync();
+            Assert.That(title, Is.Not.Null.And.Not.Empty);
+
+            // 4. Test cancel: event should still exist
+            var cancelButton = modal.Locator(".btn-cancel");
+            await cancelButton.ClickAsync();
+            await modal.WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 5000 });
+            Assert.That(await eventLocator.CountAsync(), Is.EqualTo(1), "Event should still exist after cancelling deletion");
+
+            // 5. Select again and press DELETE
+            await eventLocator.ClickAsync();
+            await Task.Delay(200);
+            await Page.Keyboard.PressAsync("Delete");
+            await modal.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+
+            // 6. Confirm deletion
+            var deleteButton = modal.Locator(".btn-delete");
+            await deleteButton.ClickAsync();
+            await modal.WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 5000 });
+
+            // 7. Event should be deleted from the calendar
+            await eventLocator.WaitForAsync(new() { State = WaitForSelectorState.Detached, Timeout = 5000 });
+            var remainingEvents = await Page.Locator(".calendar-event-block").CountAsync();
+            Assert.That(remainingEvents, Is.EqualTo(0), "Event should be removed from calendar after confirming deletion");
+        }
     }
 }

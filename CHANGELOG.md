@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **History UI**: Allowed deleting activities directly from the calendar view by selecting an entry and pressing the Delete key, prompting with a confirmation dialog.
+
 ### Changed
 - **History UI**: Calendar zoom to event now triggers on double click instead of single click, allowing single click to select the activity without zooming.
 

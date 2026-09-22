@@ -372,6 +372,7 @@
                         var isSelected = _selectedCalendarEventId == evt.Id;
                         <div @key="evt.Id"
                              class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "")"
+                             tabindex="0"
                              style="@GetCalendarEventStyle(evt)"
                              data-start-seconds="@GetCalendarEventStartSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
                              data-end-seconds="@GetCalendarEventEndSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
@@ -616,6 +617,11 @@
     {
         if (SettingsService.HistoryView != view)
         {
+            if (SettingsService.HistoryView == "calendar")
+            {
+                ClearSelection();
+                _ = JSRuntime.InvokeVoidAsync("kairosScroll.disposeKeyboard");
+            }
             SettingsService.HistoryView = view;
             if (view == "calendar")
             {
@@ -844,6 +850,7 @@
                 _objRef = DotNetObjectReference.Create(this);
             }
             await JSRuntime.InvokeVoidAsync("kairosScroll.initZoom", _calendarScrollArea, _objRef);
+            await JSRuntime.InvokeVoidAsync("kairosScroll.initKeyboard", _objRef);
         }
 
         if (_shouldScrollCalendar && SettingsService.HistoryView == "calendar" && _calendarScrollArea.Context != null)
@@ -1009,6 +1016,10 @@
         if (_eventToDelete != null)
         {
             TimeService.DeleteEvent(_eventToDelete.Id);
+            if (_selectedCalendarEventId == _eventToDelete.Id)
+            {
+                _selectedCalendarEventId = null;
+            }
             _eventToDelete = null;
         }
     }
@@ -1081,6 +1092,14 @@
         SettingsService.OnSettingsChanged -= StateHasChanged;
         SyncService.OnSyncStateChanged -= HandleSyncStateChanged;
         _timer?.Dispose();
+        try
+        {
+            _ = JSRuntime.InvokeVoidAsync("kairosScroll.disposeKeyboard");
+        }
+        catch
+        {
+            // Ignored during disposal
+        }
         _objRef?.Dispose();
     }
 
@@ -1171,6 +1190,21 @@
         _pixelsPerHour = finalZoom;
         _targetPixelsPerHour = null;
         StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnCalendarDeleteKeyPressed()
+    {
+        if (_eventToDelete != null || _eventToEdit != null) return;
+        if (_selectedCalendarEventId.HasValue)
+        {
+            var evt = FilteredEvents.FirstOrDefault(e => e.Id == _selectedCalendarEventId.Value);
+            if (evt != null)
+            {
+                ConfirmDelete(evt);
+                StateHasChanged();
+            }
+        }
     }
 
     private async Task AnimateZoomAsync(double targetZoom, double zoomAnchorHours, double anchorOffsetY, int durationMs = 280, double prePanRatio = 0)
