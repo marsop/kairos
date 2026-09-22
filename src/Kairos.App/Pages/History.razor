@@ -347,7 +347,8 @@
                 <div class="calendar-y-axis" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @foreach (var marker in timeMarkers)
                     {
-                        <div class="calendar-hour-marker @(marker.IsMajorHour ? "major-marker" : "minor-marker")"
+                        <div @key="marker.Seconds"
+                             class="calendar-hour-marker @(marker.IsMajorHour ? "major-marker" : "minor-marker")"
                              data-seconds="@marker.Seconds"
                              style="top: @(((marker.Seconds / 3600.0) * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                             @marker.Label
@@ -357,7 +358,8 @@
                 <div class="calendar-grid" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                     @foreach (var marker in timeMarkers)
                     {
-                        <div class="calendar-grid-line @(marker.IsMajorHour ? "major-line" : "minor-line")"
+                        <div @key="marker.Seconds"
+                             class="calendar-grid-line @(marker.IsMajorHour ? "major-line" : "minor-line")"
                              data-seconds="@marker.Seconds"
                              style="top: @(((marker.Seconds / 3600.0) * _pixelsPerHour).ToString(System.Globalization.CultureInfo.InvariantCulture))px;"></div>
                     }
@@ -366,7 +368,8 @@
                     @foreach (var evt in FilteredEvents)
                     {
                         var isSelected = _selectedCalendarEventId == evt.Id;
-                        <div class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "")"
+                        <div @key="evt.Id"
+                             class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "")"
                              style="@GetCalendarEventStyle(evt)"
                              data-start-seconds="@GetCalendarEventStartSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
                              data-end-seconds="@GetCalendarEventEndSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
