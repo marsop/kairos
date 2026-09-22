@@ -91,4 +91,39 @@ public static class CalendarTimeScaleHelper
 
         return markers;
     }
+
+    /// <summary>
+    /// Calculates the target zoom (pixels per hour) when double-clicking an event of given duration in hours,
+    /// so that the event occupies 50% of the viewport height (clamped between min and max zoom limits).
+    /// </summary>
+    public static double CalculateDoubleClickZoom(
+        double durationHours,
+        double viewportHeight = 600.0,
+        double minDurationHours = 5.0 / 60.0)
+    {
+        if (viewportHeight <= 0) viewportHeight = 600.0;
+        if (durationHours < minDurationHours)
+        {
+            durationHours = minDurationHours;
+        }
+
+        double minPixelsPerHour = viewportHeight / 24.0;
+        double maxPixelsPerHour = viewportHeight * 6;
+
+        double targetPixelsPerHour = viewportHeight / (2 * durationHours);
+        return Math.Clamp(targetPixelsPerHour, minPixelsPerHour, maxPixelsPerHour);
+    }
+
+    /// <summary>
+    /// Determines whether the current zoom level is "big enough" (i.e. at or above the double-click zoom level for the given event duration).
+    /// </summary>
+    public static bool IsZoomBigEnough(
+        double currentPixelsPerHour,
+        double durationHours,
+        double viewportHeight = 600.0,
+        double tolerance = 0.5)
+    {
+        double doubleClickZoom = CalculateDoubleClickZoom(durationHours, viewportHeight);
+        return currentPixelsPerHour >= (doubleClickZoom - tolerance);
+    }
 }

@@ -170,6 +170,11 @@ namespace Kairos.PlaywrightTests
             var isSelectedAfterClick = await eventLocator.EvaluateAsync<bool>("el => el.classList.contains('selected-event')");
             Assert.That(isSelectedAfterClick, Is.True, "Event should be selected after single click");
 
+            // Verify edit button is NOT visible at default zoom
+            var editBtn = eventLocator.Locator(".edit-btn");
+            var isEditBtnVisibleBeforeZoom = await editBtn.IsVisibleAsync();
+            Assert.That(isEditBtnVisibleBeforeZoom, Is.False, "Edit button should NOT be visible at default zoom level");
+
             // Verify zoom has NOT changed
             var topAfterClick = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
             Assert.That(topAfterClick, Is.EqualTo(initialTop).Within(0.5), "Zoom level should NOT change on single click");
@@ -185,6 +190,21 @@ namespace Kairos.PlaywrightTests
             // Verify zoom HAS changed
             var topAfterDblClick = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
             Assert.That(topAfterDblClick, Is.Not.EqualTo(initialTop), "Zoom level SHOULD change on double click");
+
+            // Verify edit button IS visible after double-click zoom
+            var isEditBtnVisibleAfterZoom = await editBtn.IsVisibleAsync();
+            Assert.That(isEditBtnVisibleAfterZoom, Is.True, "Edit button SHOULD be visible after double click zoom");
+
+            // 3. Click edit button to open edit dialog
+            await editBtn.ClickAsync();
+            var modalDialog = Page.Locator(".modal-dialog");
+            await modalDialog.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+            var dialogTitle = await modalDialog.Locator("h3").TextContentAsync();
+            Assert.That(dialogTitle, Does.Contain("Edit"));
+
+            // Close dialog
+            await Page.ClickAsync(".btn-cancel");
+            await modalDialog.WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 5000 });
         }
 
         [Test]
