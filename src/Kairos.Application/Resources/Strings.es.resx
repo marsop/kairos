@@ -966,6 +966,7 @@
 <data name="MinimumHours" xml:space="preserve"><value>Minimum hours</value></data>
   <data name="ZoomOut" xml:space="preserve"><value>Zoom Out</value></data>
   <data name="ZoomIn" xml:space="preserve"><value>Zoom In</value></data>
+  <data name="ResetView" xml:space="preserve"><value>Restablecer vista</value></data>
   <data name="Activity" xml:space="preserve"><value>Activity</value></data>
   <data name="AvatarIcon" xml:space="preserve"><value>Avatar icon</value></data>
   <data name="ResumeActivityTitle" xml:space="preserve">

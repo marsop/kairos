@@ -232,5 +232,65 @@ namespace Kairos.PlaywrightTests
             var remainingEvents = await Page.Locator(".calendar-event-block").CountAsync();
             Assert.That(remainingEvents, Is.EqualTo(0), "Event should be removed from calendar after confirming deletion");
         }
+
+        [Test]
+        public async Task CalendarZoom_ResetButton_RestoresDefaultZoomAndScrollPosition()
+        {
+            // Helper to get marker positions (seconds, style.top, text)
+            async Task<(int Seconds, double Top, string Text)[]> GetMarkersAsync()
+            {
+                var json = await Page.EvaluateAsync<string>(@"() => {
+                    var markers = Array.from(document.querySelectorAll('.calendar-hour-marker'));
+                    return JSON.stringify(markers.map(m => ({
+                        seconds: parseFloat(m.dataset.seconds || '0'),
+                        top: parseFloat(m.style.top || '0'),
+                        text: m.textContent.trim()
+                    })));
+                }");
+                using var doc = JsonDocument.Parse(json);
+                return doc.RootElement.EnumerateArray()
+                    .Select(e => (
+                        e.GetProperty("seconds").GetInt32(),
+                        e.GetProperty("top").GetDouble(),
+                        e.GetProperty("text").GetString()!
+                    ))
+                    .ToArray();
+            }
+
+            // 1. Check initial state at default 60 px/hr
+            var initial = await GetMarkersAsync();
+            var init1 = initial.First(m => m.Seconds == 3600);
+            Assert.That(init1.Top, Is.EqualTo(60.0).Within(0.5));
+
+            var initialScrollTop = await Page.EvaluateAsync<double>("() => document.querySelector('.calendar-scroll-area').scrollTop");
+
+            // 2. Zoom in 2x -> 240 px/hr
+            await Page.ClickAsync("button[title*='Zoom in'], button:has-text('+')");
+            await Task.Delay(400);
+            await Page.ClickAsync("button[title*='Zoom in'], button:has-text('+')");
+            await Task.Delay(400);
+
+            // Change scroll position intentionally
+            await Page.EvaluateAsync("() => { document.querySelector('.calendar-scroll-area').scrollTop = 1500; }");
+            await Task.Delay(100);
+
+            var zoomedMarkers = await GetMarkersAsync();
+            var zoomed1 = zoomedMarkers.First(m => m.Seconds == 3600);
+            Assert.That(zoomed1.Top, Is.Not.EqualTo(60.0).Within(1.0));
+
+            // 3. Click Reset View button
+            await Page.ClickAsync("button[title*='Reset']");
+            await Task.Delay(600); // Allow animation to complete (duration 320ms)
+
+            // 4. Verify zoom and markers return to default 60 px/hr
+            var resetMarkers = await GetMarkersAsync();
+            Assert.That(resetMarkers.Length, Is.EqualTo(24));
+            var reset1 = resetMarkers.First(m => m.Seconds == 3600);
+            Assert.That(reset1.Top, Is.EqualTo(60.0).Within(0.5), "01:00 should return to 60px at default zoom level");
+
+            // 5. Verify scroll position returns to default
+            var finalScrollTop = await Page.EvaluateAsync<double>("() => document.querySelector('.calendar-scroll-area').scrollTop");
+            Assert.That(finalScrollTop, Is.EqualTo(initialScrollTop).Within(2.0), "Scroll position should return to default start position");
+        }
     }
 }

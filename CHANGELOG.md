@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **History UI**: Added a reset button next to zoom buttons in calendar view to return zoom level and scroll time range back to default.
 - **History UI**: Allowed deleting activities directly from the calendar view by selecting an entry and pressing the Delete key, prompting with a confirmation dialog.
 
 ### Changed
