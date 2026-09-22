@@ -978,4 +978,7 @@
   <data name="ResumeActivityTooltip" xml:space="preserve">
     <value>Reanudar actividade</value>
   </data>
+  <data name="SettingDurationError" xml:space="preserve">
+    <value>0-999</value>
+  </data>
 </root>
