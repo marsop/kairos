@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **History UI**: Calendar zoom to event now triggers on double click instead of single click, allowing single click to select the activity without zooming.
+
 ### Fixed
 - **History UI**: Fix calendar hour markers and grid lines not correctly recalculating positions when zooming out.
 

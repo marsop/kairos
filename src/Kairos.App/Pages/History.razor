@@ -332,7 +332,7 @@
         }
         else if (SettingsService.HistoryView == "calendar")
         {
-            @if (_dragAction != DragAction.None)
+            @if (_dragAction != DragAction.None && _dragHasMoved)
             {
                 <div class="drag-overlay @(_dragAction == DragAction.Move ? "" : "ns-resize")"
                      @onpointermove="OnPointerMove"
@@ -340,7 +340,9 @@
                      @onpointermove:preventDefault="true"></div>
             }
 
-            <div class="calendar-scroll-area" @ref="_calendarScrollArea" @onclick="ClearSelection">
+            <div class="calendar-scroll-area" @ref="_calendarScrollArea" @onclick="ClearSelection"
+                 @onpointermove="OnPointerMove"
+                 @onpointerup="OnPointerUp">
                 @{
                     var timeMarkers = CalendarTimeScaleHelper.GetTimeMarkers(_pixelsPerHour, _calendarClientHeight);
                 }
@@ -375,13 +377,19 @@
                              data-end-seconds="@GetCalendarEventEndSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
                              @onclick="() => OnCalendarEventClicked(evt)"
                              @onclick:stopPropagation="true"
-                             @onpointerdown="(e) => StartDrag(e, evt, DragAction.Move)">
+                             @ondblclick="() => OnCalendarEventDoubleClicked(evt)"
+                             @ondblclick:stopPropagation="true"
+                             @onpointerdown="(e) => StartDrag(e, evt, DragAction.Move)"
+                             @onpointermove="OnPointerMove"
+                             @onpointerup="OnPointerUp">
 
                             @if (isSelected && !evt.IsActive)
                             {
                                 <div class="resize-handle top"
                                      @onpointerdown="(e) => StartDrag(e, evt, DragAction.ResizeStart)"
-                                     @onpointerdown:stopPropagation="true"></div>
+                                     @onpointerdown:stopPropagation="true"
+                                     @onpointermove="OnPointerMove"
+                                     @onpointerup="OnPointerUp"></div>
                             }
 
                             <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px;">
@@ -421,7 +429,9 @@
                             {
                                 <div class="resize-handle bottom"
                                      @onpointerdown="(e) => StartDrag(e, evt, DragAction.ResizeEnd)"
-                                     @onpointerdown:stopPropagation="true"></div>
+                                     @onpointerdown:stopPropagation="true"
+                                     @onpointermove="OnPointerMove"
+                                     @onpointerup="OnPointerUp"></div>
                             }
                         </div>
                     }
@@ -1255,6 +1265,11 @@
         if (_dragAction == DragAction.None || _draggedEvent == null) return;
 
         var deltaY = e.ClientY - _dragStartY;
+        if (!_dragHasMoved && Math.Abs(deltaY) < 3)
+        {
+            return;
+        }
+
         var deltaHours = deltaY / _pixelsPerHour;
         var deltaTicks = (long)(deltaHours * TimeSpan.TicksPerHour);
 
@@ -1262,10 +1277,7 @@
         var snappedMinutes = Math.Round(TimeSpan.FromTicks(deltaTicks).TotalMinutes);
         var deltaSpan = TimeSpan.FromMinutes(snappedMinutes);
 
-        if (deltaSpan.TotalMinutes != 0)
-        {
-            _dragHasMoved = true;
-        }
+        _dragHasMoved = true;
 
         switch (_dragAction)
         {
@@ -1292,17 +1304,36 @@
 
     private void OnPointerUp(PointerEventArgs e)
     {
-        if (_dragAction != DragAction.None && _draggedEvent != null && _dragHasMoved)
+        var hadMoved = _dragHasMoved;
+        if (_dragAction != DragAction.None && _draggedEvent != null && hadMoved)
         {
             TimeService.UpdateEventDetails(_draggedEvent.Id, _dragPreviewStart.ToUniversalTime(), _dragPreviewEnd.ToUniversalTime(), _draggedEvent.Comment);
         }
 
         _dragAction = DragAction.None;
         _draggedEvent = null;
-        _dragHasMoved = false;
+        if (hadMoved)
+        {
+            _ = Task.Delay(100).ContinueWith(_ => _dragHasMoved = false);
+        }
+        else
+        {
+            _dragHasMoved = false;
+        }
     }
 
-    private async Task OnCalendarEventClicked(ActivityEvent evt)
+    private void OnCalendarEventClicked(ActivityEvent evt)
+    {
+        if (_dragHasMoved)
+        {
+            // Do not select if we just finished dragging
+            return;
+        }
+
+        _selectedCalendarEventId = evt.Id;
+    }
+
+    private async Task OnCalendarEventDoubleClicked(ActivityEvent evt)
     {
         if (_dragHasMoved)
         {
@@ -1336,7 +1367,6 @@
         // Keep the event center anchored at viewport center throughout the transition.
         double eventCenterHours = (startSeconds + endSeconds) / 7200.0;
 
-        _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
         _ = AnimateZoomAsync(targetPixelsPerHour, eventCenterHours, clientHeight / 2.0, 360, prePanRatio: 0.35);
     }
 

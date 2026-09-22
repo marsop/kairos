@@ -147,5 +147,44 @@ namespace Kairos.PlaywrightTests
             Assert.That(out2x4Hour.Top, Is.EqualTo(120.0).Within(0.5), "04:00 should be positioned at 120px at 30 px/hr zoom level");
             Assert.That(out2x4Hour.Text, Is.EqualTo("04:00"));
         }
+
+        [Test]
+        public async Task CalendarEvent_ClickSelectsWithoutZooming_DoubleClickZoomsEvent()
+        {
+            var eventLocator = Page.Locator(".calendar-event-block").First;
+            await eventLocator.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+
+            // Initial state: not selected
+            var isSelectedInitially = await eventLocator.EvaluateAsync<bool>("el => el.classList.contains('selected-event')");
+            Assert.That(isSelectedInitially, Is.False);
+
+            // Record initial zoom via hour marker 01:00 (3600s)
+            var marker1h = Page.Locator(".calendar-hour-marker[data-seconds='3600']");
+            var initialTop = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
+
+            // 1. Single click on event
+            await eventLocator.ClickAsync();
+            await Task.Delay(400);
+
+            // Verify event is now selected
+            var isSelectedAfterClick = await eventLocator.EvaluateAsync<bool>("el => el.classList.contains('selected-event')");
+            Assert.That(isSelectedAfterClick, Is.True, "Event should be selected after single click");
+
+            // Verify zoom has NOT changed
+            var topAfterClick = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
+            Assert.That(topAfterClick, Is.EqualTo(initialTop).Within(0.5), "Zoom level should NOT change on single click");
+
+            // 2. Double click on event
+            await eventLocator.DblClickAsync();
+            await Task.Delay(600); // Allow animation to complete (duration 360ms)
+
+            // Verify event remains selected
+            var isSelectedAfterDblClick = await eventLocator.EvaluateAsync<bool>("el => el.classList.contains('selected-event')");
+            Assert.That(isSelectedAfterDblClick, Is.True, "Event should remain selected after double click");
+
+            // Verify zoom HAS changed
+            var topAfterDblClick = await marker1h.EvaluateAsync<double>("el => parseFloat(el.style.top || '0')");
+            Assert.That(topAfterDblClick, Is.Not.EqualTo(initialTop), "Zoom level SHOULD change on double click");
+        }
     }
 }
