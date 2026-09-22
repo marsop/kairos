@@ -182,5 +182,29 @@ window.kairosScroll = window.kairosScroll || {
         }
 
         element._currentAnimation = requestAnimationFrame(step);
+    },
+    initKeyboard: function (dotNetHelper) {
+        if (window._kairosCalendarKeyHandler) {
+            window.removeEventListener('keydown', window._kairosCalendarKeyHandler);
+        }
+        window._kairosCalendarKeyHandler = function (e) {
+            if (e.key === 'Delete' || e.key === 'Del') {
+                const el = document.activeElement;
+                const tagName = el ? el.tagName.toLowerCase() : '';
+                if (tagName === 'input' || tagName === 'textarea' || tagName === 'select' || (el && el.isContentEditable)) {
+                    return;
+                }
+                if (dotNetHelper) {
+                    dotNetHelper.invokeMethodAsync('OnCalendarDeleteKeyPressed');
+                }
+            }
+        };
+        window.addEventListener('keydown', window._kairosCalendarKeyHandler);
+    },
+    disposeKeyboard: function () {
+        if (window._kairosCalendarKeyHandler) {
+            window.removeEventListener('keydown', window._kairosCalendarKeyHandler);
+            window._kairosCalendarKeyHandler = null;
+        }
     }
 };

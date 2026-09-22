@@ -2793,6 +2793,10 @@ html[data-theme="dark"] .edit-input {
     transition: transform 0.1s ease;
 }
 
+.calendar-event-block:focus {
+    outline: none;
+}
+
 .resize-handle {
     position: absolute;
     left: 0;
