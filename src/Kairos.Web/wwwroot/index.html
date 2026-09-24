@@ -65,11 +65,11 @@
                 var lang = (parsed && parsed.Language) ? parsed.Language : navigator.language;
 
                 var texts = {
-                    "en": { loading: "Loading Kairos...", error: "An unhandled error has occurred.", reload: "Reload" },
-                    "es": { loading: "Cargando Kairos...", error: "Ha ocurrido un error inesperado.", reload: "Recargar" },
-                    "gl": { loading: "Cargando Kairos...", error: "Produciuse un erro inesperado.", reload: "Recargar" },
-                    "de": { loading: "Kairos wird geladen...", error: "Ein unerwarteter Fehler ist aufgetreten.", reload: "Neu laden" },
-                    "gsw": { loading: "Kairos ladet...", error: "Es isch e fähler ufträtte.", reload: "Nöi lade" }
+                    "en": { title: "Kairos - Time Tracker", desc: "Track your time with real-time activities. Bank hours or spend them with the tap of a button.", loading: "Loading Kairos...", error: "An unhandled error has occurred.", reload: "Reload" },
+                    "es": { title: "Kairos - Control de Tiempo", desc: "Registra tu tiempo con actividades en tiempo real. Acumula horas o gástalas con el toque de un botón.", loading: "Cargando Kairos...", error: "Ha ocurrido un error inesperado.", reload: "Recargar" },
+                    "gl": { title: "Kairos - Control de Tempo", desc: "Rexistra o teu tempo con actividades en tempo real. Acumula horas ou gástaas co toque dun botón.", loading: "Cargando Kairos...", error: "Produciuse un erro inesperado.", reload: "Recargar" },
+                    "de": { title: "Kairos - Zeiterfassung", desc: "Erfasse deine Zeit mit Echtzeit-Aktivitäten. Sammle Stunden oder gib sie mit einem Knopfdruck aus.", loading: "Kairos wird geladen...", error: "Ein unerwarteter Fehler ist aufgetreten.", reload: "Neu laden" },
+                    "gsw": { title: "Kairos - Ziiterfassig", desc: "Erfass dini Ziit mit Echtziit-Aktivitäte. Sammle Stunde oder gib sie mit eme Chnopfdruck us.", loading: "Kairos ladet...", error: "Es isch e fähler ufträtte.", reload: "Nöi lade" }
                 };
 
                 var match = null;
@@ -81,6 +81,11 @@
                 }
 
                 if (match) {
+                    document.title = match.title;
+                    var metaDesc = document.querySelector('meta[name="description"]');
+                    if (metaDesc) {
+                        metaDesc.setAttribute("content", match.desc);
+                    }
                     document.getElementById("loading-text").innerText = match.loading;
                     document.getElementById("error-text").innerText = match.error;
                     document.getElementById("reload-text").innerText = match.reload;
