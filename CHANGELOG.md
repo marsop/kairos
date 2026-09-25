@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-09-25
+
 ### Added
 - **History UI**: Added an edit button to calendar entries when zoomed in to at least the double-click zoom level, opening the edit event dialog.
 - **History UI**: Added a reset button next to zoom buttons in calendar view to return zoom level and scroll time range back to default.
