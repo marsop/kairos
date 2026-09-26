@@ -16,9 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **History UI**: Calendar zoom to event now triggers on double click instead of single click, allowing single click to select the activity without zooming.
+- **Docs**: Update AGENTS.md with missing guidelines regarding execution plan specificity, completion, file modification rules, test verification and memory usage.
 
 ### Fixed
 - **History UI**: Fix calendar hour markers and grid lines not correctly recalculating positions when zooming out.
+- **Localization**: Fix missing translations for duration error messages in Settings and English fallback text in index.html.
 
 ## [1.11.0] - 2026-09-16
 
