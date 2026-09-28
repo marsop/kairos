@@ -791,7 +791,7 @@
     <value>Minimum hours</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigate your History easily using the Previous and Next Day buttons, or click calendar events to see their exact start and end times. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs selecting the date in a confirmation dialog.</value>
+    <value>Navigate your History easily using the Previous and Next Day buttons, or double click calendar events to zoom in and see their exact start and end times, edit or delete them. Use the reset button to zoom out. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs selecting the date in a confirmation dialog.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize and rename Activity Groups, enable Budgets, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
