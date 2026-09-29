@@ -792,7 +792,7 @@
     <value>Zuegwiseni Stunde</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigier aifach durch din Verlauf mit da Schaltflächa für da vorig und nöchscht Tag, oder klick uf Kalenderereigniss, zum dera gnaui Start- und Endzita z'seh. Du kasch s'Diagramm zwüscha Linia- und Balkamodus umschalta, d'Aktivitätslegende überprüafa und sicheri täglichi CSV-Export durchfüehra, wo du s'Datum imana Bestätigungsdialog uswählsch.</value>
+    <value>Navigier aifach durch din Verlauf mit da Schaltflächa für da vorig und nöchscht Tag, oder doppelklick uf Kalenderereigniss, zum inezuzooma und dera gnaui Start- und Endzita z'seh, sie z'bearbeita oder z'lösche. Verwende d'Zurücksetza-Schaltflächa zum usazuzooma. Du kasch s'Diagramm zwüscha Linia- und Balkamodus umschalta, d'Aktivitätslegende überprüafa und sicheri täglichi CSV-Export durchfüehra, wo du s'Datum imana Bestätigungsdialog uswählsch.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Aktiviär 'Erwiterti Istellunga azeiga' im Abschnitt Allgemein, um witeri Optiona azzeiga. Du kasch Aktivitätsgruppa organisiara und umbenenna, Budgets aktiviara, Ereignis, wo kürzer als a konfigurierti Duur sind, automatisch löschen, um din Verlauf suuber z'halta, oder Timeular-Istellunga umschalta.</value>

@@ -792,7 +792,7 @@
     <value>Horas asignadas</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navega polo teu Historial facilmente usando os botóns de Día Anterior e Seguinte, ou fai clic nos eventos do calendario para ver as súas horas exactas de inicio e fin. Podes alternar o gráfico entre os modos de liña e barra, consultar a lenda de actividades e exportar CSV diarios de forma segura seleccionando a data nun diálogo de confirmación.</value>
+    <value>Navega polo teu Historial facilmente usando os botóns de Día Anterior e Seguinte, ou fai dobre clic nos eventos do calendario para achegar e ver as súas horas exactas de inicio e fin, editalos ou eliminalos. Usa o botón de reinicio para afastar. Podes alternar o gráfico entre os modos de liña e barra, consultar a lenda de actividades e exportar CSV diarios de forma segura seleccionando a data nun diálogo de confirmación.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Activa 'Mostrar configuración avanzada' na sección Xeral para revelar máis opcións. Podes organizar e renomear Grupos de Actividades, habilitar Orzamentos, eliminar automaticamente eventos máis curtos que unha duración configurada para manter limpo o teu historial ou activar a configuración de Timeular.</value>
