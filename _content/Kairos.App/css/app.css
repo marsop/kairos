@@ -743,6 +743,40 @@ body {
     color: var(--color-accent);
 }
 
+.event-card.has-overlap {
+    border-left: 4px solid #f59e0b;
+}
+
+.overlap-badge {
+    background: rgba(245, 158, 11, 0.18);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+html[data-theme="dark"] .overlap-badge {
+    color: #fbbf24;
+}
+
+.schedule-gap-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    margin: var(--spacing-xs) 0;
+    border-radius: var(--radius-sm);
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px dashed rgba(245, 158, 11, 0.4);
+    color: #d97706;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+html[data-theme="dark"] .schedule-gap-indicator {
+    color: #fbbf24;
+}
+
+
 .event-times {
     display: flex;
     flex-wrap: wrap;
@@ -2796,6 +2830,47 @@ html[data-theme="dark"] .edit-input {
 .calendar-event-block:focus {
     outline: none;
 }
+
+.calendar-event-block.has-overlap {
+    border-right: 3px solid #f59e0b;
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.6);
+}
+
+.calendar-event-overlap-badge {
+    margin-left: 4px;
+    font-size: 11px;
+    cursor: help;
+}
+
+.calendar-gap-block {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px dashed rgba(245, 158, 11, 0.6);
+    border-radius: var(--radius-sm);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    color: #d97706;
+    pointer-events: auto;
+    cursor: default;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+html[data-theme="dark"] .calendar-gap-block {
+    color: #fbbf24;
+}
+
+.calendar-gap-label {
+    padding: 0 var(--spacing-xs);
+    font-weight: 600;
+}
+
 
 .resize-handle {
     position: absolute;
