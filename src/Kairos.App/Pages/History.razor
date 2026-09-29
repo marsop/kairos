@@ -373,11 +373,38 @@
                     }
                 </div>
                 <div class="calendar-events" style="height: @((_pixelsPerHour * 24).ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                    @{
+                        var analysis = ScheduleAnalysis;
+                    }
+                    @foreach (var gap in analysis.Gaps)
+                    {
+                        var startSeconds = gap.GetStartSeconds(SelectedDate);
+                        var endSeconds = gap.GetEndSeconds(SelectedDate);
+                        var topPx = (startSeconds / 3600.0) * _pixelsPerHour;
+                        var durationHours = Math.Max(0, (endSeconds - startSeconds) / 3600.0);
+                        var heightPx = Math.Max(4, durationHours * _pixelsPerHour);
+                        var gapMinutes = (int)Math.Round(gap.Duration.TotalMinutes);
+                        var gapTooltip = string.Format(Localizer["ScheduleGap"], $"{gapMinutes}{Localizer["UnitMinuteShort"].Value} ({gap.StartTime.ToLocalTime():HH:mm} - {gap.EndTime.ToLocalTime():HH:mm})");
+
+                        <div class="calendar-gap-block"
+                             style="top: @(topPx.ToString(CultureInfo.InvariantCulture))px; height: @(heightPx.ToString(CultureInfo.InvariantCulture))px;"
+                             title="@gapTooltip">
+                            @if (heightPx >= 16)
+                            {
+                                <span class="calendar-gap-label">@gapMinutes@Localizer["UnitMinuteShort"].Value</span>
+                            }
+                        </div>
+                    }
                     @foreach (var evt in FilteredEvents)
                     {
                         var isSelected = _selectedCalendarEventId == evt.Id;
+                        var hasOverlap = analysis.Overlaps.ContainsKey(evt.Id);
+                        analysis.Overlaps.TryGetValue(evt.Id, out var overlapInfo);
+                        var overlapTooltip = overlapInfo != null
+                            ? string.Format(Localizer["OverlappingEvents"], string.Join(", ", overlapInfo.OverlappingActivityNames))
+                            : null;
                         <div @key="evt.Id"
-                             class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "")"
+                             class="calendar-event-block @(evt.IsActive ? "active" : "") @(isSelected ? "selected-event" : "") @(hasOverlap ? "has-overlap" : "")"
                              tabindex="0"
                              style="@GetCalendarEventStyle(evt)"
                              data-start-seconds="@GetCalendarEventStartSeconds(evt).ToString(System.Globalization.CultureInfo.InvariantCulture)"
@@ -418,6 +445,10 @@
 
                             <span class="calendar-event-name" style="font-weight: 500; display: block; margin-bottom: 2px; @(isSelected && IsZoomBigEnough(evt) ? "padding-right: 36px;" : "")">
                                 @evt.ActivityName
+                                @if (hasOverlap)
+                                {
+                                    <span class="calendar-event-overlap-badge" title="@overlapTooltip">⚠️</span>
+                                }
                                 @if (SyncService.IsEventSynchronized(evt))
                                 {
                                     <span class="event-sync-indicator"
@@ -464,10 +495,17 @@
         }
         else
         {
+            var analysis = ScheduleAnalysis;
             <div class="events-list">
                 @foreach (var evt in FilteredEvents)
                 {
-                <div class="event-card @(evt.IsActive ? "active" : "")" style="@GetEventStyle(evt)">
+                    var hasOverlap = analysis.Overlaps.ContainsKey(evt.Id);
+                    analysis.Overlaps.TryGetValue(evt.Id, out var overlapInfo);
+                    var overlapTooltip = overlapInfo != null
+                        ? string.Format(Localizer["OverlappingEvents"], string.Join(", ", overlapInfo.OverlappingActivityNames))
+                        : null;
+
+                <div class="event-card @(evt.IsActive ? "active" : "") @(hasOverlap ? "has-overlap" : "")" style="@GetEventStyle(evt)">
                     <div class="event-header">
                         <div class="event-activity-heading">
                             <span class="activity-color-dot" style="@GetColorDotStyle(GetEventColor(evt))"></span>
@@ -490,6 +528,12 @@
                             </span>
                         </div>
                         <div class="event-header-actions">
+                            @if (hasOverlap)
+                            {
+                                <span class="event-badge overlap-badge" title="@overlapTooltip">
+                                    ⚠️ @Localizer["Overlap"]
+                                </span>
+                            }
                             @if (evt.IsActive)
                             {
                                 <span class="event-badge active-badge">
@@ -532,6 +576,15 @@
                         </div>
                     }
                 </div>
+
+                @if (analysis.GapsBeforeEvent.TryGetValue(evt.Id, out var gap))
+                {
+                    var gapMinutes = (int)Math.Round(gap.Duration.TotalMinutes);
+                    <div class="schedule-gap-indicator" title="@string.Format(Localizer["ScheduleGap"], $"{gapMinutes}{Localizer["UnitMinuteShort"].Value} ({gap.StartTime.ToLocalTime():HH:mm} - {gap.EndTime.ToLocalTime():HH:mm})")">
+                        <span>⚠️</span>
+                        <span>@string.Format(Localizer["UntrackedGap"], $"{gapMinutes}{Localizer["UnitMinuteShort"].Value}") (@gap.StartTime.ToLocalTime().ToString("HH:mm") - @gap.EndTime.ToLocalTime().ToString("HH:mm"))</span>
+                    </div>
+                }
                 }
             </div>
         }
@@ -573,6 +626,33 @@
 
     private IEnumerable<ActivityEvent> FilteredEvents => AllEvents
         .Where(e => DateOnly.FromDateTime(e.StartTime.ToLocalTime().Date) == SelectedDate);
+
+    private IEnumerable<ActivityEvent> CurrentCalendarEvents
+    {
+        get
+        {
+            if (_dragAction == DragAction.None || _draggedEvent == null)
+            {
+                return FilteredEvents;
+            }
+
+            return FilteredEvents.Select(e =>
+            {
+                if (e.Id == _draggedEvent.Id)
+                {
+                    var clone = e.Clone();
+                    clone.StartTime = _dragPreviewStart;
+                    clone.EndTime = _dragPreviewEnd;
+                    return clone;
+                }
+                return e;
+            });
+        }
+    }
+
+    private ScheduleAnalysisResult ScheduleAnalysis =>
+        ScheduleAnalysisHelper.Analyze(CurrentCalendarEvents, DateTimeOffset.Now, SelectedDate);
+
 
     private DateOnly SelectedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 

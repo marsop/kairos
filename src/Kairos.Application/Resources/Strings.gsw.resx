@@ -981,4 +981,16 @@
   <data name="SettingDurationError" xml:space="preserve">
     <value>0-999</value>
   </data>
+  <data name="Overlap" xml:space="preserve">
+    <value>Überlappig</value>
+  </data>
+  <data name="OverlappingEvents" xml:space="preserve">
+    <value>Überlappt mit {0}</value>
+  </data>
+  <data name="ScheduleGap" xml:space="preserve">
+    <value>Lucka: {0}</value>
+  </data>
+  <data name="UntrackedGap" xml:space="preserve">
+    <value>{0} nöd erfassti Lucka</value>
+  </data>
 </root>

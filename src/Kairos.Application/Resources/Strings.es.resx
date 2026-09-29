@@ -978,4 +978,16 @@
   <data name="SettingDurationError" xml:space="preserve">
     <value>0-999</value>
   </data>
+  <data name="Overlap" xml:space="preserve">
+    <value>Superposición</value>
+  </data>
+  <data name="OverlappingEvents" xml:space="preserve">
+    <value>Se superpone con {0}</value>
+  </data>
+  <data name="ScheduleGap" xml:space="preserve">
+    <value>Hueco: {0}</value>
+  </data>
+  <data name="UntrackedGap" xml:space="preserve">
+    <value>{0} sin registrar</value>
+  </data>
 </root>
