@@ -32,6 +32,7 @@ Welcome to the Kairos codebase! This file contains important guidelines and cont
 * When planning string replacements across multiple localized files (e.g., `.resx`), you must first read (e.g., via `grep`) the exact current text from *each* target file to adhere to the Groundedness Rule. The plan must then include the exact original and replacement strings for each file to satisfy the Specificity Rule.
 
 ## Build & Dependencies
+* If `git log` unexpectedly shows limited history (e.g., only a single commit) when inspecting recent changes, the repository is likely a shallow clone. Run `git fetch --unshallow` to retrieve the full commit history.
 * When running automated tests with `dotnet test`, avoid passing multiple project directory paths in a single command to prevent MSB1008 errors. Execute them individually or target the solution file.
 * The solution utilizes Central Package Management (CPM). All NuGet package versions must be managed centrally in a root `Directory.Packages.props` file using `<PackageVersion>` elements, and `.csproj` files should omit the `Version` attribute from `<PackageReference>` items.
 * When running tests from the repository root, use `dotnet test Kairos.sln` instead of `dotnet test` alone to prevent MSB1003 errors (missing project/solution file).
@@ -140,3 +141,10 @@ Welcome to the Kairos codebase! This file contains important guidelines and cont
 ## Tutorial & Avatars
 * The application's tutorial flow is configured in `src/Kairos.Application/Services/TutorialService.cs`, and all corresponding tutorial steps and translatable text are stored in `src/Kairos.Application/Resources/Strings.resx` alongside localized files (e.g., `.de.resx`, `.es.resx`). The sequence is defined by populating a `_steps` list with `TutorialStep` instances, which map a localized string, a target route, and an `ImageUrl`. The avatar images for these steps are assigned dynamically by cycling through available images based on the step index and the current avatar's `ImageCount`.
 * Avatar image assets for different styles (e.g., 'kawaii', 'zarzaparrilla') are stored in `src/Kairos.Web/wwwroot/img/avatars/` and named sequentially (e.g., `tutorial-avatar-1.png`). Each style directory must also contain a `tutorial-avatar.png` file (often a resized version of the first pose) to serve as the dropdown icon. When adding new avatar images, add the file to all style directories, update the `README.txt` files, and increment the `ImageCount` property of the respective `AvatarProfile` to dynamically use them in the tutorial.
+
+## AGENTS.md Hierarchy and Scope
+* If the `AGENTS.md` includes programmatic checks to verify your work, you MUST run all of them and make a best effort to ensure they pass after all code changes have been made.
+* The scope of an `AGENTS.md` file is the entire directory tree rooted at the folder that contains it.
+* For every file you touch, you must obey instructions in any `AGENTS.md` file whose scope includes that file.
+* More deeply-nested `AGENTS.md` files take precedence in the case of conflicting instructions.
+* The initial problem description and any explicit instructions you receive from the user to deviate from standard procedure take precedence over `AGENTS.md` instructions.
