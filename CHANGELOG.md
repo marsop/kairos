@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-10-02
+
 ### Added
 - **History UI**: Added gap and overlap highlighting across both Calendar and List views, visually displaying 1-to-10 minute untracked gaps and warning badges with accent borders for conflicting overlapping events.
 - **History UI**: Added an edit button to calendar entries when zoomed in to at least the double-click zoom level, opening the edit event dialog.
