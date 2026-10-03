@@ -628,6 +628,7 @@ body {
 
 .menu-trigger:hover {
     background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
 }
 
 .menu-trigger:focus {
