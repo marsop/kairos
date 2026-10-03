@@ -35,6 +35,7 @@ Kairos is a time-tracking application built with Blazor WebAssembly. It helps yo
 - **Daily Breakdown**: See how time was spent each day
 - **Detailed Events**: View start times, durations, and associated activities
 - **Calendar View**: Visualize daily events in a vertical calendar format
+- **Gap & Overlap Detection**: Visually identify untracked time gaps and conflicting overlapping events
 
 ### Sync & Backup
 
