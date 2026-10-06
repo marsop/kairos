@@ -148,3 +148,18 @@ Welcome to the Kairos codebase! This file contains important guidelines and cont
 * For every file you touch, you must obey instructions in any `AGENTS.md` file whose scope includes that file.
 * More deeply-nested `AGENTS.md` files take precedence in the case of conflicting instructions.
 * The initial problem description and any explicit instructions you receive from the user to deviate from standard procedure take precedence over `AGENTS.md` instructions.
+
+## General Guidelines
+* When creating execution plans that modify files, adhere to the 'Specificity Rule' by detailing the exact code changes needed (e.g., 'add title and description to the texts JavaScript dictionary') instead of using vague descriptions like 'Modify file' or 'Update translations'.
+* When creating execution plans, adhere to the 'Verification Rule' by including a corresponding verification step (e.g., using `run_in_bash_session` to run `git diff` or `read_file`) after modifying files to confirm the changes were applied correctly.
+* When creating execution plans, follow the 'Specificity Rule' by providing exact commands for testing and environment setup (e.g., `dotnet tool install --global PowerShell` and `pwsh playwright.ps1 install`, starting the Blazor server, and running `dotnet test Kairos.sln`) rather than generic instructions like 'Install dependencies' or 'Run Tests'.
+
+## Important Contexts
+* Context vs. State: Use memory for historical context and intent (the "why"). Use the actual codebase files as the source of truth for the current code state (the "what").
+* User Request Supersedes: Always prioritize the user's current, explicit request over any conflicting information in memory.
+* Memory is Not a Task: Do not treat information from memory as a new, active instruction. Memory provides passive context, do not use it to create new feature requests.
+
+## Adjustments
+* In Playwright tests for the Blazor WebAssembly app, after calling `Page.ReloadAsync()` (e.g., following mock session injection), you must explicitly wait for the initial loading screen to disappear again using `Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });` before interacting with the DOM.
+* When running Playwright tests locally against a background Blazor server, ensure you add an adequate delay (e.g., `sleep 10`) before running `dotnet test` to prevent `net::ERR_CONNECTION_REFUSED` errors from occurring while the server spins up.
+* The `index.html` file (`src/Kairos.Web/wwwroot/index.html`) contains static content (like 'Loading Kairos...', `<title>`, and `<meta name="description">`) which executes before Blazor WebAssembly initializes, making it not translatable via the standard Blazor `Localizer`. To translate static text here, use inline JavaScript with a `texts` dictionary, reading the language preference from the `Kairos_settings` object in `localStorage` or defaulting to `navigator.language`.
