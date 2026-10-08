@@ -455,7 +455,7 @@
     <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. This page is the source of truth when checking what happened.</value>
+    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. It also highlights untracked gaps and overlapping events. This page is the source of truth when checking what happened.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>You can edit start and end times on completed entries, edit active events, and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Budgets screen.</value>

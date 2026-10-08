@@ -425,7 +425,7 @@
     <value>Lies das Diagramm von links nach rechts: steigende Abschnitte bedeuten besseres Guthaben, flache Abschnitte keine Änderung und Abfälle zeigen sinkenden Kontostand. So erkennst du ungleichmäßige Phasen frühzeitig.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
+    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Es werden auch nicht erfasste Lücken und überlappende Ereignisse hervorgehoben. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Du kannst die Start- und Endzeiten von abgeschlossenen Einträgen bearbeiten, aktive Ereignisse bearbeiten und fehlerhafte löschen. Das Beheben von Fehlern hier berechnet deine Summen sofort neu und aktualisiert den Budget-Bildschirm.</value>

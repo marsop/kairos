@@ -425,7 +425,7 @@
     <value>Lee la gráfica de izquierda a derecha: los tramos ascendentes significan que el saldo mejora, los tramos planos que no hay cambios y las caídas muestran que el saldo baja. Es la forma más rápida de detectar ritmos irregulares en el periodo elegido.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
+    <value>Historial es tu registro detallado de auditoría. Cada tarjeta muestra nombre de actividad, inicio, fin, duración y comentario. También destaca los huecos sin registrar y los eventos superpuestos. Esta página es la fuente de verdad cuando necesitas verificar qué ocurrió.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Puedes editar horas de inicio y fin en entradas completadas, editar eventos activos y eliminar entradas incorrectas. Corregir aquí recalcula tus totales y actualiza de inmediato la pantalla de Presupuestos.</value>
