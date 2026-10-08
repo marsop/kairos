@@ -65,11 +65,11 @@
                 var lang = (parsed && parsed.Language) ? parsed.Language : navigator.language;
 
                 var texts = {
-                    "en": { loading: "Loading Kairos...", error: "An unhandled error has occurred.", reload: "Reload" },
-                    "es": { loading: "Cargando Kairos...", error: "Ha ocurrido un error inesperado.", reload: "Recargar" },
-                    "gl": { loading: "Cargando Kairos...", error: "Produciuse un erro inesperado.", reload: "Recargar" },
-                    "de": { loading: "Kairos wird geladen...", error: "Ein unerwarteter Fehler ist aufgetreten.", reload: "Neu laden" },
-                    "gsw": { loading: "Kairos ladet...", error: "Es isch e fähler ufträtte.", reload: "Nöi lade" }
+                    "en": { loading: "Loading Kairos...", error: "An unhandled error has occurred.", reload: "Reload", title: "Kairos - Time Tracker", description: "Track your time with real-time activities. Bank hours or spend them with the tap of a button." },
+                    "es": { loading: "Cargando Kairos...", error: "Ha ocurrido un error inesperado.", reload: "Recargar", title: "Kairos - Rastreador de tiempo", description: "Controla tu tiempo con actividades en tiempo real. Acumula horas o gástalas con el toque de un botón." },
+                    "gl": { loading: "Cargando Kairos...", error: "Produciuse un erro inesperado.", reload: "Recargar", title: "Kairos - Rastreador de tempo", description: "Controla o teu tempo con actividades en tempo real. Acumula horas ou gástaas co toque dun botón." },
+                    "de": { loading: "Kairos wird geladen...", error: "Ein unerwarteter Fehler ist aufgetreten.", reload: "Neu laden", title: "Kairos - Zeiterfassung", description: "Erfassen Sie Ihre Zeit mit Echtzeit-Aktivitäten. Sammeln Sie Stunden oder geben Sie sie auf Knopfdruck aus." },
+                    "gsw": { loading: "Kairos ladet...", error: "Es isch e fähler ufträtte.", reload: "Nöi lade", title: "Kairos - Ziterfassig", description: "Erfass dini Zyt mit Echtzyt-Aktivitäte. Sammel Stunde oder gib si uf Chnopfdruck us." }
                 };
 
                 var match = null;
@@ -84,6 +84,11 @@
                     document.getElementById("loading-text").innerText = match.loading;
                     document.getElementById("error-text").innerText = match.error;
                     document.getElementById("reload-text").innerText = match.reload;
+                    document.title = match.title;
+                    var metaDescription = document.querySelector('meta[name="description"]');
+                    if (metaDescription) {
+                        metaDescription.setAttribute("content", match.description);
+                    }
                 }
             } catch (e) {
                 // Ignore
