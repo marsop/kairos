@@ -23,16 +23,19 @@
                     <button class="@(SettingsService.HistoryView == "calendar" ? "active" : "")" @onclick="@(() => SetHistoryView("calendar"))">@Localizer["HistoryCalendar"]</button>
                     <button class="@(SettingsService.HistoryView == "stats" ? "active" : "")" @onclick="@(() => SetHistoryView("stats"))">@Localizer["HistoryStats"]</button>
                 </div>
-                <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
-                    <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
-                    <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
-                        <div class="dropdown-item @(!FilteredEvents.Any() ? "disabled" : "")"
-                             @onmousedown="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
-                             >
-                            <span>@Localizer["ExportDayEventsCsv"]</span>
+                @if (IsExportCsvVisible)
+                {
+                    <div class="header-action-menu" @onfocusout="CloseMenu" tabindex="-1">
+                        <button type="button" class="menu-trigger" @onclick="ToggleMenu">☰</button>
+                        <div class="dropdown-menu @(_isMenuOpen ? "show" : "")">
+                            <div class="dropdown-item @(!HasExportEvents ? "disabled" : "")"
+                                 @onmousedown="async () => { ToggleMenu(); await ExportSelectedDayCsvAsync(); }" @onmousedown:preventDefault="true" @onclick:stopPropagation="true"
+                                 >
+                                <span>@Localizer["ExportDayEventsCsv"]</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
         <div class="history-toolbar">
@@ -658,7 +661,13 @@
 
     private string SelectedDateValue => SelectedDate.ToString("yyyy-MM-dd");
 
-    private string CsvFileName => $"kairos-entries-{SelectedDate:yyyy-MM-dd}.csv";
+    private DateOnly ExportDate => SettingsService.HistoryView == "stats" ? _budgetSelectedDay : SelectedDate;
+
+    private string CsvFileName => $"kairos-entries-{ExportDate:yyyy-MM-dd}.csv";
+
+    private bool IsExportCsvVisible => SettingsService.HistoryView != "stats" || CurrentBudgetView == BudgetViewMode.Day;
+
+    private bool HasExportEvents => AllEvents.Any(e => DateOnly.FromDateTime(e.StartTime.ToLocalTime().Date) == ExportDate);
 
     private const string CsvMimeType = "text/csv;charset=utf-8";
 
@@ -720,6 +729,7 @@
     {
         if (SettingsService.HistoryView != view)
         {
+            _isMenuOpen = false;
             if (SettingsService.HistoryView == "calendar")
             {
                 ClearSelection();
@@ -739,6 +749,7 @@
 
     private void SetBudgetView(BudgetViewMode mode)
     {
+        _isMenuOpen = false;
         CurrentBudgetView = mode;
         RefreshBudgetTimelineData();
     }
@@ -1151,7 +1162,12 @@
 
     private async Task ExportSelectedDayCsvAsync()
     {
-        var csv = TimeService.ExportDayAsCsv(SelectedDate);
+        if (!IsExportCsvVisible || !HasExportEvents)
+        {
+            return;
+        }
+
+        var csv = TimeService.ExportDayAsCsv(ExportDate);
         await JSRuntime.InvokeVoidAsync(
             "kairosFile.downloadText",
             new FileDownloadRequest(CsvFileName, csv, CsvMimeType));
