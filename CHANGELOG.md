@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-10-16
+
 ### Fixed
 - **History UI**: In the History Stats view, show day CSV export only when Day mode is selected, and download the day currently selected in the date picker.
 
