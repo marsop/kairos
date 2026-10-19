@@ -407,7 +407,7 @@
     <value>Kairos baut uf Aktivitätssitzunga uf. Jedes Mol, wenn du a Aktivität startisch, wird a neus Ereignis mit dr Startzit ufgzeichnet, und wenn du se stoppsch, wird d'Endzit gspeicheret. Dini Bilanz isch d'Summe vo allna ufgzeichnete Duura. Du kasch mit da Taschta Bild-uf und Bild-ab zwüscha da Haupt-Tabs navigiera.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Des isch d'Budgets-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über dia Wucha oder dr Monet.</value>
+    <value>Des isch d'Budgets-Soita. D'grosse Zämmefassig zoigt dr, wia viel Zit du im aktuell gwählta Ziitrum erfasst hesch. So hesch schnell an Überblick über hüt, dia Wucha oder dr Monet.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Unterhalb vo dr Zämmafassig schlüsslet Kairos d'Zit noch Aktivität uf, wo du noch erfasster Zit oder Budgetnutzig sortiera kasch. Budget-Fortschrittsbalka zeigand visuelli Markieriga für s'Minimum, da Schwellawert, s'Maximum und da erwartet Fortschritt, was dr hilft, d'erfasst Zit mit eifacha oder rollierenda Budgets z'vergliicha.</value>
@@ -422,7 +422,7 @@
     <value>Du kasch Aktivitäta bearbeita, inaktivi löschen, neui hinzfüega und se durch Ziacha neu aordna. Wenn du Aktivitätsgruppa verwendisch, kasch mit emene Dropdown-Uswahlmenü zwüscha ihna wechsla. Halt d'Lischt suuber und übersichtlich, damit d'täglichi Ziterfassig schnell und konsistent blibt.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>S'Diagramm befindet sich uf em Budgets-Bildschirm. Verwänd d'Tag-, Wucha- und Monatsuswahl, um dr Zitraum z'wechsla und sowohl d'Summa als o d'Aktivitätsbudgets für dean Bereich neu z'berechna.</value>
+    <value>S'Diagramm befindet sich uf em Budgets-Bildschirm. Verwänd d'Hüt-, Wucha- und Monatsuswahl, um dr Zitraum z'wechsla und sowohl d'Summa als o d'Aktivitätsbudgets für dean Bereich neu z'berechna.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lies s'Diagramm vo links nach rechts: stiigendi Abschnitt bedütat bessers Guthaba, flachi Abschnitt kei Änderig und Abfäll zeigat an sinkenda Saldo. So erkennsch ungliichmäßigi Phase früah.</value>

@@ -404,7 +404,7 @@
     <value>Kairos se basa en sesiones de actividad. Cada vez que inicias una actividad, se registra un nuevo evento con una hora de inicio, y cuando la detienes, se guarda la hora de fin. Tu saldo es la suma de todas las duraciones registradas. Puedes navegar entre las pestañas principales usando las teclas RePág y AvPág.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Esta es la pantalla de Presupuestos. La tarjeta principal muestra cuánto tiempo registraste en el periodo seleccionado. Úsala como lectura rápida de esta semana o de este mes antes de entrar en más detalle.</value>
+    <value>Esta es la pantalla de Presupuestos. La tarjeta principal muestra cuánto tiempo registraste en el periodo seleccionado. Úsala como lectura rápida de hoy, de esta semana o de este mes antes de entrar en más detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Debajo del resumen, Kairos desglosa el tiempo por actividad, que puedes ordenar por tiempo registrado o uso del presupuesto. Las barras de progreso del presupuesto muestran marcadores visuales para el mínimo, umbral, máximo y progreso esperado, ayudándote a comparar el tiempo registrado con los presupuestos simples o continuos.</value>
@@ -419,7 +419,7 @@
     <value>Puedes editar actividades, eliminar las inactivas, añadir nuevas y arrastrarlas para reordenarlas. Si usas Grupos de Actividades, un selector desplegable te permite cambiar entre ellos. Mantén la lista limpia y estable para que el seguimiento diario sea rápido y constante.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>El gráfico se encuentra en la pantalla de Presupuestos. Usa los selectores de Día, Semana y Mes para cambiar el período y recalcular tanto los totales como los presupuestos de actividad para ese rango.</value>
+    <value>El gráfico se encuentra en la pantalla de Presupuestos. Usa los selectores de Hoy, Semana y Mes para cambiar el período y recalcular tanto los totales como los presupuestos de actividad para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Lee la gráfica de izquierda a derecha: los tramos ascendentes significan que el saldo mejora, los tramos planos que no hay cambios y las caídas muestran que el saldo baja. Es la forma más rápida de detectar ritmos irregulares en el periodo elegido.</value>
