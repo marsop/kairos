@@ -18,7 +18,7 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 * **Planning Principles:**
   * **Actionability:** Include only future, actionable steps (do not recount already completed exploration).
   * **Specificity Rule:** Provide full, exact file paths (e.g., `src/Kairos.Application/Resources/Strings.resx`) and exact commands or code snippets rather than generic descriptions (e.g., avoid "modify file" or "run tests").
-  * **Groundedness Rule:** Confirm referenced methods, variables, and logic in current file traces before modifying code or tests. When planning `.resx` replacements, inspect the exact current string in each target file first.
+  * **Groundedness Rule:** Confirm referenced methods, variables, line numbers, and logic in current file traces (e.g., via `read_file` or `grep -n`) before modifying code or tests. Do not assume or hallucinate implementation details or line numbers. When planning `.resx` replacements, inspect the exact current string in each target file first.
   * **Completeness Rule:** Always include a step to execute tests (`dotnet test Kairos.sln`) before committing or submitting changes.
   * **Verification Rule:** Include verification steps (e.g., reading modified files or checking `git diff`) immediately following changes.
   * **Pre-commit Step:** The step immediately before final submission must not be formatted as a bullet point or markdown title, and must use the exact phrasing:
@@ -108,14 +108,14 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
   * Avatar assets are stored in `src/Kairos.Web/wwwroot/img/avatars/{style}/` (named `tutorial-avatar-*.png` plus `tutorial-avatar.png` for dropdowns). When adding images, update all styles, `README.txt`, and `AvatarProfile.ImageCount`.
 
 ## Localization & Internationalization
-* **Supported Locales:** English (`en`), Spanish (`es`), German (`de`), Galician (`gl`), and Swiss German (`gsw`).
+* **Supported Locales:** English (`en`), Spanish (`es`), German (`de`), Galician (`gl`), and Vorarlbergerisch / Swiss German (`gsw`).
 * **Resource Files:** Managed in `src/Kairos.Application/Resources/Strings.*.resx`. Inject `IStringLocalizer<Strings>` in Blazor components. When adding translatable strings, provide translations for all locales.
 * **Resource Editing:** Avoid XML parsing libraries that reformats/corrupts `.resx` XML structure; use text manipulation or string replacement to add `<data>` nodes.
 * **HTML & SVG Encoding:** Always wrap dynamic localized strings in `System.Net.WebUtility.HtmlEncode` when rendering via `MarkupString`.
 * **Static Content:** `src/Kairos.Web/wwwroot/index.html` (e.g., 'Loading Kairos...', `<title>`, `<meta name="description">`) renders before Blazor initializes. Localize via inline JS reading `localStorage.Kairos_settings` or `navigator.language`.
 
 ## Testing & Playwright
-* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web`), include an adequate delay (e.g., 5-10 seconds) before executing tests to avoid connection errors, and ensure the server process is killed afterward. In CI workflows, combine startup, delay, and test execution into a single step.
+* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web`), include an adequate delay (e.g., 15–20 seconds) before executing tests to avoid connection errors, and ensure the server process is killed afterward. In CI workflows, combine startup, delay, and test execution into a single step.
 * **Playwright Dependencies:** If `pwsh` is missing, run `dotnet tool install --global PowerShell`, navigate to the test output directory, and execute `pwsh playwright.ps1 install`.
 * **Loading Screen Synchronization:** After navigation or `Page.ReloadAsync()`, wait for the loading screen to disappear:
   `Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });` (do not rely on `.bottom-nav` or `.app-container` for initial load).

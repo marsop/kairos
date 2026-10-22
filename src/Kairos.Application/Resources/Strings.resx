@@ -434,7 +434,7 @@
     <value>Kairos is built around activity sessions. Every time you start an activity, a new event is recorded with a start time, and when you stop it, the end time is saved. Your balance is the sum of all recorded durations. You can navigate between the main tabs using the PageUp and PageDown keys.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>This is the Budgets screen. The large summary card shows how much time you tracked in the currently selected period. Use it as your quick read for this week or this month before you dig into the details.</value>
+    <value>This is the Budgets screen. The large summary card shows how much time you tracked in the currently selected period. Use it as your quick read for today, this week or this month before you dig into the details.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Below the summary, Kairos breaks time down by activity, which you can sort by tracked time or budget usage. Budget progress bars show visual markers for minimum, threshold, maximum, and expected progress, helping you compare tracked time against simple or rolling budgets.</value>
@@ -449,7 +449,7 @@
     <value>You can edit activities, delete inactive ones, add new ones, and drag to reorder them. If you use Activity Groups, a dropdown selector lets you switch between them. Keep the list clean and stable so daily tracking stays fast and consistent.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>The chart lives on the Budgets screen. Use the Day, Week and Month pickers to switch the period and recalculate both the totals and the activity budgets for that range.</value>
+    <value>The chart lives on the Budgets screen. Use the Today, Week and Month pickers to switch the period and recalculate both the totals and the activity budgets for that range.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>

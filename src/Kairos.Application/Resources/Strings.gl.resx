@@ -407,7 +407,7 @@
     <value>Kairos baséase en sesións de actividade. Cada vez que inicias unha actividade, rexístrase un novo evento cunha hora de inicio, e cando a detés, gárdase a hora de fin. O teu saldo é a suma de todas as duracións rexistradas. Podes navegar entre as lapelas principais usando as teclas RePág e AvPág.</value>
   </data>
   <data name="TutorialOverviewBalance" xml:space="preserve">
-    <value>Esta é a pantalla de Orzamentos. A tarxeta principal amosa canto tempo rexistraches no período seleccionado. Úsaa como lectura rápida desta semana ou deste mes antes de entrar no detalle.</value>
+    <value>Esta é a pantalla de Orzamentos. A tarxeta principal amosa canto tempo rexistraches no período seleccionado. Úsaa como lectura rápida de hoxe, desta semana ou deste mes antes de entrar no detalle.</value>
   </data>
   <data name="TutorialOverviewActive" xml:space="preserve">
     <value>Debaixo do resumo, Kairos desglosa o tempo por actividade, que podes ordenar por tempo rexistrado ou uso do orzamento. As barras de progreso do orzamento mostran marcadores visuais para o mínimo, limiar, máximo e progreso esperado, axudándoche a comparar o tempo rexistrado cos orzamentos simples ou continuos.</value>
@@ -422,7 +422,7 @@
     <value>Podes editar actividades, eliminar as inactivas, engadir novas e arrastralas para reordenalas. Se usas Grupos de Actividades, un selector despregable permíteche cambiar entre eles. Mantén a lista limpa e estable para que o seguimento diario sexa rápido e constante.</value>
   </data>
   <data name="TutorialTimelinePeriods" xml:space="preserve">
-    <value>O gráfico atópase na pantalla de Orzamentos. Usa os selectores de Día, Semana e Mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
+    <value>O gráfico atópase na pantalla de Orzamentos. Usa os selectores de Hoxe, Semana e Mes para cambiar o período e recalcular tanto os totais como os orzamentos de actividade para ese rango.</value>
   </data>
   <data name="TutorialTimelineInterpretation" xml:space="preserve">
     <value>Le a gráfica de esquerda a dereita: os tramos ascendentes significan que o saldo mellora, os tramos planos que non hai cambios e as baixadas mostran que o saldo cae. É a forma máis rápida de detectar ritmos irregulares no período escollido.</value>
