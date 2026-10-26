@@ -425,7 +425,7 @@
     <value>Lies das Diagramm von links nach rechts: steigende Abschnitte bedeuten besseres Guthaben, flache Abschnitte keine Änderung und Abfälle zeigen sinkenden Kontostand. So erkennst du ungleichmäßige Phasen frühzeitig.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
+    <value>Der Verlauf ist dein detailliertes Prüfprotokoll. Jede Karte zeigt Aktivitätsname, Startzeit, Endzeit, Dauer und Kommentar. Er hebt auch visuell alle nicht erfassten Lücken oder sich überschneidenden Ereignisse hervor, um dir zu helfen, deine Aufzeichnungen genau zu halten. Diese Seite ist die verlässliche Quelle, wenn du nachprüfen willst, was passiert ist.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>Du kannst die Start- und Endzeiten von abgeschlossenen Einträgen bearbeiten, aktive Ereignisse bearbeiten und fehlerhafte löschen. Das Beheben von Fehlern hier berechnet deine Summen sofort neu und aktualisiert den Budget-Bildschirm.</value>
@@ -789,7 +789,7 @@
     <value>Zugewiesene Stunden</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigiere einfach durch deinen Verlauf mit den Schaltflächen für den vorherigen und nächsten Tag, oder doppelklicke auf Kalenderereignisse, um hineinzuzoomen und deren genaue Start- und Endzeiten zu sehen, sie zu bearbeiten oder zu löschen. Verwende die Zurücksetzen-Schaltfläche zum Herauszoomen. Du kannst das Diagramm zwischen Linien- und Balkenmodus umschalten, die Aktivitätenlegende überprüfen und sichere tägliche CSV-Exporte mit einem Bestätigungsdialog durchführen, in dem das Datum ausgewählt werden kann.</value>
+    <value>Navigiere einfach durch deinen Verlauf mit den Schaltflächen für den vorherigen und nächsten Tag, oder doppelklicke auf Kalenderereignisse, um hineinzuzoomen und deren genaue Start- und Endzeiten zu sehen, sie zu bearbeiten oder zu löschen. Verwende die Zurücksetzen-Schaltfläche zum Herauszoomen. Du kannst das Diagramm zwischen Linien- und Balkenmodus umschalten, die Aktivitätenlegende überprüfen und sichere tägliche CSV-Exporte für das aktuell ausgewählte Datum durchführen.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Aktiviere 'Erweiterte Einstellungen anzeigen' im Abschnitt Allgemein, um weitere Optionen anzuzeigen. Du kannst Aktivitätsgruppen organisieren und umbenennen, Budgets aktivieren, Ereignisse, die kürzer als eine konfigurierte Dauer sind, automatisch löschen, um deinen Verlauf sauber zu halten, oder Timeular-Einstellungen umschalten.</value>

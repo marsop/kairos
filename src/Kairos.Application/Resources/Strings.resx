@@ -455,7 +455,7 @@
     <value>Read the chart from left to right: rising sections mean your balance improved, flat sections mean no change, and dips show the balance falling. It is the fastest way to spot uneven pacing across the selected period.</value>
   </data>
   <data name="TutorialHistoryReview" xml:space="preserve">
-    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. This page is the source of truth when checking what happened.</value>
+    <value>History is your detailed audit log. Each card shows activity name, start time, end time, duration, and comment. It also visually highlights any untracked gaps or overlapping events to help you keep your records accurate. This page is the source of truth when checking what happened.</value>
   </data>
   <data name="TutorialHistoryEdit" xml:space="preserve">
     <value>You can edit start and end times on completed entries, edit active events, and delete incorrect ones. Fixing mistakes here immediately recalculates your totals and updates the Budgets screen.</value>
@@ -791,7 +791,7 @@
     <value>Minimum hours</value>
   </data>
   <data name="TutorialHistoryViews" xml:space="preserve">
-    <value>Navigate your History easily using the Previous and Next Day buttons, or double click calendar events to zoom in and see their exact start and end times, edit or delete them. Use the reset button to zoom out. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs selecting the date in a confirmation dialog.</value>
+    <value>Navigate your History easily using the Previous and Next Day buttons, or double click calendar events to zoom in and see their exact start and end times, edit or delete them. Use the reset button to zoom out. You can toggle the chart between line and bar modes, check the activity legend, and safely export daily CSVs for the currently selected date.</value>
   </data>
   <data name="TutorialSettingsAdvanced" xml:space="preserve">
     <value>Toggle 'Show Advanced Settings' in the General section to reveal more options. You can organize and rename Activity Groups, enable Budgets, automatically delete events shorter than a configured duration to keep your history clean, or toggle Timeular settings.</value>
