@@ -249,11 +249,21 @@ public class ScheduleAnalysisHelperTests
     public void ScheduleGap_GetStartSecondsAndGetEndSeconds_ClampsCorrectly()
     {
         var date = new DateOnly(2026, 9, 29);
-        var gapStart = new DateTimeOffset(2026, 9, 29, 10, 0, 0, DateTimeOffset.Now.Offset);
-        var gapEnd = new DateTimeOffset(2026, 9, 29, 10, 5, 0, DateTimeOffset.Now.Offset);
+        var gapStart = new DateTimeOffset(new DateTime(2026, 9, 29, 10, 0, 0, DateTimeKind.Local));
+        var gapEnd = new DateTimeOffset(new DateTime(2026, 9, 29, 10, 5, 0, DateTimeKind.Local));
         var gap = new ScheduleGap(gapStart, gapEnd, TimeSpan.FromMinutes(5));
 
         Assert.Equal(10 * 3600, gap.GetStartSeconds(date));
         Assert.Equal(10 * 3600 + 5 * 60, gap.GetEndSeconds(date));
+
+        // When gap starts on previous day, StartSeconds clamps to 0
+        var prevDayGapStart = new DateTimeOffset(new DateTime(2026, 9, 28, 23, 58, 0, DateTimeKind.Local));
+        var crossGap1 = new ScheduleGap(prevDayGapStart, gapEnd, TimeSpan.FromMinutes(7));
+        Assert.Equal(0, crossGap1.GetStartSeconds(date));
+
+        // When gap ends on next day, EndSeconds clamps to 86400
+        var nextDayGapEnd = new DateTimeOffset(new DateTime(2026, 9, 30, 0, 2, 0, DateTimeKind.Local));
+        var crossGap2 = new ScheduleGap(gapStart, nextDayGapEnd, TimeSpan.FromMinutes(7));
+        Assert.Equal(86400, crossGap2.GetEndSeconds(date));
     }
 }

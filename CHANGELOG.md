@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **History UI**: In the History Stats view, show day CSV export only when Day mode is selected, and download the day currently selected in the date picker.
+- **Events**: Fix Daylight Saving Time offset calculation when saving edited events in EditEventDialog.
+- **Tests**: Fix Daylight Saving Time offset calculation and verify day boundary clamping in `ScheduleGap_GetStartSecondsAndGetEndSeconds_ClampsCorrectly`.
 
 ## [1.12.0] - 2026-10-02
 

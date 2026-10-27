@@ -141,8 +141,8 @@
         }
         else
         {
-            var newStart = new DateTimeOffset(_editStartTime, DateTimeOffset.Now.Offset);
-            var newEnd = new DateTimeOffset(_editEndTime, DateTimeOffset.Now.Offset);
+            var newStart = new DateTimeOffset(DateTime.SpecifyKind(_editStartTime, DateTimeKind.Local));
+            var newEnd = new DateTimeOffset(DateTime.SpecifyKind(_editEndTime, DateTimeKind.Local));
 
             if (newStart >= newEnd)
             {
