@@ -617,7 +617,7 @@
     // Stats view state
     private BudgetViewMode CurrentBudgetView = BudgetViewMode.Day;
     private DateOnly _budgetSelectedDay = DateOnly.FromDateTime(DateTime.Today);
-    private DateOnly _budgetSelectedWeek = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1).Date);
+    private DateOnly _budgetSelectedWeek = DateHelper.GetStartOfWeek(DateOnly.FromDateTime(DateTime.Today));
     private DateOnly _budgetSelectedMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
     private string BudgetSelectedDayValue => _budgetSelectedDay.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     private string BudgetSelectedWeekValue => GetIsoWeekString(_budgetSelectedWeek);

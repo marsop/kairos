@@ -2,6 +2,7 @@
 @page "/statistics"
 @using Kairos.Application.Services
 @using Kairos.Application.Resources
+@using Kairos.Application.Common
 @using System.Globalization
 @using System.Text.Json
 @inject ITimeTrackingService TimeService
@@ -236,7 +237,7 @@
     private DateTimeOffset StartDate => BudgetSettingsService.BudgetType switch
     {
         BudgetType.Daily => new DateTimeOffset(DateTimeOffset.UtcNow.Date, TimeSpan.Zero),
-        BudgetType.Weekly => DateTimeOffset.UtcNow.AddDays(-(int)DateTimeOffset.UtcNow.DayOfWeek + 1).Date, // Monday of this week
+        BudgetType.Weekly => DateHelper.GetStartOfWeek(DateTimeOffset.UtcNow),
         _ => new DateTimeOffset(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, 1, 0, 0, 0, TimeSpan.Zero)
     };
         
