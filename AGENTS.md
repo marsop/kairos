@@ -17,13 +17,13 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 * **Context vs. State:** Use memory for historical context and intent (the "why"). Use the actual codebase files as the source of truth for the current state (the "what"). Memory provides passive context and is not a new task or active directive.
 * **Planning Principles:**
   * **Actionability:** Include only future, actionable steps (do not recount already completed exploration).
-  * **Specificity Rule:** Provide full, exact file paths (e.g., `src/Kairos.Application/Resources/Strings.resx`) and exact commands or code snippets rather than generic descriptions (e.g., avoid "modify file" or "run tests").
-  * **Groundedness Rule:** Confirm referenced methods, variables, line numbers, and logic in current file traces (e.g., via `read_file` or `grep -n`) before modifying code or tests. Do not assume or hallucinate implementation details or line numbers. When planning `.resx` replacements, inspect the exact current string in each target file first.
+  * **Specificity Rule:** Provide full, exact directory paths for all target files (e.g., `src/Kairos.Application/Resources/Strings.resx`) rather than just listing ambiguous file names. Detail the exact code changes needed (e.g., 'add title and description to the texts JavaScript dictionary') instead of using vague descriptions like 'Modify file' or 'Update translations'. Provide exact commands for testing and environment setup (e.g., `dotnet tool install --global PowerShell` and `pwsh playwright.ps1 install`, starting the Blazor server, and running `dotnet test Kairos.sln`) rather than generic instructions like 'Install dependencies' or 'Run Tests'.
+  * **Groundedness Rule:** Confirm referenced methods, variables, line numbers, and logic in current file traces (e.g., via `read_file` or `grep -n`) before modifying code or tests. Do not assume or hallucinate implementation details or specific line numbers based on prior knowledge. When planning string replacements across multiple localized files (e.g., `.resx`), you must read the exact current text from *each* target file individually (e.g., using separate `grep` commands per file) to avoid output truncation and adhere to the Groundedness Rule. The plan must then include the exact original and replacement strings for each file to satisfy the Specificity Rule.
   * **Completeness Rule:** Always include a step to execute tests (`dotnet test Kairos.sln`) before committing or submitting changes.
   * **Verification Rule:** Include verification steps (e.g., reading modified files or checking `git diff`) immediately following changes.
   * **Pre-commit Step:** The step immediately before final submission must not be formatted as a bullet point or markdown title, and must use the exact phrasing:
     `Complete pre-commit steps to ensure proper testing, verification, review, and reflection are done.`
-* **Environment Hygiene:** Command executions start from the repository root; directory changes do not persist across calls. Use uniquely named temporary files/scripts (e.g., `temp_*`), ensure they are cleaned up after use, and terminate any background processes. Paginate (`sed -n`) or use targeted `grep` when reading large files to avoid output truncation.
+* **Environment Hygiene:** Command executions start from the repository root; directory changes do not persist across calls. Use clearly unique filenames for temporary files/scripts (e.g., `temp_update_script.sh`), ensure they are cleaned up after use, and terminate any background processes. Always delete any temporal files and logs that you have used preparing the PR as long as they are no longer required by the application. Paginate (`sed -n`) or use targeted `grep` when reading large files to avoid output truncation.
 
 ## Build, Versioning & Releases
 * **Building & Testing:**
@@ -74,7 +74,7 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 ## State, Data & Storage
 * **Supabase Integration:**
   * REST API queries via `HttpClient`. Map C# DTO properties with `[JsonPropertyName]`.
-  * When updating schemas in `supabase/`, append `ALTER TABLE public.[table_name] ...` statements.
+  * When updating schemas in `supabase/`, append `ALTER TABLE public.[table_name] ...` statements. When removing columns from Supabase schemas, execute the change by appending an `ALTER TABLE public.[table_name] DROP COLUMN IF EXISTS [column_name];` statement to the corresponding `.sql` files.
   * In REST `select` query strings, append new columns strictly comma-separated without spaces.
 * **Settings & Sync:**
   * When adding global settings, update: `supabase/user_settings.sql`, `ISettingsService`, `SettingsService` (`LoadAsync`, `BuildSyncedSettings`, `ApplySyncedSettings`), `SettingsData`, `SyncedSettingsData`, and `SupabaseSettingsStore`.
@@ -109,18 +109,19 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 
 ## Localization & Internationalization
 * **Supported Locales:** English (`en`), Spanish (`es`), German (`de`), Galician (`gl`), and Vorarlbergerisch / Swiss German (`gsw`).
-* **Resource Files:** Managed in `src/Kairos.Application/Resources/Strings.*.resx`. Inject `IStringLocalizer<Strings>` in Blazor components. When adding translatable strings, provide translations for all locales.
+* **Resource Files:** Managed in `src/Kairos.Application/Resources/Strings.*.resx`. Inject `IStringLocalizer<Strings>` in Blazor components. When adding translatable strings, provide translations for all locales (e.g., Strings.de.resx should contain words in german and Strings.gl.resx should contain words in galician).
 * **Resource Editing:** Avoid XML parsing libraries that reformats/corrupts `.resx` XML structure; use text manipulation or string replacement to add `<data>` nodes.
 * **HTML & SVG Encoding:** Always wrap dynamic localized strings in `System.Net.WebUtility.HtmlEncode` when rendering via `MarkupString`.
 * **Static Content:** `src/Kairos.Web/wwwroot/index.html` (e.g., 'Loading Kairos...', `<title>`, `<meta name="description">`) renders before Blazor initializes. Localize via inline JS reading `localStorage.Kairos_settings` or `navigator.language`.
 
 ## Testing & Playwright
-* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web`), include an adequate delay (e.g., 15–20 seconds) before executing tests to avoid connection errors, and ensure the server process is killed afterward. In CI workflows, combine startup, delay, and test execution into a single step.
-* **Playwright Dependencies:** If `pwsh` is missing, run `dotnet tool install --global PowerShell`, navigate to the test output directory, and execute `pwsh playwright.ps1 install`.
+* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web > /dev/null 2>&1 &`), include an adequate delay (e.g., `sleep 20`) before executing tests to avoid connection errors like `net::ERR_CONNECTION_REFUSED`, and ensure the server process is killed afterward (e.g., using `kill $(lsof -t -i :5111)`) to prevent 'Address already in use' errors during subsequent runs. In CI workflows, combine startup, delay, and test execution into a single step.
+* **Playwright Dependencies:** If `pwsh` is missing, run `dotnet tool install --global PowerShell`, navigate to the test build output directory (e.g., `tests/Kairos.PlaywrightTests/bin/Debug/net10.0/`), and execute `pwsh playwright.ps1 install` (or `~/.dotnet/tools/pwsh playwright.ps1 install` if not in PATH).
 * **Loading Screen Synchronization:** After navigation or `Page.ReloadAsync()`, wait for the loading screen to disappear:
   `Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });` (do not rely on `.bottom-nav` or `.app-container` for initial load).
 * **Bypassing Auth & Modals in Tests:**
-  * Wait for `.auth-card` to render before injecting mock session data into `localStorage` key `Kairos_supabase_session` (`AccessToken`, `RefreshToken`, `ExpiresAt`, `User` with lowercase `id`/`email`) and reloading. Alternatively, inject `{"OfflineMode": true}` into `Kairos_settings`.
+  * Wait for `.auth-card` to render (e.g., `page.wait_for_selector('.auth-card')`) before injecting mock session data into `localStorage` key `Kairos_supabase_session` (`AccessToken`, `RefreshToken`, `ExpiresAt`, `User` with lowercase `id`/`email`) and reloading. Alternatively, inject `{"OfflineMode": true}` into `Kairos_settings`.
+  * To test localized UI changes, you can switch the application language by injecting a JSON string like `{"Language": "es"}` into `Kairos_settings` and reloading.
   * Bypass tutorial and popups by injecting into `localStorage`:
     * Key `Kairos_settings`: JSON with `"TutorialCompleted": true`, `"Language": "en"`, `"CommentRequired": false`.
     * Flags: `'Kairos_TutorialCompleted': 'true'`, `'Kairos_LastSeenVersion': 'true'`, `'Kairos_ReleaseNotesSeenVersion': 'true'`.
