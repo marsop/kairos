@@ -626,10 +626,7 @@ body {
     transition: background-color var(--transition-fast);
 }
 
-.menu-trigger:hover {
-    background-color: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-}
+
 
 .menu-trigger:focus {
     outline: none;
@@ -1026,7 +1023,9 @@ html[data-theme="dark"] .schedule-gap-indicator {
     transition: all var(--transition-fast);
 }
 
-.edit-btn:hover {
+.edit-btn:hover,
+.menu-trigger:hover,
+.history-date-nav-btn:hover {
     background: var(--color-bg-tertiary);
     color: var(--color-text-primary);
 }
@@ -1848,11 +1847,7 @@ html[data-theme="dark"] .edit-input {
     transition: var(--transition-base);
 }
 
-.history-date-nav-btn:hover {
-    background: var(--color-bg-tertiary);
-    border-color: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-}
+
 
 .history-date-nav-btn:focus {
     outline: none;
