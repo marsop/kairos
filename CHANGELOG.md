@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **UI**: Translate document title and description in index.html.
+
+### Changed
+- **Docs**: Update and simplify AGENTS.md guidelines.
+- **Tutorial**: Update tutorial texts to mention the Today view in Statistics.
+- **UI**: Unify hover states for small icon buttons (e.g., .menu-trigger).
+
 ### Fixed
 - **History UI**: In the History Stats view, show day CSV export only when Day mode is selected, and download the day currently selected in the date picker.
 - **Events**: Fix Daylight Saving Time offset calculation when saving edited events in EditEventDialog.
