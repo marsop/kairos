@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Tutorial**: Updated tutorial texts to include new history gap/overlap highlighting and inline editing functionality.
+
 ### Fixed
 - **History UI**: In the History Stats view, show day CSV export only when Day mode is selected, and download the day currently selected in the date picker.
 - **Events**: Fix Daylight Saving Time offset calculation when saving edited events in EditEventDialog.
