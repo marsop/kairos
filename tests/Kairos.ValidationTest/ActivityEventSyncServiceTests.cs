@@ -645,6 +645,200 @@ public class ActivityEventSyncServiceTests
         Assert.Equal(1, eventStore.LoadEventsCallCount);
     }
 
+    [Fact]
+    public void SyncInterval_IsFifteenMinutes()
+    {
+        Assert.Equal(TimeSpan.FromMinutes(15), ActivityEventSyncService.SyncInterval);
+    }
+
+    [Fact]
+    public async Task StartSync_WhenVisible_TriggersImmediateSyncOnStartup()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        using var sut = new ActivityEventSyncService(
+            _eventStoreStub,
+            _timeTrackingServiceMock.Object,
+            _authServiceStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            _realtimeServiceStub,
+            NullLogger<ActivityEventSyncService>.Instance);
+
+        // Act
+        sut.StartSync();
+
+        // Assert
+        Assert.True(await WaitUntilAsync(() => _eventStoreStub.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+    }
+
+    [Fact]
+    public async Task SetVisibility_Hidden_PreventsRealtimeConnectedSync()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance);
+
+        // Act: hide tab
+        sut.SetVisibility(false);
+
+        // Trigger realtime connected while hidden
+        realtimeStub.TriggerConnected();
+
+        // Assert: sync should not run while in background
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+
+        // Act: return to foreground
+        sut.SetVisibility(true);
+
+        // Assert: catch-up sync should now run
+        Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+    }
+
+    [Fact]
+    public async Task PwaService_VisibilityChanged_IntegratesWithSyncService()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        var pwaStub = new StubPwaService { IsVisible = true };
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance,
+            pwaStub);
+
+        // Act: tab goes to background
+        pwaStub.TriggerVisibilityChanged(false);
+
+        // Realtime connected while hidden
+        realtimeStub.TriggerConnected();
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+
+        // Act: tab returns to foreground
+        pwaStub.TriggerVisibilityChanged(true);
+
+        // Assert: catch-up sync triggered
+        Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+    }
+
+    [Fact]
+    public async Task StartSync_WhenInitiallyHidden_DoesNotTriggerImmediateSync()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        var pwaStub = new StubPwaService { IsVisible = false };
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance,
+            pwaStub);
+
+        // Act
+        sut.StartSync();
+
+        // Assert: initial sync should NOT fire when initially hidden
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+    }
+
+    [Fact]
+    public async Task SetVisibility_SameValue_IsIdempotent()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance);
+
+        // sut is already visible by default. Calling SetVisibility(true) should not trigger a redundant sync.
+        sut.SetVisibility(true);
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+
+        // Hide tab
+        sut.SetVisibility(false);
+        // Calling false again should not trigger sync
+        sut.SetVisibility(false);
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+    }
+
+    [Fact]
+    public async Task Dispose_UnsubscribesFromPwaServiceVisibilityChanged()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        var pwaStub = new StubPwaService { IsVisible = false };
+        var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance,
+            pwaStub);
+
+        // Act: dispose service
+        sut.Dispose();
+
+        // Trigger visibility changed on PWA service
+        pwaStub.TriggerVisibilityChanged(true);
+
+        // Assert: disposed service should not react
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(200)));
+    }
+
+    [Fact]
+    public async Task SetVisibility_FromHiddenToVisible_TriggersImmediateSync()
+    {
+        // Arrange
+        var eventStore = new StubSupabaseActivityEventStore();
+        var realtimeStub = new StubSupabaseRealtimeService();
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            _timeTrackingServiceMock.Object,
+            authStub,
+            _conflictNotifierMock.Object,
+            _settingsServiceStub,
+            realtimeStub,
+            NullLogger<ActivityEventSyncService>.Instance);
+
+        sut.SetVisibility(false);
+        Assert.False(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromMilliseconds(100)));
+
+        sut.SetVisibility(true);
+        Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+    }
+
     private static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout, TimeSpan? pollInterval = null)
     {
         if (condition())

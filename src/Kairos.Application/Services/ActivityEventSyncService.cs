@@ -5,6 +5,7 @@ namespace Kairos.Application.Services;
 
 public sealed class ActivityEventSyncService : IActivityEventSyncService, IDisposable
 {
+    public static readonly TimeSpan SyncInterval = TimeSpan.FromMinutes(15);
     private static readonly TimeSpan RealtimeEchoSuppressionWindow = TimeSpan.FromSeconds(2);
 
     private readonly ISupabaseActivityEventStore _eventStore;
@@ -13,9 +14,11 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private readonly ISyncConflictNotifier _conflictNotifier;
     private readonly ISettingsService _settingsService;
     private readonly ISupabaseRealtimeService _realtimeService;
+    private readonly IPwaService? _pwaService;
     private readonly ILogger<ActivityEventSyncService> _logger;
     private readonly SemaphoreSlim _syncLock = new(1, 1);
     private Timer? _timer;
+    private bool _isVisible = true;
 
     // Track the last known event snapshots to detect local/server divergence.
     // Using event content instead of LastModified avoids false positives from unrelated local state changes.
@@ -33,7 +36,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         ISyncConflictNotifier conflictNotifier,
         ISettingsService settingsService,
         ISupabaseRealtimeService realtimeService,
-        ILogger<ActivityEventSyncService> logger)
+        ILogger<ActivityEventSyncService> logger,
+        IPwaService? pwaService = null)
     {
         _eventStore = eventStore;
         _timeTrackingService = timeTrackingService;
@@ -42,16 +46,51 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         _settingsService = settingsService;
         _realtimeService = realtimeService;
         _logger = logger;
+        _pwaService = pwaService;
 
         _realtimeService.OnTableChanged += HandleRemoteTableChanged;
         _realtimeService.OnConnected += HandleRemoteConnected;
         _timeTrackingService.OnStateChanged += HandleLocalStateChanged;
+
+        if (_pwaService is not null)
+        {
+            _pwaService.OnVisibilityChanged += HandleVisibilityChanged;
+            _isVisible = _pwaService.IsVisible;
+        }
     }
 
     public void StartSync()
     {
-        _logger.LogInformation("Starting ActivityEventSyncService background sync timer.");
-        _timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+        _logger.LogInformation("Starting ActivityEventSyncService background sync timer with {Interval} interval.", SyncInterval);
+        var initialDelay = _isVisible ? TimeSpan.Zero : Timeout.InfiniteTimeSpan;
+        var interval = _isVisible ? SyncInterval : Timeout.InfiniteTimeSpan;
+        _timer = new Timer(OnTimerElapsed, null, initialDelay, interval);
+    }
+
+    public void SetVisibility(bool isVisible)
+    {
+        if (_isVisible == isVisible)
+        {
+            return;
+        }
+
+        _logger.LogInformation("Tab visibility changed: isVisible={IsVisible}", isVisible);
+        _isVisible = isVisible;
+
+        if (!isVisible)
+        {
+            _timer?.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+        else
+        {
+            _ = TriggerImmediateSyncAsync();
+            _timer?.Change(SyncInterval, SyncInterval);
+        }
+    }
+
+    private void HandleVisibilityChanged(bool isVisible)
+    {
+        SetVisibility(isVisible);
     }
 
     private void HandleRemoteTableChanged(string table)
@@ -71,6 +110,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     private void HandleRemoteConnected()
     {
+        if (!_isVisible)
+        {
+            _logger.LogDebug("Supabase Realtime connected while tab is in background. Deferring sync until tab becomes visible.");
+            return;
+        }
+
         _logger.LogInformation("Supabase Realtime connected, triggering catch-up sync.");
         _ = TriggerImmediateSyncAsync();
     }
@@ -90,6 +135,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     private void OnTimerElapsed(object? state)
     {
+        if (!_isVisible)
+        {
+            _logger.LogDebug("Sync timer elapsed while tab in background. Skipping sync.");
+            return;
+        }
+
         _ = TriggerImmediateSyncAsync();
     }
 
@@ -346,6 +397,11 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
     public void Dispose()
     {
+        if (_pwaService is not null)
+        {
+            _pwaService.OnVisibilityChanged -= HandleVisibilityChanged;
+        }
+
         if (_realtimeService is not null)
         {
             _realtimeService.OnTableChanged -= HandleRemoteTableChanged;

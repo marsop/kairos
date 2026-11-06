@@ -16,9 +16,19 @@ public interface IPwaService
     bool IsOnline { get; }
 
     /// <summary>
+    /// Whether the app tab or window is currently visible (not in background).
+    /// </summary>
+    bool IsVisible { get; }
+
+    /// <summary>
     /// Event raised when installability or connectivity changes.
     /// </summary>
     event Action? OnStateChanged;
+
+    /// <summary>
+    /// Event raised when document/tab visibility changes.
+    /// </summary>
+    event Action<bool>? OnVisibilityChanged;
 
     /// <summary>
     /// Triggers the browser's install prompt.

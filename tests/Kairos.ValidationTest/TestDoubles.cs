@@ -474,3 +474,24 @@ internal sealed class StubSupabaseBudgetSettingsStore : ISupabaseBudgetSettingsS
         return Task.CompletedTask;
     }
 }
+
+internal sealed class StubPwaService : IPwaService
+{
+    public bool IsInstallable { get; set; }
+    public bool IsOnline { get; set; } = true;
+    public bool IsVisible { get; set; } = true;
+
+    public event Action? OnStateChanged;
+    public event Action<bool>? OnVisibilityChanged;
+
+    public Task InitializeAsync() => Task.CompletedTask;
+    public Task InstallAppAsync() => Task.CompletedTask;
+
+    public void TriggerVisibilityChanged(bool isVisible)
+    {
+        IsVisible = isVisible;
+        OnVisibilityChanged?.Invoke(isVisible);
+        OnStateChanged?.Invoke();
+    }
+}
+

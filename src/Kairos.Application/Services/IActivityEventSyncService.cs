@@ -32,4 +32,10 @@ public interface IActivityEventSyncService
     /// Determines whether the given event is synchronized with the server.
     /// </summary>
     bool IsEventSynchronized(ActivityEvent evt);
+
+    /// <summary>
+    /// Notifies the sync service of tab/window visibility state.
+    /// Pauses background periodic sync when hidden, resumes and triggers immediate sync when visible.
+    /// </summary>
+    void SetVisibility(bool isVisible);
 }

@@ -46,4 +46,73 @@ public class PwaServiceTests
         Assert.Equal(1, notifications);
         Assert.False(sut.IsOnline);
     }
+    [Fact]
+    public async Task InitializeAsync_LoadsVisibilityStatus_False()
+    {
+        var js = new TestJsRuntime();
+        js.SetResult("pwaInterop.getOnlineStatus", true);
+        js.SetResult("pwaInterop.getVisibilityStatus", false);
+        var sut = new PwaService(js);
+        bool? receivedVisibility = null;
+        sut.OnVisibilityChanged += v => receivedVisibility = v;
+
+        await sut.InitializeAsync();
+
+        Assert.False(sut.IsVisible);
+        Assert.False(receivedVisibility);
+        Assert.Contains(js.Invocations, x => x.Identifier == "pwaInterop.getVisibilityStatus");
+    }
+
+    [Fact]
+    public async Task InitializeAsync_WhenVisibilityCallFails_GracefullyDefaultsToTrue()
+    {
+        var js = new TestJsRuntime();
+        js.SetResult("pwaInterop.getOnlineStatus", true);
+        js.SetException("pwaInterop.getVisibilityStatus", new InvalidOperationException("Not supported"));
+        var sut = new PwaService(js);
+
+        await sut.InitializeAsync();
+
+        Assert.True(sut.IsVisible);
+    }
+
+    [Fact]
+    public void NotifyVisibilityChanged_WhenChanged_FiresVisibilityAndStateChangedEvents()
+    {
+        var sut = new PwaService(new TestJsRuntime());
+        var stateNotifications = 0;
+        bool? receivedVisibility = null;
+        sut.OnStateChanged += () => stateNotifications++;
+        sut.OnVisibilityChanged += v => receivedVisibility = v;
+
+        // Transition from default true to false
+        sut.NotifyVisibilityChanged(false);
+
+        Assert.False(sut.IsVisible);
+        Assert.False(receivedVisibility);
+        Assert.Equal(1, stateNotifications);
+
+        // Transition from false to true
+        sut.NotifyVisibilityChanged(true);
+
+        Assert.True(sut.IsVisible);
+        Assert.True(receivedVisibility);
+        Assert.Equal(2, stateNotifications);
+    }
+
+    [Fact]
+    public void NotifyVisibilityChanged_WhenUnchanged_DoesNotFireEvents()
+    {
+        var sut = new PwaService(new TestJsRuntime());
+        var stateNotifications = 0;
+        var visibilityNotifications = 0;
+        sut.OnStateChanged += () => stateNotifications++;
+        sut.OnVisibilityChanged += _ => visibilityNotifications++;
+
+        // Already true by default, calling with true again
+        sut.NotifyVisibilityChanged(true);
+
+        Assert.Equal(0, stateNotifications);
+        Assert.Equal(0, visibilityNotifications);
+    }
 }

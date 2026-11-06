@@ -26,6 +26,10 @@ window.pwaInterop = {
         window.addEventListener('offline', () => {
             this.dotNetRef.invokeMethodAsync('OnConnectionChanged', false);
         });
+
+        document.addEventListener('visibilitychange', () => {
+            this.dotNetRef.invokeMethodAsync('OnVisibilityChanged', !document.hidden);
+        });
     },
 
     triggerInstall: async function () {
@@ -39,5 +43,9 @@ window.pwaInterop = {
 
     getOnlineStatus: function () {
         return navigator.onLine;
+    },
+
+    getVisibilityStatus: function () {
+        return !document.hidden;
     }
 };

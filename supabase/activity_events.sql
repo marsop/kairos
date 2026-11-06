@@ -69,14 +69,14 @@ using (auth.uid() = user_id);
 
 do $$
 begin
-    if not exists (
+    if exists (
         select 1
         from pg_publication_tables
         where pubname = 'supabase_realtime'
           and schemaname = 'public'
           and tablename = 'activity_events'
     ) then
-        execute 'alter publication supabase_realtime add table public.activity_events';
+        execute 'alter publication supabase_realtime drop table public.activity_events';
     end if;
 end;
 $$;

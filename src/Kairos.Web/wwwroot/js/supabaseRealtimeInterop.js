@@ -169,12 +169,6 @@ window.kairosSupabaseRealtime = (() => {
                         schema: "public",
                         table: "user_activity_groups",
                         filter: `user_id=eq.${state.config.userId}`
-                    },
-                    {
-                        event: "*",
-                        schema: "public",
-                        table: "activity_events",
-                        filter: `user_id=eq.${state.config.userId}`
                     }
                 ],
                 private: false
