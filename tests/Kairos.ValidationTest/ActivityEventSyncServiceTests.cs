@@ -197,10 +197,12 @@ public class ActivityEventSyncServiceTests
 
         // Assert
         _timeTrackingServiceMock.Verify(
-            m => m.UpdateEventsFromServer(It.Is<IReadOnlyList<ActivityEvent>>(events =>
+            m => m.MergeEventsFromServer(It.Is<IReadOnlyList<ActivityEvent>>(events =>
                 events.Count == 1 &&
                 events[0].Id == serverEvent.Id &&
-                events[0].Comment == serverEvent.Comment)),
+                events[0].Comment == serverEvent.Comment),
+                It.IsAny<DateTimeOffset?>(),
+                It.IsAny<DateTimeOffset?>()),
             Times.Once);
         Assert.Equal(0, _eventStoreStub.SaveEventsCallCount);
         _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Once);
@@ -239,7 +241,7 @@ public class ActivityEventSyncServiceTests
         Assert.Equal(1, _eventStoreStub.SaveEventsCallCount);
         Assert.Single(_eventStoreStub.ServerEvents);
         Assert.Equal(localEvent.Id, _eventStoreStub.ServerEvents.Single().Id);
-        _timeTrackingServiceMock.Verify(m => m.UpdateEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>()), Times.Never);
+        _timeTrackingServiceMock.Verify(m => m.MergeEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>(), It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()), Times.Never);
         _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
     }
 
@@ -839,6 +841,71 @@ public class ActivityEventSyncServiceTests
         Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
     }
 
+    [Fact]
+    public async Task TriggerImmediateSync_DefaultQueryOptions_BoundsToCurrentYear()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var now = DateTimeOffset.UtcNow;
+        var startOfYear = new DateTimeOffset(now.Year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent>(),
+            LastModifiedAtUtc = now
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        Assert.NotNull(_eventStoreStub.LastLoadOptions);
+        Assert.Equal(startOfYear, _eventStoreStub.LastLoadOptions.From);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_UsesCustomActiveQueryOptionsProvider_WhenConfigured()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        var from = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero);
+        var to = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero);
+        var customOptions = new ActivityEventQueryOptions
+        {
+            From = from,
+            To = to
+        };
+
+        _sut.ActiveQueryOptionsProvider = () => customOptions;
+
+        var localEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = from.AddDays(5),
+            EndTime = from.AddDays(5).AddHours(1),
+            ActivityName = "April Event"
+        };
+        var account = new TimeAccount
+        {
+            Events = new List<ActivityEvent> { localEvent },
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+
+        // Act
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert
+        Assert.NotNull(_eventStoreStub.LastLoadOptions);
+        Assert.Equal(from, _eventStoreStub.LastLoadOptions.From);
+        Assert.Equal(to, _eventStoreStub.LastLoadOptions.To);
+        Assert.Equal(1, _eventStoreStub.SaveEventsCallCount);
+        Assert.NotNull(_eventStoreStub.LastSaveScopedWindow);
+        Assert.Equal(from, _eventStoreStub.LastSaveScopedWindow.From);
+        Assert.Equal(to, _eventStoreStub.LastSaveScopedWindow.To);
+    }
+
     private static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout, TimeSpan? pollInterval = null)
     {
         if (condition())
@@ -869,16 +936,21 @@ internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore
     public int SaveEventsCallCount { get; private set; }
     public IReadOnlyList<ActivityEvent> ServerEvents { get; set; } = new List<ActivityEvent>();
 
-    public Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync()
+    public ActivityEventQueryOptions? LastLoadOptions { get; private set; }
+    public ActivityEventQueryOptions? LastSaveScopedWindow { get; private set; }
+
+    public Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync(ActivityEventQueryOptions? options = null)
     {
         LoadEventsCalled = true;
         LoadEventsCallCount++;
+        LastLoadOptions = options;
         return Task.FromResult(ServerEvents);
     }
 
-    public Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events)
+    public Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events, ActivityEventQueryOptions? scopedWindow = null)
     {
         SaveEventsCallCount++;
+        LastSaveScopedWindow = scopedWindow;
         ServerEvents = events.Select(e => e.Clone()).ToList();
         return Task.CompletedTask;
     }

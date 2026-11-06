@@ -1000,6 +1000,7 @@
 
     protected override void OnInitialized()
     {
+        SyncService.ActiveQueryOptionsProvider = GetViewingWindowQueryOptions;
         SyncSelectedDateWithHistory();
         TimeService.OnStateChanged += HandleTimeServiceStateChanged;
         SettingsService.OnSettingsChanged += StateHasChanged;
@@ -1195,6 +1196,7 @@
 
     public void Dispose()
     {
+        SyncService.ActiveQueryOptionsProvider = null;
         TimeService.OnStateChanged -= HandleTimeServiceStateChanged;
         SettingsService.OnSettingsChanged -= StateHasChanged;
         SyncService.OnSyncStateChanged -= HandleSyncStateChanged;
@@ -1208,6 +1210,17 @@
             // Ignored during disposal
         }
         _objRef?.Dispose();
+    }
+
+    private ActivityEventQueryOptions? GetViewingWindowQueryOptions()
+    {
+        var startOfMonth = new DateTimeOffset(new DateTime(SelectedDate.Year, SelectedDate.Month, 1, 0, 0, 0, DateTimeKind.Utc));
+        var endOfMonth = startOfMonth.AddMonths(1).AddSeconds(-1);
+        return new ActivityEventQueryOptions
+        {
+            From = startOfMonth,
+            To = endOfMonth
+        };
     }
 
     private string GetEventColor(ActivityEvent evt)

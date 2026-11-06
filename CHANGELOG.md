@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Sync & Performance**: Bound Supabase event loading and background synchronization with date ranges, pagination, and delta sync options, restricting event fetches to the active viewing window instead of downloading the user's entire multi-year history.
 - **Sync & Performance**: Reduce Supabase egress by dropping `activity_events` from Realtime subscriptions, extending background event sync interval to 15 minutes, pausing the timer when the browser tab is in background, and ensuring catch-up sync triggers on application open and foreground return.
 
 ### Fixed

@@ -7,6 +7,6 @@ namespace Kairos.Application.Services;
 /// </summary>
 public interface ISupabaseActivityEventStore
 {
-    Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync();
-    Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events);
+    Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync(ActivityEventQueryOptions? options = null);
+    Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events, ActivityEventQueryOptions? scopedWindow = null);
 }

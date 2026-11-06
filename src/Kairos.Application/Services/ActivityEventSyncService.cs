@@ -28,6 +28,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
     private bool _suppressNextLocalStateTriggeredSync;
 
     public event Action? OnSyncStateChanged;
+    public Func<ActivityEventQueryOptions?>? ActiveQueryOptionsProvider { get; set; }
 
     public ActivityEventSyncService(
         ISupabaseActivityEventStore eventStore,
@@ -144,15 +145,36 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         _ = TriggerImmediateSyncAsync();
     }
 
-    public async Task PullFromServerAsync()
+    public ActivityEventQueryOptions GetDefaultSyncQueryOptions()
+    {
+        if (ActiveQueryOptionsProvider != null)
+        {
+            var custom = ActiveQueryOptionsProvider();
+            if (custom != null)
+            {
+                return custom;
+            }
+        }
+
+        var now = DateTimeOffset.UtcNow;
+        var startOfYear = new DateTimeOffset(now.Year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        return new ActivityEventQueryOptions
+        {
+            From = startOfYear,
+            To = now.AddDays(1)
+        };
+    }
+
+    public async Task PullFromServerAsync(ActivityEventQueryOptions? options = null)
     {
         if (!await _authService.EnsureAuthenticatedAsync()) return;
 
         await _syncLock.WaitAsync();
         try
         {
-            var serverEvents = await _eventStore.LoadEventsAsync();
-            _timeTrackingService.UpdateEventsFromServer(serverEvents);
+            var effectiveOptions = options ?? GetDefaultSyncQueryOptions();
+            var serverEvents = await _eventStore.LoadEventsAsync(effectiveOptions);
+            ApplyServerEvents(serverEvents, effectiveOptions);
             _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
             _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             _settingsService.UpdateLastSupabaseSync();
@@ -168,7 +190,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         }
     }
 
-    public async Task TriggerImmediateSyncAsync()
+    public async Task TriggerImmediateSyncAsync(ActivityEventQueryOptions? options = null)
     {
         if (!await _authService.EnsureAuthenticatedAsync()) return;
 
@@ -176,27 +198,29 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
 
         try
         {
-            var localEvents = _timeTrackingService.Account.Events.ToList();
+            var effectiveOptions = options ?? GetDefaultSyncQueryOptions();
+            var allLocalEvents = _timeTrackingService.Account.Events.ToList();
+            var scopedLocalEvents = FilterEvents(allLocalEvents, effectiveOptions);
 
-            var serverEvents = await _eventStore.LoadEventsAsync();
+            var serverEvents = await _eventStore.LoadEventsAsync(effectiveOptions);
 
             // Bootstrap sync state on first run with deterministic rules to avoid noisy conflict prompts.
             if (_lastSyncedLocalEvents is null || _lastSyncedServerEvents is null)
             {
-                await HandleBootstrapSyncAsync(localEvents, serverEvents);
+                await HandleBootstrapSyncAsync(scopedLocalEvents, serverEvents, effectiveOptions);
                 return;
             }
 
             // Detect local event changes against the last known local snapshot if available.
             // Fallback to server comparison during bootstrap when no local snapshot exists yet.
             var baseLocalEventsForComparison = _lastSyncedLocalEvents ?? _lastSyncedServerEvents ?? serverEvents;
-            bool hasLocalChanges = DetermineIfServerChanged(baseLocalEventsForComparison, localEvents);
+            bool hasLocalChanges = DetermineIfServerChanged(baseLocalEventsForComparison, scopedLocalEvents);
 
             // For a robust sync, we would check if server data is different.
             // Since we don't have a reliable LastModifiedAtUtc on the server side easily accessible here
             // without pulling the whole list, we pull it and do a hash/count check.
             // Use the last synced server events snapshot if available, otherwise fallback to local events
-            var baseEventsForComparison = _lastSyncedServerEvents ?? localEvents;
+            var baseEventsForComparison = _lastSyncedServerEvents ?? scopedLocalEvents;
             bool hasServerChanges = DetermineIfServerChanged(baseEventsForComparison, serverEvents);
 
             if (hasLocalChanges && hasServerChanges)
@@ -208,39 +232,39 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 if (useServer)
                 {
                     _suppressNextLocalStateTriggeredSync = true;
-                    _timeTrackingService.UpdateEventsFromServer(serverEvents);
+                    ApplyServerEvents(serverEvents, effectiveOptions);
                     _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                     _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
                 }
                 else
                 {
-                    await _eventStore.SaveEventsAsync(localEvents);
+                    await _eventStore.SaveEventsAsync(scopedLocalEvents, effectiveOptions);
                     MarkRealtimeEchoSuppression();
-                    _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
-                    _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+                    _lastSyncedLocalEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
+                    _lastSyncedServerEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
                 }
             }
             else if (hasServerChanges)
             {
                 _logger.LogInformation("Server has changes. Overwriting local data.");
                 _suppressNextLocalStateTriggeredSync = true;
-                _timeTrackingService.UpdateEventsFromServer(serverEvents);
+                ApplyServerEvents(serverEvents, effectiveOptions);
                 _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             }
             else if (hasLocalChanges)
             {
                 _logger.LogInformation("Local has changes. Pushing to server.");
-                await _eventStore.SaveEventsAsync(localEvents);
+                await _eventStore.SaveEventsAsync(scopedLocalEvents, effectiveOptions);
                 MarkRealtimeEchoSuppression();
 
-                _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedServerEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
             }
             else
             {
                 // No changes, but we might be on first sync where snapshot is null
-                _lastSyncedLocalEvents ??= localEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents ??= scopedLocalEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents ??= serverEvents.Select(e => e.Clone()).ToList();
             }
 
@@ -260,7 +284,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         }
     }
 
-    private async Task HandleBootstrapSyncAsync(IReadOnlyList<ActivityEvent> localEvents, IReadOnlyList<ActivityEvent> serverEvents)
+    private async Task HandleBootstrapSyncAsync(IReadOnlyList<ActivityEvent> localEvents, IReadOnlyList<ActivityEvent> serverEvents, ActivityEventQueryOptions? scopedWindow = null)
     {
         if (!DetermineIfServerChanged(localEvents, serverEvents))
         {
@@ -274,7 +298,7 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         if (serverEvents.Count == 0 && localEvents.Count > 0)
         {
             _logger.LogInformation("Initial sync: server is empty, seeding from local events.");
-            await _eventStore.SaveEventsAsync(localEvents);
+            await _eventStore.SaveEventsAsync(localEvents, scopedWindow);
             MarkRealtimeEchoSuppression();
             _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
             _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
@@ -292,13 +316,13 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             if (useServer)
             {
                 _suppressNextLocalStateTriggeredSync = true;
-                _timeTrackingService.UpdateEventsFromServer(serverEvents);
+                ApplyServerEvents(serverEvents, scopedWindow);
                 _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
             }
             else
             {
-                await _eventStore.SaveEventsAsync(localEvents);
+                await _eventStore.SaveEventsAsync(localEvents, scopedWindow);
                 MarkRealtimeEchoSuppression();
                 _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
                 _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
@@ -311,10 +335,38 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         // In all other divergent bootstrap cases, prefer server snapshot to avoid accidental overwrite.
         _logger.LogInformation("Initial sync: divergent state detected, preferring server snapshot.");
         _suppressNextLocalStateTriggeredSync = true;
-        _timeTrackingService.UpdateEventsFromServer(serverEvents);
+        ApplyServerEvents(serverEvents, scopedWindow);
         _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
         _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
         _settingsService.UpdateLastSupabaseSync();
+    }
+
+    private void ApplyServerEvents(IReadOnlyList<ActivityEvent> serverEvents, ActivityEventQueryOptions? options)
+    {
+        if (options != null && (options.From.HasValue || options.To.HasValue || options.Since.HasValue))
+        {
+            _timeTrackingService.MergeEventsFromServer(serverEvents, options.From, options.To);
+        }
+        else
+        {
+            _timeTrackingService.UpdateEventsFromServer(serverEvents);
+        }
+    }
+
+    private static List<ActivityEvent> FilterEvents(IEnumerable<ActivityEvent> events, ActivityEventQueryOptions? options)
+    {
+        if (options == null) return events.ToList();
+
+        var query = events;
+        if (options.From.HasValue)
+        {
+            query = query.Where(e => e.StartTime >= options.From.Value);
+        }
+        if (options.To.HasValue)
+        {
+            query = query.Where(e => e.StartTime <= options.To.Value);
+        }
+        return query.ToList();
     }
 
     private async Task<bool> ResolveConflictSafelyAsync()

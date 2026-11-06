@@ -179,6 +179,12 @@ public interface ITimeTrackingService
     void UpdateEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents);
 
     /// <summary>
+    /// Merges events from the server into the local account for a bounded window or delta.
+    /// Retains local events outside the window and updates/replaces events within the window.
+    /// </summary>
+    void MergeEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents, DateTimeOffset? windowStart = null, DateTimeOffset? windowEnd = null);
+
+    /// <summary>
     /// Removes a group, moves its activities to the previous group (if available), and compacts subsequent group IDs.
     /// </summary>
     /// <param name="groupId">The group ID to remove.</param>

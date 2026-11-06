@@ -582,6 +582,35 @@ public class TimeTrackingService : ITimeTrackingService
         _ = saveTask;
     }
 
+    public void MergeEventsFromServer(IReadOnlyList<ActivityEvent> serverEvents, DateTimeOffset? windowStart = null, DateTimeOffset? windowEnd = null)
+    {
+        var existingEvents = _account.Events.ToList();
+
+        List<ActivityEvent> merged;
+        if (!windowStart.HasValue && !windowEnd.HasValue)
+        {
+            var serverDict = serverEvents.ToDictionary(e => e.Id);
+            merged = existingEvents.Where(e => !serverDict.ContainsKey(e.Id)).Concat(serverEvents).OrderBy(e => e.StartTime).ToList();
+        }
+        else
+        {
+            var retainedEvents = existingEvents
+                .Where(e => (windowStart.HasValue && e.StartTime < windowStart.Value) ||
+                            (windowEnd.HasValue && e.StartTime > windowEnd.Value))
+                .ToList();
+
+            merged = retainedEvents.Concat(serverEvents).OrderBy(e => e.StartTime).ToList();
+        }
+
+        _account.Events = merged;
+        _account.LastModifiedAtUtc = DateTimeOffset.UtcNow;
+        EnsureActiveEventsBelongToExistingActivities();
+
+        var saveTask = SaveLocalAsync();
+        OnStateChanged?.Invoke();
+        _ = saveTask;
+    }
+
     public void DeleteActivity(Guid activityId)
     {
         var activity = _account.Activities.FirstOrDefault(m => m.Id == activityId);

@@ -14,14 +14,19 @@ public interface IActivityEventSyncService
     void StartSync();
 
     /// <summary>
+    /// Gets or sets an optional provider to dynamically determine query bounds (e.g. active viewing window).
+    /// </summary>
+    Func<ActivityEventQueryOptions?>? ActiveQueryOptionsProvider { get; set; }
+
+    /// <summary>
     /// Triggers an immediate sync (e.g. after a local change).
     /// </summary>
-    Task TriggerImmediateSyncAsync();
+    Task TriggerImmediateSyncAsync(ActivityEventQueryOptions? options = null);
 
     /// <summary>
     /// Triggers an immediate pull from the server, discarding local changes if requested.
     /// </summary>
-    Task PullFromServerAsync();
+    Task PullFromServerAsync(ActivityEventQueryOptions? options = null);
 
     /// <summary>
     /// Event fired when the synchronization state changes.

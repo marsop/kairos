@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json.Serialization;
 using Kairos.Core.Models;
 using Microsoft.Extensions.Options;
@@ -19,7 +20,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         _options = options.Value;
     }
 
-    public async Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync()
+    public async Task<IReadOnlyList<ActivityEvent>> LoadEventsAsync(ActivityEventQueryOptions? options = null)
     {
         if (!await _authService.EnsureAuthenticatedAsync())
         {
@@ -32,9 +33,39 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
             return Array.Empty<ActivityEvent>();
         }
 
+        var queryBuilder = new StringBuilder("rest/v1/activity_events?select=id,activity_id,start_time,end_time,activity_name,activity_emoji,activity_color,comment");
+        queryBuilder.Append($"&user_id=eq.{Uri.EscapeDataString(userId!)}");
+
+        if (options?.From != null)
+        {
+            queryBuilder.Append($"&start_time=gte.{Uri.EscapeDataString(options.From.Value.UtcDateTime.ToString("O"))}");
+        }
+
+        if (options?.To != null)
+        {
+            queryBuilder.Append($"&start_time=lte.{Uri.EscapeDataString(options.To.Value.UtcDateTime.ToString("O"))}");
+        }
+
+        if (options?.Since != null)
+        {
+            queryBuilder.Append($"&updated_at=gte.{Uri.EscapeDataString(options.Since.Value.UtcDateTime.ToString("O"))}");
+        }
+
+        queryBuilder.Append("&order=start_time.desc");
+
+        if (options?.Limit != null)
+        {
+            queryBuilder.Append($"&limit={options.Limit.Value}");
+        }
+
+        if (options?.Offset != null)
+        {
+            queryBuilder.Append($"&offset={options.Offset.Value}");
+        }
+
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activity_events?select=id,activity_id,start_time,end_time,activity_name,activity_emoji,activity_color,comment&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
+            BuildUrl(queryBuilder.ToString()));
 
         AddHeaders(request);
         using var response = await _httpClient.SendAsync(request);
@@ -55,7 +86,7 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         }).OrderBy(e => e.StartTime).ToList();
     }
 
-    public async Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events)
+    public async Task SaveEventsAsync(IReadOnlyList<ActivityEvent> events, ActivityEventQueryOptions? scopedWindow = null)
     {
         if (!await _authService.EnsureAuthenticatedAsync())
         {
@@ -101,9 +132,19 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         // Delete any events that are NOT in the local list
         if (rows.Count == 0)
         {
+            var clearUrl = new StringBuilder($"rest/v1/activity_events?user_id=eq.{Uri.EscapeDataString(userId!)}");
+            if (scopedWindow?.From != null)
+            {
+                clearUrl.Append($"&start_time=gte.{Uri.EscapeDataString(scopedWindow.From.Value.UtcDateTime.ToString("O"))}");
+            }
+            if (scopedWindow?.To != null)
+            {
+                clearUrl.Append($"&start_time=lte.{Uri.EscapeDataString(scopedWindow.To.Value.UtcDateTime.ToString("O"))}");
+            }
+
             using var clearRequest = new HttpRequestMessage(
                 HttpMethod.Delete,
-                BuildUrl($"rest/v1/activity_events?user_id=eq.{Uri.EscapeDataString(userId!)}"));
+                BuildUrl(clearUrl.ToString()));
             AddHeaders(clearRequest);
             using var clearResponse = await _httpClient.SendAsync(clearRequest);
             clearResponse.EnsureSuccessStatusCode();
@@ -111,9 +152,20 @@ public sealed class SupabaseActivityEventStore : ISupabaseActivityEventStore
         }
 
         // Query existing IDs to determine what to delete, avoiding 'URI Too Long' exceptions
+        var fetchIdsUrl = new StringBuilder($"rest/v1/activity_events?select=id&user_id=eq.{Uri.EscapeDataString(userId!)}");
+        if (scopedWindow?.From != null)
+        {
+            fetchIdsUrl.Append($"&start_time=gte.{Uri.EscapeDataString(scopedWindow.From.Value.UtcDateTime.ToString("O"))}");
+        }
+        if (scopedWindow?.To != null)
+        {
+            fetchIdsUrl.Append($"&start_time=lte.{Uri.EscapeDataString(scopedWindow.To.Value.UtcDateTime.ToString("O"))}");
+        }
+        fetchIdsUrl.Append("&order=start_time.desc");
+
         using var fetchIdsRequest = new HttpRequestMessage(
             HttpMethod.Get,
-            BuildUrl($"rest/v1/activity_events?select=id&user_id=eq.{Uri.EscapeDataString(userId!)}&order=start_time.desc"));
+            BuildUrl(fetchIdsUrl.ToString()));
         AddHeaders(fetchIdsRequest);
         using var fetchIdsResponse = await _httpClient.SendAsync(fetchIdsRequest);
         fetchIdsResponse.EnsureSuccessStatusCode();

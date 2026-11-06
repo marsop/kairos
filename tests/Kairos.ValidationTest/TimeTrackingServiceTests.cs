@@ -588,6 +588,116 @@ public class TimeTrackingServiceTests
         Assert.Equal(sut.TimelinePeriod, accountStore.LoadedAccount.TimelinePeriod);
     }
 
+    [Fact]
+    public async Task MergeEventsFromServer_WithWindow_RetainsOutOfWindowEventsAndReconcilesInWindow()
+    {
+        // Arrange
+        var sut = await CreateLoadedServiceAsync();
+        var outOfWindowOld = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Work",
+            StartTime = new DateTimeOffset(2025, 6, 1, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2025, 6, 1, 11, 0, 0, TimeSpan.Zero)
+        };
+        var inWindowDeletedOnServer = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Work",
+            StartTime = new DateTimeOffset(2026, 5, 1, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 1, 11, 0, 0, TimeSpan.Zero)
+        };
+        var inWindowUpdatedOnServer = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Work",
+            StartTime = new DateTimeOffset(2026, 5, 2, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 2, 11, 0, 0, TimeSpan.Zero),
+            Comment = "Original local comment"
+        };
+
+        sut.Account.Events.AddRange(new[] { outOfWindowOld, inWindowDeletedOnServer, inWindowUpdatedOnServer });
+
+        var windowStart = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var windowEnd = new DateTimeOffset(2026, 12, 31, 23, 59, 59, TimeSpan.Zero);
+
+        var serverEvents = new List<ActivityEvent>
+        {
+            new()
+            {
+                Id = inWindowUpdatedOnServer.Id,
+                ActivityName = "Work",
+                StartTime = inWindowUpdatedOnServer.StartTime,
+                EndTime = inWindowUpdatedOnServer.EndTime,
+                Comment = "Updated from server"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ActivityName = "Break",
+                StartTime = new DateTimeOffset(2026, 5, 3, 10, 0, 0, TimeSpan.Zero),
+                EndTime = new DateTimeOffset(2026, 5, 3, 10, 30, 0, TimeSpan.Zero),
+                Comment = "New server event"
+            }
+        };
+
+        // Act
+        sut.MergeEventsFromServer(serverEvents, windowStart, windowEnd);
+
+        // Assert
+        Assert.Contains(sut.Account.Events, e => e.Id == outOfWindowOld.Id);
+        Assert.DoesNotContain(sut.Account.Events, e => e.Id == inWindowDeletedOnServer.Id);
+        Assert.Equal("Updated from server", sut.Account.Events.First(e => e.Id == inWindowUpdatedOnServer.Id).Comment);
+        Assert.Equal(3, sut.Account.Events.Count);
+    }
+
+    [Fact]
+    public async Task MergeEventsFromServer_WithoutWindow_UpsertsByIdAndPreservesOthers()
+    {
+        // Arrange
+        var sut = await CreateLoadedServiceAsync();
+        var existing1 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Work",
+            StartTime = new DateTimeOffset(2026, 3, 1, 10, 0, 0, TimeSpan.Zero),
+            Comment = "Old comment"
+        };
+        var existing2 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Break",
+            StartTime = new DateTimeOffset(2026, 3, 2, 10, 0, 0, TimeSpan.Zero)
+        };
+        sut.Account.Events.AddRange(new[] { existing1, existing2 });
+
+        var serverEvents = new List<ActivityEvent>
+        {
+            new()
+            {
+                Id = existing1.Id,
+                ActivityName = "Work",
+                StartTime = existing1.StartTime,
+                Comment = "Updated from delta sync"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ActivityName = "Work",
+                StartTime = new DateTimeOffset(2026, 3, 3, 10, 0, 0, TimeSpan.Zero),
+                Comment = "Brand new delta event"
+            }
+        };
+
+        // Act
+        sut.MergeEventsFromServer(serverEvents);
+
+        // Assert
+        Assert.Equal(3, sut.Account.Events.Count);
+        Assert.Contains(sut.Account.Events, e => e.Id == existing2.Id);
+        Assert.Equal("Updated from delta sync", sut.Account.Events.First(e => e.Id == existing1.Id).Comment);
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
         StubSettingsService? settingsService = null)
     {
