@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Sync & Performance**: Reduce Supabase egress by dropping `activity_events` from Realtime subscriptions, extending background event sync interval to 15 minutes, pausing the timer when the browser tab is in background, and ensuring catch-up sync triggers on application open and foreground return.
 
 ### Fixed
+- **CI/CD**: Pin GitHub Actions runner image to `ubuntu-24.04` in deploy and PR validation workflows to resolve missing library dependencies during Playwright browser installation on Ubuntu 26.04.
+- **Sync Conflict**: Fix false "Sync Conflict" dialogs appearing when navigating between tabs or returning to foreground by retaining out-of-window baseline snapshots and scoping conflict comparisons to the active query window.
 - **History UI**: In the History Stats view, show day CSV export only when Day mode is selected, and download the day currently selected in the date picker.
 - **Events**: Fix Daylight Saving Time offset calculation when saving edited events in EditEventDialog.
 - **Tests**: Fix Daylight Saving Time offset calculation and verify day boundary clamping in `ScheduleGap_GetStartSecondsAndGetEndSeconds_ClampsCorrectly`.

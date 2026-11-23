@@ -906,6 +906,482 @@ public class ActivityEventSyncServiceTests
         Assert.Equal(to, _eventStoreStub.LastSaveScopedWindow.To);
     }
 
+    [Fact]
+    public async Task TriggerImmediateSync_WhenSwitchingBetweenViewingWindows_DoesNotTriggerFalseConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // 1. Initial sync in April window (e.g. user opens History viewing April)
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+
+        // 2. User navigates to May window (or another tab)
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert: switching windows must NOT trigger false conflict prompt
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+
+        // 3. User navigates to whole year (default options)
+        _sut.ActiveQueryOptionsProvider = null;
+        await _sut.TriggerImmediateSyncAsync();
+
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_WhenSwitchingWindowsAndEditingEventLocally_PushesChangesWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task",
+            Comment = "Original"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // 1. Initial startup sync establishes baseline for all events
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 2. User switches to April window in History
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 3. User switches to May window in History and edits May event locally
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        account.Events.First(e => e.Id == mayEvent.Id).Comment = "Locally updated";
+
+        var saveCountBefore = _eventStoreStub.SaveEventsCallCount;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert: No conflict prompt, changes saved to server
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+        Assert.True(_eventStoreStub.SaveEventsCallCount > saveCountBefore);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_WhenSwitchingWindowsAndServerChanged_AppliesServerChangesWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task",
+            Comment = "Original"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _timeTrackingServiceMock
+            .Setup(m => m.MergeEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>(), It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
+            .Callback<IReadOnlyList<ActivityEvent>, DateTimeOffset?, DateTimeOffset?>((serverEvts, from, to) =>
+            {
+                var retained = account.Events.Where(e => (from != null && e.StartTime < from.Value) || (to != null && e.StartTime > to.Value)).ToList();
+                account.Events = retained.Concat(serverEvts.Select(e => e.Clone())).ToList();
+            });
+
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // 1. Initial startup sync establishes baseline for all events
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 2. User switches to April window in History
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 3. Remote client updates May event on server
+        _eventStoreStub.ServerEvents.First(e => e.Id == mayEvent.Id).Comment = "Server remote update";
+
+        // 4. User switches to May window in History
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert: No conflict prompt, server changes applied locally
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+        Assert.Equal("Server remote update", account.Events.First(e => e.Id == mayEvent.Id).Comment);
+    }
+
+    [Fact]
+    public async Task IsEventSynchronized_WorksAcrossMultipleSyncedWindows()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // Sync April
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        Assert.True(_sut.IsEventSynchronized(aprilEvent));
+
+        // Sync May
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Both April and May events should be recognized as synchronized
+        Assert.True(_sut.IsEventSynchronized(aprilEvent));
+        Assert.True(_sut.IsEventSynchronized(mayEvent));
+    }
+
+    [Fact]
+    public async Task SetVisibility_WhenReturningToForegroundAfterWindowChange_DoesNotTriggerFalseConflict()
+    {
+        // Arrange
+        var pwaStub = new StubPwaService { IsVisible = true };
+        var eventStore = new StubSupabaseActivityEventStore { FilterServerEventsByOptions = true };
+        var authStub = new StubSupabaseAuthService { IsAuthenticated = true };
+        var conflictMock = new Mock<ISyncConflictNotifier>();
+        var timeTrackingMock = new Mock<ITimeTrackingService>();
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        timeTrackingMock.Setup(m => m.Account).Returns(account);
+        eventStore.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        using var sut = new ActivityEventSyncService(
+            eventStore,
+            timeTrackingMock.Object,
+            authStub,
+            conflictMock.Object,
+            _settingsServiceStub,
+            _realtimeServiceStub,
+            NullLogger<ActivityEventSyncService>.Instance,
+            pwaStub);
+
+        // 1. App startup sync with default full year options
+        await sut.TriggerImmediateSyncAsync();
+
+        // 2. User navigates to History tab (April window)
+        sut.ActiveQueryOptionsProvider = () => aprilOptions;
+
+        // 3. User switches to another browser tab (becomes hidden)
+        pwaStub.TriggerVisibilityChanged(false);
+
+        // 4. User returns to Kairos browser tab (becomes visible, triggering catch-up sync)
+        pwaStub.TriggerVisibilityChanged(true);
+        Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+
+        // Assert: No conflict prompted when returning to tab
+        conflictMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+
+        // 5. User navigates to another app tab (clearing window provider)
+        sut.ActiveQueryOptionsProvider = null;
+
+        // 6. User switches browser tabs away and back again
+        pwaStub.TriggerVisibilityChanged(false);
+        pwaStub.TriggerVisibilityChanged(true);
+        Assert.True(await WaitUntilAsync(() => eventStore.LoadEventsCalled, TimeSpan.FromSeconds(1)));
+
+        // Assert: Still no false conflict
+        conflictMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_WhenDeletingEventLocallyAcrossWindows_PushesDeletionWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent1 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task 1"
+        };
+        var mayEvent2 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 12, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 12, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task 2"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent1, mayEvent2 };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // 1. Initial startup sync
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 2. User switches to April window
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 3. User switches to May window and deletes mayEvent2 locally
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        account.Events.RemoveAll(e => e.Id == mayEvent2.Id);
+
+        var saveCountBefore = _eventStoreStub.SaveEventsCallCount;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert: No conflict prompt, deletion saved to server
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+        Assert.True(_eventStoreStub.SaveEventsCallCount > saveCountBefore);
+        Assert.DoesNotContain(_eventStoreStub.ServerEvents, e => e.Id == mayEvent2.Id);
+    }
+
+    [Fact]
+    public async Task TriggerImmediateSync_WhenDeletingEventRemotelyAcrossWindows_AppliesDeletionWithoutConflict()
+    {
+        // Arrange
+        _authServiceStub.IsAuthenticated = true;
+        _eventStoreStub.FilterServerEventsByOptions = true;
+
+        var aprilOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 4, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 4, 30, 23, 59, 59, TimeSpan.Zero)
+        };
+        var mayOptions = new ActivityEventQueryOptions
+        {
+            From = new DateTimeOffset(2026, 5, 1, 0, 0, 0, TimeSpan.Zero),
+            To = new DateTimeOffset(2026, 5, 31, 23, 59, 59, TimeSpan.Zero)
+        };
+
+        var aprilEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 4, 15, 10, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 4, 15, 11, 0, 0, TimeSpan.Zero),
+            ActivityName = "April Task"
+        };
+        var mayEvent1 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 10, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 10, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task 1"
+        };
+        var mayEvent2 = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = new DateTimeOffset(2026, 5, 12, 14, 0, 0, TimeSpan.Zero),
+            EndTime = new DateTimeOffset(2026, 5, 12, 15, 0, 0, TimeSpan.Zero),
+            ActivityName = "May Task 2"
+        };
+
+        var allEvents = new List<ActivityEvent> { aprilEvent, mayEvent1, mayEvent2 };
+        var account = new TimeAccount
+        {
+            Events = allEvents.Select(e => e.Clone()).ToList(),
+            LastModifiedAtUtc = DateTimeOffset.UtcNow
+        };
+        _timeTrackingServiceMock.Setup(m => m.Account).Returns(account);
+        _timeTrackingServiceMock
+            .Setup(m => m.MergeEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>(), It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
+            .Callback<IReadOnlyList<ActivityEvent>, DateTimeOffset?, DateTimeOffset?>((serverEvts, from, to) =>
+            {
+                var retained = account.Events.Where(e => (from != null && e.StartTime < from.Value) || (to != null && e.StartTime > to.Value)).ToList();
+                account.Events = retained.Concat(serverEvts.Select(e => e.Clone())).ToList();
+            });
+
+        _eventStoreStub.ServerEvents = allEvents.Select(e => e.Clone()).ToList();
+
+        // 1. Initial startup sync
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 2. User switches to April window
+        _sut.ActiveQueryOptionsProvider = () => aprilOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // 3. Remote client deletes mayEvent2 on server
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { aprilEvent, mayEvent1 };
+
+        // 4. User switches to May window
+        _sut.ActiveQueryOptionsProvider = () => mayOptions;
+        await _sut.TriggerImmediateSyncAsync();
+
+        // Assert: No conflict prompt, remote deletion reflected locally
+        _conflictNotifierMock.Verify(m => m.ResolveConflictAsync(), Times.Never);
+        Assert.DoesNotContain(account.Events, e => e.Id == mayEvent2.Id);
+        Assert.Contains(account.Events, e => e.Id == aprilEvent.Id);
+        Assert.Contains(account.Events, e => e.Id == mayEvent1.Id);
+    }
+
     private static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout, TimeSpan? pollInterval = null)
     {
         if (condition())
@@ -935,6 +1411,7 @@ internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore
     public int LoadEventsCallCount { get; private set; }
     public int SaveEventsCallCount { get; private set; }
     public IReadOnlyList<ActivityEvent> ServerEvents { get; set; } = new List<ActivityEvent>();
+    public bool FilterServerEventsByOptions { get; set; }
 
     public ActivityEventQueryOptions? LastLoadOptions { get; private set; }
     public ActivityEventQueryOptions? LastSaveScopedWindow { get; private set; }
@@ -944,6 +1421,13 @@ internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore
         LoadEventsCalled = true;
         LoadEventsCallCount++;
         LastLoadOptions = options;
+        if (FilterServerEventsByOptions && options != null)
+        {
+            var query = ServerEvents.AsEnumerable();
+            if (options.From.HasValue) query = query.Where(e => e.StartTime >= options.From.Value);
+            if (options.To.HasValue) query = query.Where(e => e.StartTime <= options.To.Value);
+            return Task.FromResult<IReadOnlyList<ActivityEvent>>(query.Select(e => e.Clone()).ToList());
+        }
         return Task.FromResult(ServerEvents);
     }
 

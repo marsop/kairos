@@ -175,8 +175,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             var effectiveOptions = options ?? GetDefaultSyncQueryOptions();
             var serverEvents = await _eventStore.LoadEventsAsync(effectiveOptions);
             ApplyServerEvents(serverEvents, effectiveOptions);
-            _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
-            _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+            _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, effectiveOptions);
+            _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, effectiveOptions);
             _settingsService.UpdateLastSupabaseSync();
         }
         catch (Exception ex)
@@ -211,16 +211,21 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 return;
             }
 
-            // Detect local event changes against the last known local snapshot if available.
-            // Fallback to server comparison during bootstrap when no local snapshot exists yet.
-            var baseLocalEventsForComparison = _lastSyncedLocalEvents ?? _lastSyncedServerEvents ?? serverEvents;
-            bool hasLocalChanges = DetermineIfServerChanged(baseLocalEventsForComparison, scopedLocalEvents);
+            // If local and server data in the scoped window are already identical,
+            // there is no divergence. Establish/update snapshot for this window without triggering conflicts.
+            if (!DetermineIfServerChanged(scopedLocalEvents, serverEvents))
+            {
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, scopedLocalEvents, effectiveOptions);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, effectiveOptions);
+                return;
+            }
 
-            // For a robust sync, we would check if server data is different.
-            // Since we don't have a reliable LastModifiedAtUtc on the server side easily accessible here
-            // without pulling the whole list, we pull it and do a hash/count check.
-            // Use the last synced server events snapshot if available, otherwise fallback to local events
-            var baseEventsForComparison = _lastSyncedServerEvents ?? scopedLocalEvents;
+            // Scope comparison baselines to the active query window so changing windows/views
+            // does not falsely trigger conflict detection.
+            var baseLocalEventsForComparison = FilterEvents(_lastSyncedLocalEvents, effectiveOptions);
+            var baseEventsForComparison = FilterEvents(_lastSyncedServerEvents, effectiveOptions);
+
+            bool hasLocalChanges = DetermineIfServerChanged(baseLocalEventsForComparison, scopedLocalEvents);
             bool hasServerChanges = DetermineIfServerChanged(baseEventsForComparison, serverEvents);
 
             if (hasLocalChanges && hasServerChanges)
@@ -233,15 +238,15 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 {
                     _suppressNextLocalStateTriggeredSync = true;
                     ApplyServerEvents(serverEvents, effectiveOptions);
-                    _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
-                    _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+                    _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, effectiveOptions);
+                    _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, effectiveOptions);
                 }
                 else
                 {
                     await _eventStore.SaveEventsAsync(scopedLocalEvents, effectiveOptions);
                     MarkRealtimeEchoSuppression();
-                    _lastSyncedLocalEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
-                    _lastSyncedServerEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
+                    _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, scopedLocalEvents, effectiveOptions);
+                    _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, scopedLocalEvents, effectiveOptions);
                 }
             }
             else if (hasServerChanges)
@@ -249,8 +254,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 _logger.LogInformation("Server has changes. Overwriting local data.");
                 _suppressNextLocalStateTriggeredSync = true;
                 ApplyServerEvents(serverEvents, effectiveOptions);
-                _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, effectiveOptions);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, effectiveOptions);
             }
             else if (hasLocalChanges)
             {
@@ -258,14 +263,16 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
                 await _eventStore.SaveEventsAsync(scopedLocalEvents, effectiveOptions);
                 MarkRealtimeEchoSuppression();
 
-                _lastSyncedLocalEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents = scopedLocalEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, scopedLocalEvents, effectiveOptions);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, scopedLocalEvents, effectiveOptions);
             }
             else
             {
-                // No changes, but we might be on first sync where snapshot is null
-                _lastSyncedLocalEvents ??= scopedLocalEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents ??= serverEvents.Select(e => e.Clone()).ToList();
+                _logger.LogInformation("Unsynced baseline divergence detected. Reconciling with server snapshot.");
+                _suppressNextLocalStateTriggeredSync = true;
+                ApplyServerEvents(serverEvents, effectiveOptions);
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, effectiveOptions);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, effectiveOptions);
             }
 
             if (hasServerChanges || hasLocalChanges)
@@ -289,8 +296,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         if (!DetermineIfServerChanged(localEvents, serverEvents))
         {
             _logger.LogInformation("Initial sync: local and server are identical. Baseline established.");
-            _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
-            _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+            _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, localEvents, scopedWindow);
+            _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, scopedWindow);
             return;
         }
 
@@ -300,8 +307,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             _logger.LogInformation("Initial sync: server is empty, seeding from local events.");
             await _eventStore.SaveEventsAsync(localEvents, scopedWindow);
             MarkRealtimeEchoSuppression();
-            _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
-            _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+            _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, localEvents, scopedWindow);
+            _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, localEvents, scopedWindow);
             _settingsService.UpdateLastSupabaseSync();
             return;
         }
@@ -317,15 +324,15 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             {
                 _suppressNextLocalStateTriggeredSync = true;
                 ApplyServerEvents(serverEvents, scopedWindow);
-                _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, scopedWindow);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, scopedWindow);
             }
             else
             {
                 await _eventStore.SaveEventsAsync(localEvents, scopedWindow);
                 MarkRealtimeEchoSuppression();
-                _lastSyncedLocalEvents = localEvents.Select(e => e.Clone()).ToList();
-                _lastSyncedServerEvents = localEvents.Select(e => e.Clone()).ToList();
+                _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, localEvents, scopedWindow);
+                _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, localEvents, scopedWindow);
             }
 
             _settingsService.UpdateLastSupabaseSync();
@@ -336,8 +343,8 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         _logger.LogInformation("Initial sync: divergent state detected, preferring server snapshot.");
         _suppressNextLocalStateTriggeredSync = true;
         ApplyServerEvents(serverEvents, scopedWindow);
-        _lastSyncedLocalEvents = serverEvents.Select(e => e.Clone()).ToList();
-        _lastSyncedServerEvents = serverEvents.Select(e => e.Clone()).ToList();
+        _lastSyncedLocalEvents = MergeSnapshot(_lastSyncedLocalEvents, serverEvents, scopedWindow);
+        _lastSyncedServerEvents = MergeSnapshot(_lastSyncedServerEvents, serverEvents, scopedWindow);
         _settingsService.UpdateLastSupabaseSync();
     }
 
@@ -353,8 +360,9 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         }
     }
 
-    private static List<ActivityEvent> FilterEvents(IEnumerable<ActivityEvent> events, ActivityEventQueryOptions? options)
+    private static List<ActivityEvent> FilterEvents(IEnumerable<ActivityEvent>? events, ActivityEventQueryOptions? options)
     {
+        if (events == null) return new List<ActivityEvent>();
         if (options == null) return events.ToList();
 
         var query = events;
@@ -367,6 +375,49 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
             query = query.Where(e => e.StartTime <= options.To.Value);
         }
         return query.ToList();
+    }
+
+    private static List<ActivityEvent> MergeSnapshot(
+        IReadOnlyList<ActivityEvent>? currentSnapshot,
+        IReadOnlyList<ActivityEvent> windowEvents,
+        ActivityEventQueryOptions? options)
+    {
+        if (currentSnapshot == null)
+        {
+            return windowEvents.Select(e => e.Clone()).ToList();
+        }
+
+        if (options?.From == null && options?.To == null)
+        {
+            if (options?.Since != null)
+            {
+                var windowDict = new Dictionary<Guid, ActivityEvent>();
+                foreach (var evt in windowEvents)
+                {
+                    windowDict[evt.Id] = evt;
+                }
+
+                return currentSnapshot
+                    .Where(e => !windowDict.ContainsKey(e.Id))
+                    .Concat(windowEvents)
+                    .Select(e => e.Clone())
+                    .OrderBy(e => e.StartTime)
+                    .ToList();
+            }
+
+            return windowEvents.Select(e => e.Clone()).ToList();
+        }
+
+        var retained = currentSnapshot
+            .Where(e => (options.From != null && e.StartTime < options.From.Value) ||
+                        (options.To != null && e.StartTime > options.To.Value))
+            .ToList();
+
+        return retained
+            .Concat(windowEvents)
+            .Select(e => e.Clone())
+            .OrderBy(e => e.StartTime)
+            .ToList();
     }
 
     private async Task<bool> ResolveConflictSafelyAsync()
@@ -407,7 +458,12 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         if (baseState.Count != server.Count) return true;
 
         // More advanced: check if any event IDs differ or if the fields differ
-        var baseDict = baseState.ToDictionary(e => e.Id);
+        var baseDict = new Dictionary<Guid, ActivityEvent>();
+        foreach (var b in baseState)
+        {
+            baseDict[b.Id] = b;
+        }
+
         foreach (var s in server)
         {
             if (!baseDict.TryGetValue(s.Id, out var b)) return true; // new event on server
@@ -428,10 +484,10 @@ public sealed class ActivityEventSyncService : IActivityEventSyncService, IDispo
         if (a.EndTime.HasValue && b.EndTime.HasValue &&
             Math.Abs((a.EndTime.Value - b.EndTime.Value).TotalMilliseconds) >= 1) return true;
 
-        if (a.Comment != b.Comment) return true;
-        if (a.ActivityName != b.ActivityName) return true;
-        if (a.ActivityColor != b.ActivityColor) return true;
-        if (a.ActivityEmoji != b.ActivityEmoji) return true;
+        if ((a.Comment ?? string.Empty) != (b.Comment ?? string.Empty)) return true;
+        if ((a.ActivityName ?? string.Empty) != (b.ActivityName ?? string.Empty)) return true;
+        if ((a.ActivityColor ?? string.Empty) != (b.ActivityColor ?? string.Empty)) return true;
+        if ((a.ActivityEmoji ?? string.Empty) != (b.ActivityEmoji ?? string.Empty)) return true;
         if (a.ActivityId != b.ActivityId) return true;
 
         return false;
