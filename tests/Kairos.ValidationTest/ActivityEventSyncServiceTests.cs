@@ -1403,6 +1403,39 @@ public class ActivityEventSyncServiceTests
 
         return condition();
     }
+
+    [Fact]
+    public async Task PullFromServerAsync_WhenNotAuthenticated_ReturnsEarly()
+    {
+        _authServiceStub.IsAuthenticated = false;
+
+        await _sut.PullFromServerAsync();
+
+        Assert.False(_eventStoreStub.LoadEventsCalled);
+    }
+
+    [Fact]
+    public async Task PullFromServerAsync_WhenAuthenticated_LoadsServerEventsAndApplies()
+    {
+        _authServiceStub.IsAuthenticated = true;
+        var remoteEvent = new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityName = "Remote Work",
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1)
+        };
+        _eventStoreStub.ServerEvents = new List<ActivityEvent> { remoteEvent };
+
+        var syncStateChangedFired = false;
+        _sut.OnSyncStateChanged += () => syncStateChangedFired = true;
+
+        await _sut.PullFromServerAsync();
+
+        Assert.True(_eventStoreStub.LoadEventsCalled);
+        _timeTrackingServiceMock.Verify(m => m.MergeEventsFromServer(It.IsAny<IReadOnlyList<ActivityEvent>>(), It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()), Times.Once);
+        Assert.True(syncStateChangedFired);
+    }
 }
 
 internal class StubSupabaseActivityEventStore : ISupabaseActivityEventStore

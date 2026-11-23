@@ -195,4 +195,48 @@ public class BudgetSettingsServiceTests
         var savedData = JsonSerializer.Deserialize<BudgetSettingsData>(savedLocalJson!);
         Assert.Equal(BudgetType.Weekly, savedData!.BudgetType);
     }
+
+    [Fact]
+    public async Task ColorProperties_And_NotificationsEnabled_UpdateAndNotify()
+    {
+        var storage = new InMemoryStorageService();
+        var sut = new BudgetSettingsService(storage, new StubSettingsService(), NullLogger<BudgetSettingsService>.Instance);
+        await sut.LoadAsync();
+
+        var events = 0;
+        sut.OnSettingsChanged += () => events++;
+
+        sut.ColorMinimumNotReached = "#112233";
+        sut.ColorMinimumReachedMaxNotReached = "#223344";
+        sut.ColorBetweenThresholdMax = "#334455";
+        sut.ColorOverMax = "#445566";
+        sut.NotificationsEnabled = false;
+
+        Assert.Equal("#112233", sut.ColorMinimumNotReached);
+        Assert.Equal("#223344", sut.ColorMinimumReachedMaxNotReached);
+        Assert.Equal("#334455", sut.ColorBetweenThresholdMax);
+        Assert.Equal("#445566", sut.ColorOverMax);
+        Assert.False(sut.NotificationsEnabled);
+        Assert.Equal(5, events);
+    }
+
+    [Fact]
+    public async Task InitializeDefaultsIfEmptyAsync_WhenRemoteExists_AppliesRemote()
+    {
+        var storage = new InMemoryStorageService();
+        var supabase = new StubSupabaseBudgetSettingsStore
+        {
+            LoadedData = new BudgetSettingsData
+            {
+                Threshold = 82,
+                BudgetType = BudgetType.Daily
+            }
+        };
+        var sut = new BudgetSettingsService(storage, new StubSettingsService(), NullLogger<BudgetSettingsService>.Instance, supabase);
+
+        await sut.InitializeDefaultsIfEmptyAsync();
+
+        Assert.Equal(82, sut.Threshold);
+        Assert.Equal(BudgetType.Daily, sut.BudgetType);
+    }
 }

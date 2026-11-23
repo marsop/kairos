@@ -150,4 +150,18 @@ public class CalendarTimeScaleHelperTests
         // Well above double click zoom: 300 px/hr -> true
         Assert.True(CalendarTimeScaleHelper.IsZoomBigEnough(300.0, durationHours, viewportHeight));
     }
+
+    [Fact]
+    public void GetTimeIntervalMinutes_ExtremelySmallPixelsPerHour_ReturnsLargestCandidate()
+    {
+        int interval = CalendarTimeScaleHelper.GetTimeIntervalMinutes(5.0, 600.0, minLabelCount: 6, minSpacingPx: 50.0);
+        Assert.Equal(120, interval);
+    }
+
+    [Fact]
+    public void CalculateDoubleClickZoom_ZeroOrNegativeViewport_DefaultsTo600()
+    {
+        double zoom = CalendarTimeScaleHelper.CalculateDoubleClickZoom(1.0, -100.0);
+        Assert.Equal(300.0, zoom, 2);
+    }
 }

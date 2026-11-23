@@ -351,4 +351,87 @@ public class CalendarMagneticSnappingHelperTests
         Assert.Equal(rawStart, snappedStart);
         Assert.Equal(rawEnd, snappedEnd);
     }
+
+    [Fact]
+    public void SnapMove_NegativeOrZeroDuration_ReturnsRaw()
+    {
+        var rawStart = BaseTime.AddMinutes(30);
+        var rawEnd = BaseTime.AddMinutes(20); // End before start
+
+        var (s, e) = CalendarMagneticSnappingHelper.SnapMove(rawStart, rawEnd, new ActivityEvent[0], TimeSpan.FromMinutes(5), BaseTime.AddHours(2));
+
+        Assert.Equal(rawStart, s);
+        Assert.Equal(rawEnd, e);
+    }
+
+    [Fact]
+    public void SnapMove_NullReferenceEvents_ReturnsRaw()
+    {
+        var rawStart = BaseTime.AddMinutes(10);
+        var rawEnd = BaseTime.AddMinutes(20);
+
+        var (s, e) = CalendarMagneticSnappingHelper.SnapMove(rawStart, rawEnd, null, TimeSpan.FromMinutes(5), BaseTime.AddHours(2));
+
+        Assert.Equal(rawStart, s);
+        Assert.Equal(rawEnd, e);
+    }
+
+    [Fact]
+    public void SnapMove_BothSnapsAvailable_StartExceedsMaxAllowed_PicksEndSnap()
+    {
+        var evt1 = new ActivityEvent { Id = Guid.NewGuid(), StartTime = BaseTime, EndTime = BaseTime.AddMinutes(40) };
+        var evt2 = new ActivityEvent { Id = Guid.NewGuid(), StartTime = BaseTime.AddMinutes(50), EndTime = BaseTime.AddMinutes(80) };
+
+        var rawStart = BaseTime.AddMinutes(41); // 1 min from evt1.EndTime (40)
+        var rawEnd = BaseTime.AddMinutes(82);   // 2 mins from evt2.EndTime (80)
+        // duration = 41 mins
+        // startSnap (40 + 41 = 81) > maxAllowedEnd (80)
+        // endSnap (80) <= maxAllowedEnd (80) -> snapped to (80 - 41 = 39, 80)
+
+        var (s, e) = CalendarMagneticSnappingHelper.SnapMove(rawStart, rawEnd, new[] { evt1, evt2 }, TimeSpan.FromMinutes(5), BaseTime.AddMinutes(80));
+
+        Assert.Equal(BaseTime.AddMinutes(39), s);
+        Assert.Equal(BaseTime.AddMinutes(80), e);
+    }
+
+    [Fact]
+    public void SnapMove_OnlyEndSnapAvailable_SnapsEndCorrectly()
+    {
+        var evt = new ActivityEvent { Id = Guid.NewGuid(), StartTime = BaseTime.AddMinutes(60), EndTime = BaseTime.AddMinutes(90) };
+        var duration = TimeSpan.FromMinutes(20);
+        var rawEnd = BaseTime.AddMinutes(61);
+        var rawStart = rawEnd - duration;
+
+        var (s, e) = CalendarMagneticSnappingHelper.SnapMove(rawStart, rawEnd, new[] { evt }, TimeSpan.FromMinutes(5), BaseTime.AddHours(2));
+
+        Assert.Equal(evt.StartTime, e);
+        Assert.Equal(evt.StartTime - duration, s);
+    }
+
+    [Fact]
+    public void SnapMove_OnlyEndSnapAvailable_ExceedsMaxAllowed_ReturnsRaw()
+    {
+        var evt = new ActivityEvent { Id = Guid.NewGuid(), StartTime = BaseTime.AddMinutes(60), EndTime = BaseTime.AddMinutes(90) };
+        var duration = TimeSpan.FromMinutes(20);
+        var rawEnd = BaseTime.AddMinutes(61);
+        var rawStart = rawEnd - duration;
+
+        // Max allowed is before the snap target
+        var (s, e) = CalendarMagneticSnappingHelper.SnapMove(rawStart, rawEnd, new[] { evt }, TimeSpan.FromMinutes(5), BaseTime.AddMinutes(50));
+
+        Assert.Equal(rawStart, s);
+        Assert.Equal(rawEnd, e);
+    }
+
+    [Fact]
+    public void SnapResizeStart_SnappedAtOrAfterCurrentEnd_ReturnsCandidateStart()
+    {
+        var otherEvent = new ActivityEvent { Id = Guid.NewGuid(), StartTime = BaseTime.AddMinutes(50), EndTime = BaseTime.AddMinutes(60) };
+        var currentEnd = BaseTime.AddMinutes(45);
+        var candidateStart = BaseTime.AddMinutes(48); // Snaps to 50, which is >= currentEnd (45)
+
+        var result = CalendarMagneticSnappingHelper.SnapResizeStart(candidateStart, currentEnd, new[] { otherEvent }, TimeSpan.FromMinutes(5));
+
+        Assert.Equal(candidateStart, result);
+    }
 }

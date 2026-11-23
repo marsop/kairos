@@ -698,6 +698,440 @@ public class TimeTrackingServiceTests
         Assert.Equal("Updated from delta sync", sut.Account.Events.First(e => e.Id == existing1.Id).Comment);
     }
 
+    [Fact]
+    public async Task GetCurrentBalance_CalculatesTotalOfCompletedAndActiveEvents()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var now = DateTimeOffset.UtcNow;
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = now.AddHours(-3),
+            EndTime = now.AddHours(-1)
+        });
+
+        var balanceBeforeActive = service.GetCurrentBalance();
+        Assert.True(balanceBeforeActive.TotalHours >= 1.99 && balanceBeforeActive.TotalHours <= 2.01);
+
+        service.ActivateActivity(act.Id, "Ongoing task");
+        var balanceWithActive = service.GetCurrentBalance();
+        Assert.True(balanceWithActive >= balanceBeforeActive);
+    }
+
+    [Fact]
+    public async Task GetLastCommentsForActivity_ReturnsRecentDistinctComments()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var now = DateTimeOffset.UtcNow;
+
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = now.AddHours(-4),
+            EndTime = now.AddHours(-3),
+            Comment = "First Task"
+        });
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = now.AddHours(-3),
+            EndTime = now.AddHours(-2),
+            Comment = "Second Task"
+        });
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = now.AddHours(-2),
+            EndTime = now.AddHours(-1),
+            Comment = "First Task"
+        });
+
+        var comments = service.GetLastCommentsForActivity(act.Id, 3);
+        Assert.Equal(2, comments.Count);
+        Assert.Equal("First Task", comments[0]);
+        Assert.Equal("Second Task", comments[1]);
+    }
+
+    [Fact]
+    public async Task ResumeEvent_CreatesNewActiveEventWithSameActivityAndComment()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var eventId = Guid.NewGuid();
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = eventId,
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1),
+            Comment = "Resumable Task"
+        });
+
+        service.ResumeEvent(eventId);
+
+        var active = service.GetActiveEvent();
+        Assert.NotNull(active);
+        Assert.Equal(act.Id, active.ActivityId);
+        Assert.Equal("Resumable Task", active.Comment);
+    }
+
+    [Fact]
+    public async Task DeleteEvent_RemovesEventAndNotifies()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var eventId = Guid.NewGuid();
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = eventId,
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1)
+        });
+
+        var eventFired = false;
+        service.OnStateChanged += () => eventFired = true;
+
+        service.DeleteEvent(eventId);
+
+        Assert.DoesNotContain(service.Account.Events, e => e.Id == eventId);
+        Assert.True(eventFired);
+    }
+
+    [Fact]
+    public async Task UpdateEventComment_UpdatesExistingEventComment()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var eventId = Guid.NewGuid();
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = eventId,
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1),
+            Comment = "Old Comment"
+        });
+
+        service.UpdateEventComment(eventId, "Updated Comment");
+
+        var evt = service.Account.Events.First(e => e.Id == eventId);
+        Assert.Equal("Updated Comment", evt.Comment);
+    }
+
+    [Fact]
+    public async Task GetTimelineData_CalculatesPointsAndRunningBalance()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var start = DateTimeOffset.UtcNow.AddHours(-10);
+        var end = DateTimeOffset.UtcNow;
+
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            ActivityColor = act.Color,
+            StartTime = start.AddHours(2),
+            EndTime = start.AddHours(4)
+        });
+
+        var points = service.GetTimelineData(start, end);
+
+        Assert.NotEmpty(points);
+        Assert.Equal(start, points[0].Timestamp);
+        Assert.Equal(0, points[0].BalanceHours);
+        Assert.Contains(points, p => p.BalanceHours > 0);
+    }
+
+    [Fact]
+    public async Task TimelinePeriod_WhenChanged_UpdatesAndPersists()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var eventFired = false;
+        service.OnStateChanged += () => eventFired = true;
+
+        service.TimelinePeriod = TimeSpan.FromHours(48);
+
+        Assert.Equal(TimeSpan.FromHours(48), service.TimelinePeriod);
+        Assert.True(eventFired);
+    }
+
+    [Fact]
+    public async Task RenameActivity_And_UpdateActivity_UpdatesActivityAndActiveEvent()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+
+        service.ActivateActivity(act.Id, "Task");
+        service.RenameActivity(act.Id, "Renamed Work");
+
+        Assert.Equal("Renamed Work", act.Name);
+        Assert.Equal("Renamed Work", service.GetActiveEvent()!.ActivityName);
+
+        service.UpdateActivity(act.Id, "Brand New Work", "#3B82F6", "💼", 1);
+        Assert.Equal("Brand New Work", act.Name);
+        Assert.Equal("#3B82F6", act.Color);
+        Assert.Equal("💼", act.Emoji);
+        Assert.Equal(1, act.ActivityGroupId);
+        Assert.Equal("Brand New Work", service.GetActiveEvent()!.ActivityName);
+    }
+
+    [Fact]
+    public async Task ExportData_And_ExportActivitiesAsCsv_ReturnFormattedData()
+    {
+        var service = await CreateLoadedServiceAsync();
+
+        var exportedJson = service.ExportData();
+        Assert.NotNull(exportedJson);
+        Assert.Contains("Activities", exportedJson);
+        Assert.Contains("Events", exportedJson);
+
+        var exportedCsv = service.ExportActivitiesAsCsv();
+        Assert.NotNull(exportedCsv);
+        Assert.Contains("Id", exportedCsv);
+        Assert.Contains("Name", exportedCsv);
+        Assert.Contains("Work", exportedCsv);
+    }
+
+    [Fact]
+    public async Task UpdateEventsFromServer_ReplacesEvents()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var newEvents = new List<ActivityEvent>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ActivityId = Guid.NewGuid(),
+                ActivityName = "Server Event",
+                StartTime = DateTimeOffset.UtcNow.AddHours(-1),
+                EndTime = DateTimeOffset.UtcNow
+            }
+        };
+
+        service.UpdateEventsFromServer(newEvents);
+
+        Assert.Single(service.Account.Events);
+        Assert.Equal("Server Event", service.Account.Events[0].ActivityName);
+    }
+
+    [Fact]
+    public async Task ResetDataAsync_ClearsEventsAndResetsDefaults()
+    {
+        var service = await CreateLoadedServiceAsync();
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            StartTime = DateTimeOffset.UtcNow.AddHours(-1)
+        });
+        service.TimelinePeriod = TimeSpan.FromHours(12);
+
+        await service.ResetDataAsync();
+
+        Assert.Empty(service.Account.Events);
+        Assert.Equal(TimeSpan.FromHours(24), service.TimelinePeriod);
+    }
+
+    [Fact]
+    public async Task SupabaseSync_WithRemoteActivitiesAndTimeAccount_PullsAndApplies()
+    {
+        var storage = new InMemoryStorageService();
+        var actId = Guid.NewGuid();
+        var remoteActivities = new List<Activity>
+        {
+            new() { Id = actId, Name = "Remote Coding", Color = "#10B981", DisplayOrder = 0 }
+        };
+        var remoteAccount = new TimeAccount
+        {
+            TimelinePeriod = TimeSpan.FromHours(36),
+            Activities = remoteActivities,
+            Events = new List<ActivityEvent>()
+        };
+
+        var config = new StubActivityConfigurationService(remoteActivities);
+        var settings = new StubSettingsService();
+        var notifications = new StubNotificationService();
+        var authService = new StubSupabaseAuthService
+        {
+            IsAuthenticated = true,
+            CurrentAccessToken = "valid-token",
+            CurrentUserId = "user-sync"
+        };
+        var activityStore = new StubSupabaseActivityStore { Activities = remoteActivities };
+        var timeAccountStore = new StubSupabaseTimeAccountStore { LoadedAccount = remoteAccount };
+        var realtime = new StubSupabaseRealtimeService();
+
+        var service = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            authService,
+            activityStore,
+            timeAccountStore,
+            realtime);
+
+        await service.LoadAsync();
+
+        Assert.Equal(TimeSpan.FromHours(36), service.TimelinePeriod);
+        Assert.Contains(service.Account.Activities, a => a.Name == "Remote Coding");
+    }
+
+    [Fact]
+    public async Task ActivateActivity_WithStickyEventsDuration_SnapsStartTimeToRecentEventEnd()
+    {
+        var settings = new StubSettingsService { StickyEventsDuration = 60 };
+        var service = await CreateLoadedServiceAsync(settings);
+        var act = service.Account.Activities[0];
+        var recentEnd = DateTimeOffset.UtcNow.AddSeconds(-20);
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = Guid.NewGuid(),
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = recentEnd.AddMinutes(-30),
+            EndTime = recentEnd
+        });
+
+        service.ActivateActivity(act.Id, "Task sticky");
+
+        var active = service.GetActiveEvent();
+        Assert.NotNull(active);
+        Assert.Equal(recentEnd, active.StartTime);
+    }
+
+    [Fact]
+    public async Task DeactivateActivity_WithAutoDeleteEventDuration_DeletesTooShortEvent()
+    {
+        var settings = new StubSettingsService { AutoDeleteEventDuration = 30 };
+        var service = await CreateLoadedServiceAsync(settings);
+        var act = service.Account.Activities[0];
+
+        // Activate and immediately deactivate (duration ~0s < 30s)
+        service.ActivateActivity(act.Id, "Quick task");
+        service.DeactivateActivity();
+
+        Assert.Empty(service.Account.Events);
+    }
+
+    [Fact]
+    public async Task UpdateEventDetails_FutureEndTime_ThrowsArgumentException()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var eventId = Guid.NewGuid();
+        service.Account.Events.Add(new ActivityEvent
+        {
+            Id = eventId,
+            ActivityId = act.Id,
+            ActivityName = act.Name,
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2),
+            EndTime = DateTimeOffset.UtcNow.AddHours(-1)
+        });
+
+        Assert.Throws<ArgumentException>(() =>
+            service.UpdateEventDetails(eventId, DateTimeOffset.UtcNow.AddHours(-1), DateTimeOffset.UtcNow.AddHours(2), "Future end"));
+    }
+
+    [Fact]
+    public async Task NonExistentEntityUpdates_HandleGracefully()
+    {
+        var service = await CreateLoadedServiceAsync();
+
+        // None of these should throw
+        service.UpdateEventDetails(Guid.NewGuid(), DateTimeOffset.UtcNow.AddHours(-2), DateTimeOffset.UtcNow.AddHours(-1), "None");
+        service.UpdateEventComment(Guid.NewGuid(), "None");
+        service.UpdateActivity(Guid.NewGuid(), "Ghost", "#10B981");
+        service.RemoveActivityGroup(-1);
+        service.ReorderActivities(null!);
+        service.ReorderActivities(new List<Guid> { Guid.NewGuid() }); // Wrong count
+    }
+
+    [Fact]
+    public async Task DeleteActivity_WhenInactive_RemovesActivity()
+    {
+        var service = await CreateLoadedServiceAsync();
+        var act = service.Account.Activities[0];
+        var initialCount = service.Account.Activities.Count;
+
+        service.DeleteActivity(act.Id);
+
+        Assert.Equal(initialCount - 1, service.Account.Activities.Count);
+        Assert.DoesNotContain(service.Account.Activities, a => a.Id == act.Id);
+    }
+
+    [Fact]
+    public async Task AddActivity_NameOnly_AddsWithDefaultColor()
+    {
+        var service = await CreateLoadedServiceAsync();
+        service.AddActivity("Brand New Activity");
+
+        var added = service.Account.Activities.FirstOrDefault(a => a.Name == "Brand New Activity");
+        Assert.NotNull(added);
+        Assert.Equal(Activity.DefaultColor, added.Color);
+    }
+
+    [Fact]
+    public async Task Realtime_RemoteTableChanged_TriggersReload()
+    {
+        var storage = new InMemoryStorageService();
+        var remoteActivities = new List<Activity>
+        {
+            new() { Id = Guid.NewGuid(), Name = "RT Activity", Color = "#3B82F6", DisplayOrder = 0 }
+        };
+        var config = new StubActivityConfigurationService(remoteActivities);
+        var settings = new StubSettingsService();
+        var notifications = new StubNotificationService();
+        var authService = new StubSupabaseAuthService { IsAuthenticated = true, CurrentAccessToken = "token", CurrentUserId = "user-1" };
+        var activityStore = new StubSupabaseActivityStore { Activities = remoteActivities };
+        var timeAccountStore = new StubSupabaseTimeAccountStore { LoadedAccount = new TimeAccount { TimelinePeriod = TimeSpan.FromHours(10) } };
+        var realtime = new StubSupabaseRealtimeService();
+
+        var service = new TimeTrackingService(
+            storage,
+            config,
+            settings,
+            notifications,
+            new StubStringLocalizer(),
+            authService,
+            activityStore,
+            timeAccountStore,
+            realtime);
+
+        await service.LoadAsync();
+
+        // Trigger remote change on activities
+        realtime.RaiseTableChanged("activities");
+        await Task.Delay(50);
+
+        // Trigger remote change on time_accounts
+        realtime.RaiseTableChanged("time_accounts");
+        await Task.Delay(50);
+
+        // Trigger auth state changed
+        authService.RaiseAuthStateChanged();
+        await Task.Delay(50);
+
+        Assert.True(activityStore.LoadCalls > 1);
+        Assert.True(timeAccountStore.LoadCalls > 1);
+    }
+
     private static async Task<TimeTrackingService> CreateLoadedServiceAsync(
         StubSettingsService? settingsService = null)
     {

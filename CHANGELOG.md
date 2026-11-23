@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Testing**: Comprehensive unit test suites and test doubles for Supabase cloud infrastructure stores (activities, activity groups, budgets, budget settings, user settings, time accounts, auth, realtime), Timeular Bluetooth integration, Settings and TimeTracking cloud sync routines, and Core domain models, elevating test coverage across Core, Infrastructure, and Application to over 90%.
 - **History UI**: Magnetic fit snapping in Calendar view, automatically aligning moved and resized event boundaries flush against neighboring entries when within the Sticky Events Duration threshold.
 
 ### Changed

@@ -495,3 +495,45 @@ internal sealed class StubPwaService : IPwaService
     }
 }
 
+internal sealed class StubSupabaseSettingsStore : ISupabaseSettingsStore
+{
+    public SyncedSettingsData? LoadedSettings { get; set; }
+    public SyncedSettingsData? SavedSettings { get; private set; }
+    public int LoadCalls { get; private set; }
+    public int SaveCalls { get; private set; }
+
+    public Task<SyncedSettingsData?> LoadSettingsAsync()
+    {
+        LoadCalls++;
+        return Task.FromResult(LoadedSettings);
+    }
+
+    public Task SaveSettingsAsync(SyncedSettingsData settings)
+    {
+        SaveCalls++;
+        SavedSettings = settings;
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class StubSupabaseActivityGroupsStore : ISupabaseActivityGroupsStore
+{
+    public List<SyncedActivityGroupData>? LoadedGroups { get; set; }
+    public IReadOnlyList<SyncedActivityGroupData>? SavedGroups { get; private set; }
+    public int LoadCalls { get; private set; }
+    public int SaveCalls { get; private set; }
+
+    public Task<IReadOnlyList<SyncedActivityGroupData>?> LoadGroupsAsync()
+    {
+        LoadCalls++;
+        return Task.FromResult<IReadOnlyList<SyncedActivityGroupData>?>(LoadedGroups);
+    }
+
+    public Task SaveGroupsAsync(IReadOnlyList<SyncedActivityGroupData> groups)
+    {
+        SaveCalls++;
+        SavedGroups = groups;
+        return Task.CompletedTask;
+    }
+}
+

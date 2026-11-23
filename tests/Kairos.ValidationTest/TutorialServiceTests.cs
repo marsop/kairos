@@ -126,4 +126,60 @@ public class TutorialServiceTests
         Assert.Contains("http://localhost/history", navigation.Navigations);
         Assert.Contains("http://localhost/settings", navigation.Navigations);
     }
+
+    [Fact]
+    public async Task ResetTutorialAsync_ResetsCompletedFlagAndStartsTutorial()
+    {
+        var storage = new InMemoryStorageService();
+        var settings = new StubSettingsService { TutorialCompleted = true };
+        var navigation = new TestNavigationManager();
+        var sut = new TutorialService(storage, settings, navigation, new StubStringLocalizer());
+
+        await sut.ResetTutorialAsync();
+
+        Assert.False(settings.TutorialCompleted);
+        Assert.True(sut.IsActive);
+        Assert.True(sut.IsInitialSetupStep);
+        Assert.Contains("tutorial_completed_v1", storage.RemovedKeys);
+    }
+
+    [Fact]
+    public void MarkInitialSetupSelections_UpdatesFlagsAndNotifies()
+    {
+        var sut = new TutorialService(
+            new InMemoryStorageService(),
+            new StubSettingsService(),
+            new TestNavigationManager(),
+            new StubStringLocalizer());
+
+        var changeCount = 0;
+        sut.OnChange += () => changeCount++;
+
+        sut.StartTutorial();
+
+        sut.MarkInitialSetupAvatarSelected();
+        Assert.True(changeCount > 0);
+
+        sut.MarkInitialSetupLanguageSelected();
+        Assert.True(sut.CanAdvanceFromCurrentStep);
+    }
+
+    [Fact]
+    public async Task CompleteTutorialAsync_DirectCall_CompletesTutorial()
+    {
+        var settings = new StubSettingsService { TutorialCompleted = false };
+        var sut = new TutorialService(
+            new InMemoryStorageService(),
+            settings,
+            new TestNavigationManager(),
+            new StubStringLocalizer());
+
+        sut.StartTutorial();
+        Assert.True(sut.IsActive);
+
+        await sut.CompleteTutorialAsync();
+
+        Assert.True(settings.TutorialCompleted);
+        Assert.False(sut.IsActive);
+    }
 }
