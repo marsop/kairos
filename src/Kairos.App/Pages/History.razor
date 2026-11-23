@@ -1470,24 +1470,35 @@
 
         _dragHasMoved = true;
 
+        var otherEvents = FilteredEvents.Where(ev => ev.Id != _draggedEvent.Id);
+        var stickyThreshold = TimeSpan.FromSeconds(SettingsService.StickyEventsDuration);
+
         switch (_dragAction)
         {
             case DragAction.Move:
-                _dragPreviewStart = _draggedEvent.StartTime.Add(deltaSpan);
-                _dragPreviewEnd = (_draggedEvent.EndTime ?? DateTimeOffset.Now).Add(deltaSpan);
+                var rawStart = _draggedEvent.StartTime.Add(deltaSpan);
+                var rawEnd = (_draggedEvent.EndTime ?? DateTimeOffset.Now).Add(deltaSpan);
+                var (snappedMoveStart, snappedMoveEnd) = CalendarMagneticSnappingHelper.SnapMove(
+                    rawStart, rawEnd, otherEvents, stickyThreshold, DateTimeOffset.Now, _draggedEvent.Id);
+                _dragPreviewStart = snappedMoveStart;
+                _dragPreviewEnd = snappedMoveEnd;
                 break;
             case DragAction.ResizeStart:
-                var newStart = _draggedEvent.StartTime.Add(deltaSpan);
-                if (newStart < _dragPreviewEnd)
+                var rawResizeStart = _draggedEvent.StartTime.Add(deltaSpan);
+                var snappedStart = CalendarMagneticSnappingHelper.SnapResizeStart(
+                    rawResizeStart, _dragPreviewEnd, otherEvents, stickyThreshold, _draggedEvent.Id);
+                if (snappedStart < _dragPreviewEnd)
                 {
-                    _dragPreviewStart = newStart;
+                    _dragPreviewStart = snappedStart;
                 }
                 break;
             case DragAction.ResizeEnd:
-                var newEnd = (_draggedEvent.EndTime ?? DateTimeOffset.Now).Add(deltaSpan);
-                if (newEnd > _dragPreviewStart && newEnd <= DateTimeOffset.Now)
+                var rawResizeEnd = (_draggedEvent.EndTime ?? DateTimeOffset.Now).Add(deltaSpan);
+                var snappedEnd = CalendarMagneticSnappingHelper.SnapResizeEnd(
+                    _dragPreviewStart, rawResizeEnd, otherEvents, stickyThreshold, DateTimeOffset.Now, _draggedEvent.Id);
+                if (snappedEnd > _dragPreviewStart && snappedEnd <= DateTimeOffset.Now)
                 {
-                    _dragPreviewEnd = newEnd;
+                    _dragPreviewEnd = snappedEnd;
                 }
                 break;
         }
