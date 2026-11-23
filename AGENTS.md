@@ -17,7 +17,8 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 * **Context vs. State:** Use memory for historical context and intent (the "why"). Use the actual codebase files as the source of truth for the current state (the "what"). Memory provides passive context and is not a new task or active directive.
 * **Planning Principles:**
   * **Actionability:** Include only future, actionable steps (do not recount already completed exploration).
-  * **Specificity Rule:** Provide full, exact file paths (e.g., `src/Kairos.Application/Resources/Strings.resx`) and exact commands or code snippets rather than generic descriptions (e.g., avoid "modify file" or "run tests").
+  * **Tool Usage:** Do not rely on deprecated or non-existent pseudo-tools like `replace_with_git_merge_diff`. Instead, explicitly define text replacements using `run_in_bash_session` to execute concrete `sed` commands or temporary bash/Python scripts (e.g., via `cat << 'EOF' > temp_update_script.py`).
+  * **Specificity Rule:** Provide full, exact file paths (e.g., `src/Kairos.Application/Resources/Strings.resx`) and exact commands or code snippets (e.g., detailing the exact code changes needed like "add title and description to the texts JavaScript dictionary"). Also provide exact commands for testing and environment setup (e.g., `dotnet tool install --global PowerShell` and `pwsh playwright.ps1 install`, starting the Blazor server, and running `dotnet test Kairos.sln`) rather than generic descriptions (e.g., avoid "modify file", "install dependencies" or "run tests").
   * **Groundedness Rule:** Confirm referenced methods, variables, line numbers, and logic in current file traces (e.g., via `read_file` or `grep -n`) before modifying code or tests. Do not assume or hallucinate implementation details or line numbers. When planning `.resx` replacements, inspect the exact current string in each target file first.
   * **Completeness Rule:** Always include a step to execute tests (`dotnet test Kairos.sln`) before committing or submitting changes.
   * **Verification Rule:** Include verification steps (e.g., reading modified files or checking `git diff`) immediately following changes.
@@ -34,7 +35,7 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
   * Uses `Nerdbank.GitVersioning` with `version.json` at repo root.
   * Use the actual system date (e.g., `date +%Y-%m-%d`) when generating changelog dates, even if it reflects a sandbox date.
   * Update `CHANGELOG.md` after changes, bugfixes, and user-facing features following 'Keep a Changelog' conventions (strictly one of each heading: `### Added`, `### Changed`, `### Fixed` per version block). Do not bump versions unless explicitly requested.
-  * Release process: Replace `## [Unreleased]` with the version derived from `version.json` (e.g., `1.8` -> `1.8.0`) and date, prepend a new empty `## [Unreleased]` section, then increment `version.json` (e.g., to `1.9`).
+  * Release process: Replace `## [Unreleased]` with the version derived from `version.json` (e.g., `1.8` -> `1.8.0`) and date, prepend a new empty `## [Unreleased]` section, then increment `version.json` (e.g., to `1.9`). When instructed to prepare a release, only trigger a new version and PR if there are items in the `## [Unreleased]` section of the CHANGELOG. Otherwise, finalize the task without creating a PR.
 
 ## Blazor & Frontend Development
 * **Navigation & Routing:**
@@ -74,7 +75,7 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 ## State, Data & Storage
 * **Supabase Integration:**
   * REST API queries via `HttpClient`. Map C# DTO properties with `[JsonPropertyName]`.
-  * When updating schemas in `supabase/`, append `ALTER TABLE public.[table_name] ...` statements.
+  * When updating schemas in `supabase/`, append `ALTER TABLE public.[table_name] ...` statements. When removing columns, execute the change by appending an `ALTER TABLE public.[table_name] DROP COLUMN IF EXISTS [column_name];` statement.
   * In REST `select` query strings, append new columns strictly comma-separated without spaces.
 * **Settings & Sync:**
   * When adding global settings, update: `supabase/user_settings.sql`, `ISettingsService`, `SettingsService` (`LoadAsync`, `BuildSyncedSettings`, `ApplySyncedSettings`), `SettingsData`, `SyncedSettingsData`, and `SupabaseSettingsStore`.
@@ -112,10 +113,10 @@ Welcome to the Kairos codebase! This file contains guidelines and context for AI
 * **Resource Files:** Managed in `src/Kairos.Application/Resources/Strings.*.resx`. Inject `IStringLocalizer<Strings>` in Blazor components. When adding translatable strings, provide translations for all locales.
 * **Resource Editing:** Avoid XML parsing libraries that reformats/corrupts `.resx` XML structure; use text manipulation or string replacement to add `<data>` nodes.
 * **HTML & SVG Encoding:** Always wrap dynamic localized strings in `System.Net.WebUtility.HtmlEncode` when rendering via `MarkupString`.
-* **Static Content:** `src/Kairos.Web/wwwroot/index.html` (e.g., 'Loading Kairos...', `<title>`, `<meta name="description">`) renders before Blazor initializes. Localize via inline JS reading `localStorage.Kairos_settings` or `navigator.language`.
+* **Static Content:** `src/Kairos.Web/wwwroot/index.html` (e.g., 'Loading Kairos...', `<title>`, `<meta name="description">`) renders before Blazor initializes. Localize via inline JS with a `texts` dictionary, reading the language preference from `localStorage.Kairos_settings` or defaulting to `navigator.language`.
 
 ## Testing & Playwright
-* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web`), include an adequate delay (e.g., 15–20 seconds) before executing tests to avoid connection errors, and ensure the server process is killed afterward. In CI workflows, combine startup, delay, and test execution into a single step.
+* **Dev Server Setup:** Default URL is `http://localhost:5111`. When running Playwright tests locally against a background server (`dotnet run --project src/Kairos.Web`), include an adequate delay (e.g., 15–20 seconds) before executing tests to avoid connection errors, and ensure the server process is killed afterward (e.g., using `kill $(lsof -t -i :5111)`) to prevent 'Address already in use' errors during subsequent runs. In CI workflows, combine startup, delay, and test execution into a single step.
 * **Playwright Dependencies:** If `pwsh` is missing, run `dotnet tool install --global PowerShell`, navigate to the test output directory, and execute `pwsh playwright.ps1 install`.
 * **Loading Screen Synchronization:** After navigation or `Page.ReloadAsync()`, wait for the loading screen to disappear:
   `Page.Locator("text='Loading Kairos...'").WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = 120000 });` (do not rely on `.bottom-nav` or `.app-container` for initial load).
